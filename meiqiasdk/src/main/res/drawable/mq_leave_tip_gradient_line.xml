@@ -2,8 +2,8 @@
        android:shape="rectangle">
 
     <gradient
-        android:centerColor="@color/mc_event_gray"
-        android:endColor="@color/mc_normal_text_white"
-        android:startColor="@color/mc_normal_text_white"/>
+        android:centerColor="@color/mq_event_gray"
+        android:endColor="@color/mq_normal_text_white"
+        android:startColor="@color/mq_normal_text_white"/>
 
 </shape>

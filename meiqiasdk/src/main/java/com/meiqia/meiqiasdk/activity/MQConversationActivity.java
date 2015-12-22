@@ -3,7 +3,6 @@ package com.meiqia.meiqiasdk.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,7 +11,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.ConnectivityManager;
@@ -28,14 +26,12 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -49,6 +45,7 @@ import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
 import com.meiqia.meiqiasdk.controller.MediaRecordFunc;
+import com.meiqia.meiqiasdk.dialog.MQViewPhotoDialog;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.AgentChangeMessage;
 import com.meiqia.meiqiasdk.model.BaseMessage;
@@ -65,14 +62,11 @@ import com.meiqia.meiqiasdk.widget.MQEditToolbar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class MQConversationActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = MQConversationActivity.class.getSimpleName();
@@ -129,12 +123,13 @@ public class MQConversationActivity extends AppCompatActivity implements View.On
     private MQConfig mqConfig;
 
     private MQEditToolbar mEditToolbar;
+    private MQViewPhotoDialog mMQViewPhotoDialog;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // 保持屏幕长亮
-        setContentView(R.layout.mq_conversation_activity);
+        setContentView(R.layout.mq_activity_conversation);
 
         init();
         findViews();
@@ -290,7 +285,7 @@ public class MQConversationActivity extends AppCompatActivity implements View.On
                             stopRecord();
                             // 连续点击一直提示太烦了
                             if (internalTime > 500) {
-                                makeToast(R.string.mq_record_record_time_is_short);
+                                MQUtils.show(MQConversationActivity.this, R.string.mq_record_record_time_is_short);
                             }
                             return true;
                         }
@@ -331,7 +326,7 @@ public class MQConversationActivity extends AppCompatActivity implements View.On
             if (recordState == MediaRecordFunc.SUCCESS) {
                 MediaRecordFunc.getInstance(MQConversationActivity.this).showContent(MQConversationActivity.this, conversationListView);
             } else {
-                makeToast(R.string.mq_record_failed);
+                MQUtils.show(MQConversationActivity.this, R.string.mq_record_failed);
                 voiceHoldView.setBackgroundResource(R.drawable.mq_bg_edit_view);
                 voiceMicOnHoldViewIv.setBackgroundResource(R.drawable.mq_ic_mid_record_mic_nor);
             }
@@ -1090,12 +1085,8 @@ public class MQConversationActivity extends AppCompatActivity implements View.On
 
     private boolean isSdcardAvailable() {
         boolean isSdcardAvailable = MQUtils.isSdcardAvailable();
-        if (!isSdcardAvailable) makeToast(R.string.mq_no_sdcard);
+        if (!isSdcardAvailable) MQUtils.show(MQConversationActivity.this, R.string.mq_no_sdcard);
         return isSdcardAvailable;
-    }
-
-    private void makeToast(int resId) {
-        Toast.makeText(MQConversationActivity.this, resId, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -1104,24 +1095,10 @@ public class MQConversationActivity extends AppCompatActivity implements View.On
      * @param picUrl 图片地址
      */
     public void displayPhoto(String picUrl) {
-        final Dialog dialog = new Dialog(this, R.style.Transparent_Full_Dialog);
-        View picView = LayoutInflater.from(this).inflate(R.layout.mq_zoom_photo, null);
-        final ImageView picIv = (ImageView) picView.findViewById(R.id.pic_iv);
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.displayImage(picUrl, picIv, new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                PhotoViewAttacher mAttacher = new PhotoViewAttacher(picIv);
-                mAttacher.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
-                    @Override
-                    public void onViewTap(View view, float x, float y) {
-                        dialog.dismiss();
-                    }
-                });
-            }
-        });
-        dialog.setContentView(picView);
-        dialog.show();
+        if (mMQViewPhotoDialog == null) {
+            mMQViewPhotoDialog = new MQViewPhotoDialog(this);
+        }
+        mMQViewPhotoDialog.show(picUrl);
     }
 
     @Override

@@ -23,7 +23,7 @@
             android:maxWidth="260dp"
             android:singleLine="false"
             android:text="I \ue32d emojicon\n\n\nsdf\n\n"
-            android:textColor="@color/mc_chat_text_left"
+            android:textColor="@color/mq_chat_text_left"
             android:textSize="16sp"
             android:visibility="visible" />
 
@@ -63,7 +63,7 @@
                 android:maxWidth="270dp"
                 android:singleLine="false"
                 android:text="18s         "
-                android:textColor="@color/mc_chat_text_left"
+                android:textColor="@color/mq_chat_text_left"
                 android:textSize="16sp"
                 android:visibility="visible" />
 

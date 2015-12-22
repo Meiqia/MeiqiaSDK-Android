@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        android:shape="oval"
        android:useLevel="false">
-    <solid android:color="@color/mc_net_not_work_bg" />
+    <solid android:color="@color/mq_net_not_work_bg" />
 
     <size
         android:width="15dp"

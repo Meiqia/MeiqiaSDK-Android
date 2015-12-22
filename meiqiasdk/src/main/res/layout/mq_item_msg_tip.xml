@@ -19,9 +19,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:textColor="@color/mc_event_gray"
+        android:textColor="@color/mq_event_gray"
         android:textSize="14sp"
-        android:text="@string/mc_leave_msg_tips"/>
+        android:text="@string/mq_leave_msg_tips"/>
 
     <View
         android:layout_marginLeft="10dp"

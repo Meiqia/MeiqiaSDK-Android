@@ -28,7 +28,7 @@
             android:maxWidth="270dp"
             android:singleLine="false"
             android:text="hellodewfrefre"
-            android:textColor="@color/mc_chat_text_right"
+            android:textColor="@color/mq_chat_text_right"
             android:textSize="16sp"
             android:visibility="gone" />
 
@@ -69,7 +69,7 @@
                 android:maxWidth="270dp"
                 android:singleLine="false"
                 android:text="         7s"
-                android:textColor="@color/mc_chat_text_right"
+                android:textColor="@color/mq_chat_text_right"
                 android:textSize="16sp"
                 android:visibility="visible" />
 

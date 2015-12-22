@@ -84,8 +84,8 @@ public class RoundProgressBar extends View {
 
         paint = new Paint();
 
-        roundColor = getResources().getColor(R.color.mc_play_circle_round);
-        roundProgressColor = getResources().getColor(R.color.mc_play_circle_progress);
+        roundColor = getResources().getColor(R.color.mq_play_circle_round);
+        roundProgressColor = getResources().getColor(R.color.mq_play_circle_progress);
         textColor = Color.GREEN;
         textSize = 15;
         roundWidth = 0;

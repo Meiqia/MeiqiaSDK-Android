@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="12:30"
-        android:textColor="@color/mc_event_gray"
+        android:textColor="@color/mq_event_gray"
         android:textSize="14sp" />
 
 </RelativeLayout>

@@ -11,7 +11,7 @@
     <string name="mq_title_inputting">正在输入...</string>
     <string name="mq_input_hint">请输入...</string>
     <string name="mq_allocate_agent">正在分配客服...</string>
-    <string name="mc_leave_msg_tips">抱歉，现在没有客服人员在线\n你可以继续写下你的问题，我们会尽快回复</string>
+    <string name="mq_leave_msg_tips">抱歉，现在没有客服人员在线\n你可以继续写下你的问题，我们会尽快回复</string>
     <string name="mq_photo_not_support">当前设备不支持发送图片</string>
     <string name="mq_no_sdcard">SD卡不存在</string>
     <string name="mq_record_not_support">当前设别不支持语音</string>
@@ -28,5 +28,5 @@
     <string name="mq_cancel">取消</string>
     <string name="mq_runtime_permission_tip_title">咨询客服需要以下权限</string>
     <string name="mq_permission_denied_tip">您拒绝了咨询客服所需要的相关权限!</string>
-    <string name="mc_back">返回</string>
+    <string name="mq_back">返回</string>
 </resources>

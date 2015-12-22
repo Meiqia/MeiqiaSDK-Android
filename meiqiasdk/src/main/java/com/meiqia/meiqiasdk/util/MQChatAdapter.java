@@ -177,7 +177,7 @@ public class MQChatAdapter extends BaseAdapter {
             if (mcMessage instanceof AgentChangeMessage) {
                 setDirectionMessageContent(mcMessage.getAgentNickname(), tipViewHolder.contentTv);
             } else {
-                tipViewHolder.contentTv.setText(R.string.mc_leave_msg_tips);
+                tipViewHolder.contentTv.setText(R.string.mq_leave_msg_tips);
             }
         }
         //显示消息：文字、图片、语音
@@ -327,7 +327,7 @@ public class MQChatAdapter extends BaseAdapter {
             String text = String.format(tipTv.getResources().getString(R.string.mq_direct_content), agentNickName);
             int start = text.indexOf(agentNickName);
             SpannableStringBuilder style = new SpannableStringBuilder(text);
-            style.setSpan(new ForegroundColorSpan(tipTv.getResources().getColor(R.color.mc_direct_agent_nickname_color)), start, start + agentNickName.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            style.setSpan(new ForegroundColorSpan(tipTv.getResources().getColor(R.color.mq_direct_agent_nickname_color)), start, start + agentNickName.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             tipTv.setText(style);
         }
     }

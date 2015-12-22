@@ -6,7 +6,7 @@
     <ImageView
         style="@style/MQWrapWrap"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_logo" />
+        android:src="@mipmap/ic_logo" />
 
     <Button
         style="@style/DemoTv"
