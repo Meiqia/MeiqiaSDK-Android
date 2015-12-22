@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mc_bg_color"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <RelativeLayout
+        android:id="@+id/title_rl"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/mc_title_height"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/mq_bg_title">
+
+        <RelativeLayout
+            android:id="@+id/back_rl"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp">
+
+            <ImageView
+                android:id="@+id/back_iv"
+                android:layout_width="10dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/mq_ic_back" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/back_iv"
+                android:text="返回"
+                android:textColor="@color/mc_normal_text_white"
+                android:textSize="18dp" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical|center_horizontal"
+            android:singleLine="true"
+            android:text="AgentName"
+            android:textColor="@color/mc_title_text"
+            android:textSize="18dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/chat_foot_ll"
+        android:layout_below="@id/title_rl"
+        android:background="@color/mc_normal_text_white">
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/messages_lv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/title_tip_tv"
+                android:background="@color/mc_normal_text_white"
+                android:cacheColorHint="#00000000"
+                android:divider="#00000000"
+                android:listSelector="@android:color/transparent"
+                android:transcriptMode="normal" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/chat_foot_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/mq_bg_input_box"
+            android:minHeight="@dimen/mc_chat_box_height">
+
+            <EditText
+                android:id="@+id/input_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="8dp"
+                android:layout_toLeftOf="@+id/voice_or_send_tv"
+                android:layout_toRightOf="@+id/photo_select_btn"
+                android:background="@drawable/mq_bg_edit_view"
+                android:focusable="true"
+                android:gravity="top|left"
+                android:hint="@string/mq_input_hint"
+                android:imeOptions="actionNone|flagNoExtractUi"
+                android:inputType="textMultiLine"
+                android:maxLines="5"
+                android:minHeight="35dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="40dp"
+                android:scrollHorizontally="false"
+                android:singleLine="false"
+                android:textColor="@color/mc_chat_text_left"
+                android:textCursorDrawable="@null"
+                android:textSize="18dp" />
+
+            <View
+                android:id="@+id/voice_hold_view"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="8dp"
+                android:layout_toLeftOf="@+id/voice_or_send_tv"
+                android:layout_toRightOf="@+id/photo_select_btn"
+                android:background="@drawable/mq_bg_edit_view"
+                android:focusable="true"
+                android:gravity="top|left"
+                android:paddingLeft="10dp"
+                android:paddingRight="40dp"
+                android:scrollHorizontally="false"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/voice_mic_iv"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:adjustViewBounds="true"
+                android:background="@drawable/mq_ic_mid_record_mic_nor"
+                android:clickable="false"
+                android:scaleType="fitXY"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/voice_or_send_tv"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/mq_bg_transparent"
+                android:gravity="center"
+                android:text="发送"
+                android:textColor="@drawable/mq_send_text_selector"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/emoji_select_btn"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_toLeftOf="@+id/voice_or_send_tv"
+                android:background="@drawable/mq_emoji_btn_background" />
+
+            <Button
+                android:id="@+id/photo_select_btn"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/mq_camera_btn_background" />
+        </RelativeLayout>
+
+        <GridView
+            android:id="@+id/emoji_panel_gv"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:background="@color/mc_normal_text_white"
+            android:gravity="center"
+            android:listSelector="@android:color/transparent"
+            android:numColumns="7"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="21dp"
+            android:visibility="gone" />
+
+        <com.meiqia.meiqiasdk.widget.MQEditToolbar
+            android:id="@+id/editToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateDrawable="@anim/mq_loading" />
+
+</RelativeLayout>
+

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@android:color/white"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/ll_edit_toolbar_emotion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:background="#f00"
+        tools:visibility="visible">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vp_edit_toolbar_emotion"
+            android:layout_width="match_parent"
+            android:layout_height="160dp" />
+
+        <LinearLayout
+            android:id="@+id/ll_edit_toolbar_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="5dp"
+            tools:background="#00f" />
+    </LinearLayout>
+
+</RelativeLayout>

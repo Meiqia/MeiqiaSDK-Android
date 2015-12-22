@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MQMatchMatch.Vertical"
+    android:gravity="center_horizontal">
+
+    <ImageView
+        style="@style/MQWrapWrap"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_logo" />
+
+    <Button
+        style="@style/MQMatchWrap"
+        android:layout_margin="16dp"
+        android:background="@color/mq_colorPrimary"
+        android:onClick="conversation"
+        android:text="咨询客服"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+
+    <Button
+        style="@style/MQMatchWrap"
+        android:layout_margin="16dp"
+        android:background="@color/mq_colorPrimary"
+        android:onClick="developer"
+        android:text="开发者功能"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+</LinearLayout>
