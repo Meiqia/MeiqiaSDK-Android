@@ -7,7 +7,7 @@
 直接依赖 demo 中的 Library 即可
 
 ### Eclipse
-TODO
+>TODO
 
 ## 使用美洽
 
@@ -27,7 +27,7 @@ MQManager.init(context, "Your Appkey", new OnInitCallBackOn() {
 	}
 });
 ``` 
-- 如果您不知道 Appkey ，请使用美洽管理员帐号登录 美洽，在「设置」 -> 「SDK」 菜单中查看。如下图：
+如果您不知道 Appkey ，请使用美洽管理员帐号登录 美洽，在「设置」 -> 「SDK」 菜单中查看。如下图：
 
 ![获取 Appkey](https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/8fbdaa6076d0b9d0)
 
@@ -58,6 +58,7 @@ setCurrentClientOnline(final OnClientOnlineCallback onlineCallback)
 ``` 
 
 ### 绑定美洽 id，并设置上线
+开发者可通过 [获取当前顾客的 id](#获取当前顾客的-id) 接口，取得顾客 id ，保存到开发者的服务端，以此来绑定美洽顾客和开发者用户系统。 如果开发者保存了美洽的顾客 id，可调用如下接口让其上线。调用此接口后，当前可用的顾客即为开发者传的顾客 id。
 ``` java
 /**
  * 绑定美洽 id，并设置上线
@@ -69,7 +70,7 @@ setClientOnlineWithClientId(String mqClientId, final OnClientOnlineCallback onli
 ``` 
 MQConversationActivity.class 内部调用了此接口，所以可以直接简单的在 intent 中添加 CLIENT_ID，启动对话。
 
-Example:
+**Example:**
 ``` java
 // 启动界面
 Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class);
@@ -77,8 +78,12 @@ Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class)
 intent.putExtra(MQConversationActivity.CLIENT_ID,"meiqia_id");
 startActivity(intent);
 ``` 
-开发者可通过 [获取当前顾客的 id](#获取当前顾客-id) 接口，取得顾客 id ，保存到开发者的服务端，以此来绑定美洽顾客和开发者用户系统。 如果开发者保存了美洽的顾客 id，可调用如下接口让其上线。调用此接口后，当前可用的顾客即为开发者传的顾客 id。
 ### 绑定自定义 id，并设置上线
+如果开发者不愿保存「美洽顾客 id」来绑定自己的用户系统，也可以将自己的用户 id当做参数，进行顾客的上线，美洽将会为开发者绑定一个顾客，下次开发者直接调用如下接口，就能让这个绑定的顾客上线。
+
+调用此接口后，当前可用的顾客即为该自定义 id 对应的顾客 id。
+
+**特别注意：**传给美洽的自定义 id 不能为自增长的，否则非常容易受到中间人攻击，此情况的开发者建议保存美洽顾客 id。
 ``` java
 /**
 * 绑定自定义 id，并设置上线
@@ -90,7 +95,7 @@ setClientOnlineWithCustomizedId(String customizedId, final OnClientOnlineCallbac
 ``` 
 MQConversationActivity.class 内部调用了此接口，所以可以直接简单的在 intent 中添加 CUSTOMIZED_ID，启动对话。
 
-Example:
+**Example:**
 ``` java
 // 启动界面
 Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class);
@@ -98,13 +103,9 @@ Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class)
 intent.putExtra(MQConversationActivity.CUSTOMIZED_ID,"developer@dev.com");
 startActivity(intent);
 ``` 
-如果开发者不愿保存「美洽顾客 id」来绑定自己的用户系统，也可以将自己的用户 id当做参数，进行顾客的上线，美洽将会为开发者绑定一个顾客，下次开发者直接调用如下接口，就能让这个绑定的顾客上线。
-
-调用此接口后，当前可用的顾客即为该自定义 id 对应的顾客 id。
-
-特别注意：传给美洽的自定义 id 不能为自增长的，否则非常容易受到中间人攻击，此情况的开发者建议保存美洽顾客 id。
 
 ### 指定客服或者分组
+美洽默认会按照管理员设置的分配方式智能分配客服，但如果需要让来自 App 的顾客指定分配给某个客服或者某组客服。
 ``` java
 /**
  * 指定客服或者分组
@@ -115,7 +116,7 @@ startActivity(intent);
 setScheduledAgentOrGroupWithId(String agentId, String groupId)
 ``` 
 
-Example:
+**Example:**
 ``` java
 // 启动界面之前设置
 MQManager.getInstance(DeveloperActivity.this).setScheduledAgentOrGroupWithId(agentId, groupId);
@@ -123,14 +124,19 @@ MQManager.getInstance(DeveloperActivity.this).setScheduledAgentOrGroupWithId(age
 Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class);
 startActivity(intent);
 ``` 
-美洽默认会按照管理员设置的分配方式智能分配客服，但如果需要让来自 App 的顾客指定分配给某个客服或者某组客服。
 
-注意：
+**注意：**
  - 该选项需要在用户上线前设置。
  - 客服组 ID 和客服 ID 可以通过管理员帐号在后台的「设置」中查看。 
   ![获取 客服 / 分组 ID](https://camo.githubusercontent.com/63eb2383e2dda083c17eeb16b360777c0e1b0ee9/68747470733a2f2f73332e636e2d6e6f7274682d312e616d617a6f6e6177732e636f6d2e636e2f706963732e6d65697169612e6275636b65742f38636465386235343439316332303365)
 
+
 ### 设置顾客离线
+如果没有设置顾客离线，开发者将可以监听广播收到即时消息，用于显示小红点未读标记。
+
+如果设置了顾客离线，则客服发送的消息将会发送给开发者的服务端。
+
+美洽建议：顾客退出聊天界面时，不设置顾客离线，这样开发者仍能监听到收到消息的广播，以便提醒顾客有新消息。
 ``` java
 /**
 * 设置顾客离线
@@ -139,11 +145,6 @@ startActivity(intent);
 */
 setClientOffline()
 ``` 
-如果没有设置顾客离线，开发者将可以监听广播收到即时消息，用于显示小红点未读标记。
-
-如果设置了顾客离线，则客服发送的消息将会发送给开发者的服务端。
-
-美洽建议：顾客退出聊天界面时，不设置顾客离线，这样开发者仍能监听到收到消息的广播，以便提醒顾客有新消息。
 
 ### 发送文字消息 / 图片消息 / 语音消息
 ``` java
@@ -313,6 +314,8 @@ sendClientInputtingWithContent(String content)
  */
 openMeiQiaRemotePushService()
 ``` 
+参考 [消息推送](#消息推送)
+
 ### 关闭美洽推送
 ``` java
 /**
@@ -320,6 +323,7 @@ openMeiQiaRemotePushService()
  */
 closeMeiQiaRemotePushService()
 ``` 
+参考 [消息推送](#消息推送)
 
 ### 接收即时消息
 注册一个 BroadcastReceiver ，监听广播
