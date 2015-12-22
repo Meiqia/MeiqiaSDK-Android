@@ -17,8 +17,8 @@ public interface MQController {
     /**
      * 从服务器获取历史消息
      *
-     * @param messageCreateOn   获取该日期之前的消息
-     * @param length                获取的消息长度
+     * @param messageCreateOn          获取该日期之前的消息
+     * @param length                   获取的消息长度
      * @param onGetMessageListCallBack 回调
      */
     void getMessageFromService(final long messageCreateOn, final int length, final OnGetMessageListCallBack onGetMessageListCallBack);
@@ -26,12 +26,12 @@ public interface MQController {
     /**
      * 从本地服务器取历史消息
      *
-     * @param lastMessageCreateOn   获取该日期之前的消息
-     * @param length                获取的消息长度
+     * @param lastMessageCreateOn      获取该日期之前的消息
+     * @param length                   获取的消息长度
      * @param onGetMessageListCallBack 回调
      */
     void getMessagesFromDatabase(final long lastMessageCreateOn, final int length, final OnGetMessageListCallBack onGetMessageListCallBack);
 
-    void setCurrentClientOnline(OnClientOnlineCallback onClientOnlineCallback);
+    void setCurrentClientOnline(String clientId, String customizedId, OnClientOnlineCallback onClientOnlineCallback);
 
 }
