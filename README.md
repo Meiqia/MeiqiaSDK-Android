@@ -1,2 +1,11 @@
-# MeiqiaSDK-Android
-美洽 Android SDK 3.0 面向开发者的 Demo
+# 美洽移动应用 SDK 3.0 for Android 开发文档
+
+
+
+
+
+
+
+
+
+
