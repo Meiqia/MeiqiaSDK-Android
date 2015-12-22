@@ -1,6 +1,7 @@
 package com.meiqia.meiqiasdk.controller;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.bean.MQAgent;
@@ -95,8 +96,8 @@ public class ControllerImpl implements MQController {
     }
 
     @Override
-    public void setCurrentClientOnline(final OnClientOnlineCallback onClientOnlineCallback) {
-        MQManager.getInstance(context).setCurrentClientOnline(new com.meiqia.core.callback.OnClientOnlineCallback() {
+    public void setCurrentClientOnline(String clientId, String customizedId, final OnClientOnlineCallback onClientOnlineCallback) {
+        com.meiqia.core.callback.OnClientOnlineCallback onlineCallback = new com.meiqia.core.callback.OnClientOnlineCallback() {
             @Override
             public void onSuccess(MQAgent mqAgent, List<MQMessage> conversationMessageList) {
                 Agent agent = MQUtils.parseMQAgentToAgent(mqAgent);
@@ -108,7 +109,15 @@ public class ControllerImpl implements MQController {
             public void onFailure(int code, String message) {
                 onClientOnlineCallback.onFailure(code, message);
             }
-        });
+        };
+
+        if (!TextUtils.isEmpty(clientId)) {
+            MQManager.getInstance(context).setClientOnlineWithClientId(clientId, onlineCallback);
+        } else if (!TextUtils.isEmpty(customizedId)) {
+            MQManager.getInstance(context).setClientOnlineWithCustomizedId(customizedId, onlineCallback);
+        } else {
+            MQManager.getInstance(context).setCurrentClientOnline(onlineCallback);
+        }
     }
 
 }

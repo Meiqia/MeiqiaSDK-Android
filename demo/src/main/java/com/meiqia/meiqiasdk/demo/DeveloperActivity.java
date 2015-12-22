@@ -42,7 +42,6 @@ public class DeveloperActivity extends AppCompatActivity implements View.OnClick
     private View endConversationBtn;
 
     private MQManager mqManager;
-    private DeveloperControllerImp developerControllerImp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +49,6 @@ public class DeveloperActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_developer);
 
         mqManager = MQManager.getInstance(this);
-        developerControllerImp = new DeveloperControllerImp(this);
 
         findViews();
         setListeners();
@@ -96,8 +94,8 @@ public class DeveloperActivity extends AppCompatActivity implements View.OnClick
                     @Override
                     public void onInput(String clientId) {
                         if (!TextUtils.isEmpty(clientId)) {
-                            developerControllerImp.setClientId(clientId);
                             Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class);
+                            intent.putExtra(MQConversationActivity.CLIENT_ID,clientId);
                             startActivity(intent);
                             updateId();
                         }
@@ -109,9 +107,8 @@ public class DeveloperActivity extends AppCompatActivity implements View.OnClick
                     @Override
                     public void onInput(String customizedId) {
                         if (!TextUtils.isEmpty(customizedId)) {
-                            MQConversationActivity.registerController(developerControllerImp);
-                            developerControllerImp.setCustomizedId(customizedId);
                             Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class);
+                            intent.putExtra(MQConversationActivity.CUSTOMIZED_ID,customizedId);
                             startActivity(intent);
                             updateId();
                         }
@@ -145,9 +142,9 @@ public class DeveloperActivity extends AppCompatActivity implements View.OnClick
             case R.id.set_specified_agent_token_btn:
                 showDialog("输入指定客服 ID", new EditDialogOnClickListener() {
                     @Override
-                    public void onInput(String agentToken) {
-                        if (!TextUtils.isEmpty(agentToken)) {
-                            MQManager.getInstance(DeveloperActivity.this).setScheduledAgentOrGroupWithId(agentToken, "");
+                    public void onInput(String agentId) {
+                        if (!TextUtils.isEmpty(agentId)) {
+                            MQManager.getInstance(DeveloperActivity.this).setScheduledAgentOrGroupWithId(agentId, "");
                             Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class);
                             startActivity(intent);
                             updateId();
@@ -159,9 +156,9 @@ public class DeveloperActivity extends AppCompatActivity implements View.OnClick
             case R.id.set_specified_agent_group_token_btn:
                 showDialog("输入指定分组 ID", new EditDialogOnClickListener() {
                     @Override
-                    public void onInput(String groupToken) {
-                        if (!TextUtils.isEmpty(groupToken)) {
-                            MQManager.getInstance(DeveloperActivity.this).setScheduledAgentOrGroupWithId("", groupToken);
+                    public void onInput(String groupId) {
+                        if (!TextUtils.isEmpty(groupId)) {
+                            MQManager.getInstance(DeveloperActivity.this).setScheduledAgentOrGroupWithId("", groupId);
                             Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class);
                             startActivity(intent);
                         }

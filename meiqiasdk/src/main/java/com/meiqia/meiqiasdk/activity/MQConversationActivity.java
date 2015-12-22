@@ -77,6 +77,9 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 public class MQConversationActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = MQConversationActivity.class.getSimpleName();
 
+    public static final String CLIENT_ID = "clientId";
+    public static final String CUSTOMIZED_ID = "customizedId";
+
     private static final int REQUEST_CODE_CAMERA = 0;
     private static final int REQUEST_CODE_PHOTO = 1;
     private static final int REQUEST_CODE_PERMISSIONS = 2;
@@ -545,6 +548,8 @@ public class MQConversationActivity extends AppCompatActivity implements View.On
         controller.getMessageFromService(lastMessageCreateOn, MESSAGE_PAGE_COUNT, new OnGetMessageListCallBack() {
             @Override
             public void onSuccess(final List<BaseMessage> messageList) {
+                // 根据设置，过滤语音消息
+                cleanVoiceMessage(messageList);
                 //添加时间戳
                 MQTimeUtils.refreshMQTimeItem(messageList);
                 chatMsgAdapter.loadMoreMessage(messageList);
@@ -575,6 +580,8 @@ public class MQConversationActivity extends AppCompatActivity implements View.On
         controller.getMessagesFromDatabase(lastMessageCreateOn, MESSAGE_PAGE_COUNT, new OnGetMessageListCallBack() {
             @Override
             public void onSuccess(final List<BaseMessage> messageList) {
+                // 根据设置，过滤语音消息
+                cleanVoiceMessage(messageList);
                 //添加时间戳
                 MQTimeUtils.refreshMQTimeItem(messageList);
                 chatMsgAdapter.loadMoreMessage(messageList);
@@ -601,13 +608,28 @@ public class MQConversationActivity extends AppCompatActivity implements View.On
         if (currentAgent == null) {
             // Title 显示正在分配客服
             changeTitleToAllocatingAgent();
-            controller.setCurrentClientOnline(new OnClientOnlineCallback() {
+
+            // 从 intent 获取 clientId 和 customizedId
+            Intent intent = getIntent();
+            String clientId = null;
+            String customizedId = null;
+            if (intent != null) {
+                clientId = getIntent().getStringExtra(CLIENT_ID);
+                customizedId = getIntent().getStringExtra(CUSTOMIZED_ID);
+            }
+
+            // 上线
+            controller.setCurrentClientOnline(clientId, customizedId, new OnClientOnlineCallback() {
 
                 @Override
                 public void onSuccess(Agent agent, List<BaseMessage> conversationMessageList) {
                     setCurrentAgent(agent);
                     changeTitleToAgentName(agent);
                     removeLeaveMessageTip();
+
+                    // 根据设置，过滤语音消息
+                    cleanVoiceMessage(conversationMessageList);
+
                     //加载数据
                     chatMessageList.clear();
                     chatMessageList.addAll(conversationMessageList);
@@ -645,10 +667,8 @@ public class MQConversationActivity extends AppCompatActivity implements View.On
 
             @Override
             public void onSuccess(List<BaseMessage> messageList) {
-                // 过滤语音消息
-                if (!mqConfig.getShowVoiceMessage()) {
-                    cleanVoiceMessage(messageList);
-                }
+                // 根据设置，过滤语音消息
+                cleanVoiceMessage(messageList);
 
                 chatMessageList.addAll(messageList);
                 loadData();
@@ -959,14 +979,15 @@ public class MQConversationActivity extends AppCompatActivity implements View.On
      * @param messageList 消息列表
      */
     private void cleanVoiceMessage(List<BaseMessage> messageList) {
-//        if (!mqConfig.getShowVoiceMessage() && messageList.size() > 0) {
-//            for (int i = messageList.size() - 1; i >= 0; i--) {
-//                MCMessage message = messageList.get(i);
-//                if (MCMessage.TYPE_VOICE == message.getType()) {
-//                    messageList.remove(i);
-//                }
-//            }
-//        }
+        if (!mqConfig.getShowVoiceMessage() && messageList.size() > 0) {
+            Iterator<BaseMessage> baseMessageIterator = messageList.iterator();
+            while (baseMessageIterator.hasNext()) {
+                BaseMessage baseMessage = baseMessageIterator.next();
+                if (BaseMessage.TYPE_CONTENT_VOICE.equals(baseMessage.getContentType())) {
+                    baseMessageIterator.remove();
+                }
+            }
+        }
     }
 
     private class MessageReceiver extends com.meiqia.meiqiasdk.controller.MessageReceiver {
