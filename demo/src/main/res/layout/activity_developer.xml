@@ -1,226 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MQMatchMatch.Vertical">
 
-    <TextView
-        android:paddingTop="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:text="当前美洽 ID: "
-        android:textSize="18sp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:paddingTop="4dp"
-        android:paddingBottom="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textColor="@color/mq_colorPrimary"
-        android:id="@+id/current_id_tv"
-        android:text="ididididiididid"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <include layout="@layout/inc_line" />
-
-    <RelativeLayout
-        android:id="@+id/set_current_client_id_online_btn"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="center_vertical"
-        android:padding="16dp">
+    <LinearLayout
+        style="@style/MQMatchWrap.Horizontal"
+        android:background="@color/mq_colorPrimary"
+        android:padding="8dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="使用当前顾客 ID 上线" />
-
-        <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/ic_arrow_right" />
-
-    </RelativeLayout>
-
-    <include layout="@layout/inc_line" />
-
-    <RelativeLayout
-        android:id="@+id/set_meiqia_client_id_online_btn"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="center_vertical"
-        android:padding="16dp">
+            style="@style/MQWrapWrap"
+            android:text="当前美洽ID: "
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="输入美洽顾客 ID 进行上线" />
+            android:id="@+id/current_id_tv"
+            style="@style/MQMatchWrap"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            tools:text="ididididiididid" />
+    </LinearLayout>
 
-        <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/ic_arrow_right" />
+    <ScrollView style="@style/MQMatchMatch">
 
-    </RelativeLayout>
+        <LinearLayout
+            style="@style/MQMatchMatch.Vertical"
+            android:paddingBottom="16dp">
 
-    <include layout="@layout/inc_line" />
+            <Button
+                android:id="@+id/set_current_client_id_online_btn"
+                style="@style/DemoTv"
+                android:text="使用当前顾客 ID 上线" />
 
-    <RelativeLayout
-        android:id="@+id/set_customised_id_online_btn"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="center_vertical"
-        android:padding="16dp">
+            <Button
+                android:id="@+id/set_meiqia_client_id_online_btn"
+                style="@style/DemoTv"
+                android:text="输入美洽顾客 ID 进行上线" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="绑定用户 ID 并上线" />
+            <Button
+                android:id="@+id/set_customised_id_online_btn"
+                style="@style/DemoTv"
+                android:text="绑定用户 ID 并上线" />
 
-        <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/ic_arrow_right" />
+            <Button
+                android:id="@+id/get_new_meiqia_id_btn"
+                style="@style/DemoTv"
+                android:text="获取一个全新的美洽 ID" />
 
-    </RelativeLayout>
+            <Button
+                android:id="@+id/set_specified_agent_token_btn"
+                style="@style/DemoTv"
+                android:text="输入一个客服 ID 进行指定分配" />
 
-    <include layout="@layout/inc_line" />
+            <Button
+                android:id="@+id/set_specified_agent_group_token_btn"
+                style="@style/DemoTv"
+                android:text="输入一个客服组 ID 进行指定分配" />
 
-    <RelativeLayout
-        android:id="@+id/get_new_meiqia_id_btn"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="center_vertical"
-        android:padding="16dp">
+            <Button
+                android:id="@+id/set_client_info"
+                style="@style/DemoTv"
+                android:text="上传自定义信息" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="获取一个全新的美洽 ID" />
+            <Button
+                android:id="@+id/set_client_offline_btn"
+                style="@style/DemoTv"
+                android:text="设置当前顾客为离线状态" />
 
-        <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/ic_arrow_right" />
-
-    </RelativeLayout>
-
-    <include layout="@layout/inc_line" />
-
-    <RelativeLayout
-        android:id="@+id/set_specified_agent_token_btn"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="center_vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="输入一个客服 ID 进行指定分配" />
-
-        <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/ic_arrow_right" />
-
-    </RelativeLayout>
-
-    <include layout="@layout/inc_line" />
-
-    <RelativeLayout
-        android:id="@+id/set_specified_agent_group_token_btn"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="center_vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="输入一个客服组 ID 进行指定分配" />
-
-        <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/ic_arrow_right" />
-
-    </RelativeLayout>
-
-    <include layout="@layout/inc_line" />
-
-    <RelativeLayout
-        android:id="@+id/set_client_info"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="center_vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="上传自定义信息" />
-
-        <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/ic_arrow_right" />
-
-    </RelativeLayout>
-
-    <include layout="@layout/inc_line" />
-
-    <RelativeLayout
-        android:id="@+id/set_client_offline_btn"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="center_vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="设置当前顾客为离线状态" />
-
-        <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/ic_arrow_right" />
-
-    </RelativeLayout>
-
-    <include layout="@layout/inc_line" />
-
-    <RelativeLayout
-        android:id="@+id/end_conversation_btn"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="center_vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="结束当前对话" />
-
-        <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/ic_arrow_right" />
-
-    </RelativeLayout>
-
-    <include layout="@layout/inc_line" />
-
+            <Button
+                android:id="@+id/end_conversation_btn"
+                style="@style/DemoTv"
+                android:text="结束当前对话" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

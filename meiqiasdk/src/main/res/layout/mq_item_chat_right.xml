@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
+    style="@style/MQWrapWrap"
     android:padding="8dp">
 
     <RelativeLayout
         android:id="@+id/chat_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true" >
+        style="@style/MQWrapWrap"
+        android:layout_alignParentRight="true">
 
         <ProgressBar
             android:id="@+id/progress_bar"
@@ -24,8 +21,7 @@
 
         <TextView
             android:id="@+id/content_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MQWrapWrap"
             android:layout_toRightOf="@id/progress_bar"
             android:autoLink="web|email|phone"
             android:background="@drawable/mq_bg_msg_right"
@@ -38,41 +34,36 @@
 
         <RelativeLayout
             android:id="@+id/content_pic_rl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/mq_bg_msg_right"
+            style="@style/MQWrapWrap"
             android:layout_toRightOf="@id/progress_bar"
-            android:visibility="gone" >
+            android:background="@drawable/mq_bg_msg_right"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/content_pic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/MQWrapWrap"
                 android:focusable="true"
                 android:maxHeight="105dp"
                 android:maxWidth="105dp" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/MQWrapWrap"
                 android:layout_alignBottom="@+id/content_pic"
                 android:layout_alignLeft="@+id/content_pic"
                 android:layout_alignRight="@+id/content_pic"
                 android:layout_alignTop="@+id/content_pic"
-                android:visibility="gone"
-                android:background="@drawable/mq_bg_msg_image_cover_right" />
+                android:background="@drawable/mq_bg_msg_image_cover_right"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/content_voice_rl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/progress_bar" >
+            style="@style/MQWrapWrap"
+            android:layout_toRightOf="@id/progress_bar">
 
             <TextView
                 android:id="@+id/content_voice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/MQWrapWrap"
                 android:background="@drawable/mq_bg_msg_right"
                 android:gravity="center"
                 android:maxWidth="270dp"

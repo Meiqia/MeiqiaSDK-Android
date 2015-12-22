@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:background="@android:color/white"
-    android:layout_height="wrap_content">
+    style="@style/MQMatchWrap"
+    android:background="@android:color/white">
 
     <LinearLayout
         android:id="@+id/ll_edit_toolbar_emotion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        style="@style/MQMatchWrap.Vertical"
         android:visibility="gone"
         tools:background="#f00"
         tools:visibility="visible">
@@ -21,11 +18,9 @@
 
         <LinearLayout
             android:id="@+id/ll_edit_toolbar_indicator"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            style="@style/MQMatchWrap.Horizontal"
             android:gravity="center"
-            android:padding="5dp"
+            android:padding="8dp"
             tools:background="#00f" />
     </LinearLayout>
 

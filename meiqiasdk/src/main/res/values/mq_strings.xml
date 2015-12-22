@@ -28,4 +28,5 @@
     <string name="mq_cancel">取消</string>
     <string name="mq_runtime_permission_tip_title">咨询客服需要以下权限</string>
     <string name="mq_permission_denied_tip">您拒绝了咨询客服所需要的相关权限!</string>
+    <string name="mc_back">返回</string>
 </resources>

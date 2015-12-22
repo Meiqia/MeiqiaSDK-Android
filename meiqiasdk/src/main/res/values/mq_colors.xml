@@ -27,4 +27,5 @@
 
     <color name="mc_send_btn_text_color_pressed">#808080</color>
     <color name="mc_send_btn_text_color_nor">#595959</color>
+    <color name="mq_titlebar_textColor">@android:color/white</color>
 </resources>

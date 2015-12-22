@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    xmlns:emojicon="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    style="@style/MQWrapWrap"
     android:padding="8dp">
 
     <com.meiqia.meiqiasdk.widget.CircleImageView
@@ -14,15 +11,13 @@
 
     <RelativeLayout
         android:id="@+id/chat_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/MQWrapWrap"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/us_avatar_iv">
 
         <TextView
             android:id="@+id/content_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MQWrapWrap"
             android:autoLink="web|email|phone"
             android:background="@drawable/mq_bg_msg_left"
             android:maxWidth="260dp"
@@ -34,22 +29,19 @@
 
         <RelativeLayout
             android:id="@+id/content_pic_rl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MQWrapWrap"
             android:background="@drawable/mq_bg_msg_left"
             android:visibility="gone">
 
             <ImageView
                 android:id="@+id/content_pic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/MQWrapWrap"
                 android:focusable="true"
                 android:maxHeight="105dp"
                 android:maxWidth="105dp" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/MQWrapWrap"
                 android:layout_alignBottom="@+id/content_pic"
                 android:layout_alignLeft="@+id/content_pic"
                 android:layout_alignRight="@+id/content_pic"
@@ -60,14 +52,12 @@
 
         <RelativeLayout
             android:id="@+id/content_voice_rl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MQWrapWrap"
             android:visibility="gone">
 
             <TextView
                 android:id="@+id/content_voice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/MQWrapWrap"
                 android:background="@drawable/mq_bg_msg_left"
                 android:gravity="center"
                 android:maxWidth="270dp"

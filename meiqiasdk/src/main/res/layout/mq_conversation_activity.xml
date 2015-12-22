@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    style="@style/MQMatchMatch"
     android:background="@color/mc_bg_color"
     android:clickable="true"
     android:focusable="true"
@@ -31,8 +29,7 @@
                 android:src="@drawable/mq_ic_back" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/MQWrapWrap"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/back_iv"
                 android:text="返回"
@@ -42,8 +39,7 @@
 
         <TextView
             android:id="@+id/title_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/MQWrapWrap"
             android:layout_centerHorizontal="true"
             android:layout_centerInParent="true"
             android:gravity="center_vertical|center_horizontal"
@@ -55,21 +51,18 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        style="@style/MQMatchMatch"
         android:layout_above="@+id/chat_foot_ll"
         android:layout_below="@id/title_rl"
         android:background="@color/mc_normal_text_white">
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            style="@style/MQMatchMatch">
 
             <ListView
                 android:id="@+id/messages_lv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                style="@style/MQMatchMatch"
                 android:layout_below="@+id/title_tip_tv"
                 android:background="@color/mc_normal_text_white"
                 android:cacheColorHint="#00000000"
@@ -82,21 +75,17 @@
 
     <LinearLayout
         android:id="@+id/chat_foot_ll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        style="@style/MQMatchWrap.Vertical"
+        android:layout_alignParentBottom="true">
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/MQMatchWrap"
             android:background="@drawable/mq_bg_input_box"
             android:minHeight="@dimen/mc_chat_box_height">
 
             <EditText
                 android:id="@+id/input_et"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/MQMatchWrap"
                 android:layout_centerVertical="true"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="5dp"
@@ -206,8 +195,7 @@
 
         <com.meiqia.meiqiasdk.widget.MQEditToolbar
             android:id="@+id/editToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            style="@style/MQMatchWrap" />
     </LinearLayout>
 
     <ProgressBar
@@ -218,4 +206,3 @@
         android:indeterminateDrawable="@anim/mq_loading" />
 
 </RelativeLayout>
-

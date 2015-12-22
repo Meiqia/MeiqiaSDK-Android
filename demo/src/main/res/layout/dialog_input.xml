@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp"
-    android:orientation="vertical">
+    style="@style/MQMatchMatch.Vertical"
+    android:padding="16dp">
 
     <EditText
         android:id="@+id/input_et"
-        android:layout_marginTop="32dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        style="@style/MQMatchWrap"
+        android:layout_marginTop="32dp" />
 
     <TextView
         android:id="@+id/confirm_tv"
-        android:layout_marginTop="8dp"
+        style="@style/MQWrapWrap"
         android:layout_gravity="right"
-        android:textSize="14sp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="16dp"
         android:text="确定"
-        android:layout_marginRight="4dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:textSize="16sp" />
 
 </LinearLayout>

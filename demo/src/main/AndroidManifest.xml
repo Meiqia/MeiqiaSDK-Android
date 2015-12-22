@@ -20,7 +20,8 @@
 
         <activity
             android:name=".DeveloperActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
     </application>
 
 </manifest>
