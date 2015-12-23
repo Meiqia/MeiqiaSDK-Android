@@ -28,13 +28,11 @@ def getWebsiteUrl() {
 task androidJavadocs(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    options {
-        encoding "UTF-8"
-        links "http://docs.oracle.com/javase/7/docs/api/"
-        linksOffline "http://d.android.com/reference", "${android.sdkDirectory}/docs/reference"
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.encoding = "UTF-8"
+        }
     }
-    exclude '**/BuildConfig.java'
-    exclude '**/R.java'
 }
 
 task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
@@ -49,7 +47,7 @@ task androidSourcesJar(type: Jar) {
 
 artifacts {
     archives androidSourcesJar
-    archives androidJavadocsJar
+//    archives androidJavadocsJar
     "${project.buildDir}/outputs/aar/${project.name}-release.aar"
 }
 
