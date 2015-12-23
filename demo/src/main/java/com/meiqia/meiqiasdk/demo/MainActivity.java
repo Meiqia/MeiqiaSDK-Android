@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
      * @param v
      */
     public void developer(View v) {
-        startActivity(new Intent(MainActivity.this, DeveloperActivity.class));
+        startActivity(new Intent(MainActivity.this, ApiSampleActivity.class));
     }
 
 }
