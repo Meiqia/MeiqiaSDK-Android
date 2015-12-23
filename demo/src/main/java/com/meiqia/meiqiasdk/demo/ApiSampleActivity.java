@@ -28,7 +28,7 @@ import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DeveloperActivity extends AppCompatActivity implements View.OnClickListener {
+public class ApiSampleActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView currentIdTv;
     private View setCurrentIdOnlineBtn;
@@ -84,17 +84,19 @@ public class DeveloperActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
+            // 使用当前顾客上线
             case R.id.set_current_client_id_online_btn:
                 MQConversationActivity.registerController(new ControllerImpl(this));
-                Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class);
+                Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
                 startActivity(intent);
                 break;
+            // 使用指定 美洽顾客id 上线
             case R.id.set_meiqia_client_id_online_btn:
                 showDialog("输入美洽 ID", new EditDialogOnClickListener() {
                     @Override
                     public void onInput(String clientId) {
                         if (!TextUtils.isEmpty(clientId)) {
-                            Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class);
+                            Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
                             intent.putExtra(MQConversationActivity.CLIENT_ID,clientId);
                             startActivity(intent);
                             updateId();
@@ -102,12 +104,13 @@ public class DeveloperActivity extends AppCompatActivity implements View.OnClick
                     }
                 });
                 break;
+            // 使用 开发者用户id 上线
             case R.id.set_customised_id_online_btn:
-                showDialog("输入用户 ID", new EditDialogOnClickListener() {
+                showDialog("输入开发者用户 ID", new EditDialogOnClickListener() {
                     @Override
                     public void onInput(String customizedId) {
                         if (!TextUtils.isEmpty(customizedId)) {
-                            Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class);
+                            Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
                             intent.putExtra(MQConversationActivity.CUSTOMIZED_ID,customizedId);
                             startActivity(intent);
                             updateId();
@@ -115,7 +118,7 @@ public class DeveloperActivity extends AppCompatActivity implements View.OnClick
                     }
                 });
                 break;
-            //获取一个新的美洽 ID
+            // 获取一个新的美洽 ID
             case R.id.get_new_meiqia_id_btn:
                 MQManager.getInstance(this).createMQClient(new OnGetMQClientIdCallBackOn() {
                     @Override
@@ -123,10 +126,10 @@ public class DeveloperActivity extends AppCompatActivity implements View.OnClick
                         toast("成功复制到剪贴板 :\n" + mqClientId);
                         if (!TextUtils.isEmpty(mqClientId)) {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                                android.content.ClipboardManager mClipboard = (android.content.ClipboardManager) DeveloperActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
+                                android.content.ClipboardManager mClipboard = (android.content.ClipboardManager) ApiSampleActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
                                 mClipboard.setPrimaryClip(ClipData.newPlainText("mq_content", mqClientId));
                             } else {
-                                ClipboardManager mClipboard = (ClipboardManager) DeveloperActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipboardManager mClipboard = (ClipboardManager) ApiSampleActivity.this.getSystemService(Context.CLIPBOARD_SERVICE);
                                 mClipboard.setText(mqClientId);
                             }
                         }
@@ -138,34 +141,34 @@ public class DeveloperActivity extends AppCompatActivity implements View.OnClick
                     }
                 });
                 break;
-            //指定客服分配上线
+            // 指定客服分配上线
             case R.id.set_specified_agent_token_btn:
                 showDialog("输入指定客服 ID", new EditDialogOnClickListener() {
                     @Override
                     public void onInput(String agentId) {
                         if (!TextUtils.isEmpty(agentId)) {
-                            MQManager.getInstance(DeveloperActivity.this).setScheduledAgentOrGroupWithId(agentId, "");
-                            Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class);
+                            MQManager.getInstance(ApiSampleActivity.this).setScheduledAgentOrGroupWithId(agentId, "");
+                            Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
                             startActivity(intent);
                             updateId();
                         }
                     }
                 });
                 break;
-            //指定客服分组分配上线
+            // 指定客服分组分配上线
             case R.id.set_specified_agent_group_token_btn:
                 showDialog("输入指定分组 ID", new EditDialogOnClickListener() {
                     @Override
                     public void onInput(String groupId) {
                         if (!TextUtils.isEmpty(groupId)) {
-                            MQManager.getInstance(DeveloperActivity.this).setScheduledAgentOrGroupWithId("", groupId);
-                            Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class);
+                            MQManager.getInstance(ApiSampleActivity.this).setScheduledAgentOrGroupWithId("", groupId);
+                            Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
                             startActivity(intent);
                         }
                     }
                 });
                 break;
-            //上传自定义信息
+            // 上传自定义信息
             case R.id.set_client_info:
                 final Map<String, String> info = new HashMap<>();
                 info.put("name", "富坚义博");
@@ -188,7 +191,7 @@ public class DeveloperActivity extends AppCompatActivity implements View.OnClick
                 dialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        MQManager.getInstance(DeveloperActivity.this).setClientInfo(info, new OnClientInfoCallback() {
+                        MQManager.getInstance(ApiSampleActivity.this).setClientInfo(info, new OnClientInfoCallback() {
                             @Override
                             public void onSuccess() {
                                 toast("set client info success");
@@ -203,11 +206,11 @@ public class DeveloperActivity extends AppCompatActivity implements View.OnClick
                 });
                 dialog.show();
                 break;
-            //设置顾客离线
+            // 设置顾客离线
             case R.id.set_client_offline_btn:
                 MQManager.getInstance(this).setClientOffline();
                 break;
-            //结束当前对话
+            // 结束当前对话
             case R.id.end_conversation_btn:
                 MQManager.getInstance(this).endCurrentConversation(new OnEndConversationCallback() {
                     @Override
@@ -229,7 +232,7 @@ public class DeveloperActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void toast(String content) {
-        Toast.makeText(DeveloperActivity.this, content, Toast.LENGTH_LONG).show();
+        Toast.makeText(ApiSampleActivity.this, content, Toast.LENGTH_LONG).show();
     }
 
     private void showDialog(String title, final EditDialogOnClickListener editDialogOnClickListener) {
