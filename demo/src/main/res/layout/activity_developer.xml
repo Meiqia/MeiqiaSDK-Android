@@ -5,7 +5,7 @@
 
     <LinearLayout
         style="@style/MQMatchWrap.Horizontal"
-        android:background="@color/mq_colorPrimary"
+        android:background="#17c7d1"
         android:padding="8dp">
 
         <TextView

@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="mq_colorPrimaryDark">@android:color/black</color>
-    <color name="mq_colorPrimary">#17c7d1</color>
-    <color name="mq_navigationBarColor">@android:color/black</color>
-    <color name="mq_colorAccent">#17c7d1</color>
-    <color name="mq_windowBackground">@android:color/white</color>
-
 
     <color name="mq_url_foreground">#0f5a87</color>
 
