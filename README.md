@@ -1,6 +1,9 @@
 # 美洽移动应用 SDK 3.0 for Android 开发文档
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.meiqia/meiqiasdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.meiqia/meiqiasdk)
+
 ## 目录
+* [SDK 工作流程](#sdk-工作流程)
 * [集成美洽 SDK](#集成美洽-sdk)
 * [使用美洽](#使用美洽)
 * [API 接口介绍](#api-接口介绍)
@@ -9,17 +12,28 @@
 ## ScreenShot
 ![美恰SDKDemo](https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/7b75f3de0b949201)
 
+## SDK 工作流程
+
+美洽 SDK 的工作流程如下图所示：
+
+![流程图](https://camo.githubusercontent.com/348661458384df0b282af9d4c5d06101c5e8d4ae/68747470733a2f2f73332e636e2d6e6f7274682d312e616d617a6f6e6177732e636f6d2e636e2f706963732e6d65697169612e6275636b65742f64643430313336306261633364346162)
+
 ## 集成美洽 SDK
 ### AndroidStudio
 
 ```groovy
-dependencies {
-    compile project(':meiqiasdk')
-}
+// required
+compile 'com.meiqia:meiqiasdk:3.0.0@aar'
+
+// 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
+compile 'com.squareup.okhttp:okhttp:2.7.0'
+compile 'org.java-websocket:Java-WebSocket:1.3.0'
+compile 'com.commit451:PhotoView:1.2.4'
+compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 ```
 
 ### Eclipse
->TODO
+![GoHome](https://camo.githubusercontent.com/8caa3693b4268c095c001089313d687f647d551a/687474703a2f2f696d67322e77696b69612e6e6f636f6f6b69652e6e65742f5f5f636232303133303831393134323932382f6361726466696768742f696d616765732f7468756d622f352f35352f476f2d686f6d652d796f7572652d6472756e6b2e6a70672f35303070782d476f2d686f6d652d796f7572652d6472756e6b2e6a7067)
 
 ## 使用美洽
 
