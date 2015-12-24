@@ -1,5 +1,6 @@
 package com.meiqia.meiqiasdk.demo;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,7 +8,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -28,7 +28,7 @@ import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ApiSampleActivity extends AppCompatActivity implements View.OnClickListener {
+public class ApiSampleActivity extends Activity implements View.OnClickListener {
 
     private TextView currentIdTv;
     private View setCurrentIdOnlineBtn;

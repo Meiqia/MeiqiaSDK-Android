@@ -13,13 +13,8 @@
         <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
     </style>
 
-    <style name="MQBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/mq_colorPrimary</item>
-        <item name="android:windowBackground">@color/mq_windowBackground</item>
-        <item name="colorAccent">@color/mq_colorAccent</item>
+    <style name="MQTheme" parent="@android:style/Theme.Light.NoTitleBar">
     </style>
-
-    <style name="MQTheme" parent="MQBaseTheme" />
 
     <style name="MQWrapMatch">
         <item name="android:layout_width">wrap_content</item>
