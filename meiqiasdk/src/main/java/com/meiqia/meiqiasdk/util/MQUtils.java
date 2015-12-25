@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
@@ -14,7 +13,6 @@ import android.os.Handler;
 import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -26,6 +24,7 @@ import android.widget.Toast;
 import com.meiqia.core.bean.MQAgent;
 import com.meiqia.core.bean.MQMessage;
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.dialog.MQConfirmDialog;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
@@ -313,7 +312,7 @@ public class MQUtils {
      * @param delegate
      * @param permissionArr
      */
-    public static void requestPermission(final Activity activity, final int requestCode, final Delegate delegate, String... permissionArr) {
+    public static void requestPermission(final Activity activity, final int requestCode, String msg, final Delegate delegate, String... permissionArr) {
         List<String> permissionsNeeded = new ArrayList<>();
         final List<String> permissionsList = new ArrayList<>();
 
@@ -325,27 +324,17 @@ public class MQUtils {
 
         if (permissionsList.size() > 0) {
             if (permissionsNeeded.size() > 0) {
-                StringBuilder messageSb = new StringBuilder(permissionsNeeded.get(0));
-                for (int i = 1; i < permissionsNeeded.size(); i++) {
-                    messageSb.append("\n").append(permissionsNeeded.get(i));
-                }
-                new AlertDialog.Builder(activity)
-                        .setTitle(R.string.mq_runtime_permission_tip_title)
-                        .setMessage(messageSb.toString())
-                        .setPositiveButton(R.string.mq_confirm, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions(activity, permissionsList.toArray(new String[permissionsList.size()]), requestCode);
-                            }
-                        })
-                        .setNegativeButton(R.string.mq_cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                delegate.onPermissionDenied();
-                            }
-                        })
-                        .create()
-                        .show();
+                new MQConfirmDialog(activity, activity.getString(R.string.mq_runtime_permission_tip_title), msg, new MQConfirmDialog.Delegate() {
+                    @Override
+                    public void onClickConfirm() {
+                        ActivityCompat.requestPermissions(activity, permissionsList.toArray(new String[permissionsList.size()]), requestCode);
+                    }
+
+                    @Override
+                    public void onClickCancel() {
+                        delegate.onPermissionDenied();
+                    }
+                }).show();
                 return;
             }
             ActivityCompat.requestPermissions(activity, permissionsList.toArray(new String[permissionsList.size()]), requestCode);

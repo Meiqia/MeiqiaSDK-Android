@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="MQViewPhotoDialog">
+    <style name="MQDialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -10,11 +10,9 @@
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowIsFloating">true</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
     </style>
 
-    <style name="MQTheme" parent="@android:style/Theme.Light.NoTitleBar">
-    </style>
+    <style name="MQTheme" parent="@android:style/Theme.Light.NoTitleBar"></style>
 
     <style name="MQWrapMatch">
         <item name="android:layout_width">wrap_content</item>
@@ -123,4 +121,39 @@
     <style name="MQAutoWrap.Horizontal">
         <item name="android:orientation">horizontal</item>
     </style>
+
+    <style name="MQHLine">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/mq_item_pressed</item>
+    </style>
+
+    <style name="MQVLine">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/mq_item_pressed</item>
+    </style>
+
+    <style name="MQClickableItem" parent="MQMatchWrap">
+        <item name="android:clickable">true</item>
+        <item name="android:paddingLeft">@dimen/mq_size_level4</item>
+        <item name="android:paddingRight">@dimen/mq_size_level4</item>
+        <item name="android:paddingTop">@dimen/mq_size_level3</item>
+        <item name="android:paddingBottom">@dimen/mq_size_level3</item>
+        <item name="android:textSize">@dimen/mq_textSize_level2</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="MQClickableItem.Top">
+        <item name="android:background">@drawable/mq_selector_item_top</item>
+    </style>
+
+    <style name="MQClickableItem.Center">
+        <item name="android:background">@drawable/mq_selector_item_center</item>
+    </style>
+
+    <style name="MQClickableItem.Bottom">
+        <item name="android:background">@drawable/mq_selector_item_bottom</item>
+    </style>
+
 </resources>

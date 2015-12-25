@@ -2,10 +2,8 @@ package com.meiqia.meiqiasdk.activity;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -17,7 +15,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -44,6 +41,7 @@ import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
 import com.meiqia.meiqiasdk.controller.MediaRecordFunc;
+import com.meiqia.meiqiasdk.dialog.MQChoosePicDialog;
 import com.meiqia.meiqiasdk.dialog.MQViewPhotoDialog;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.AgentChangeMessage;
@@ -73,8 +71,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     public static final String CLIENT_ID = "clientId";
     public static final String CUSTOMIZED_ID = "customizedId";
 
-    private static final int REQUEST_CODE_CAMERA = 0;
-    private static final int REQUEST_CODE_PHOTO = 1;
+    public static final int REQUEST_CODE_CAMERA = 0;
+    public static final int REQUEST_CODE_PHOTO = 1;
     private static final int REQUEST_CODE_PERMISSIONS = 2;
     private static int MESSAGE_PAGE_COUNT = 30; //消息每页加载数量
     private static final long MIN_RECORD_INTERNAL_TIME = 800;
@@ -123,6 +121,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     private MQEditToolbar mEditToolbar;
     private MQViewPhotoDialog mMQViewPhotoDialog;
+    private MQChoosePicDialog mMQChoosePicDialog;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -698,16 +697,17 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     @Override
     public void onClick(View arg0) {
         int id = arg0.getId();
-        // 返回按钮
         if (id == R.id.back_rl) {
+            // 返回按钮
+
             onBackPressed();
-        }
-        // 表情按钮
-        else if (id == R.id.emoji_select_btn) {
+        } else if (id == R.id.emoji_select_btn) {
+            // 表情按钮
+
             mEditToolbar.toggleKeyboard();
-        }
-        // 发送按钮
-        else if (id == R.id.voice_or_send_tv) {
+        } else if (id == R.id.voice_or_send_tv) {
+            // 发送按钮
+
             if (!hasLoadData) {
                 Toast.makeText(this, R.string.mq_data_is_loading, Toast.LENGTH_SHORT).show();
                 return;
@@ -723,55 +723,28 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 changeInputStateToTextOrVoice();
                 mEditToolbar.changeToOriginalKeyboard();
             }
+        } else if (id == R.id.photo_select_btn) {
+            // 选择图片按钮
 
+            showChoosePicDialog();
         }
-        // 选择图片按钮
-        else if (id == R.id.photo_select_btn) {
+    }
 
-            if (!hasLoadData) {
-                Toast.makeText(this, R.string.mq_data_is_loading, Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            MQUtils.closeKeyboard(MQConversationActivity.this);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            final String[] choice = {getString(R.string.mq_dialog_select_camera), getString(R.string.mq_dialog_select_photo)};
-            builder.setItems(choice, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        // 相机
-                        case 0:
-                            Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            File file = new File(MQUtils.getPicStorePath(MQConversationActivity.this));
-                            file.mkdirs();
-                            String path = MQUtils.getPicStorePath(MQConversationActivity.this) + "/" + System.currentTimeMillis() + ".jpg";
-                            File imageFile = new File(path);
-                            camera.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageFile));
-                            cameraPicPath = path;
-                            try {
-                                startActivityForResult(camera, REQUEST_CODE_CAMERA);
-                            } catch (Exception e) {
-                                Toast.makeText(MQConversationActivity.this, R.string.mq_photo_not_support, Toast.LENGTH_SHORT).show();
-                            }
-                            break;
-                        // 图库
-                        case 1:
-                            Intent picture = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                            try {
-                                startActivityForResult(picture, REQUEST_CODE_PHOTO);
-                            } catch (Exception e) {
-                                Toast.makeText(MQConversationActivity.this, R.string.mq_photo_not_support, Toast.LENGTH_SHORT).show();
-                            }
-                            break;
-                    }
-                }
-            });
-            AlertDialog alertDialog = builder.create();
-            alertDialog.setTitle(getString(R.string.mq_dialog_select_title));
-            alertDialog.show();
+    /**
+     * 显示选择图片对话框
+     */
+    private void showChoosePicDialog() {
+        if (!hasLoadData) {
+            Toast.makeText(this, R.string.mq_data_is_loading, Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        MQUtils.closeKeyboard(MQConversationActivity.this);
+
+        if (mMQChoosePicDialog == null) {
+            mMQChoosePicDialog = new MQChoosePicDialog(this);
+        }
+        mMQChoosePicDialog.show();
     }
 
     /**
@@ -818,22 +791,15 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         }
     }
 
-    private String cameraPicPath;
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         // 从 相机 获取的图片
         if (requestCode == REQUEST_CODE_CAMERA && resultCode == Activity.RESULT_OK) {
-            String sdState = Environment.getExternalStorageState();
-            if (!sdState.equals(Environment.MEDIA_MOUNTED)) {
-                return;
-            }
-            String path = cameraPicPath;
-            File imageFile = new File(path);
-            if (imageFile.exists()) {
-                createAndSendImageMessage(imageFile);
+            File cameraPicFile = mMQChoosePicDialog.getCameraPicFile();
+            if (cameraPicFile != null) {
+                createAndSendImageMessage(cameraPicFile);
             }
         }
 
@@ -1103,7 +1069,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     @Override
     protected void onStart() {
         super.onStart();
-        MQUtils.requestPermission(this, REQUEST_CODE_PERMISSIONS, new MQUtils.Delegate() {
+        MQUtils.requestPermission(this, REQUEST_CODE_PERMISSIONS, getString(R.string.mq_runtime_permission_tip_content), new MQUtils.Delegate() {
             @Override
             public void onPermissionGranted() {
             }
@@ -1111,6 +1077,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             @Override
             public void onPermissionDenied() {
                 MQUtils.show(MQConversationActivity.this, R.string.mq_permission_denied_tip);
+                finish();
             }
         }, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_PHONE_STATE);
     }

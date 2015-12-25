@@ -4,7 +4,7 @@
     <string name="mq_title_net_not_work">网络加载失败</string>
     <string name="mq_copy_success">复制成功</string>
     <string name="mq_dialog_select_camera">相机</string>
-    <string name="mq_dialog_select_photo">图库</string>
+    <string name="mq_dialog_select_gallery">图库</string>
     <string name="mq_dialog_select_title">请选择图片来源：</string>
     <string name="mq_title_leave_msg">留言</string>
     <string name="mq_title_unknown_error">未知错误</string>
@@ -27,6 +27,7 @@
     <string name="mq_confirm">确定</string>
     <string name="mq_cancel">取消</string>
     <string name="mq_runtime_permission_tip_title">咨询客服需要以下权限</string>
+    <string name="mq_runtime_permission_tip_content">1.访问设备上的照片\n2.录制音频</string>
     <string name="mq_permission_denied_tip">您拒绝了咨询客服所需要的相关权限!</string>
     <string name="mq_back">返回</string>
 </resources>

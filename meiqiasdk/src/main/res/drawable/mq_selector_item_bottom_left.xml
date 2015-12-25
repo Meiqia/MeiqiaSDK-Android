@@ -2,12 +2,14 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <solid android:color="#efefef" />
+            <solid android:color="@color/mq_item_pressed" />
+            <corners android:bottomLeftRadius="@dimen/mq_size_level1" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@android:color/white" />
+            <solid android:color="@color/mq_item_normal" />
+            <corners android:bottomLeftRadius="@dimen/mq_size_level1" />
         </shape>
     </item>
 </selector>
