@@ -324,7 +324,7 @@ public class MQUtils {
 
         if (permissionsList.size() > 0) {
             if (permissionsNeeded.size() > 0) {
-                new MQConfirmDialog(activity, activity.getString(R.string.mq_runtime_permission_tip_title), msg, new MQConfirmDialog.Delegate() {
+                new MQConfirmDialog(activity, activity.getString(R.string.mq_runtime_permission_tip_title), msg, new MQConfirmDialog.OnDialogCallback() {
                     @Override
                     public void onClickConfirm() {
                         ActivityCompat.requestPermissions(activity, permissionsList.toArray(new String[permissionsList.size()]), requestCode);
