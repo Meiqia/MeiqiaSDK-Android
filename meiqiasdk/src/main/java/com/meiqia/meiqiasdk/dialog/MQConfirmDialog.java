@@ -13,13 +13,13 @@ import com.meiqia.meiqiasdk.R;
 public class MQConfirmDialog extends Dialog implements View.OnClickListener {
     private TextView mTitleTv;
     private TextView mContentTv;
-    private Delegate mDelegate;
+    private OnDialogCallback mOnDialogCallback;
 
-    public MQConfirmDialog(Activity activity, @StringRes int titleResId, @StringRes int contentResId, Delegate delegate) {
-        this(activity, activity.getString(titleResId), activity.getString(contentResId), delegate);
+    public MQConfirmDialog(Activity activity, @StringRes int titleResId, @StringRes int contentResId, OnDialogCallback onDialogCallback) {
+        this(activity, activity.getString(titleResId), activity.getString(contentResId), onDialogCallback);
     }
 
-    public MQConfirmDialog(Activity activity, String title, String content, Delegate delegate) {
+    public MQConfirmDialog(Activity activity, String title, String content, OnDialogCallback onDialogCallback) {
         super(activity, R.style.MQDialog);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         setContentView(R.layout.mq_dialog_confirm);
@@ -32,13 +32,13 @@ public class MQConfirmDialog extends Dialog implements View.OnClickListener {
         setOnCancelListener(new OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                mDelegate.onClickCancel();
+                mOnDialogCallback.onClickCancel();
             }
         });
         setCanceledOnTouchOutside(true);
         setCancelable(true);
 
-        mDelegate = delegate;
+        mOnDialogCallback = onDialogCallback;
         mTitleTv.setText(title);
         mContentTv.setText(content);
     }
@@ -47,9 +47,9 @@ public class MQConfirmDialog extends Dialog implements View.OnClickListener {
     public void onClick(View v) {
         dismiss();
         if (v.getId() == R.id.tv_confirm_cancel) {
-            mDelegate.onClickCancel();
+            mOnDialogCallback.onClickCancel();
         } else if (v.getId() == R.id.tv_confirm_confirm) {
-            mDelegate.onClickConfirm();
+            mOnDialogCallback.onClickConfirm();
         }
     }
 
@@ -69,7 +69,7 @@ public class MQConfirmDialog extends Dialog implements View.OnClickListener {
         mContentTv.setText(contentResId);
     }
 
-    public interface Delegate {
+    public interface OnDialogCallback {
         void onClickConfirm();
 
         void onClickCancel();
