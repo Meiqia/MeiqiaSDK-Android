@@ -1069,7 +1069,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     @Override
     protected void onStart() {
         super.onStart();
-        MQUtils.requestPermission(this, REQUEST_CODE_PERMISSIONS, new MQUtils.Delegate() {
+        MQUtils.requestPermission(this, REQUEST_CODE_PERMISSIONS, getString(R.string.mq_runtime_permission_tip_content), new MQUtils.Delegate() {
             @Override
             public void onPermissionGranted() {
             }
@@ -1077,6 +1077,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             @Override
             public void onPermissionDenied() {
                 MQUtils.show(MQConversationActivity.this, R.string.mq_permission_denied_tip);
+                finish();
             }
         }, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_PHONE_STATE);
     }

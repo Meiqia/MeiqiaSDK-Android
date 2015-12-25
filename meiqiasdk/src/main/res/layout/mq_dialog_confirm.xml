@@ -9,7 +9,6 @@
     <TextView
         android:id="@+id/tv_comfirm_title"
         style="@style/MQMatchWrap"
-        android:gravity="center"
         android:padding="@dimen/mq_size_level4"
         android:textColor="@android:color/black"
         android:textSize="@dimen/mq_textSize_level2"
@@ -19,7 +18,6 @@
     <TextView
         android:id="@+id/tv_comfirm_content"
         style="@style/MQMatchWrap"
-        android:gravity="center"
         android:paddingBottom="@dimen/mq_size_level4"
         android:paddingLeft="@dimen/mq_size_level4"
         android:paddingRight="@dimen/mq_size_level4"
@@ -35,6 +33,7 @@
             android:id="@+id/tv_confirm_cancel"
             style="@style/MQAutoWrap"
             android:background="@drawable/mq_selector_item_bottom_left"
+            android:clickable="true"
             android:gravity="center"
             android:padding="@dimen/mq_size_level3"
             android:text="@string/mq_cancel"
@@ -47,6 +46,7 @@
             android:id="@+id/tv_confirm_confirm"
             style="@style/MQAutoWrap"
             android:background="@drawable/mq_selector_item_bottom_right"
+            android:clickable="true"
             android:gravity="center"
             android:padding="@dimen/mq_size_level3"
             android:text="@string/mq_confirm"

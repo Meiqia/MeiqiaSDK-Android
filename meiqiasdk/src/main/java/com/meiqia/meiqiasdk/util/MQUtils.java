@@ -312,7 +312,7 @@ public class MQUtils {
      * @param delegate
      * @param permissionArr
      */
-    public static void requestPermission(final Activity activity, final int requestCode, final Delegate delegate, String... permissionArr) {
+    public static void requestPermission(final Activity activity, final int requestCode, String msg, final Delegate delegate, String... permissionArr) {
         List<String> permissionsNeeded = new ArrayList<>();
         final List<String> permissionsList = new ArrayList<>();
 
@@ -324,11 +324,7 @@ public class MQUtils {
 
         if (permissionsList.size() > 0) {
             if (permissionsNeeded.size() > 0) {
-                StringBuilder messageSb = new StringBuilder(permissionsNeeded.get(0));
-                for (int i = 1; i < permissionsNeeded.size(); i++) {
-                    messageSb.append("\n").append(permissionsNeeded.get(i));
-                }
-                new MQConfirmDialog(activity, activity.getString(R.string.mq_runtime_permission_tip_title), messageSb.toString(), new MQConfirmDialog.Delegate() {
+                new MQConfirmDialog(activity, activity.getString(R.string.mq_runtime_permission_tip_title), msg, new MQConfirmDialog.Delegate() {
                     @Override
                     public void onClickConfirm() {
                         ActivityCompat.requestPermissions(activity, permissionsList.toArray(new String[permissionsList.size()]), requestCode);

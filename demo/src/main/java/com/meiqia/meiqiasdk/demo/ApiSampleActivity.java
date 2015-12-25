@@ -2,6 +2,7 @@ package com.meiqia.meiqiasdk.demo;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,9 +12,6 @@ import android.os.Bundle;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +22,7 @@ import com.meiqia.core.callback.OnEndConversationCallback;
 import com.meiqia.core.callback.OnGetMQClientIdCallBackOn;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
+import com.meiqia.meiqiasdk.util.MQUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -97,7 +96,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                     public void onInput(String clientId) {
                         if (!TextUtils.isEmpty(clientId)) {
                             Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
-                            intent.putExtra(MQConversationActivity.CLIENT_ID,clientId);
+                            intent.putExtra(MQConversationActivity.CLIENT_ID, clientId);
                             startActivity(intent);
                             updateId();
                         }
@@ -111,7 +110,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                     public void onInput(String customizedId) {
                         if (!TextUtils.isEmpty(customizedId)) {
                             Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
-                            intent.putExtra(MQConversationActivity.CUSTOMIZED_ID,customizedId);
+                            intent.putExtra(MQConversationActivity.CUSTOMIZED_ID, customizedId);
                             startActivity(intent);
                             updateId();
                         }
@@ -236,28 +235,22 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
     }
 
     private void showDialog(String title, final EditDialogOnClickListener editDialogOnClickListener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(title);
-        final AlertDialog dialog = builder.create();
-        dialog.setTitle(title);
-        View view = getLayoutInflater().inflate(R.layout.dialog_input, null);
-        final EditText editText = (EditText) view.findViewById(R.id.input_et);
-        View confirmTv = view.findViewById(R.id.confirm_tv);
-        confirmTv.setOnClickListener(new View.OnClickListener() {
+        final Dialog inputDialog = new Dialog(this, R.style.MQDialog);
+        inputDialog.setCancelable(true);
+        inputDialog.setContentView(R.layout.dialog_input);
+        TextView titleTv = (TextView) inputDialog.findViewById(R.id.tv_input_title);
+        titleTv.setText(title);
+        final EditText valueEt = (EditText) inputDialog.findViewById(R.id.et_input_value);
+        inputDialog.findViewById(R.id.tv_input_confirm).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editDialogOnClickListener.onInput(editText.getText().toString());
-                dialog.dismiss();
+                MQUtils.closeKeyboard(inputDialog);
+                inputDialog.dismiss();
+                editDialogOnClickListener.onInput(valueEt.getText().toString());
             }
         });
-
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.show();
-        dialog.addContentView(view, layoutParams);
-        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        InputMethodManager mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        mInputMethodManager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+        inputDialog.show();
+        MQUtils.openKeyboard(this, valueEt);
     }
 
     public interface EditDialogOnClickListener {
