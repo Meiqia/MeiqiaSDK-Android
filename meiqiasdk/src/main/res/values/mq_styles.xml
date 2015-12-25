@@ -128,6 +128,12 @@
         <item name="android:background">@color/mq_item_pressed</item>
     </style>
 
+    <style name="MQVLine">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/mq_item_pressed</item>
+    </style>
+
     <style name="MQClickableItem" parent="MQMatchWrap">
         <item name="android:clickable">true</item>
         <item name="android:paddingLeft">@dimen/mq_size_level4</item>
@@ -135,6 +141,7 @@
         <item name="android:paddingTop">@dimen/mq_size_level3</item>
         <item name="android:paddingBottom">@dimen/mq_size_level3</item>
         <item name="android:textSize">@dimen/mq_textSize_level2</item>
+        <item name="android:textColor">@android:color/black</item>
     </style>
 
     <style name="MQClickableItem.Top">

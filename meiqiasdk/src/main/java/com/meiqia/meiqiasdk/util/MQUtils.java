@@ -1,12 +1,10 @@
 package com.meiqia.meiqiasdk.util;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
@@ -26,6 +24,7 @@ import android.widget.Toast;
 import com.meiqia.core.bean.MQAgent;
 import com.meiqia.core.bean.MQMessage;
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.dialog.MQConfirmDialog;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
@@ -329,23 +328,17 @@ public class MQUtils {
                 for (int i = 1; i < permissionsNeeded.size(); i++) {
                     messageSb.append("\n").append(permissionsNeeded.get(i));
                 }
-                new AlertDialog.Builder(activity)
-                        .setTitle(R.string.mq_runtime_permission_tip_title)
-                        .setMessage(messageSb.toString())
-                        .setPositiveButton(R.string.mq_confirm, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions(activity, permissionsList.toArray(new String[permissionsList.size()]), requestCode);
-                            }
-                        })
-                        .setNegativeButton(R.string.mq_cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                delegate.onPermissionDenied();
-                            }
-                        })
-                        .create()
-                        .show();
+                new MQConfirmDialog(activity, activity.getString(R.string.mq_runtime_permission_tip_title), messageSb.toString(), new MQConfirmDialog.Delegate() {
+                    @Override
+                    public void onClickConfirm() {
+                        ActivityCompat.requestPermissions(activity, permissionsList.toArray(new String[permissionsList.size()]), requestCode);
+                    }
+
+                    @Override
+                    public void onClickCancel() {
+                        delegate.onPermissionDenied();
+                    }
+                }).show();
                 return;
             }
             ActivityCompat.requestPermissions(activity, permissionsList.toArray(new String[permissionsList.size()]), requestCode);
