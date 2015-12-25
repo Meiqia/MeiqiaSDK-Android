@@ -1,13 +1,13 @@
 package com.meiqia.meiqiasdk.demo;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -178,7 +178,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                 info.put("技能1", "休刊");
                 info.put("技能2", "外出取材");
                 info.put("技能3", "打麻将");
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this, R.style.Base_Theme_AppCompat_Light_Dialog_Alert);
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
                 alertBuilder.setTitle("上传自定义信息");
                 alertBuilder.setMessage("avatar -> https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/1dee88eabfbd7bd4\n" +
                         "name -> 富坚义博\n" +
@@ -236,7 +236,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
     }
 
     private void showDialog(String title, final EditDialogOnClickListener editDialogOnClickListener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Base_Theme_AppCompat_Light_Dialog_Alert);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title);
         final AlertDialog dialog = builder.create();
         dialog.setTitle(title);

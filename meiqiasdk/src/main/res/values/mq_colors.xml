@@ -24,4 +24,7 @@
     <color name="mq_titlebar_textColor">@android:color/white</color>
 
     <color name="mq_dialog_bg_translucent">#01000000</color>
+
+    <color name="mq_item_pressed">#EFEFEF</color>
+    <color name="mq_item_normal">#F9F9F9</color>
 </resources>

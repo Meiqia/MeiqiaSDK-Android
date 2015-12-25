@@ -4,7 +4,7 @@
     android:id="@+id/iv_item_emotion_icon"
     android:layout_width="wrap_content"
     android:layout_height="45dp"
-    android:background="@drawable/mq_selector_white_gray"
+    android:background="@drawable/mq_selector_item_center"
     android:padding="5dp"
     android:src="@drawable/mq_emoji_delete"
     tools:background="#f00" />

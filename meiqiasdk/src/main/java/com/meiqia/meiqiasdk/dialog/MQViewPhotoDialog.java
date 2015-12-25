@@ -24,7 +24,7 @@ public class MQViewPhotoDialog extends Dialog {
     private ImageLoader mImageLoader;
 
     public MQViewPhotoDialog(Context context) {
-        super(context, R.style.MQViewPhotoDialog);
+        super(context, R.style.MQDialog);
         setContentView(R.layout.mq_dialog_view_photo);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, MQUtils.getScreenHeight(context) - MQUtils.getStatusBarHeight(context));
         mPhotoIv = (ImageView) findViewById(R.id.iv_view_photo);
