@@ -23,7 +23,7 @@
 
 ```groovy
 // required
-compile 'com.meiqia:meiqiasdk:3.0.0@aar'
+compile 'com.meiqia:meiqiasdk:3.0.2@aar'
 
 // 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
 compile 'com.android.support:appcompat-v7:23.1.1'
