@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mq_send">发送</string>
+    <string name="mq_title_net_not_work">网络加载失败</string>
+    <string name="mq_copy_success">复制成功</string>
+    <string name="mq_dialog_select_camera">相机</string>
+    <string name="mq_dialog_select_gallery">图库</string>
+    <string name="mq_dialog_select_title">请选择图片来源：</string>
+    <string name="mq_title_leave_msg">留言</string>
+    <string name="mq_title_unknown_error">未知错误</string>
+    <string name="mq_title_inputting">正在输入...</string>
+    <string name="mq_input_hint">请输入...</string>
+    <string name="mq_allocate_agent">正在分配客服...</string>
+    <string name="mq_leave_msg_tips">抱歉，现在没有客服人员在线\n你可以继续写下你的问题，我们会尽快回复</string>
+    <string name="mq_photo_not_support">当前设备不支持发送图片</string>
+    <string name="mq_no_sdcard">SD卡不存在</string>
+    <string name="mq_record_not_support">当前设别不支持语音</string>
+    <string name="mq_record_up_and_cancel">上滑，取消发送</string>
+    <string name="mq_record_cancel">取消发送</string>
+    <string name="mq_record_failed">录音失败，请检查是否有录音权限</string>
+    <string name="mq_record_record_time_is_short">录音时间太短</string>
+    <string name="mq_record_count_down">还可以再说 %1$d 秒</string>
+    <string name="mq_timeline_today">今天</string>
+    <string name="mq_timeline_yesterday">昨天</string>
+    <string name="mq_data_is_loading">数据加载中...</string>
+    <string name="mq_direct_content">接下来由 %1$s 为你服务</string>
+    <string name="mq_confirm">确定</string>
+    <string name="mq_cancel">取消</string>
+    <string name="mq_runtime_permission_tip_title">咨询客服需要以下权限</string>
+    <string name="mq_runtime_permission_tip_content">1.访问设备上的照片\n2.录制音频</string>
+    <string name="mq_permission_denied_tip">您拒绝了咨询客服所需要的相关权限!</string>
+    <string name="mq_back">返回</string>
+</resources>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MQMatchWrap.Vertical"
+    android:layout_marginLeft="@dimen/mq_size_level8"
+    android:layout_marginRight="@dimen/mq_size_level8"
+    android:background="@drawable/mq_shape_dialog_bg">
+
+    <TextView
+        android:id="@+id/tv_input_title"
+        style="@style/MQMatchWrap"
+        android:gravity="center"
+        android:padding="@dimen/mq_size_level4"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/mq_textSize_level2"
+        android:textStyle="bold"
+        tools:text="我是标题" />
+
+    <EditText
+        android:id="@+id/et_input_value"
+        style="@style/MQMatchWrap"
+        android:layout_marginBottom="@dimen/mq_size_level4"
+        android:layout_marginLeft="@dimen/mq_size_level4"
+        android:layout_marginRight="@dimen/mq_size_level4"
+        android:background="@drawable/mq_bg_edit_view"
+        android:padding="@dimen/mq_size_level2"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/mq_textSize_level2"
+        tools:text="skdfjksldjflsk" />
+
+    <View style="@style/MQHLine" />
+
+    <TextView
+        android:id="@+id/tv_input_confirm"
+        style="@style/MQClickableItem.Bottom"
+        android:gravity="center"
+        android:text="确定" />
+
+</LinearLayout>
