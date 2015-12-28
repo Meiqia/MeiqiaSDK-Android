@@ -113,6 +113,7 @@ public class MQEditToolbar extends RelativeLayout implements View.OnClickListene
         gridView.setVerticalFadingEdgeEnabled(false);
         gridView.setHorizontalScrollBarEnabled(false);
         gridView.setHorizontalFadingEdgeEnabled(false);
+        gridView.setSelector(android.R.color.transparent);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
