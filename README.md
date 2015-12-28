@@ -1,7 +1,5 @@
 # 美洽移动应用 SDK 3.0 for Android 开发文档
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.meiqia/meiqiasdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.meiqia/meiqiasdk)
-
 ## 目录
 * [SDK 工作流程](#sdk-工作流程)
 * [集成美洽 SDK](#集成美洽-sdk)
@@ -19,11 +17,12 @@
 ![流程图](https://camo.githubusercontent.com/348661458384df0b282af9d4c5d06101c5e8d4ae/68747470733a2f2f73332e636e2d6e6f7274682d312e616d617a6f6e6177732e636f6d2e636e2f706963732e6d65697169612e6275636b65742f64643430313336306261633364346162)
 
 ## 集成美洽 SDK
-### AndroidStudio
+### AndroidStudio  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.meiqia/meiqiasdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.meiqia/meiqiasdk)
 
-```groovy
-// required
-compile 'com.meiqia:meiqiasdk:3.0.2@aar'
+```
+// required     
+// 「latestVersion」改成 maven central 徽章后面对应的版本号，例如3.0.3
+compile 'com.meiqia:meiqiasdk:latestVersion@aar'
 
 // 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
 compile 'com.android.support:support-v4:23.1.1'
@@ -34,7 +33,36 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 ```
 
 ### Eclipse
-![GoHome](https://camo.githubusercontent.com/8caa3693b4268c095c001089313d687f647d551a/687474703a2f2f696d67322e77696b69612e6e6f636f6f6b69652e6e65742f5f5f636232303133303831393134323932382f6361726466696768742f696d616765732f7468756d622f352f35352f476f2d686f6d652d796f7572652d6472756e6b2e6a70672f35303070782d476f2d686f6d652d796f7572652d6472756e6b2e6a7067)
+
+1.拷贝 **/eclipse/MeiqiaSdk** 到工作空间并导入 Eclipse 中
+
+2.选中你自己的工程的根目录 -> 右键 -> 选择 Properties -> 选中 Android -> 点击 Library 右边的的 Add 按钮 -> 选中 MeiqiaSdk -> 点击 OK
+
+3.在你自己的工程的 AndroidManifest.xml 文件中添加以下权限
+
+```
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+```
+
+4.在你自己的工程的 AndroidManifest.xml 文件的 application 结点下加入以下代码
+
+```
+<activity
+    android:name="com.meiqia.meiqiasdk.activity.MQConversationActivity"
+    android:configChanges="keyboardHidden|orientation"
+    android:launchMode="singleTop"
+    android:screenOrientation="portrait"
+    android:theme="@style/MQTheme"
+    android:windowSoftInputMode="stateHidden|adjustResize" />
+
+<service android:name="com.meiqia.core.MeiQiaService" />
+```
+
+5.如果你自己的工程中已经添加了 **/eclipse/MeiqiaSdk/libs** 中的 jar 包，拷贝你自己的工程中对应的 jar 包替换 **/eclipse/MeiqiaSdk/libs** 中的 jar 包
 
 ## 使用美洽
 
@@ -46,14 +74,14 @@ MQManager.init(context, "Your Appkey", new OnInitCallBackOn() {
 		// 初始化成功
 	    Toast.makeText(MainActivity.this, "init success", Toast.LENGTH_SHORT).show();
 	}
-	
+
 	@Override
 	public void onFailure(int code, String message) {
 		// 初始化失败
 	    Toast.makeText(MainActivity.this, "init failure", Toast.LENGTH_SHORT).show();
 	}
 });
-``` 
+```
 如果您不知道 Appkey ，请使用美洽管理员帐号登录 美洽，在「设置」 -> 「SDK」 菜单中查看。如下图：
 
 ![获取 Appkey](https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/8fbdaa6076d0b9d0)
@@ -65,7 +93,7 @@ MQManager.init(context, "Your Appkey", new OnInitCallBackOn() {
 ``` java
 Intent intent = new Intent(MainActivity.this, MQConversationActivity.class);
 startActivity(intent);
-``` 
+```
 ### 3.可选设置
 * [绑定自定义 id 并设置上线](#绑定自定义-id-并设置上线)
 * [绑定美洽 id 并设置上线](#绑定美洽-id-并设置上线)
@@ -90,7 +118,7 @@ MQManager mqManager = MQManager.getInstacne(context);
 * @param onlineCallback 回调
 */
 setCurrentClientOnline(final OnClientOnlineCallback onlineCallback)
-``` 
+```
 
 ### 绑定美洽 id 并设置上线
 开发者可通过 [获取当前顾客的 id](#获取当前顾客的-id) 接口，取得顾客 id ，保存到开发者的服务端，以此来绑定美洽顾客和开发者用户系统。 如果开发者保存了美洽的顾客 id，可调用如下接口让其上线。调用此接口后，当前可用的顾客即为开发者传的顾客 id。
@@ -102,7 +130,7 @@ setCurrentClientOnline(final OnClientOnlineCallback onlineCallback)
  * @param onlineCallback 回调接口
 */
 setClientOnlineWithClientId(String mqClientId, final OnClientOnlineCallback onlineCallback)
-``` 
+```
 MQConversationActivity.class 内部调用了此接口，所以可以直接简单的在 intent 中添加 CLIENT_ID，启动对话。
 
 **Example:**
@@ -112,7 +140,7 @@ Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class)
 // 假设 meiqia_id 是美洽生成的顾客 id
 intent.putExtra(MQConversationActivity.CLIENT_ID,"meiqia_id");
 startActivity(intent);
-``` 
+```
 ### 绑定自定义 id 并设置上线
 如果开发者不愿保存「美洽顾客 id」来绑定自己的用户系统，也可以将自己的用户 id当做参数，进行顾客的上线，美洽将会为开发者绑定一个顾客，下次开发者直接调用如下接口，就能让这个绑定的顾客上线。
 
@@ -127,7 +155,7 @@ startActivity(intent);
 * @param onlineCallback 回调接口
 */
 setClientOnlineWithCustomizedId(String customizedId, final OnClientOnlineCallback onlineCallback)
-``` 
+```
 MQConversationActivity.class 内部调用了此接口，所以可以直接简单的在 intent 中添加 CUSTOMIZED_ID，启动对话。
 
 **Example:**
@@ -137,7 +165,7 @@ Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class)
 // 假设 developer@dev.com 是开发者的用户 id
 intent.putExtra(MQConversationActivity.CUSTOMIZED_ID,"developer@dev.com");
 startActivity(intent);
-``` 
+```
 
 ### 指定客服或者分组
 美洽默认会按照管理员设置的分配方式智能分配客服，但如果需要让来自 App 的顾客指定分配给某个客服或者某组客服。
@@ -149,7 +177,7 @@ startActivity(intent);
  * @param groupId 指定分组的 id，不指定传 null
 */
 setScheduledAgentOrGroupWithId(String agentId, String groupId)
-``` 
+```
 
 **Example:**
 ``` java
@@ -158,11 +186,11 @@ MQManager.getInstance(DeveloperActivity.this).setScheduledAgentOrGroupWithId(age
 // 启动界面
 Intent intent = new Intent(DeveloperActivity.this, MQConversationActivity.class);
 startActivity(intent);
-``` 
+```
 
 **注意：**
  - 该选项需要在用户上线前设置。
- - 客服组 ID 和客服 ID 可以通过管理员帐号在后台的「设置」中查看。 
+ - 客服组 ID 和客服 ID 可以通过管理员帐号在后台的「设置」中查看。
   ![获取 客服 / 分组 ID](https://camo.githubusercontent.com/63eb2383e2dda083c17eeb16b360777c0e1b0ee9/68747470733a2f2f73332e636e2d6e6f7274682d312e616d617a6f6e6177732e636f6d2e636e2f706963732e6d65697169612e6275636b65742f38636465386235343439316332303365)
 
 
@@ -179,7 +207,7 @@ startActivity(intent);
 * 如果设置了顾客离线，则客服发送的消息将会发送给开发者的推送服务器
 */
 setClientOffline()
-``` 
+```
 
 ### 发送文字消息 / 图片消息 / 语音消息
 ``` java
@@ -204,7 +232,7 @@ sendMQPhotoMessage(String localPath, final OnMessageSendCallback onMessageSendCa
  * @param onMessageSendCallback 消息状态回调
  */
 sendMQVoiceMessage(String localPath, final OnMessageSendCallback onMessageSendCallback)
-``` 
+```
 ### 从服务器获取历史消息
 ``` java
 /**
@@ -215,7 +243,7 @@ sendMQVoiceMessage(String localPath, final OnMessageSendCallback onMessageSendCa
  * @param onGetMessageListCallback 回调
  */
 getMQMessageFromService(final long lastMessageCreateOn, final int length, final OnGetMessageListCallback onGetMessageListCallback)
-``` 
+```
 ### 从本地获取历史消息
 ``` java
 /**
@@ -226,7 +254,7 @@ getMQMessageFromService(final long lastMessageCreateOn, final int length, final 
  * @param onGetMessageListCallback 回调
  */
 getMQMessageFromDatabase(final long lastMessageCreateOn, final int length, final OnGetMessageListCallback onGetMessageListCallback)
-``` 
+```
 ### 设置用户的设备唯一标识
 ``` java
 /**
@@ -235,7 +263,7 @@ getMQMessageFromDatabase(final long lastMessageCreateOn, final int length, final
  * @param token 唯一标识
  */
 registerDeviceToken(String token, OkHttpUtils.OnRegisterDeviceTokenCallback onRegisterDeviceTokenCallback)
-``` 
+```
 App 进入后台后，美洽推送给开发者服务端的消息数据格式中，会有 deviceToken 的字段。
 
 美洽推送消息给开发者服务端的数据格式，可参考 [推送消息数据结构](#推送消息数据结构)。
@@ -249,13 +277,13 @@ App 进入后台后，美洽推送给开发者服务端的消息数据格式中�
  * @param onClientInfoCallback 回调
  */
 setClientInfo(Map<String, String> clientInfo, OnClientInfoCallback onClientInfoCallback)
-``` 
+```
 功能效果展示：
 
 ![设置顾客信息效果图](https://camo.githubusercontent.com/97de68c05a61ac3e2465bb320d669baffa21cc75/68747470733a2f2f73332e636e2d6e6f7274682d312e616d617a6f6e6177732e636f6d2e636e2f706963732e6d65697169612e6275636b65742f36353565373233343334323363386637)
 
 为了让客服能更准确帮助用户，开发者可上传不同用户的属性信息。示例如下：
-``` java 
+``` java
 Map<String, String> info = new HashMap<>();
 info.put("name", "富坚义博");
 info.put("avatar", "https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/1dee88eabfbd7bd4");
@@ -265,7 +293,7 @@ info.put("技能1", "休刊");
 info.put("技能2", "外出取材");
 info.put("技能3", "打麻将");
 MQManager.getInstance(context).setClientInfo(info, new OnClientInfoCallback()）;
-``` 
+```
 以下字段是美洽定义好的，开发者可通过上方提到的接口，直接对下方的字段进行设置：
 
 |Key|说明|
@@ -291,7 +319,7 @@ MQManager.getInstance(context).setClientInfo(info, new OnClientInfoCallback()）
  * @return 如果存在，返回当前客服信息；不存在，返回 null
  */
 getCurrentAgent()
-``` 
+```
 ### 获取当前顾客的 id
 ``` java
 /**
@@ -300,7 +328,7 @@ getCurrentAgent()
  * @return 当前顾客 id
  */
 getCurrentClientId()
-``` 
+```
 ### 获取一个新的顾客
 ``` java
 /**
@@ -309,7 +337,7 @@ getCurrentClientId()
  * @param onGetMQClientIdCallBack 回调
  */
 createMQClient(OnGetMQClientIdCallBackOn onGetMQClientIdCallBack)
-``` 
+```
 如果开发者想初始化一个新的顾客，可调用此接口。
 
 该顾客没有任何历史记录及用户信息。
@@ -323,7 +351,7 @@ createMQClient(OnGetMQClientIdCallBackOn onGetMQClientIdCallBack)
  * @param isRead    将替换的状态
  */
 updateMessage(long messageId, boolean isRead)
-``` 
+```
 ### 结束当前对话
 ``` java
 /**
@@ -332,7 +360,7 @@ updateMessage(long messageId, boolean isRead)
  * @param onEndConversationCallback 回调
  */
 endCurrentConversation(OnEndConversationCallback onEndConversationCallback)
-``` 
+```
 ### 给客服发送「正在输入」
 ``` java
 /**
@@ -341,14 +369,14 @@ endCurrentConversation(OnEndConversationCallback onEndConversationCallback)
  * @param content 正在输入的内容
  */
 sendClientInputtingWithContent(String content)
-``` 
+```
 ### 开启美洽推送
 ``` java
 /**
  * App 退到后台时，需要开启美洽推送
  */
 openMeiQiaRemotePushService()
-``` 
+```
 参考 [消息推送](#消息推送)
 
 ### 关闭美洽推送
@@ -357,7 +385,7 @@ openMeiQiaRemotePushService()
  * App 进入前台时，需要关闭美洽推送
  */
 closeMeiQiaRemotePushService()
-``` 
+```
 参考 [消息推送](#消息推送)
 
 ### 接收即时消息
@@ -369,7 +397,7 @@ public class MessageReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 		 //只接收当前应用的广播
 		 String packageName = intent.getStringExtra("packageName");
-		
+
 		 if (context.getPackageName().equals(packageName)) {
 			 // 获取 ACTION
 		     final String action = intent.getAction();
@@ -382,12 +410,12 @@ public class MessageReceiver extends BroadcastReceiver {
 		         MQMessage message = messageManager.getMQMessage(msgId);
 		         // do something
 		     }
-		
+
 		     // 客服正在输入
 		     else if (MQMessageManager.ACTION_AGENT_INPUTTING.equals(action)) {
 		         // do something
 		     }
-		
+
 		     // 客服转接
 		     else if (MQMessageManager.ACTION_AGENT_CHANGE_EVENT.equals(action)) {
 		         // 获取转接后的客服
@@ -397,14 +425,14 @@ public class MessageReceiver extends BroadcastReceiver {
 		  }
 	 }
  }
-``` 
+```
 ### 获取 SDK 版本号
 ``` java
 /**
  * 获取 SDK 版本号
  */
 getMeiQiaSDKVersion()
-``` 
+```
 
 ## 消息推送
 当前仅支持一种推送方案，即美洽服务端发送消息至开发者的服务端，开发者再推送消息到 App。
@@ -412,7 +440,7 @@ getMeiQiaSDKVersion()
 推送消息将会发送至开发者的服务器。
 
 设置服务器地址，请使用美洽管理员帐号登录 [美洽](http://www.meiqia.com)，在「设置」 -> 「SDK」中设置。
- 
+
 ![设置推送地址](https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/8fbdaa6076d0b9d0)
 
 ### 通知美洽服务端发送消息至开发者的服务端
@@ -421,15 +449,14 @@ getMeiQiaSDKVersion()
 在 App 进入后台时，应该通知美洽服务端，让其将以后的消息推送给开发者提供的服务器地址，如下代码：
 ``` java
 MQManager.getInstance(context).openMeiQiaRemotePushService();
-``` 
+```
 
 ### 关闭美洽推送
 在 App 进入前台时，应该通知美洽服务端，让其将以后的消息发送给SDK，而不再推送给开发者提供的服务端，如下代码：
 ``` java
 MQManager.getInstance(context).closeMeiQiaRemotePushService();
-``` 
+```
 ### 推送消息数据结构
 (待补充)
 
 当有消息需要推送时，美洽服务器会向开发者设置的服务器地址发送推送消息，方法类型为 POST，数据格式为 JSON 。
-

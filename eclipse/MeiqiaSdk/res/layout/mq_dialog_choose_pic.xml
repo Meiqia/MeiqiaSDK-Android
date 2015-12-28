@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MQMatchWrap.Vertical"
+    android:layout_marginLeft="@dimen/mq_size_level10"
+    android:layout_marginRight="@dimen/mq_size_level10"
+    android:background="@drawable/mq_shape_dialog_bg">
+
+    <TextView
+        android:id="@+id/tv_choose_pic_camera"
+        style="@style/MQClickableItem.Top"
+        android:text="@string/mq_dialog_select_camera" />
+
+    <View style="@style/MQHLine" />
+
+    <TextView
+        android:id="@+id/tv_choose_pic_gallery"
+        style="@style/MQClickableItem.Bottom"
+        android:text="@string/mq_dialog_select_gallery" />
+
+</LinearLayout>
