@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="mq_url_foreground">#0f5a87</color>
+
+
+    <color name="mq_normal_text_white">#ffffffff</color>
+    <color name="mq_bg_color">#F7F8FA</color>
+    <color name="mq_event_gray">#808080</color>
+    <color name="mq_title_text">#000000</color>
+    <color name="mq_input_text">#aaaaaa</color>
+    <color name="mq_chat_text_left">#333333</color>
+    <color name="mq_chat_text_right">#FFFFFF</color>
+    <color name="mq_chat_box_bg">#c9c9ce</color>
+    <color name="mq_leave_msg_tip_bg">#f6bc66</color>
+    <color name="mq_net_not_work_bg">#e66b62</color>
+    <color name="mq_play_circle_round">#E6E6E6</color>
+    <color name="mq_play_circle_progress">#43CAA9</color>
+    <color name="mq_direct_agent_nickname_color">#43CAA9</color>
+    <color name="mq_transparent">#00FFFFFF</color>
+
+    <color name="mq_send_btn_text_color_pressed">#808080</color>
+    <color name="mq_send_btn_text_color_nor">#595959</color>
+    <color name="mq_titlebar_textColor">@android:color/white</color>
+
+    <color name="mq_dialog_bg_translucent">#01000000</color>
+
+    <color name="mq_item_pressed">#EFEFEF</color>
+    <color name="mq_item_normal">@android:color/white</color>
+</resources>
