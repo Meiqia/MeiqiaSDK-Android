@@ -1,6 +1,7 @@
 package com.meiqia.meiqiasdk.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -1082,6 +1083,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         }, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO);
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
