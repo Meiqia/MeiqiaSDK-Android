@@ -8,7 +8,7 @@
 * [消息推送](#消息推送)
 
 ## ScreenShot
-![美恰SDKDemo](https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/7b75f3de0b949201)
+![美恰SDKDemo](https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/cb488d57752ccd3d)
 
 ## SDK 工作流程
 
