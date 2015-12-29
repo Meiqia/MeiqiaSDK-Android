@@ -17,6 +17,10 @@
 ![流程图](https://camo.githubusercontent.com/348661458384df0b282af9d4c5d06101c5e8d4ae/68747470733a2f2f73332e636e2d6e6f7274682d312e616d617a6f6e6177732e636f6d2e636e2f706963732e6d65697169612e6275636b65742f64643430313336306261633364346162)
 
 ## 集成美洽 SDK
+
+### Environment Required
+- JDK7+
+
 ### AndroidStudio  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.meiqia/meiqiasdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.meiqia/meiqiasdk)
 
 ```
@@ -42,7 +46,6 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
 ```
 <uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.RECORD_AUDIO" />

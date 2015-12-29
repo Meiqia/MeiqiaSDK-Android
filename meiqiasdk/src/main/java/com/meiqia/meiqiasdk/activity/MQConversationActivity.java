@@ -1079,7 +1079,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 MQUtils.show(MQConversationActivity.this, R.string.mq_permission_denied_tip);
                 finish();
             }
-        }, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_PHONE_STATE);
+        }, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO);
     }
 
     @Override
