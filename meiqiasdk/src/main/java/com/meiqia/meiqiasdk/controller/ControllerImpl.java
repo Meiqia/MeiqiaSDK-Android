@@ -120,4 +120,9 @@ public class ControllerImpl implements MQController {
         }
     }
 
+    @Override
+    public void sendClientInputtingWithContent(String content) {
+        MQManager.getInstance(context).sendClientInputtingWithContent(content);
+    }
+
 }
