@@ -35,7 +35,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.meiqia.core.MQManager;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
@@ -161,7 +160,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     protected void onDestroy() {
         super.onDestroy();
         try {
-            unregisterReceiver(messageReceiver);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
             unregisterReceiver(networkChangeReceiver);
         } catch (Exception e) {
             //有些时候会出现未注册就取消注册的情况，暂时不知道为什么
@@ -932,7 +931,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * @param content 内容
      */
     private void inputting(String content) {
-        MQManager.getInstance(this).sendClientInputtingWithContent(content);
+        controller.sendClientInputtingWithContent(content);
     }
 
     /**
