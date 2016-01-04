@@ -15,47 +15,43 @@ public abstract class MessageReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        //只接收当前应用的广播
-        String packageName = intent.getStringExtra("packageName");
+        final String action = intent.getAction();
 
-        if (context.getPackageName().equals(packageName)) {
-            final String action = intent.getAction();
-            MQMessageManager messageManager = MQMessageManager.getInstance(context);
-            BaseMessage baseMessage;
+        MQMessageManager messageManager = MQMessageManager.getInstance(context);
+        BaseMessage baseMessage;
 
-            // 接收新消息
-            if (MQMessageManager.ACTION_NEW_MESSAGE_RECEIVED.equals(action)) {
-                // 从 intent 获取消息 id
-                String msgId = intent.getStringExtra("msgId");
-                // 从 MCMessageManager 获取消息对象
-                MQMessage message = messageManager.getMQMessage(msgId);
-                if (message != null) {
-                    //处理消息，并发送广播
-                    baseMessage = MQUtils.parseMQMessageIntoChatBase(message);
-                    receiveNewMsg(baseMessage);
-                }
+        // 接收新消息
+        if (MQMessageManager.ACTION_NEW_MESSAGE_RECEIVED.equals(action)) {
+            // 从 intent 获取消息 id
+            String msgId = intent.getStringExtra("msgId");
+            // 从 MCMessageManager 获取消息对象
+            MQMessage message = messageManager.getMQMessage(msgId);
+            if (message != null) {
+                //处理消息，并发送广播
+                baseMessage = MQUtils.parseMQMessageIntoChatBase(message);
+                receiveNewMsg(baseMessage);
+            }
+        }
+
+        // 客服正在输入
+        else if (MQMessageManager.ACTION_AGENT_INPUTTING.equals(action)) {
+            changeTitleToInputting();
+        }
+
+        // 客服转接
+        else if (MQMessageManager.ACTION_AGENT_CHANGE_EVENT.equals(action)) {
+            // 更新标题栏
+            MQAgent mqAgent = messageManager.getCurrentAgent();
+
+            // 如果顾客被转接，才添加 Tip
+            boolean isClientDirect = intent.getBooleanExtra("client_is_redirected", false);
+            if (isClientDirect) {
+                addDirectAgentMessageTip(mqAgent.getNickname());
             }
 
-            // 客服正在输入
-            else if (MQMessageManager.ACTION_AGENT_INPUTTING.equals(action)) {
-                changeTitleToInputting();
-            }
-
-            // 客服转接
-            else if (MQMessageManager.ACTION_AGENT_CHANGE_EVENT.equals(action)) {
-                // 更新标题栏
-                MQAgent mqAgent = messageManager.getCurrentAgent();
-
-                // 如果顾客被转接，才添加 Tip
-                boolean isClientDirect = intent.getBooleanExtra("client_is_redirected", false);
-                if (isClientDirect) {
-                    addDirectAgentMessageTip(mqAgent.getNickname());
-                }
-
-                changeTitleToAgentName(mqAgent.getNickname());
-                Agent agent = MQUtils.parseMQAgentToAgent(mqAgent);
-                setCurrentAgent(agent);
-            }
+            changeTitleToAgentName(mqAgent.getNickname());
+            Agent agent = MQUtils.parseMQAgentToAgent(mqAgent);
+            setCurrentAgent(agent);
         }
     }
 

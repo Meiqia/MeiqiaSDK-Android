@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -34,7 +35,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.meiqia.core.MQManager;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
@@ -160,7 +160,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     protected void onDestroy() {
         super.onDestroy();
         try {
-            unregisterReceiver(messageReceiver);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
             unregisterReceiver(networkChangeReceiver);
         } catch (Exception e) {
             //有些时候会出现未注册就取消注册的情况，暂时不知道为什么
@@ -364,7 +364,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         intentFilter.addAction(MQController.ACTION_AGENT_INPUTTING);
         intentFilter.addAction(MQController.ACTION_NEW_MESSAGE_RECEIVED);
         intentFilter.addAction(MQController.ACTION_CLIENT_IS_REDIRECTED_EVENT);
-        registerReceiver(messageReceiver, intentFilter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, intentFilter);
 
         // 网络监听
         networkChangeReceiver = new NetworkChangeReceiver();
@@ -931,7 +931,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * @param content 内容
      */
     private void inputting(String content) {
-        MQManager.getInstance(this).sendClientInputtingWithContent(content);
+        controller.sendClientInputtingWithContent(content);
     }
 
     /**
@@ -997,7 +997,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * @param baseMessage 新消息
      */
     private void receiveNewMsg(BaseMessage baseMessage) {
-        if (chatMsgAdapter != null) {
+        if (chatMsgAdapter != null && !isDupMessage(baseMessage)) {
             chatMessageList.add(baseMessage);
             MQTimeUtils.refreshMQTimeItem(chatMessageList);
             chatMsgAdapter.notifyDataSetChanged();
@@ -1015,6 +1015,21 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 }
             }
         }
+    }
+
+    /**
+     * 消息是否已经在列表中
+     *
+     * @param baseMessage
+     * @return true，已经存在与列表；false，不存在
+     */
+    private boolean isDupMessage(BaseMessage baseMessage) {
+        for (BaseMessage message : chatMessageList) {
+            if (message.equals(baseMessage)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
