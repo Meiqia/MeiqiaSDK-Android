@@ -32,6 +32,17 @@ public interface MQController {
      */
     void getMessagesFromDatabase(final long lastMessageCreateOn, final int length, final OnGetMessageListCallBack onGetMessageListCallBack);
 
+    /**
+     * 设置顾客上线
+     * @param clientId 美洽顾客 id：如果传了，将用美洽 id 上线
+     * @param customizedId 开发者用户 id：如果传了，将绑定开发者 id 上线
+     * @param onClientOnlineCallback 回调
+     */
     void setCurrentClientOnline(String clientId, String customizedId, OnClientOnlineCallback onClientOnlineCallback);
 
+    /**
+     * 发送「顾客正在输入」状态
+     * @param content 内容
+     */
+    void sendClientInputtingWithContent(String content);
 }

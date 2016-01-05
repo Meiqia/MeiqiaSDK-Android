@@ -3,6 +3,7 @@ package com.meiqia.meiqiasdk.controller;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.meiqia.core.MQMessageManager;
 import com.meiqia.core.bean.MQAgent;
@@ -17,7 +18,7 @@ public abstract class MessageReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         //只接收当前应用的广播
         String packageName = intent.getStringExtra("packageName");
-
+        
         if (context.getPackageName().equals(packageName)) {
             final String action = intent.getAction();
             MQMessageManager messageManager = MQMessageManager.getInstance(context);
