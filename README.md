@@ -393,39 +393,45 @@ closeMeiQiaRemotePushService()
 
 ### 接收即时消息
 在未开启 [消息推送](#消息推送) 的情况下，开发者可以通过注册一个 BroadcastReceiver ，监听广播
+
+**注意：必须通过 LocalBroadcastManager 注册 和 取消注册 BroadcastReceiver。** 
+
+Example:
+``` java
+// 注册
+LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, intentFilter);
+// 取消注册
+LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
+```
+BroadcastReceiver：
 ``` java
 public class MessageReceiver extends BroadcastReceiver {
 
 	@Override
     public void onReceive(Context context, Intent intent) {
-		 //只接收当前应用的广播
-		 String packageName = intent.getStringExtra("packageName");
+		 // 获取 ACTION
+		 final String action = intent.getAction();
+		 // 接收新消息
+		 if (MQMessageManager.ACTION_NEW_MESSAGE_RECEIVED.equals(action)) {
+			 // 从 intent 获取消息 id
+			 String msgId = intent.getStringExtra("msgId");
+			 // 从 MCMessageManager 获取消息对象
+			 MQMessageManager messageManager = MQMessageManager.getInstance(context);
+			 MQMessage message = messageManager.getMQMessage(msgId);
+			 // do something
+		 }
 
-		 if (context.getPackageName().equals(packageName)) {
-			 // 获取 ACTION
-		     final String action = intent.getAction();
-		     // 接收新消息
-		     if (MQMessageManager.ACTION_NEW_MESSAGE_RECEIVED.equals(action)) {
-		         // 从 intent 获取消息 id
-		         String msgId = intent.getStringExtra("msgId");
-		         // 从 MCMessageManager 获取消息对象
-		         MQMessageManager messageManager = MQMessageManager.getInstance(context);
-		         MQMessage message = messageManager.getMQMessage(msgId);
-		         // do something
-		     }
+		 // 客服正在输入
+		 else if (MQMessageManager.ACTION_AGENT_INPUTTING.equals(action)) {
+			 // do something
+		 }
 
-		     // 客服正在输入
-		     else if (MQMessageManager.ACTION_AGENT_INPUTTING.equals(action)) {
-		         // do something
-		     }
-
-		     // 客服转接
-		     else if (MQMessageManager.ACTION_AGENT_CHANGE_EVENT.equals(action)) {
-		         // 获取转接后的客服
-		         MQAgent mqAgent = messageManager.getCurrentAgent();
-		         // do something
-		     }
-		  }
+		 // 客服转接
+		 else if (MQMessageManager.ACTION_AGENT_CHANGE_EVENT.equals(action)) {
+			 // 获取转接后的客服
+			 MQAgent mqAgent = messageManager.getCurrentAgent();
+			 // do something
+		 }
 	 }
  }
 ```
