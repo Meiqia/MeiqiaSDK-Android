@@ -42,7 +42,7 @@ import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
 import com.meiqia.meiqiasdk.controller.MediaRecordFunc;
-import com.meiqia.meiqiasdk.dialog.MQChoosePicDialog;
+import com.meiqia.meiqiasdk.dialog.MQChoosePictureDialog;
 import com.meiqia.meiqiasdk.dialog.MQViewPhotoDialog;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.AgentChangeMessage;
@@ -122,7 +122,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     private MQEditToolbar mEditToolbar;
     private MQViewPhotoDialog mMQViewPhotoDialog;
-    private MQChoosePicDialog mMQChoosePicDialog;
+    private MQChoosePictureDialog mMQChoosePictureDialog;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -742,10 +742,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
         MQUtils.closeKeyboard(MQConversationActivity.this);
 
-        if (mMQChoosePicDialog == null) {
-            mMQChoosePicDialog = new MQChoosePicDialog(this);
+        if (mMQChoosePictureDialog == null) {
+            mMQChoosePictureDialog = new MQChoosePictureDialog(this);
         }
-        mMQChoosePicDialog.show();
+        mMQChoosePictureDialog.show();
     }
 
     /**
@@ -798,7 +798,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
         // 从 相机 获取的图片
         if (requestCode == REQUEST_CODE_CAMERA && resultCode == Activity.RESULT_OK) {
-            File cameraPicFile = mMQChoosePicDialog.getCameraPicFile();
+            File cameraPicFile = mMQChoosePictureDialog.getCameraPicFile();
             if (cameraPicFile != null) {
                 createAndSendImageMessage(cameraPicFile);
             }
