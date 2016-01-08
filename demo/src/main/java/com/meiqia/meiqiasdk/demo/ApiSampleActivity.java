@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
+import com.meiqia.core.MQScheduleRule;
 import com.meiqia.core.callback.OnClientInfoCallback;
 import com.meiqia.core.callback.OnEndConversationCallback;
 import com.meiqia.core.callback.OnGetMQClientIdCallBackOn;
@@ -146,7 +147,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                     @Override
                     public void onInput(String agentId) {
                         if (!TextUtils.isEmpty(agentId)) {
-                            MQManager.getInstance(ApiSampleActivity.this).setScheduledAgentOrGroupWithId(agentId, "");
+                            MQManager.getInstance(ApiSampleActivity.this).setScheduledAgentOrGroupWithId(agentId, "", MQScheduleRule.REDIRECT_ENTERPRISE);
                             Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
                             startActivity(intent);
                             updateId();
@@ -160,7 +161,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                     @Override
                     public void onInput(String groupId) {
                         if (!TextUtils.isEmpty(groupId)) {
-                            MQManager.getInstance(ApiSampleActivity.this).setScheduledAgentOrGroupWithId("", groupId);
+                            MQManager.getInstance(ApiSampleActivity.this).setScheduledAgentOrGroupWithId("", groupId, MQScheduleRule.REDIRECT_ENTERPRISE);
                             Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
                             startActivity(intent);
                         }

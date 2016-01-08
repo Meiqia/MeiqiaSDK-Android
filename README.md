@@ -174,12 +174,19 @@ startActivity(intent);
 美洽默认会按照管理员设置的分配方式智能分配客服，但如果需要让来自 App 的顾客指定分配给某个客服或者某组客服。
 ``` java
 /**
- * 指定客服或者分组
+ * 指定客服或者分组，默认分配全企业
  *
- * @param agentId 指定客服的 id，不指定传 null
- * @param groupId 指定分组的 id，不指定传 null
-*/
-setScheduledAgentOrGroupWithId(String agentId, String groupId)
+ * @param agentId      指定客服的 id，不指定传 null
+ * @param groupId      指定分组的 id，不指定传 null
+ * @param scheduleRule 分配规则 MQScheduleRule.java
+ */
+setScheduledAgentOrGroupWithId(String agentId, String groupId, MQScheduleRule scheduleRule)
+```
+分配规则：
+``` java
+MQScheduleRule.REDIRECT_NONE // 指定分配客服失败，则进入留言
+MQScheduleRule.REDIRECT_GROUP // 分配给组内的人，分配失败，则进入留言
+MQScheduleRule.REDIRECT_ENTERPRISE // 分配给企业随机一个人，分配失败，则进入留言 （默认）
 ```
 
 **Example:**
