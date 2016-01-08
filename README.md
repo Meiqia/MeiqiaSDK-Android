@@ -174,12 +174,19 @@ startActivity(intent);
 美洽默认会按照管理员设置的分配方式智能分配客服，但如果需要让来自 App 的顾客指定分配给某个客服或者某组客服。
 ``` java
 /**
- * 指定客服或者分组
+ * 指定客服或者分组，默认分配全企业
  *
- * @param agentId 指定客服的 id，不指定传 null
- * @param groupId 指定分组的 id，不指定传 null
-*/
-setScheduledAgentOrGroupWithId(String agentId, String groupId)
+ * @param agentId      指定客服的 id，不指定传 null
+ * @param groupId      指定分组的 id，不指定传 null
+ * @param scheduleRule 分配规则 MQScheduleRule.java
+ */
+setScheduledAgentOrGroupWithId(String agentId, String groupId, MQScheduleRule scheduleRule)
+```
+分配规则：
+``` java
+MQScheduleRule.REDIRECT_NONE // 指定分配客服失败，则进入留言
+MQScheduleRule.REDIRECT_GROUP // 分配给组内的人，分配失败，则进入留言
+MQScheduleRule.REDIRECT_ENTERPRISE // 分配给企业随机一个人，分配失败，则进入留言 （默认）
 ```
 
 **Example:**
@@ -452,18 +459,16 @@ getMeiQiaSDKVersion()
 
 ![设置推送地址](https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/8fbdaa6076d0b9d0)
 
-### 通知美洽服务端发送消息至开发者的服务端
-目前，美洽的推送是通过推送消息给开发者提供的 URL 上来实现的。
-
-在 App 进入后台时，应该通知美洽服务端，让其将以后的消息推送给开发者提供的服务器地址，如下代码：
+### 关闭美洽服务
+关闭服务后，将停止监听消息，如下代码：
 ``` java
-MQManager.getInstance(context).openMeiQiaRemotePushService();
+MQManager.getInstance(context).closeMeiQiaService();
 ```
 
-### 关闭美洽推送
-在 App 进入前台时，应该通知美洽服务端，让其将以后的消息发送给SDK，而不再推送给开发者提供的服务端，如下代码：
+### 开启美洽服务
+开启服务后，将重新监听消息，如下代码：
 ``` java
-MQManager.getInstance(context).closeMeiQiaRemotePushService();
+MQManager.getInstance(context).openMeiqiaService();
 ```
 ### 推送消息数据结构
 (待补充)
