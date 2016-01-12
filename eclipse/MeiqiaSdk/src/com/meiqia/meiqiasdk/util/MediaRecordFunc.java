@@ -1,4 +1,4 @@
-package com.meiqia.meiqiasdk.controller;
+package com.meiqia.meiqiasdk.util;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.meiqia.core.callback.SimpleCallback;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
-import com.meiqia.meiqiasdk.util.MQUtils;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -66,8 +65,7 @@ public class MediaRecordFunc {
 
     public synchronized static MediaRecordFunc getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new MediaRecordFunc(context);
-
+            mInstance = new MediaRecordFunc(context.getApplicationContext());
         }
         return mInstance;
     }

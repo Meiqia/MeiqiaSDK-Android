@@ -14,11 +14,11 @@ import com.meiqia.meiqiasdk.util.MQUtils;
 
 import java.io.File;
 
-public class MQChoosePicDialog extends Dialog implements View.OnClickListener {
+public class MQChoosePictureDialog extends Dialog implements View.OnClickListener {
     private MQConversationActivity mConversationActivity;
     private String mCameraPicPath;
 
-    public MQChoosePicDialog(MQConversationActivity conversationActivity) {
+    public MQChoosePictureDialog(MQConversationActivity conversationActivity) {
         super(conversationActivity, R.style.MQDialog);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         setContentView(R.layout.mq_dialog_choose_pic);
