@@ -895,10 +895,14 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         conversationListView.setSelection(conversationListView.getBottom());
     }
 
+    /**
+     * 重发消息
+     * @param message 待重发的消息
+     */
     public void resendMessage(final BaseMessage message) {
         // 状态改为「正在发送」
         message.setStatus(BaseMessage.STATE_SENDING);
-        // 开始发送
+        // 开始重发
         controller.resendMessage(message, new OnMessageSendCallback() {
             @Override
             public void onSuccess(BaseMessage message, int state) {
