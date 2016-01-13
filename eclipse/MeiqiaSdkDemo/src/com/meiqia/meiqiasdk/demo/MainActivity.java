@@ -31,7 +31,6 @@ public class MainActivity extends Activity {
                 Toast.makeText(MainActivity.this, "int failure", Toast.LENGTH_SHORT).show();
             }
         });
-        MQManager.getInstance(this).setDebugMode(true);
     }
 
     /**
