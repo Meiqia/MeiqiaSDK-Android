@@ -86,10 +86,22 @@ public class MQUtils {
             itemType = BaseMessage.TYPE_AGENT;
         }
         if (MQMessage.TYPE_CONTENT_PHOTO.equals(message.getContent_type())) {
-            baseMessage = new PhotoMessage(message.getMedia_url());
+            // message.getMedia_url() 可能是本地路径
+            baseMessage = new PhotoMessage();
+            if (isLocalPath(message.getMedia_url())) {
+                ((PhotoMessage) baseMessage).setLocalPath(message.getMedia_url());
+            } else {
+                ((PhotoMessage) baseMessage).setUrl(message.getMedia_url());
+            }
             baseMessage.setContent("[photo]");
         } else if (MQMessage.TYPE_CONTENT_VOICE.equals(message.getContent_type())) {
             baseMessage = new VoiceMessage(message.getMedia_url());
+            // message.getMedia_url() 可能是本地路径
+            if (isLocalPath(message.getMedia_url())) {
+                ((VoiceMessage) baseMessage).setLocalPath(message.getMedia_url());
+            } else {
+                ((VoiceMessage) baseMessage).setUrl(message.getMedia_url());
+            }
             baseMessage.setContent("[voice]");
         } else {
             baseMessage = new TextMessage(message.getContent());
@@ -127,6 +139,21 @@ public class MQUtils {
         agent.setId(mqAgent.getId());
         agent.setNickname(mqAgent.getNickname());
         return agent;
+    }
+
+    private static boolean isLocalPath(String path) {
+        return !TextUtils.isEmpty(path) && !path.startsWith("http");
+    }
+
+    private static long lastClickTime;
+
+    public synchronized static boolean isFastClick() {
+        long time = System.currentTimeMillis();
+        if (time - lastClickTime < 500) {
+            return true;
+        }
+        lastClickTime = time;
+        return false;
     }
 
     /**

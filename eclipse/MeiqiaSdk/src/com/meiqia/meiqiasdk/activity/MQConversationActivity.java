@@ -41,8 +41,8 @@ import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
-import com.meiqia.meiqiasdk.controller.MediaRecordFunc;
-import com.meiqia.meiqiasdk.dialog.MQChoosePicDialog;
+import com.meiqia.meiqiasdk.util.MediaRecordFunc;
+import com.meiqia.meiqiasdk.dialog.MQChoosePictureDialog;
 import com.meiqia.meiqiasdk.dialog.MQViewPhotoDialog;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.AgentChangeMessage;
@@ -122,7 +122,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     private MQEditToolbar mEditToolbar;
     private MQViewPhotoDialog mMQViewPhotoDialog;
-    private MQChoosePicDialog mMQChoosePicDialog;
+    private MQChoosePictureDialog mMQChoosePictureDialog;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -742,10 +742,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
         MQUtils.closeKeyboard(MQConversationActivity.this);
 
-        if (mMQChoosePicDialog == null) {
-            mMQChoosePicDialog = new MQChoosePicDialog(this);
+        if (mMQChoosePictureDialog == null) {
+            mMQChoosePictureDialog = new MQChoosePictureDialog(this);
         }
-        mMQChoosePicDialog.show();
+        mMQChoosePictureDialog.show();
     }
 
     /**
@@ -798,7 +798,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
         // 从 相机 获取的图片
         if (requestCode == REQUEST_CODE_CAMERA && resultCode == Activity.RESULT_OK) {
-            File cameraPicFile = mMQChoosePicDialog.getCameraPicFile();
+            File cameraPicFile = mMQChoosePictureDialog.getCameraPicFile();
             if (cameraPicFile != null) {
                 createAndSendImageMessage(cameraPicFile);
             }
@@ -870,10 +870,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      *
      * @param message 消息
      */
-    public void sendMessage(final BaseMessage message) {
+    private void sendMessage(final BaseMessage message) {
         // 状态改为「正在发送」
         message.setStatus(BaseMessage.STATE_SENDING);
-
         // 开始发送
         controller.sendMessage(message, new OnMessageSendCallback() {
             @Override
@@ -892,10 +891,31 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 chatMsgAdapter.notifyDataSetChanged();
             }
         });
-
-
         // 滑动到底部
         conversationListView.setSelection(conversationListView.getBottom());
+    }
+
+    public void resendMessage(final BaseMessage message) {
+        // 状态改为「正在发送」
+        message.setStatus(BaseMessage.STATE_SENDING);
+        // 开始发送
+        controller.resendMessage(message, new OnMessageSendCallback() {
+            @Override
+            public void onSuccess(BaseMessage message, int state) {
+                // 刷新界面
+                chatMsgAdapter.notifyDataSetChanged();
+
+                // 客服不在线的时候，会自动发送留言消息，这个时候要添加一个 tip 到列表
+                if (ErrorCode.NO_AGENT_ONLINE == state) {
+                    addLeaveMessageTip();
+                }
+            }
+
+            @Override
+            public void onFailure(BaseMessage failureMessage, int code, String failureInfo) {
+                chatMsgAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     // 监听EditText输入框数据到变化

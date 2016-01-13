@@ -15,6 +15,7 @@ import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.util.MQUtils;
+import com.meiqia.meiqiasdk.util.MediaRecordFunc;
 
 import java.util.List;
 
@@ -33,8 +34,7 @@ public class ControllerImpl implements MQController {
             @Override
             public void onSuccess(MQMessage mcMessage, int state) {
                 MQUtils.parseMQMessageIntoChatBase(mcMessage, message);
-                // 如果是语音消息，发送成功共重命名本地语音文件
-                // 默认的储存路径 MediaRecordFunc.VOICE_STORE_PATH
+                // 如果是语音消息，发送成功共重命名本地语音文件。默认的储存路径 MediaRecordFunc.VOICE_STORE_PATH
                 if (message instanceof VoiceMessage) {
                     MediaRecordFunc.renameVoiceFile((VoiceMessage) message, mcMessage.getId());
                 }
@@ -50,7 +50,7 @@ public class ControllerImpl implements MQController {
 
         // 开始发送
         if (BaseMessage.TYPE_CONTENT_TEXT.equals(message.getContentType())) {
-            //转换 emoji 编码再发送
+            // 转换 emoji 编码再发送
             String content = message.getContent();
             MQManager.getInstance(context).sendMQTextMessage(content, onMQMessageSendCallback);
         } else if (BaseMessage.TYPE_CONTENT_PHOTO.equals(message.getContentType())) {
@@ -60,6 +60,24 @@ public class ControllerImpl implements MQController {
             VoiceMessage voiceMessage = (VoiceMessage) message;
             MQManager.getInstance(context).sendMQVoiceMessage(voiceMessage.getLocalPath(), onMQMessageSendCallback);
         }
+    }
+
+    @Override
+    public void resendMessage(final BaseMessage baseMessage, final OnMessageSendCallback onMessageSendCallback) {
+        final long preId = baseMessage.getId();
+        sendMessage(baseMessage, new OnMessageSendCallback() {
+            @Override
+            public void onSuccess(BaseMessage message, int state) {
+                onMessageSendCallback.onSuccess(message, state);
+                // 重发成功后删除之前保存的消息
+                MQManager.getInstance(context).deleteMessage(preId);
+            }
+
+            @Override
+            public void onFailure(BaseMessage failureMessage, int code, String failureInfo) {
+                onMessageSendCallback.onFailure(failureMessage, code, failureInfo);
+            }
+        });
     }
 
     @Override

@@ -41,7 +41,7 @@ import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
-import com.meiqia.meiqiasdk.controller.MediaRecordFunc;
+import com.meiqia.meiqiasdk.util.MediaRecordFunc;
 import com.meiqia.meiqiasdk.dialog.MQChoosePictureDialog;
 import com.meiqia.meiqiasdk.dialog.MQViewPhotoDialog;
 import com.meiqia.meiqiasdk.model.Agent;
@@ -870,10 +870,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      *
      * @param message 消息
      */
-    public void sendMessage(final BaseMessage message) {
+    private void sendMessage(final BaseMessage message) {
         // 状态改为「正在发送」
         message.setStatus(BaseMessage.STATE_SENDING);
-
         // 开始发送
         controller.sendMessage(message, new OnMessageSendCallback() {
             @Override
@@ -892,10 +891,35 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 chatMsgAdapter.notifyDataSetChanged();
             }
         });
-
-
         // 滑动到底部
         conversationListView.setSelection(conversationListView.getBottom());
+    }
+
+    /**
+     * 重发消息
+     * @param message 待重发的消息
+     */
+    public void resendMessage(final BaseMessage message) {
+        // 状态改为「正在发送」
+        message.setStatus(BaseMessage.STATE_SENDING);
+        // 开始重发
+        controller.resendMessage(message, new OnMessageSendCallback() {
+            @Override
+            public void onSuccess(BaseMessage message, int state) {
+                // 刷新界面
+                chatMsgAdapter.notifyDataSetChanged();
+
+                // 客服不在线的时候，会自动发送留言消息，这个时候要添加一个 tip 到列表
+                if (ErrorCode.NO_AGENT_ONLINE == state) {
+                    addLeaveMessageTip();
+                }
+            }
+
+            @Override
+            public void onFailure(BaseMessage failureMessage, int code, String failureInfo) {
+                chatMsgAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     // 监听EditText输入框数据到变化
