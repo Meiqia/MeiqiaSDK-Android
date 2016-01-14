@@ -2,9 +2,11 @@ package com.meiqia.meiqiasdk.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.ColorInt;
 
 
 public class MQConfig {
+    public static final int DEFAULT = 0;
 
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
@@ -35,24 +37,27 @@ public class MQConfig {
         return sp.getBoolean("meiqia_show_voice_message", true);
     }
 
-    public void setShowVoiceMessage(boolean value) {
+    public MQConfig setShowVoiceMessage(boolean value) {
         putBoolean("meiqia_show_voice_message", value);
+        return this;
     }
 
     public int getTitleBackgroundColor() {
-        return sp.getInt("meiqia_title_background_color", -1);
+        return sp.getInt("meiqia_title_background_color", 0);
     }
 
-    public void setTitleBackgroundColor(int backgroundColor) {
+    public MQConfig setTitleBackgroundColor(@ColorInt int backgroundColor) {
         putInt("meiqia_title_background_color", backgroundColor);
+        return this;
     }
 
-    public void setTitleTextColor(int backIconColor) {
-        putInt("meiqia_title_text_color", backIconColor);
+    public MQConfig setTitleTextColor(@ColorInt int titleTextColor) {
+        putInt("meiqia_title_text_color", titleTextColor);
+        return this;
     }
 
     public int getTitleTextColor() {
-        return sp.getInt("meiqia_title_text_color", -1);
+        return sp.getInt("meiqia_title_text_color", 0);
     }
 
 }
