@@ -30,6 +30,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -41,7 +42,6 @@ import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
-import com.meiqia.meiqiasdk.util.MediaRecordFunc;
 import com.meiqia.meiqiasdk.dialog.MQChoosePictureDialog;
 import com.meiqia.meiqiasdk.dialog.MQViewPhotoDialog;
 import com.meiqia.meiqiasdk.model.Agent;
@@ -56,6 +56,7 @@ import com.meiqia.meiqiasdk.util.MQChatAdapter;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.util.MQUtils;
+import com.meiqia.meiqiasdk.util.MediaRecordFunc;
 import com.meiqia.meiqiasdk.widget.MQEditToolbar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -133,6 +134,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         init();
         findViews();
         setListeners();
+        applyConfig();
 
         // 初始化输入栏状态
         changeInputStateToTextOrVoice();
@@ -140,6 +142,23 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         registerReceiver();
 
         mEditToolbar.init(this, inputEt);
+    }
+
+    /**
+     * 如果配置了界面相关的 config，在这里应用
+     */
+    private void applyConfig() {
+        int DEFAULT = -1;
+        int titleBackgroundColor = mqConfig.getTitleBackgroundColor();
+        int titleTextColor = mqConfig.getTitleTextColor();
+
+        if (DEFAULT != titleBackgroundColor)
+            findViewById(R.id.title_rl).setBackgroundColor(titleBackgroundColor);
+        if (DEFAULT != titleTextColor) {
+            titleTv.setTextColor(titleTextColor);
+            ImageView backIconIv = (ImageView) findViewById(R.id.back_iv);
+            backIconIv.setColorFilter(titleTextColor);
+        }
     }
 
     @Override
@@ -897,6 +916,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     /**
      * 重发消息
+     *
      * @param message 待重发的消息
      */
     public void resendMessage(final BaseMessage message) {
