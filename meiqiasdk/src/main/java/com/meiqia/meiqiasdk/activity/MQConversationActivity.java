@@ -83,6 +83,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     // 控件
     private View backBtn;
+    private TextView backTv;
     private TextView titleTv;
     private ListView conversationListView;
     private EditText inputEt;
@@ -148,14 +149,15 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 如果配置了界面相关的 config，在这里应用
      */
     private void applyConfig() {
-        int DEFAULT = -1;
+
         int titleBackgroundColor = mqConfig.getTitleBackgroundColor();
         int titleTextColor = mqConfig.getTitleTextColor();
 
-        if (DEFAULT != titleBackgroundColor)
+        if (MQConfig.DEFAULT != titleBackgroundColor)
             findViewById(R.id.title_rl).setBackgroundColor(titleBackgroundColor);
-        if (DEFAULT != titleTextColor) {
+        if (MQConfig.DEFAULT != titleTextColor) {
             titleTv.setTextColor(titleTextColor);
+            backTv.setTextColor(titleTextColor);
             ImageView backIconIv = (ImageView) findViewById(R.id.back_iv);
             backIconIv.setColorFilter(titleTextColor);
         }
@@ -216,6 +218,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     private void findViews() {
         backBtn = findViewById(R.id.back_rl);
+        backTv = (TextView) findViewById(R.id.back_tv);
         conversationListView = (ListView) findViewById(R.id.messages_lv);
         inputEt = (EditText) findViewById(R.id.input_et);
         voiceHoldView = findViewById(R.id.voice_hold_view);
@@ -1042,6 +1045,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      */
     private void receiveNewMsg(BaseMessage baseMessage) {
         if (chatMsgAdapter != null && !isDupMessage(baseMessage)) {
+            if (!mqConfig.getShowVoiceMessage() && BaseMessage.TYPE_CONTENT_VOICE.equals(baseMessage.getContentType())) {
+                return;
+            }
+
             chatMessageList.add(baseMessage);
             MQTimeUtils.refreshMQTimeItem(chatMessageList);
             chatMsgAdapter.notifyDataSetChanged();

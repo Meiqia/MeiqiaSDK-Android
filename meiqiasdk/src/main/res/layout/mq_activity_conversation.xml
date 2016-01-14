@@ -16,38 +16,39 @@
 
         <RelativeLayout
             android:id="@+id/back_rl"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp">
+            style="@style/MQWrapMatch"
+            android:paddingLeft="@dimen/mq_size_level3"
+            android:paddingRight="@dimen/mq_size_level3"
+            tools:background="#f00">
 
             <ImageView
                 android:id="@+id/back_iv"
-                android:layout_width="10dp"
-                android:layout_height="20dp"
+                style="@style/MQWrapMatch"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="@dimen/mq_size_level1"
                 android:src="@drawable/mq_ic_back" />
 
             <TextView
+                android:id="@+id/back_tv"
                 style="@style/MQWrapWrap"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/back_iv"
-                android:text=""
-                android:textColor="@color/mq_normal_text_white"
-                android:textSize="16dp" />
+                android:text="@string/mq_back"
+                android:textColor="@color/mq_title_text"
+                android:textSize="16dp"
+                tools:text="返回" />
         </RelativeLayout>
 
         <TextView
             android:id="@+id/title_tv"
-            style="@style/MQWrapWrap"
+            style="@style/MQWrapMatch"
             android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
-            android:gravity="center_vertical|center_horizontal"
+            android:gravity="center"
+            android:maxWidth="175dp"
             android:singleLine="true"
-            android:text="AgentName"
             android:textColor="@color/mq_title_text"
-            android:textSize="@dimen/mq_titlebar_textSize" />
+            android:textSize="@dimen/mq_titlebar_textSize"
+            tools:text="AgentNameAgentNameAgentNameAgentNameAgentNameAgentName" />
 
     </RelativeLayout>
 
