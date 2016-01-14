@@ -33,9 +33,9 @@
                 style="@style/MQWrapWrap"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/back_iv"
-                android:text="返回"
+                android:text=""
                 android:textColor="@color/mq_normal_text_white"
-                android:textSize="18dp" />
+                android:textSize="16dp" />
         </RelativeLayout>
 
         <TextView
