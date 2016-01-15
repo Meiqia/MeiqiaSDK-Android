@@ -18,8 +18,7 @@
             android:id="@+id/back_rl"
             style="@style/MQWrapMatch"
             android:paddingLeft="@dimen/mq_size_level3"
-            android:paddingRight="@dimen/mq_size_level3"
-            tools:background="#f00">
+            android:paddingRight="@dimen/mq_size_level3">
 
             <ImageView
                 android:id="@+id/back_iv"
