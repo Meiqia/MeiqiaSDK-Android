@@ -6,6 +6,7 @@
 * [使用美洽](#使用美洽)
 * [API 接口介绍](#api-接口介绍)
 * [消息推送](#消息推送)
+* [自定义UI](#自定义ui)
 
 ## ScreenShot
 ![美恰SDKDemo](https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/cb488d57752ccd3d)
@@ -309,17 +310,10 @@ MQManager.getInstance(context).setClientInfo(info, new OnClientInfoCallback()）
 |Key|说明|
 |---|---|
 |name|真实姓名|
-|sex|性别|
-|age|年龄|
-|job|职业|
 |avatar|头像 URL|
+|tags|标签，数组形式，且必须是企业中已经存在的标签|
+|source|顾客来源|
 |comment|备注|
-|tel|电话|
-|email|邮箱|
-|address|地址|
-|qq|QQ号|
-|weibo|微博 ID|
-|weixin|微信号|
 
 ### 获取当前正在接待的客服信息
 ``` java
@@ -471,6 +465,39 @@ MQManager.getInstance(context).closeMeiQiaService();
 MQManager.getInstance(context).openMeiqiaService();
 ```
 ### 推送消息数据结构
-(待补充)
+当有消息需要推送时，美洽服务器会向开发者设置的服务器地址发送推送消息，方法类型为 *POST*，数据格式为 *JSON* 。
 
-当有消息需要推送时，美洽服务器会向开发者设置的服务器地址发送推送消息，方法类型为 POST，数据格式为 JSON 。
+发送的请求格式介绍：
+
+request.header.authorization 为数据签名。
+
+request.body 为消息数据，数据结构为：
+
+|Key|说明|
+|---|---|
+|messageId|消息 id|
+|content|消息内容|
+|messageTime|发送时间|
+|fromName|发送人姓名|
+|deviceToken|发送对象设备的 deviceToken，格式为字符串|
+|clientId|发送对象的顾客 id|
+|customizedId|开发者传的自定义 id|
+|contentType|消息类型 - text/photo/audio|
+|deviceOS|设备系统|
+|customizedData|开发者上传的自定义的属性|
+
+开发者可以根据请求中的签名，对推送消息进行数据验证，美洽提供了 `Java、Python、Ruby、JavaScript、PHP` 5种语言的计算签名的代码，具体请移步 [美洽 SDK 3.0 推送的数据结构签名算法](https://github.com/Meiqia/MeiqiaSDK-Push-Signature-Example)。
+
+###自定义UI
+* 方式一：SDK 开放了一些简单的自定义接口，打开对话之前设置有效
+
+``` java
+new MQConfig(this)
+			  .setTitleBackgroundColor() // 设置标题栏背景颜色
+			  .setTitleTextColor() // 设置标题栏文字颜色
+			  .setShowVoiceMessage() // 设置是否开启语音功能
+```
+* 方式二：通过继承 MQConversationActivity
+
+  在不修改的源码的情况下，可以通过继承的方式，重写或者操作 MQConversationActivity 一些方法或者变量。
+* 方式三：导入美洽项目源码

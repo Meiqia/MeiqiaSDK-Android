@@ -9,7 +9,6 @@ import android.widget.Toast;
 import com.meiqia.core.MQManager;
 import com.meiqia.core.callback.OnInitCallBackOn;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
-import com.meiqia.meiqiasdk.util.MQConfig;
 
 public class MainActivity extends Activity {
 
@@ -32,11 +31,6 @@ public class MainActivity extends Activity {
                 Toast.makeText(MainActivity.this, "int failure", Toast.LENGTH_SHORT).show();
             }
         });
-
-        new MQConfig(this)
-                .setTitleBackgroundColor(getResources().getColor(android.R.color.holo_red_dark))
-                .setTitleTextColor(getResources().getColor(android.R.color.white))
-                .setShowVoiceMessage(false);
 
     }
 

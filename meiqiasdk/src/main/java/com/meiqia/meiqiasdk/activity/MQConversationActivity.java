@@ -1045,6 +1045,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      */
     private void receiveNewMsg(BaseMessage baseMessage) {
         if (chatMsgAdapter != null && !isDupMessage(baseMessage)) {
+            // 如果是配置了不显示语音，收到语音消息直接过滤
             if (!mqConfig.getShowVoiceMessage() && BaseMessage.TYPE_CONTENT_VOICE.equals(baseMessage.getContentType())) {
                 return;
             }
