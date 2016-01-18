@@ -26,8 +26,7 @@
     <string name="mq_direct_content">接下来由 %1$s 为你服务</string>
     <string name="mq_confirm">确定</string>
     <string name="mq_cancel">取消</string>
-    <string name="mq_runtime_permission_tip_title">咨询客服需要以下权限</string>
-    <string name="mq_runtime_permission_tip_content">1.访问设备上的照片\n2.录制音频</string>
+    <string name="mq_runtime_permission_tip">咨询客服需要以下权限:\n\n1.访问设备上的照片\n2.录制音频</string>
     <string name="mq_permission_denied_tip">您拒绝了咨询客服所需要的相关权限!</string>
     <string name="mq_back"></string>
 </resources>

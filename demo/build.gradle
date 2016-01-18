@@ -23,6 +23,9 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':meiqiasdk')
 
+    // 兼容Android6.0动态权限
+    compile 'pub.devrel:easypermissions:0.1.2'
+
     // required
 //    compile 'com.meiqia:meiqiasdk:3.0.7@aar'
 //

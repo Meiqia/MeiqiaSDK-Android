@@ -1,7 +1,5 @@
 package com.meiqia.meiqiasdk.activity;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -1132,42 +1130,5 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             mMQViewPhotoDialog = new MQViewPhotoDialog(this);
         }
         mMQViewPhotoDialog.show(picUrl);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        MQUtils.requestPermission(this, REQUEST_CODE_PERMISSIONS, getString(R.string.mq_runtime_permission_tip_content), new MQUtils.Delegate() {
-            @Override
-            public void onPermissionGranted() {
-            }
-
-            @Override
-            public void onPermissionDenied() {
-                MQUtils.show(MQConversationActivity.this, R.string.mq_permission_denied_tip);
-                finish();
-            }
-        }, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO);
-    }
-
-    @SuppressLint("NewApi")
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_CODE_PERMISSIONS:
-                MQUtils.handlePermissionResult(permissions, grantResults, new MQUtils.Delegate() {
-                    @Override
-                    public void onPermissionGranted() {
-                    }
-
-                    @Override
-                    public void onPermissionDenied() {
-                        MQUtils.show(MQConversationActivity.this, R.string.mq_permission_denied_tip);
-                    }
-                });
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
     }
 }
