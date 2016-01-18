@@ -5,14 +5,11 @@ import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.StringRes;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -23,8 +20,6 @@ import android.widget.Toast;
 
 import com.meiqia.core.bean.MQAgent;
 import com.meiqia.core.bean.MQMessage;
-import com.meiqia.meiqiasdk.R;
-import com.meiqia.meiqiasdk.dialog.MQConfirmDialog;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
@@ -33,9 +28,7 @@ import com.meiqia.meiqiasdk.model.VoiceMessage;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MQUtils {
     private static Handler sHandler = new Handler();
@@ -86,10 +79,22 @@ public class MQUtils {
             itemType = BaseMessage.TYPE_AGENT;
         }
         if (MQMessage.TYPE_CONTENT_PHOTO.equals(message.getContent_type())) {
-            baseMessage = new PhotoMessage(message.getMedia_url());
+            // message.getMedia_url() 可能是本地路径
+            baseMessage = new PhotoMessage();
+            if (isLocalPath(message.getMedia_url())) {
+                ((PhotoMessage) baseMessage).setLocalPath(message.getMedia_url());
+            } else {
+                ((PhotoMessage) baseMessage).setUrl(message.getMedia_url());
+            }
             baseMessage.setContent("[photo]");
         } else if (MQMessage.TYPE_CONTENT_VOICE.equals(message.getContent_type())) {
             baseMessage = new VoiceMessage(message.getMedia_url());
+            // message.getMedia_url() 可能是本地路径
+            if (isLocalPath(message.getMedia_url())) {
+                ((VoiceMessage) baseMessage).setLocalPath(message.getMedia_url());
+            } else {
+                ((VoiceMessage) baseMessage).setUrl(message.getMedia_url());
+            }
             baseMessage.setContent("[voice]");
         } else {
             baseMessage = new TextMessage(message.getContent());
@@ -127,6 +132,21 @@ public class MQUtils {
         agent.setId(mqAgent.getId());
         agent.setNickname(mqAgent.getNickname());
         return agent;
+    }
+
+    private static boolean isLocalPath(String path) {
+        return !TextUtils.isEmpty(path) && !path.startsWith("http");
+    }
+
+    private static long lastClickTime;
+
+    public synchronized static boolean isFastClick() {
+        long time = System.currentTimeMillis();
+        if (time - lastClickTime < 500) {
+            return true;
+        }
+        lastClickTime = time;
+        return false;
     }
 
     /**
@@ -302,93 +322,5 @@ public class MQUtils {
                 imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
             }
         }, 300);
-    }
-
-    /**
-     * 请求权限
-     *
-     * @param activity
-     * @param requestCode
-     * @param delegate
-     * @param permissionArr
-     */
-    public static void requestPermission(final Activity activity, final int requestCode, String msg, final Delegate delegate, String... permissionArr) {
-        List<String> permissionsNeeded = new ArrayList<>();
-        final List<String> permissionsList = new ArrayList<>();
-
-        for (String permission : permissionArr) {
-            if (!addPermission(activity, permissionsList, permission)) {
-                permissionsNeeded.add(permission.substring(permission.lastIndexOf(".") + 1));
-            }
-        }
-
-        if (permissionsList.size() > 0) {
-            if (permissionsNeeded.size() > 0) {
-                new MQConfirmDialog(activity, activity.getString(R.string.mq_runtime_permission_tip_title), msg, new MQConfirmDialog.OnDialogCallback() {
-                    @Override
-                    public void onClickConfirm() {
-                        ActivityCompat.requestPermissions(activity, permissionsList.toArray(new String[permissionsList.size()]), requestCode);
-                    }
-
-                    @Override
-                    public void onClickCancel() {
-                        delegate.onPermissionDenied();
-                    }
-                }).show();
-                return;
-            }
-            ActivityCompat.requestPermissions(activity, permissionsList.toArray(new String[permissionsList.size()]), requestCode);
-            return;
-        }
-        delegate.onPermissionGranted();
-    }
-
-    private static boolean addPermission(Activity activity, List<String> permissionsList, String permission) {
-        if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
-            permissionsList.add(permission);
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 处理权限结果
-     *
-     * @param permissions
-     * @param grantResults
-     * @param delegate
-     * @param permissionArr
-     */
-    public static void handlePermissionResult(String[] permissions, int[] grantResults, Delegate delegate, String... permissionArr) {
-        Map<String, Integer> perms = new HashMap<>();
-        for (String permission : permissionArr) {
-            perms.put(permission, PackageManager.PERMISSION_GRANTED);
-        }
-
-        for (int i = 0; i < permissions.length; i++) {
-            perms.put(permissions[i], grantResults[i]);
-        }
-
-        boolean granted = true;
-        for (String permission : permissionArr) {
-            if (perms.get(permission) != PackageManager.PERMISSION_GRANTED) {
-                granted = false;
-                break;
-            }
-        }
-
-        if (granted) {
-            delegate.onPermissionGranted();
-        } else {
-            delegate.onPermissionDenied();
-        }
-    }
-
-    public interface Delegate {
-        void onPermissionGranted();
-
-        void onPermissionDenied();
     }
 }

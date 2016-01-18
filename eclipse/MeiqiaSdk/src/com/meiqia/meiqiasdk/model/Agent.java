@@ -2,7 +2,7 @@ package com.meiqia.meiqiasdk.model;
 
 public class Agent {
 
-    private int id;
+    private String id;
     private String avatar;
     private String cellphone;
     private String email;
@@ -50,11 +50,11 @@ public class Agent {
         return this.enterprise_id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getId() {
+    public String getId() {
         return this.id;
     }
 

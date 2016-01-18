@@ -21,7 +21,6 @@ import com.meiqia.core.bean.MQMessage;
 import com.meiqia.core.callback.SimpleCallback;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
-import com.meiqia.meiqiasdk.controller.MediaRecordFunc;
 import com.meiqia.meiqiasdk.model.AgentChangeMessage;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
@@ -44,7 +43,6 @@ public class MQChatAdapter extends BaseAdapter {
 
     // ImageLoader
     private ImageLoader imageLoader;
-    private MediaRecordFunc mediaRecordFunc;
 
     private final MediaPlayer mediaPlayer;
     private int onClickPosition;
@@ -56,7 +54,6 @@ public class MQChatAdapter extends BaseAdapter {
         this.listView = listView;
         this.imageLoader = ImageLoader.getInstance();
         this.mediaPlayer = new MediaPlayer();
-        this.mediaRecordFunc = MediaRecordFunc.getInstance(mqConversationActivity);
     }
 
     public void addMQMessage(BaseMessage baseMessage) {
@@ -364,7 +361,11 @@ public class MQChatAdapter extends BaseAdapter {
 
         @Override
         public void onClick(View v) {
-            mqConversationActivity.sendMessage(failedMessage);
+            if (!MQUtils.isFastClick()) {
+                failedMessage.setStatus(BaseMessage.STATE_SENDING);
+                notifyDataSetChanged();
+                mqConversationActivity.resendMessage(failedMessage);
+            }
         }
 
     }

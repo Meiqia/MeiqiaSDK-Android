@@ -1,7 +1,5 @@
 package com.meiqia.meiqiasdk.activity;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -30,6 +28,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -41,8 +40,7 @@ import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
-import com.meiqia.meiqiasdk.controller.MediaRecordFunc;
-import com.meiqia.meiqiasdk.dialog.MQChoosePicDialog;
+import com.meiqia.meiqiasdk.dialog.MQChoosePictureDialog;
 import com.meiqia.meiqiasdk.dialog.MQViewPhotoDialog;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.AgentChangeMessage;
@@ -56,6 +54,7 @@ import com.meiqia.meiqiasdk.util.MQChatAdapter;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.util.MQUtils;
+import com.meiqia.meiqiasdk.util.MediaRecordFunc;
 import com.meiqia.meiqiasdk.widget.MQEditToolbar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -82,6 +81,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     // 控件
     private View backBtn;
+    private TextView backTv;
     private TextView titleTv;
     private ListView conversationListView;
     private EditText inputEt;
@@ -122,7 +122,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     private MQEditToolbar mEditToolbar;
     private MQViewPhotoDialog mMQViewPhotoDialog;
-    private MQChoosePicDialog mMQChoosePicDialog;
+    private MQChoosePictureDialog mMQChoosePictureDialog;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -133,6 +133,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         init();
         findViews();
         setListeners();
+        applyConfig();
 
         // 初始化输入栏状态
         changeInputStateToTextOrVoice();
@@ -140,6 +141,24 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         registerReceiver();
 
         mEditToolbar.init(this, inputEt);
+    }
+
+    /**
+     * 如果配置了界面相关的 config，在这里应用
+     */
+    private void applyConfig() {
+
+        int titleBackgroundColor = mqConfig.getTitleBackgroundColor();
+        int titleTextColor = mqConfig.getTitleTextColor();
+
+        if (MQConfig.DEFAULT != titleBackgroundColor)
+            findViewById(R.id.title_rl).setBackgroundColor(titleBackgroundColor);
+        if (MQConfig.DEFAULT != titleTextColor) {
+            titleTv.setTextColor(titleTextColor);
+            backTv.setTextColor(titleTextColor);
+            ImageView backIconIv = (ImageView) findViewById(R.id.back_iv);
+            backIconIv.setColorFilter(titleTextColor);
+        }
     }
 
     @Override
@@ -197,6 +216,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     private void findViews() {
         backBtn = findViewById(R.id.back_rl);
+        backTv = (TextView) findViewById(R.id.back_tv);
         conversationListView = (ListView) findViewById(R.id.messages_lv);
         inputEt = (EditText) findViewById(R.id.input_et);
         voiceHoldView = findViewById(R.id.voice_hold_view);
@@ -742,10 +762,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
         MQUtils.closeKeyboard(MQConversationActivity.this);
 
-        if (mMQChoosePicDialog == null) {
-            mMQChoosePicDialog = new MQChoosePicDialog(this);
+        if (mMQChoosePictureDialog == null) {
+            mMQChoosePictureDialog = new MQChoosePictureDialog(this);
         }
-        mMQChoosePicDialog.show();
+        mMQChoosePictureDialog.show();
     }
 
     /**
@@ -798,7 +818,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
         // 从 相机 获取的图片
         if (requestCode == REQUEST_CODE_CAMERA && resultCode == Activity.RESULT_OK) {
-            File cameraPicFile = mMQChoosePicDialog.getCameraPicFile();
+            File cameraPicFile = mMQChoosePictureDialog.getCameraPicFile();
             if (cameraPicFile != null) {
                 createAndSendImageMessage(cameraPicFile);
             }
@@ -870,10 +890,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      *
      * @param message 消息
      */
-    public void sendMessage(final BaseMessage message) {
+    private void sendMessage(final BaseMessage message) {
         // 状态改为「正在发送」
         message.setStatus(BaseMessage.STATE_SENDING);
-
         // 开始发送
         controller.sendMessage(message, new OnMessageSendCallback() {
             @Override
@@ -892,10 +911,36 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 chatMsgAdapter.notifyDataSetChanged();
             }
         });
-
-
         // 滑动到底部
         conversationListView.setSelection(conversationListView.getBottom());
+    }
+
+    /**
+     * 重发消息
+     *
+     * @param message 待重发的消息
+     */
+    public void resendMessage(final BaseMessage message) {
+        // 状态改为「正在发送」
+        message.setStatus(BaseMessage.STATE_SENDING);
+        // 开始重发
+        controller.resendMessage(message, new OnMessageSendCallback() {
+            @Override
+            public void onSuccess(BaseMessage message, int state) {
+                // 刷新界面
+                chatMsgAdapter.notifyDataSetChanged();
+
+                // 客服不在线的时候，会自动发送留言消息，这个时候要添加一个 tip 到列表
+                if (ErrorCode.NO_AGENT_ONLINE == state) {
+                    addLeaveMessageTip();
+                }
+            }
+
+            @Override
+            public void onFailure(BaseMessage failureMessage, int code, String failureInfo) {
+                chatMsgAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     // 监听EditText输入框数据到变化
@@ -998,6 +1043,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      */
     private void receiveNewMsg(BaseMessage baseMessage) {
         if (chatMsgAdapter != null && !isDupMessage(baseMessage)) {
+            // 如果是配置了不显示语音，收到语音消息直接过滤
+            if (!mqConfig.getShowVoiceMessage() && BaseMessage.TYPE_CONTENT_VOICE.equals(baseMessage.getContentType())) {
+                return;
+            }
+
             chatMessageList.add(baseMessage);
             MQTimeUtils.refreshMQTimeItem(chatMessageList);
             chatMsgAdapter.notifyDataSetChanged();
@@ -1080,42 +1130,5 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             mMQViewPhotoDialog = new MQViewPhotoDialog(this);
         }
         mMQViewPhotoDialog.show(picUrl);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        MQUtils.requestPermission(this, REQUEST_CODE_PERMISSIONS, getString(R.string.mq_runtime_permission_tip_content), new MQUtils.Delegate() {
-            @Override
-            public void onPermissionGranted() {
-            }
-
-            @Override
-            public void onPermissionDenied() {
-                MQUtils.show(MQConversationActivity.this, R.string.mq_permission_denied_tip);
-                finish();
-            }
-        }, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO);
-    }
-
-    @SuppressLint("NewApi")
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_CODE_PERMISSIONS:
-                MQUtils.handlePermissionResult(permissions, grantResults, new MQUtils.Delegate() {
-                    @Override
-                    public void onPermissionGranted() {
-                    }
-
-                    @Override
-                    public void onPermissionDenied() {
-                        MQUtils.show(MQConversationActivity.this, R.string.mq_permission_denied_tip);
-                    }
-                });
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
     }
 }
