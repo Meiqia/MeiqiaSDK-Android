@@ -68,6 +68,8 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
 5.如果你自己的工程中已经添加了 **/eclipse/MeiqiaSdk/libs** 中的 jar 包，拷贝你自己的工程中对应的 jar 包替换 **/eclipse/MeiqiaSdk/libs** 中的 jar 包
 
+**注意：**报 Cannot find the class file for java.nio.file.OpenOption 错的解决方法：Project -> Properties -> Java Build Path -> Libraries -> Add Library -> JRE System Library -> Select Workspace Default (jdk 1.7*)
+
 ## 使用美洽
 
 ### 1.初始化

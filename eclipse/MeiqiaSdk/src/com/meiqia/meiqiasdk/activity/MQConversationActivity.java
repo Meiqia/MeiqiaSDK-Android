@@ -30,6 +30,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -41,7 +42,6 @@ import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
-import com.meiqia.meiqiasdk.util.MediaRecordFunc;
 import com.meiqia.meiqiasdk.dialog.MQChoosePictureDialog;
 import com.meiqia.meiqiasdk.dialog.MQViewPhotoDialog;
 import com.meiqia.meiqiasdk.model.Agent;
@@ -56,6 +56,7 @@ import com.meiqia.meiqiasdk.util.MQChatAdapter;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.util.MQUtils;
+import com.meiqia.meiqiasdk.util.MediaRecordFunc;
 import com.meiqia.meiqiasdk.widget.MQEditToolbar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -82,6 +83,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     // 控件
     private View backBtn;
+    private TextView backTv;
     private TextView titleTv;
     private ListView conversationListView;
     private EditText inputEt;
@@ -133,6 +135,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         init();
         findViews();
         setListeners();
+        applyConfig();
 
         // 初始化输入栏状态
         changeInputStateToTextOrVoice();
@@ -140,6 +143,24 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         registerReceiver();
 
         mEditToolbar.init(this, inputEt);
+    }
+
+    /**
+     * 如果配置了界面相关的 config，在这里应用
+     */
+    private void applyConfig() {
+
+        int titleBackgroundColor = mqConfig.getTitleBackgroundColor();
+        int titleTextColor = mqConfig.getTitleTextColor();
+
+        if (MQConfig.DEFAULT != titleBackgroundColor)
+            findViewById(R.id.title_rl).setBackgroundColor(titleBackgroundColor);
+        if (MQConfig.DEFAULT != titleTextColor) {
+            titleTv.setTextColor(titleTextColor);
+            backTv.setTextColor(titleTextColor);
+            ImageView backIconIv = (ImageView) findViewById(R.id.back_iv);
+            backIconIv.setColorFilter(titleTextColor);
+        }
     }
 
     @Override
@@ -197,6 +218,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     private void findViews() {
         backBtn = findViewById(R.id.back_rl);
+        backTv = (TextView) findViewById(R.id.back_tv);
         conversationListView = (ListView) findViewById(R.id.messages_lv);
         inputEt = (EditText) findViewById(R.id.input_et);
         voiceHoldView = findViewById(R.id.voice_hold_view);
@@ -897,6 +919,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     /**
      * 重发消息
+     *
      * @param message 待重发的消息
      */
     public void resendMessage(final BaseMessage message) {
@@ -1022,6 +1045,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      */
     private void receiveNewMsg(BaseMessage baseMessage) {
         if (chatMsgAdapter != null && !isDupMessage(baseMessage)) {
+            // 如果是配置了不显示语音，收到语音消息直接过滤
+            if (!mqConfig.getShowVoiceMessage() && BaseMessage.TYPE_CONTENT_VOICE.equals(baseMessage.getContentType())) {
+                return;
+            }
+
             chatMessageList.add(baseMessage);
             MQTimeUtils.refreshMQTimeItem(chatMessageList);
             chatMsgAdapter.notifyDataSetChanged();
