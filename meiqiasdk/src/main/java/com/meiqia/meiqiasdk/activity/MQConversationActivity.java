@@ -719,8 +719,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     /**
      * 数据加载完成后的回调
+     *
      * @param mqConversationActivity 当前 Activity
-     * @param agent 当前客服，可能为 null
+     * @param agent                  当前客服，可能为 null
      */
     protected void onLoadDataComplete(MQConversationActivity mqConversationActivity, Agent agent) {
 
@@ -789,10 +790,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             return;
         }
         TextMessage message = new TextMessage(inputEt.getText().toString());
-        boolean isPreSendSuc = checkAndPreSend(message);
-        if (isPreSendSuc) {
-            sendMessage(message);
-        }
+        sendMessage(message);
     }
 
     /**
@@ -803,10 +801,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private void createAndSendImageMessage(File imageFile) {
         PhotoMessage imageMessage = new PhotoMessage();
         imageMessage.setLocalPath(imageFile.getAbsolutePath());
-        boolean isPreSendSuc = checkAndPreSend(imageMessage);
-        if (isPreSendSuc) {
-            sendMessage(imageMessage);
-        }
+        sendMessage(imageMessage);
     }
 
     /**
@@ -817,10 +812,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private void createAndPreSendVoiceMessage(String voicePath) {
         VoiceMessage voiceMessage = new VoiceMessage();
         voiceMessage.setLocalPath(voicePath);
-        boolean isPreSendSuc = checkAndPreSend(voiceMessage);
-        if (isPreSendSuc) {
-            sendMessage(voiceMessage);
-        }
+        sendMessage(voiceMessage);
     }
 
     @Override
@@ -902,6 +894,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * @param message 消息
      */
     public void sendMessage(final BaseMessage message) {
+        boolean isPreSendSuc = checkAndPreSend(message);
+        if (!isPreSendSuc) {
+            return;
+        }
+
         // 状态改为「正在发送」
         message.setStatus(BaseMessage.STATE_SENDING);
         // 开始发送
