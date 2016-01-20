@@ -398,7 +398,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      *
      * @param agentName 客服名
      */
-    private void changeTitleToAgentName(String agentName) {
+    protected void changeTitleToAgentName(String agentName) {
         titleTv.setText(agentName);
     }
 
@@ -407,7 +407,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      *
      * @param agent 客服实体
      */
-    private void changeTitleToAgentName(Agent agent) {
+    protected void changeTitleToAgentName(Agent agent) {
         if (agent != null) {
             titleTv.setText(agent.getNickname());
         } else {
@@ -418,35 +418,35 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     /**
      * 将 title 改为 正在输入
      */
-    private void changeTitleToInputting() {
+    protected void changeTitleToInputting() {
         titleTv.setText(getResources().getString(R.string.mq_title_inputting));
     }
 
     /**
      * 将 title 改为 正在分配客服
      */
-    private void changeTitleToAllocatingAgent() {
+    protected void changeTitleToAllocatingAgent() {
         titleTv.setText(getResources().getString(R.string.mq_allocate_agent));
     }
 
     /**
      * 将 title 改为没有客服的状态
      */
-    private void changeTitleToNoAgentState() {
+    protected void changeTitleToNoAgentState() {
         titleTv.setText(getResources().getString(R.string.mq_title_leave_msg));
     }
 
     /**
      * 将 title 改为没有网络状态
      */
-    private void changeTitleToNetErrorState() {
+    protected void changeTitleToNetErrorState() {
         titleTv.setText(getResources().getString(R.string.mq_title_net_not_work));
     }
 
     /**
      * 将 title 改为未知错误状态
      */
-    private void changeTitleToUnknownErrorState() {
+    protected void changeTitleToUnknownErrorState() {
         titleTv.setText(getResources().getString(R.string.mq_title_unknown_error));
     }
 
@@ -455,7 +455,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      *
      * @param agentNickName 客服名字
      */
-    private void addDirectAgentMessageTip(String agentNickName) {
+    protected void addDirectAgentMessageTip(String agentNickName) {
         titleTv.setText(agentNickName);
         AgentChangeMessage agentChangeMessage = new AgentChangeMessage();
         agentChangeMessage.setAgentNickname(agentNickName);
@@ -467,7 +467,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     /**
      * 添加 留言 的 Tip
      */
-    private void addLeaveMessageTip() {
+    protected void addLeaveMessageTip() {
         if (!isAddLeaveTip) {
             titleTv.setText(getResources().getString(R.string.mq_title_leave_msg));
             LeaveTipMessage leaveTip = new LeaveTipMessage();
@@ -484,7 +484,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     /**
      * 从列表移除 留言 的 Tip
      */
-    private void removeLeaveMessageTip() {
+    protected void removeLeaveMessageTip() {
         Iterator<BaseMessage> chatItemViewBaseIterator = chatMessageList.iterator();
         while (chatItemViewBaseIterator.hasNext()) {
             BaseMessage baseMessage = chatItemViewBaseIterator.next();
@@ -648,6 +648,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     chatMessageList.clear();
                     chatMessageList.addAll(conversationMessageList);
                     loadData();
+                    onLoadDataComplete(MQConversationActivity.this, agent);
                 }
 
                 @Override
@@ -663,6 +664,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     //如果没有加载数据，则加载数据
                     if (!hasLoadData) {
                         getMessageDataFromDatabaseAndLoad();
+                        onLoadDataComplete(MQConversationActivity.this, null);
                     }
 
                 }
@@ -713,6 +715,15 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         conversationListView.setAdapter(chatMsgAdapter);
         conversationListView.setSelection(chatMsgAdapter.getCount() - 1);
         hasLoadData = true;
+    }
+
+    /**
+     * 数据加载完成后的回调
+     * @param mqConversationActivity 当前 Activity
+     * @param agent 当前客服，可能为 null
+     */
+    protected void onLoadDataComplete(MQConversationActivity mqConversationActivity, Agent agent) {
+
     }
 
     @Override
@@ -890,7 +901,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      *
      * @param message 消息
      */
-    private void sendMessage(final BaseMessage message) {
+    public void sendMessage(final BaseMessage message) {
         // 状态改为「正在发送」
         message.setStatus(BaseMessage.STATE_SENDING);
         // 开始发送
