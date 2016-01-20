@@ -39,6 +39,7 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
                 Toast.makeText(MainActivity.this, "int failure", Toast.LENGTH_SHORT).show();
             }
         });
+        MQManager.setDebugMode(true);
 
     }
 
@@ -63,6 +64,16 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
     public void developer(View v) {
         startActivity(new Intent(MainActivity.this, ApiSampleActivity.class));
     }
+
+    /**
+     * 自定义 Activity
+     * @param view
+     */
+    public void customizedConversation(View view) {
+        startActivity(new Intent(MainActivity.this, CustomizedMQConversationActivity.class));
+    }
+
+    // 处理 Android 6.0 的权限获取
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
