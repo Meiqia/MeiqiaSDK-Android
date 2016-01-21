@@ -32,6 +32,11 @@
             android:name=".ApiSampleActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".CustomizedMQConversationActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        
 
         <!-- 聊天界面 -->
         <activity
