@@ -24,15 +24,21 @@
         android:orientation="vertical">
 
         <Button
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             style="@style/DemoTv"
             android:onClick="conversation"
             android:text="咨询客服" />
 
         <Button
+            android:layout_marginBottom="8dp"
             style="@style/DemoTv"
             android:onClick="developer"
             android:text="开发者功能" />
+
+        <Button
+            style="@style/DemoTv"
+            android:onClick="customizedConversation"
+            android:text="自定义 Conversation" />
     </LinearLayout>
 
 </LinearLayout>

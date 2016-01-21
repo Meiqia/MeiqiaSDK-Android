@@ -51,5 +51,13 @@ public class MainActivity extends Activity {
     public void developer(View v) {
         startActivity(new Intent(MainActivity.this, ApiSampleActivity.class));
     }
+    
+    /**
+     * 自定义 Activity
+     * @param view
+     */
+    public void customizedConversation(View view) {
+        startActivity(new Intent(MainActivity.this, CustomizedMQConversationActivity.class));
+    }
 
 }
