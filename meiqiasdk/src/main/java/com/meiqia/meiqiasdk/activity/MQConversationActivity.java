@@ -73,7 +73,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     public static final int REQUEST_CODE_CAMERA = 0;
     public static final int REQUEST_CODE_PHOTO = 1;
-    private static final int REQUEST_CODE_PERMISSIONS = 2;
     private static int MESSAGE_PAGE_COUNT = 30; //消息每页加载数量
     private static final long MIN_RECORD_INTERNAL_TIME = 800;
 

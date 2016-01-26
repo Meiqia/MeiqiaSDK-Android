@@ -35,6 +35,6 @@
     <string name="mq_evaluate_good">好评</string>
     <string name="mq_evaluate_medium">中评</string>
     <string name="mq_evaluate_bad">差评</string>
-    <string name="mq_evaluate_hint">填写评价内容(选填)</string>
+    <string name="mq_evaluate_hint">填写评价内容 (选填)</string>
 
 </resources>
