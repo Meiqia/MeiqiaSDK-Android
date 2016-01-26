@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -48,6 +46,7 @@ import com.meiqia.meiqiasdk.util.ErrorCode;
 import com.meiqia.meiqiasdk.util.MQChatAdapter;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQSimpleTextWatcher;
+import com.meiqia.meiqiasdk.util.MQSoundPoolManager;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.util.MediaRecordFunc;
@@ -105,8 +104,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private NetworkChangeReceiver networkChangeReceiver;
     // 改变title状态
     private Handler mHandler;
-    // Sound
-    private SoundPool soundPool;
+    private MQSoundPoolManager mSoundPoolManager;
 
     // 是否已经加载数据的标识
     private boolean hasLoadData = false;
@@ -172,6 +170,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     @Override
     protected void onDestroy() {
+        mSoundPoolManager.release();
         super.onDestroy();
         try {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
@@ -204,9 +203,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
         // handler
         mHandler = new Handler();
-        // sound
-        soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 5);
-        soundPool.load(this, R.raw.mq_message, 1);
+
+        mSoundPoolManager = new MQSoundPoolManager(this);
     }
 
     private void findViews() {
@@ -1031,10 +1029,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             }
             // 在界面中播放声音
             if (!isPause) {
-                AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-                if (mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
-                    soundPool.play(1, 1, 1, 0, 0, 1);
-                }
+                mSoundPoolManager.playSound();
             }
         }
     }
