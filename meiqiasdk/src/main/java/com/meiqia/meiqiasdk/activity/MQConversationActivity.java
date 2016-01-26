@@ -204,7 +204,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         // handler
         mHandler = new Handler();
 
-        mSoundPoolManager = new MQSoundPoolManager(this);
+        mSoundPoolManager = new MQSoundPoolManager(this, R.raw.mq_message);
     }
 
     private void findViews() {
