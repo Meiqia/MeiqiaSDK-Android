@@ -4,17 +4,22 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -322,5 +327,49 @@ public class MQUtils {
                 imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
             }
         }, 300);
+    }
+
+    /**
+     * 滚动ListView到底部
+     *
+     * @param absListView
+     */
+    public static void scrollListViewToBottom(final AbsListView absListView) {
+        if (absListView != null) {
+            if (absListView.getAdapter() != null && absListView.getAdapter().getCount() > 0) {
+                absListView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        absListView.setSelection(absListView.getAdapter().getCount() - 1);
+                    }
+                });
+            }
+        }
+    }
+
+    /**
+     * 根据Uri获取文件的真实路径
+     *
+     * @param uri
+     * @param context
+     * @return
+     */
+    public static String getRealPathByUri(Context context, Uri uri) {
+        try {
+            ContentResolver resolver = context.getContentResolver();
+            String[] proj = new String[]{MediaStore.Images.Media.DATA};
+            Cursor cursor = MediaStore.Images.Media.query(resolver, uri, proj);
+            String realPath = null;
+            if (cursor != null) {
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                if (cursor.getCount() > 0 && cursor.moveToFirst()) {
+                    realPath = cursor.getString(columnIndex);
+                }
+                cursor.close();
+            }
+            return realPath;
+        } catch (Exception e) {
+            return uri.getPath();
+        }
     }
 }

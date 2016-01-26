@@ -11,11 +11,6 @@ import android.widget.TextView;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
-/**
- * 作者:王浩 邮件:bingoogolapple@gmail.com
- * 创建时间:16/1/25 上午11:54
- * 描述:
- */
 public class MQEvaluateDialog extends Dialog implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
     private static final int EVALUATE_GOOD = 2;
     private static final int EVALUATE_MEDIUM = 1;
