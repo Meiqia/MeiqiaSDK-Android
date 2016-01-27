@@ -40,18 +40,26 @@ public class MQEvaluateDialog extends Dialog implements View.OnClickListener, Ra
 
     @Override
     public void onClick(View v) {
+        MQUtils.closeKeyboard(this);
         dismiss();
+
         if (v.getId() == R.id.tv_evaluate_confirm && mCallback != null) {
             int level = EVALUATE_GOOD;
             int checkedId = mContentRg.getCheckedRadioButtonId();
-            if (checkedId == R.id.rv_evaluate_medium) {
+            if (checkedId == R.id.rb_evaluate_medium) {
                 level = EVALUATE_MEDIUM;
-            } else if (checkedId == R.id.rv_evaluate_bad) {
+            } else if (checkedId == R.id.rb_evaluate_bad) {
                 level = EVALUATE_BAD;
             }
             String content = mContentEt.getText().toString().trim();
             mCallback.executeEvaluate(level, content);
         }
+
+        // 重置状态
+        mContentEt.setText("");
+        mContentEt.clearFocus();
+        mContentRg.clearCheck();
+        mConfirmTv.setEnabled(false);
     }
 
     @Override

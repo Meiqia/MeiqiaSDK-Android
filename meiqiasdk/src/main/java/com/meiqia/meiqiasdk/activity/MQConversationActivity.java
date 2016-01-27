@@ -34,6 +34,7 @@ import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
 import com.meiqia.meiqiasdk.dialog.MQChoosePictureDialog;
+import com.meiqia.meiqiasdk.dialog.MQEvaluateDialog;
 import com.meiqia.meiqiasdk.dialog.MQViewPhotoDialog;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.AgentChangeMessage;
@@ -60,7 +61,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MQConversationActivity extends Activity implements View.OnClickListener {
+public class MQConversationActivity extends Activity implements View.OnClickListener, MQEvaluateDialog.Callback {
     private static final String TAG = MQConversationActivity.class.getSimpleName();
 
     public static final String CLIENT_ID = "clientId";
@@ -116,6 +117,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private MQEditToolbar mEditToolbar;
     private MQViewPhotoDialog mMQViewPhotoDialog;
     private MQChoosePictureDialog mMQChoosePictureDialog;
+    private MQEvaluateDialog mEvaluateDialog;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -964,6 +966,19 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 }
             }
         }
+    }
+
+    @Override
+    public void executeEvaluate(int level, String content) {
+        MQUtils.show(this, level + content);
+    }
+
+    public void evaluate(View v) {
+        if (mEvaluateDialog == null) {
+            mEvaluateDialog = new MQEvaluateDialog(this);
+            mEvaluateDialog.setCallback(this);
+        }
+        mEvaluateDialog.show();
     }
 
     private class MessageReceiver extends com.meiqia.meiqiasdk.controller.MessageReceiver {

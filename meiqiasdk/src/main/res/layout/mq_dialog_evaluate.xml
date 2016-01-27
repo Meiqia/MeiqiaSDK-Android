@@ -19,11 +19,11 @@
         android:layout_marginTop="@dimen/mq_size_level6">
 
         <RadioButton
-            android:id="@+id/rv_evaluate_good"
+            android:id="@+id/rb_evaluate_good"
             style="@style/MQMatchWrap"
             android:background="@android:color/transparent"
             android:button="@null"
-            android:drawableLeft="@drawable/mq_ic_back"
+            android:drawableLeft="@drawable/mq_evaluate_good"
             android:drawablePadding="@dimen/mq_textSize_level1"
             android:drawableRight="@drawable/mq_evaluate_rb"
             android:text="@string/mq_evaluate_good"
@@ -31,12 +31,12 @@
             android:textSize="@dimen/mq_textSize_level2" />
 
         <RadioButton
-            android:id="@+id/rv_evaluate_medium"
+            android:id="@+id/rb_evaluate_medium"
             style="@style/MQMatchWrap"
             android:layout_marginTop="@dimen/mq_size_level5"
             android:background="@android:color/transparent"
             android:button="@null"
-            android:drawableLeft="@drawable/mq_ic_back"
+            android:drawableLeft="@drawable/mq_evaluate_medium"
             android:drawablePadding="@dimen/mq_textSize_level1"
             android:drawableRight="@drawable/mq_evaluate_rb"
             android:text="@string/mq_evaluate_medium"
@@ -44,12 +44,12 @@
             android:textSize="@dimen/mq_textSize_level2" />
 
         <RadioButton
-            android:id="@+id/rv_evaluate_bad"
+            android:id="@+id/rb_evaluate_bad"
             style="@style/MQMatchWrap"
             android:layout_marginTop="@dimen/mq_size_level5"
             android:background="@android:color/transparent"
             android:button="@null"
-            android:drawableLeft="@drawable/mq_ic_back"
+            android:drawableLeft="@drawable/mq_evaluate_bad"
             android:drawablePadding="@dimen/mq_textSize_level1"
             android:drawableRight="@drawable/mq_evaluate_rb"
             android:text="@string/mq_evaluate_bad"

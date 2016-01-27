@@ -170,6 +170,12 @@
         <com.meiqia.meiqiasdk.widget.MQEditToolbar
             android:id="@+id/editToolbar"
             style="@style/MQMatchWrap" />
+
+        <Button
+            style="@style/MQMatchWrap"
+            android:onClick="evaluate"
+            android:text="评价"
+            android:textColor="#f00" />
     </LinearLayout>
 
     <ProgressBar
