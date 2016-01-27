@@ -27,4 +27,11 @@
 
     <color name="mq_item_pressed">#EFEFEF</color>
     <color name="mq_item_normal">@android:color/white</color>
+
+    <color name="mq_evalute_enabled">#17C4CE</color>
+    <color name="mq_evalute_not_enabled">#C6CACF</color>
+    <color name="mq_evalute_hint">#ACB1BA</color>
+    <color name="mq_evalute_good">#00CE7D</color>
+    <color name="mq_evalute_medium">#FFB652</color>
+    <color name="mq_evalute_bad">#FF5C5E</color>
 </resources>

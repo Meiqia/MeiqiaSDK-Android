@@ -7,18 +7,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.database.Cursor;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -32,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
@@ -52,6 +45,8 @@ import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.util.ErrorCode;
 import com.meiqia.meiqiasdk.util.MQChatAdapter;
 import com.meiqia.meiqiasdk.util.MQConfig;
+import com.meiqia.meiqiasdk.util.MQSimpleTextWatcher;
+import com.meiqia.meiqiasdk.util.MQSoundPoolManager;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.util.MediaRecordFunc;
@@ -73,7 +68,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     public static final int REQUEST_CODE_CAMERA = 0;
     public static final int REQUEST_CODE_PHOTO = 1;
-    private static final int REQUEST_CODE_PERMISSIONS = 2;
     private static int MESSAGE_PAGE_COUNT = 30; //消息每页加载数量
     private static final long MIN_RECORD_INTERNAL_TIME = 800;
 
@@ -110,8 +104,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private NetworkChangeReceiver networkChangeReceiver;
     // 改变title状态
     private Handler mHandler;
-    // Sound
-    private SoundPool soundPool;
+    private MQSoundPoolManager mSoundPoolManager;
 
     // 是否已经加载数据的标识
     private boolean hasLoadData = false;
@@ -177,6 +170,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     @Override
     protected void onDestroy() {
+        mSoundPoolManager.release();
         super.onDestroy();
         try {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
@@ -209,9 +203,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
         // handler
         mHandler = new Handler();
-        // sound
-        soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 5);
-        soundPool.load(this, R.raw.mq_message, 1);
+
+        mSoundPoolManager = new MQSoundPoolManager(this, R.raw.mq_message);
     }
 
     private void findViews() {
@@ -713,7 +706,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         }
         chatMsgAdapter = new MQChatAdapter(MQConversationActivity.this, chatMessageList, conversationListView);
         conversationListView.setAdapter(chatMsgAdapter);
-        conversationListView.setSelection(chatMsgAdapter.getCount() - 1);
+        MQUtils.scrollListViewToBottom(conversationListView);
         hasLoadData = true;
     }
 
@@ -728,8 +721,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     @Override
-    public void onClick(View arg0) {
-        int id = arg0.getId();
+    public void onClick(View v) {
+        int id = v.getId();
         if (id == R.id.back_rl) {
             // 返回按钮
 
@@ -742,7 +735,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             // 发送按钮
 
             if (!hasLoadData) {
-                Toast.makeText(this, R.string.mq_data_is_loading, Toast.LENGTH_SHORT).show();
+                MQUtils.show(this, R.string.mq_data_is_loading);
                 return;
             }
 
@@ -768,7 +761,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      */
     private void showChoosePicDialog() {
         if (!hasLoadData) {
-            Toast.makeText(this, R.string.mq_data_is_loading, Toast.LENGTH_SHORT).show();
+            MQUtils.show(this, R.string.mq_data_is_loading);
             return;
         }
 
@@ -784,13 +777,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 创建并发送TextMessage。如果没有客服在线，发送离线消息
      */
     private void createAndSendTextMessage() {
-        //内容为空不发送
-        if (TextUtils.isEmpty(inputEt.getText())) {
-            inputEt.setText("");
+        String msg = inputEt.getText().toString();
+        //内容为空不发送，只有空格时也不发送
+        if (TextUtils.isEmpty(msg.trim())) {
             return;
         }
-        TextMessage message = new TextMessage(inputEt.getText().toString());
-        sendMessage(message);
+        sendMessage(new TextMessage(msg));
     }
 
     /**
@@ -818,38 +810,22 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE_CAMERA) {
+                // 从 相机 获取的图片
 
-        // 从 相机 获取的图片
-        if (requestCode == REQUEST_CODE_CAMERA && resultCode == Activity.RESULT_OK) {
-            File cameraPicFile = mMQChoosePictureDialog.getCameraPicFile();
-            if (cameraPicFile != null) {
-                createAndSendImageMessage(cameraPicFile);
-            }
-        }
+                File cameraPicFile = mMQChoosePictureDialog.getCameraPicFile();
+                if (cameraPicFile != null) {
+                    createAndSendImageMessage(cameraPicFile);
+                }
+            } else if (requestCode == REQUEST_CODE_PHOTO && null != data) {
+                // 从 相册 获取的图片
 
-        // 从 相册 获取的图片
-        if (requestCode == REQUEST_CODE_PHOTO && resultCode == Activity.RESULT_OK && null != data) {
-            String picturePath;
-            try {
-                Uri selectedImage = data.getData();
-                String[] filePathColumns = {MediaStore.Images.Media.DATA};
-                Cursor c = getContentResolver().query(selectedImage, filePathColumns, null, null, null);
-                c.moveToFirst();
-                int columnIndex = c.getColumnIndex(filePathColumns[0]);
-                picturePath = c.getString(columnIndex);
-                c.close();
-            } catch (Exception e) {
-                picturePath = data.getData().getPath();
+                File imageFile = new File(MQUtils.getRealPathByUri(this, data.getData()));
+                if (imageFile.exists()) {
+                    createAndSendImageMessage(imageFile);
+                }
             }
-            // 获取图片并显示
-            File imageFile = new File(picturePath);
-            if (imageFile.exists()) {
-                createAndSendImageMessage(imageFile);
-            }
-        }
-
-        if (requestCode == REQUEST_CODE_CAMERA || requestCode == REQUEST_CODE_PHOTO) {
-            changeInputStateToTextOrVoice();
         }
     }
 
@@ -879,6 +855,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         if (chatMsgAdapter == null) {
             return false;
         }
+        // 状态改为「正在发送」，以便在数据列表中展示正在发送消息的状态
         message.setStatus(BaseMessage.STATE_SENDING);
         // 添加到对话列表
         chatMessageList.add(message);
@@ -899,8 +876,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             return;
         }
 
-        // 状态改为「正在发送」
-        message.setStatus(BaseMessage.STATE_SENDING);
         // 开始发送
         controller.sendMessage(message, new OnMessageSendCallback() {
             @Override
@@ -919,8 +894,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 chatMsgAdapter.notifyDataSetChanged();
             }
         });
-        // 滑动到底部
-        conversationListView.setSelection(conversationListView.getBottom());
+        MQUtils.scrollListViewToBottom(conversationListView);
     }
 
     /**
@@ -929,8 +903,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * @param message 待重发的消息
      */
     public void resendMessage(final BaseMessage message) {
-        // 状态改为「正在发送」
-        message.setStatus(BaseMessage.STATE_SENDING);
         // 开始重发
         controller.resendMessage(message, new OnMessageSendCallback() {
             @Override
@@ -952,7 +924,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     // 监听EditText输入框数据到变化
-    private TextWatcher inputTextWatcher = new TextWatcher() {
+    private TextWatcher inputTextWatcher = new MQSimpleTextWatcher() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             // 向服务器发送一个正在输入的函数
@@ -965,16 +937,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     changeInputStateToTextOrVoice();
                 }
             }
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
         }
     };
 
@@ -1063,14 +1025,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             int lastVisiblePosition = conversationListView.getLastVisiblePosition();
             // -2 因为是先添加
             if (lastVisiblePosition == (chatMsgAdapter.getCount() - 2)) {
-                conversationListView.setSelection(chatMsgAdapter.getCount() - 1); // 往下挪一截
+                MQUtils.scrollListViewToBottom(conversationListView);
             }
             // 在界面中播放声音
             if (!isPause) {
-                AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-                if (mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
-                    soundPool.play(1, 1, 1, 0, 0, 1);
-                }
+                mSoundPoolManager.playSound();
             }
         }
     }

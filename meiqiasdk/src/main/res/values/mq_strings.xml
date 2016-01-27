@@ -29,4 +29,12 @@
     <string name="mq_runtime_permission_tip">咨询客服需要以下权限:\n\n1.访问设备上的照片\n2.录制音频</string>
     <string name="mq_permission_denied_tip">您拒绝了咨询客服所需要的相关权限!</string>
     <string name="mq_back"></string>
+
+
+    <string name="mq_evaluate_title">你对本次服务满意吗？</string>
+    <string name="mq_evaluate_good">好评</string>
+    <string name="mq_evaluate_medium">中评</string>
+    <string name="mq_evaluate_bad">差评</string>
+    <string name="mq_evaluate_hint">填写评价内容 (选填)</string>
+
 </resources>
