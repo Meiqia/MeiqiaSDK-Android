@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
-import com.meiqia.core.callback.OnInitCallBackOn;
+import com.meiqia.core.callback.OnInitCallback;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
 
 public class MainActivity extends Activity {
@@ -20,9 +20,9 @@ public class MainActivity extends Activity {
         // 替换成自己的key
         String meiqiaKey = "a71c257c80dfe883d92a64dca323ec20";
 
-        MQManager.init(this, meiqiaKey, new OnInitCallBackOn() {
+        MQManager.init(this, meiqiaKey, new OnInitCallback() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(String clientId) {
                 Toast.makeText(MainActivity.this, "init success", Toast.LENGTH_SHORT).show();
             }
 
@@ -31,7 +31,6 @@ public class MainActivity extends Activity {
                 Toast.makeText(MainActivity.this, "int failure", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     /**
@@ -40,7 +39,7 @@ public class MainActivity extends Activity {
      * @param v
      */
     public void conversation(View v) {
-        startActivity(new Intent(MainActivity.this, MQConversationActivity.class));
+    	startActivity(new Intent(MainActivity.this, MQConversationActivity.class));
     }
 
     /**
@@ -51,13 +50,13 @@ public class MainActivity extends Activity {
     public void developer(View v) {
         startActivity(new Intent(MainActivity.this, ApiSampleActivity.class));
     }
-    
+
     /**
      * 自定义 Activity
+     *
      * @param view
      */
     public void customizedConversation(View view) {
         startActivity(new Intent(MainActivity.this, CustomizedMQConversationActivity.class));
     }
-
 }

@@ -2,6 +2,9 @@ package com.meiqia.meiqiasdk.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.IdRes;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -36,13 +39,44 @@ public class MQEditToolbar extends RelativeLayout implements View.OnClickListene
     private static final int EMOTION_ROW = 4;
     private static final int EMOTION_PAGE_SIZE = EMOTION_COLUMN * EMOTION_ROW - 1;
 
+    private static final int WHAT_CHANGE_TO_EMOTION_KEYBOARD = 1;
+    private static final int WHAT_CHANGE_TO_VOICE_KEYBOARD = 2;
+    private static final int WHAT_SCROLL_CONTENT_TO_BOTTOM = 3;
+
+    // emotion表情 START
     private LinearLayout mEmotionLl;
     private ViewPager mEmotionVp;
     private LinearLayout mIndicatorLl;
     private ArrayList<ImageView> mIndicatorIvList;
     private ArrayList<GridView> mGridViewList;
-    private EditText mContentEt;
+    // emotion表情 END
+
+    // 扩展语音 START
+    private MQAudioRecorderLayout mVoiceArl;
+    // 扩展语音 END
+
     private Activity mActivity;
+    private EditText mContentEt;
+    private Callback mCallback;
+
+    private Handler mHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case WHAT_CHANGE_TO_EMOTION_KEYBOARD:
+                    showEmotionKeyboard();
+                    closeVoiceKeyboard();
+                    break;
+                case WHAT_CHANGE_TO_VOICE_KEYBOARD:
+                    showVoiceKeyboard();
+                    closeEmotionKeyboard();
+                    break;
+                case WHAT_SCROLL_CONTENT_TO_BOTTOM:
+                    mCallback.scrollContentToBottom();
+                    break;
+            }
+        }
+    };
 
     public MQEditToolbar(Context context) {
         this(context, null);
@@ -64,6 +98,8 @@ public class MQEditToolbar extends RelativeLayout implements View.OnClickListene
         mEmotionLl = getViewById(R.id.ll_edit_toolbar_emotion);
         mEmotionVp = getViewById(R.id.vp_edit_toolbar_emotion);
         mIndicatorLl = getViewById(R.id.ll_edit_toolbar_indicator);
+
+        mVoiceArl = getViewById(R.id.arl_edit_toolbar_audio);
     }
 
     private void setListener() {
@@ -74,6 +110,29 @@ public class MQEditToolbar extends RelativeLayout implements View.OnClickListene
                     mIndicatorIvList.get(i).setEnabled(false);
                 }
                 mIndicatorIvList.get(position).setEnabled(true);
+            }
+        });
+
+        mVoiceArl.setCallback(new MQAudioRecorderLayout.Callback() {
+            @Override
+            public void onAudioRecorderFinish(int time, String filePath) {
+                if (mCallback != null) {
+                    mCallback.onAudioRecorderFinish(time, filePath);
+                }
+            }
+
+            @Override
+            public void onAudioRecorderTooShort() {
+                if (mCallback != null) {
+                    mCallback.onAudioRecorderTooShort();
+                }
+            }
+
+            @Override
+            public void onAudioRecorderNoPermission() {
+                if (mCallback != null) {
+                    mCallback.onAudioRecorderNoPermission();
+                }
             }
         });
     }
@@ -143,14 +202,31 @@ public class MQEditToolbar extends RelativeLayout implements View.OnClickListene
     /**
      * 切换表情键盘和软键盘
      */
-    public void toggleKeyboard() {
-        if (mContentEt != null) {
-            if (isEmotionKeyboardVisible()) {
-                changeToOriginalKeyboard();
-            } else {
-                changeToEmotionKeyboard();
-            }
+    public void toggleEmotionOriginKeyboard() {
+        if (isEmotionKeyboardVisible()) {
+            changeToOriginalKeyboard();
+        } else {
+            changeToEmotionKeyboard();
         }
+    }
+
+    /**
+     * 切换语音键盘和软键盘
+     */
+    public void toggleVoiceOriginKeyboard() {
+        if (isVoiceKeyboardVisible()) {
+            changeToOriginalKeyboard();
+        } else {
+            changeToVoiceKeyboard();
+        }
+    }
+
+    /**
+     * 切换到语音键盘
+     */
+    public void changeToVoiceKeyboard() {
+        MQUtils.closeKeyboard(mActivity);
+        mHandler.sendEmptyMessageDelayed(WHAT_CHANGE_TO_VOICE_KEYBOARD, MQUtils.KEYBOARD_CHANGE_DELAY);
     }
 
     /**
@@ -163,44 +239,97 @@ public class MQEditToolbar extends RelativeLayout implements View.OnClickListene
         }
 
         MQUtils.closeKeyboard(mActivity);
-
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mEmotionLl.setVisibility(VISIBLE);
-            }
-        }, 300);
+        mHandler.sendEmptyMessageDelayed(WHAT_CHANGE_TO_EMOTION_KEYBOARD, MQUtils.KEYBOARD_CHANGE_DELAY);
     }
 
     /**
      * 切换到系统原始键盘
      */
     public void changeToOriginalKeyboard() {
-        closeEmotionKeyboard();
+        closeCustomKeyboard();
         MQUtils.openKeyboard(getContext(), mContentEt);
+        // 打开系统键盘也延时了的，这里延时2倍再滚动到底部
+        mHandler.sendEmptyMessageDelayed(WHAT_SCROLL_CONTENT_TO_BOTTOM, MQUtils.KEYBOARD_CHANGE_DELAY * 2);
+    }
+
+    /**
+     * 显示表情键盘
+     */
+    private void showEmotionKeyboard() {
+        mEmotionLl.setVisibility(VISIBLE);
+        sendScrollContentToBottomMsg();
+    }
+
+    /**
+     * 显示语音键盘
+     */
+    private void showVoiceKeyboard() {
+        mVoiceArl.setVisibility(VISIBLE);
+        sendScrollContentToBottomMsg();
+    }
+
+    /**
+     * 延时发送滚动内容到底部的消息给Handler
+     */
+    private void sendScrollContentToBottomMsg() {
+        mHandler.sendEmptyMessageDelayed(WHAT_SCROLL_CONTENT_TO_BOTTOM, MQUtils.KEYBOARD_CHANGE_DELAY);
     }
 
     /**
      * 关闭表情键盘
      */
     public void closeEmotionKeyboard() {
-
         mEmotionLl.setVisibility(GONE);
+    }
+
+    /**
+     * 关闭语音键盘
+     */
+    public void closeVoiceKeyboard() {
+        mVoiceArl.setVisibility(GONE);
+    }
+
+    /**
+     * 关闭自定义键盘
+     */
+    public void closeCustomKeyboard() {
+        closeEmotionKeyboard();
+        closeVoiceKeyboard();
     }
 
     /**
      * 关闭所有键盘
      */
     public void closeAllKeyboard() {
-        closeEmotionKeyboard();
+        closeCustomKeyboard();
         MQUtils.closeKeyboard(mActivity);
     }
 
     /**
+     * 表情键盘是否可见
+     *
      * @return
      */
     public boolean isEmotionKeyboardVisible() {
         return mEmotionLl.getVisibility() == View.VISIBLE;
+    }
+
+    /**
+     * 语音键盘是否可见
+     *
+     * @return
+     */
+    public boolean isVoiceKeyboardVisible() {
+        return mVoiceArl.getVisibility() == View.VISIBLE;
+    }
+
+    /**
+     * 自定义键盘是否可见，在Activity的onBackPressed中处理返回按钮
+     *
+     * @return
+     */
+    public boolean isCustomKeyboardVisible() {
+        return isEmotionKeyboardVisible() || isVoiceKeyboardVisible();
     }
 
     /**
@@ -216,29 +345,55 @@ public class MQEditToolbar extends RelativeLayout implements View.OnClickListene
         mContentEt.setSelection(cursorPosition + text.length());
     }
 
-    public void init(Activity activity, EditText contentEt) {
+    /**
+     * 初始化，必须调用该方法
+     *
+     * @param activity
+     * @param contentEt
+     */
+    public void init(Activity activity, EditText contentEt, Callback callback) {
+        if (activity == null || contentEt == null || callback == null) {
+            throw new RuntimeException(MQEditToolbar.class.getSimpleName() + "的init方法的参数均不能为null");
+        }
+
         mActivity = activity;
         mContentEt = contentEt;
+        mCallback = callback;
+
+
         mContentEt.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isEmotionKeyboardVisible()) {
-                    closeEmotionKeyboard();
+                if (isCustomKeyboardVisible()) {
+                    closeCustomKeyboard();
                 }
+                sendScrollContentToBottomMsg();
             }
         });
+
         mContentEt.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     closeAllKeyboard();
+                } else {
+                    sendScrollContentToBottomMsg();
                 }
             }
         });
     }
 
+    /**
+     * 是否正在录音
+     *
+     * @return
+     */
+    public boolean isRecording() {
+        return mVoiceArl.isRecording();
+    }
+
     @Override
-    public void onClick(View view) {
+    public void onClick(View v) {
     }
 
     class EmotionPagerAdapter extends PagerAdapter {
@@ -309,6 +464,31 @@ public class MQEditToolbar extends RelativeLayout implements View.OnClickListene
 
             return convertView;
         }
+    }
+
+    public interface Callback {
+        /**
+         * 录音完成
+         *
+         * @param time     录音时长
+         * @param filePath 音频文件路径
+         */
+        void onAudioRecorderFinish(int time, String filePath);
+
+        /**
+         * 录音时间太短
+         */
+        void onAudioRecorderTooShort();
+
+        /**
+         * 滚动内容到最底部
+         */
+        void scrollContentToBottom();
+
+        /**
+         * 没有录音权限
+         */
+        void onAudioRecorderNoPermission();
     }
 
     /**

@@ -36,5 +36,14 @@
     <string name="mq_evaluate_medium">中评</string>
     <string name="mq_evaluate_bad">差评</string>
     <string name="mq_evaluate_hint">填写评价内容 (选填)</string>
+    <string name="mq_evaluate_result_prefix">你给出了&#160;&#160;</string>
+    <string name="mq_evaluate_failure">评价失败</string>
 
+    <string name="mq_audio_status_normal">按住说话</string>
+    <string name="mq_audio_status_recording">手指上滑，取消发送</string>
+    <string name="mq_audio_status_want_cancel">松开手指，取消发送</string>
+
+    <string name="mq_download_audio_failure">下载录音失败!</string>
+    <string name="mq_recorder_no_permission">没有录音权限!</string>
+    <string name="mq_recorder_remaining_time">还可以说 %1$s 秒</string>
 </resources>

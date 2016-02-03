@@ -8,12 +8,18 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.ColorRes;
 import android.support.annotation.StringRes;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -36,6 +42,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MQUtils {
+    /**
+     * 键盘切换延时时间
+     */
+    public static final int KEYBOARD_CHANGE_DELAY = 300;
+
     private static Handler sHandler = new Handler();
 
     public static void runInThread(Runnable task) {
@@ -152,6 +163,33 @@ public class MQUtils {
         }
         lastClickTime = time;
         return false;
+    }
+
+    /**
+     * @param context
+     * @param bitmap
+     * @param cornerRadius
+     * @return
+     */
+    public static RoundedBitmapDrawable getRoundedDrawable(Context context, Bitmap bitmap, float cornerRadius) {
+        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), bitmap);
+        roundedBitmapDrawable.setAntiAlias(true);
+        roundedBitmapDrawable.setCornerRadius(cornerRadius);
+        return roundedBitmapDrawable;
+    }
+
+    public static Drawable tintDrawable(Context context, Drawable drawable, @ColorRes int color) {
+        final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(wrappedDrawable, context.getResources().getColor(color));
+        return wrappedDrawable;
+    }
+
+    public static void setBackground(View v, Drawable bgDrawable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            v.setBackground(bgDrawable);
+        } else {
+            v.setBackgroundDrawable(bgDrawable);
+        }
     }
 
     /**
@@ -371,5 +409,26 @@ public class MQUtils {
         } catch (Exception e) {
             return uri.getPath();
         }
+    }
+
+    /**
+     * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
+     */
+    public static int px2dip(Context context, float pxValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
+    }
+
+    /**
+     * 获取取屏幕宽度
+     *
+     * @param context
+     * @return
+     */
+    public static int getScreenWidth(Context context) {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(dm);
+        return dm.widthPixels;
     }
 }

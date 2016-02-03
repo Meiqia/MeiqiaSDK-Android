@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MQMatchWrap"
+    android:gravity="center"
+    android:padding="@dimen/mq_size_level2">
+
+    <TextView
+        android:id="@+id/tv_msg_evaluate_content"
+        style="@style/MQWrapWrap"
+        android:textColor="@color/mq_event_gray"
+        android:textSize="14sp"
+        tools:text="你给出了" />
+</LinearLayout>

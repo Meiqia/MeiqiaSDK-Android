@@ -4,17 +4,28 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.support.annotation.ColorRes;
 import android.support.annotation.StringRes;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -31,6 +42,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MQUtils {
+    /**
+     * 键盘切换延时时间
+     */
+    public static final int KEYBOARD_CHANGE_DELAY = 300;
+
     private static Handler sHandler = new Handler();
 
     public static void runInThread(Runnable task) {
@@ -147,6 +163,33 @@ public class MQUtils {
         }
         lastClickTime = time;
         return false;
+    }
+
+    /**
+     * @param context
+     * @param bitmap
+     * @param cornerRadius
+     * @return
+     */
+    public static RoundedBitmapDrawable getRoundedDrawable(Context context, Bitmap bitmap, float cornerRadius) {
+        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), bitmap);
+        roundedBitmapDrawable.setAntiAlias(true);
+        roundedBitmapDrawable.setCornerRadius(cornerRadius);
+        return roundedBitmapDrawable;
+    }
+
+    public static Drawable tintDrawable(Context context, Drawable drawable, @ColorRes int color) {
+        final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(wrappedDrawable, context.getResources().getColor(color));
+        return wrappedDrawable;
+    }
+
+    public static void setBackground(View v, Drawable bgDrawable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            v.setBackground(bgDrawable);
+        } else {
+            v.setBackgroundDrawable(bgDrawable);
+        }
     }
 
     /**
@@ -322,5 +365,70 @@ public class MQUtils {
                 imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
             }
         }, 300);
+    }
+
+    /**
+     * 滚动ListView到底部
+     *
+     * @param absListView
+     */
+    public static void scrollListViewToBottom(final AbsListView absListView) {
+        if (absListView != null) {
+            if (absListView.getAdapter() != null && absListView.getAdapter().getCount() > 0) {
+                absListView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        absListView.setSelection(absListView.getAdapter().getCount() - 1);
+                    }
+                });
+            }
+        }
+    }
+
+    /**
+     * 根据Uri获取文件的真实路径
+     *
+     * @param uri
+     * @param context
+     * @return
+     */
+    public static String getRealPathByUri(Context context, Uri uri) {
+        try {
+            ContentResolver resolver = context.getContentResolver();
+            String[] proj = new String[]{MediaStore.Images.Media.DATA};
+            Cursor cursor = MediaStore.Images.Media.query(resolver, uri, proj);
+            String realPath = null;
+            if (cursor != null) {
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                if (cursor.getCount() > 0 && cursor.moveToFirst()) {
+                    realPath = cursor.getString(columnIndex);
+                }
+                cursor.close();
+            }
+            return realPath;
+        } catch (Exception e) {
+            return uri.getPath();
+        }
+    }
+
+    /**
+     * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
+     */
+    public static int px2dip(Context context, float pxValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
+    }
+
+    /**
+     * 获取取屏幕宽度
+     *
+     * @param context
+     * @return
+     */
+    public static int getScreenWidth(Context context) {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(dm);
+        return dm.widthPixels;
     }
 }

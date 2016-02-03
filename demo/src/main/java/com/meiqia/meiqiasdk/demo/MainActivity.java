@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
-import com.meiqia.core.callback.OnInitCallBackOn;
+import com.meiqia.core.callback.OnInitCallback;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
@@ -28,9 +28,9 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
         // 替换成自己的key
         String meiqiaKey = "a71c257c80dfe883d92a64dca323ec20";
 
-        MQManager.init(this, meiqiaKey, new OnInitCallBackOn() {
+        MQManager.init(this, meiqiaKey, new OnInitCallback() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(String clientId) {
                 Toast.makeText(MainActivity.this, "init success", Toast.LENGTH_SHORT).show();
             }
 
@@ -39,8 +39,6 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
                 Toast.makeText(MainActivity.this, "int failure", Toast.LENGTH_SHORT).show();
             }
         });
-        MQManager.setDebugMode(true);
-
     }
 
     /**
@@ -67,6 +65,7 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
 
     /**
      * 自定义 Activity
+     *
      * @param view
      */
     public void customizedConversation(View view) {
@@ -74,7 +73,6 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
     }
 
     // 处理 Android 6.0 的权限获取
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);

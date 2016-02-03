@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.meiqia.core.MQManager;
 import com.meiqia.core.bean.MQAgent;
 import com.meiqia.core.bean.MQMessage;
+import com.meiqia.core.callback.OnEvaluateCallback;
 import com.meiqia.core.callback.OnGetMessageListCallback;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
@@ -15,7 +16,6 @@ import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.util.MQUtils;
-import com.meiqia.meiqiasdk.util.MediaRecordFunc;
 
 import java.util.List;
 
@@ -34,10 +34,6 @@ public class ControllerImpl implements MQController {
             @Override
             public void onSuccess(MQMessage mcMessage, int state) {
                 MQUtils.parseMQMessageIntoChatBase(mcMessage, message);
-                // 如果是语音消息，发送成功共重命名本地语音文件。默认的储存路径 MediaRecordFunc.VOICE_STORE_PATH
-                if (message instanceof VoiceMessage) {
-                    MediaRecordFunc.renameVoiceFile((VoiceMessage) message, mcMessage.getId());
-                }
                 onMessageSendCallback.onSuccess(message, state);
             }
 
@@ -50,7 +46,6 @@ public class ControllerImpl implements MQController {
 
         // 开始发送
         if (BaseMessage.TYPE_CONTENT_TEXT.equals(message.getContentType())) {
-            // 转换 emoji 编码再发送
             String content = message.getContent();
             MQManager.getInstance(context).sendMQTextMessage(content, onMQMessageSendCallback);
         } else if (BaseMessage.TYPE_CONTENT_PHOTO.equals(message.getContentType())) {
@@ -117,10 +112,10 @@ public class ControllerImpl implements MQController {
     public void setCurrentClientOnline(String clientId, String customizedId, final OnClientOnlineCallback onClientOnlineCallback) {
         com.meiqia.core.callback.OnClientOnlineCallback onlineCallback = new com.meiqia.core.callback.OnClientOnlineCallback() {
             @Override
-            public void onSuccess(MQAgent mqAgent, List<MQMessage> conversationMessageList) {
+            public void onSuccess(MQAgent mqAgent, String conversationId, List<MQMessage> conversationMessageList) {
                 Agent agent = MQUtils.parseMQAgentToAgent(mqAgent);
                 List<BaseMessage> messageList = MQUtils.parseMQMessageToChatBaseList(conversationMessageList);
-                onClientOnlineCallback.onSuccess(agent, messageList);
+                onClientOnlineCallback.onSuccess(agent, conversationId, messageList);
             }
 
             @Override
@@ -141,6 +136,11 @@ public class ControllerImpl implements MQController {
     @Override
     public void sendClientInputtingWithContent(String content) {
         MQManager.getInstance(context).sendClientInputtingWithContent(content);
+    }
+
+    @Override
+    public void executeEvaluate(String conversationId, int level, String content, OnEvaluateCallback onEvaluateCallback) {
+        MQManager.getInstance(context).executeEvaluate(conversationId, level, content, onEvaluateCallback);
     }
 
 }
