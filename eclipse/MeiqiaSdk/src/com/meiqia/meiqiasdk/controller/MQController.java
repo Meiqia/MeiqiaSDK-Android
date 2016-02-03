@@ -1,6 +1,7 @@
 package com.meiqia.meiqiasdk.controller;
 
 
+import com.meiqia.core.callback.OnEvaluateCallback;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
@@ -11,6 +12,7 @@ public interface MQController {
     String ACTION_NEW_MESSAGE_RECEIVED = "new_msg_received_action";
     String ACTION_AGENT_INPUTTING = "agent_inputting_action";
     String ACTION_CLIENT_IS_REDIRECTED_EVENT = "agent_change_action";
+    String ACTION_INVITE_EVALUATION = "invite_evaluation";
 
     void sendMessage(BaseMessage baseMessage, OnMessageSendCallback onMessageSendCallback);
 
@@ -49,4 +51,14 @@ public interface MQController {
      * @param content 内容
      */
     void sendClientInputtingWithContent(String content);
+
+    /**
+     * 对客服进行评价
+     *
+     * @param conversationId     当前会话id
+     * @param level              评价的等级
+     * @param content            评价的内容
+     * @param onEvaluateCallback 评价的回调接口
+     */
+    void executeEvaluate(String conversationId, int level, String content, OnEvaluateCallback onEvaluateCallback);
 }

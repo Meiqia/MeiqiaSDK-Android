@@ -1,64 +1,25 @@
 package com.meiqia.meiqiasdk.util;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
 
 
 public class MQConfig {
-    public static final int DEFAULT = 0;
+    public static final int DEFAULT = -1;
 
-    private SharedPreferences sp;
-    private SharedPreferences.Editor editor;
-
-    public MQConfig(Context context) {
-        sp = context.getSharedPreferences("MeiQia_Config", Context.MODE_PRIVATE);
-    }
-
-    private void putString(String key, String value) {
-        editor = sp.edit();
-        editor.putString(key, value);
-        editor.apply();
-    }
-
-    private void putBoolean(String key, boolean value) {
-        editor = sp.edit();
-        editor.putBoolean(key, value);
-        editor.apply();
-    }
-
-    private void putInt(String key, int value) {
-        editor = sp.edit();
-        editor.putInt(key, value);
-        editor.apply();
-    }
-
-    public boolean getShowVoiceMessage() {
-        return sp.getBoolean("meiqia_show_voice_message", true);
-    }
-
-    public MQConfig setShowVoiceMessage(boolean value) {
-        putBoolean("meiqia_show_voice_message", value);
-        return this;
-    }
-
-    public int getTitleBackgroundColor() {
-        return sp.getInt("meiqia_title_background_color", 0);
-    }
-
-    public MQConfig setTitleBackgroundColor(@ColorInt int backgroundColor) {
-        putInt("meiqia_title_background_color", backgroundColor);
-        return this;
-    }
-
-    public MQConfig setTitleTextColor(@ColorInt int titleTextColor) {
-        putInt("meiqia_title_text_color", titleTextColor);
-        return this;
-    }
-
-    public int getTitleTextColor() {
-        return sp.getInt("meiqia_title_text_color", 0);
-    }
-
+    public static boolean isVoiceSwitchOpen = true; // 语音开关
+    public static boolean isSoundSwitchOpen = true; // 声音开关
+    public static boolean isLoadMessagesFromNativeOpen = false; // 加载本地数据开关
+    @ColorRes
+    public static int bgColorTitle = DEFAULT; // 标题栏背景颜色
+    @ColorRes
+    public static int textColorTitle = DEFAULT; // 标题栏文字颜色
+    @ColorRes
+    public static int bgColorChatBubbleLeft = DEFAULT; // 左边气泡背景颜色
+    @ColorRes
+    public static int bgColorChatBubbleRight = DEFAULT; // 右边气泡背景颜色
+    @ColorRes
+    public static int textColorChatBubbleLeft = DEFAULT; // 左边气泡文字颜色
+    @ColorRes
+    public static int textColorChatBubbleRight = DEFAULT; // 右边气泡文字颜色
 }
 
