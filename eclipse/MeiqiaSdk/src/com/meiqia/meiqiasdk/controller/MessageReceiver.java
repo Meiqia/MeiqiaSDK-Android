@@ -3,6 +3,7 @@ package com.meiqia.meiqiasdk.controller;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.meiqia.core.MQMessageManager;
 import com.meiqia.core.bean.MQAgent;
@@ -12,6 +13,11 @@ import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
 public abstract class MessageReceiver extends BroadcastReceiver {
+    private String mConversationId;
+
+    public void setConversationId(String conversationId) {
+        this.mConversationId = conversationId;
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -52,6 +58,17 @@ public abstract class MessageReceiver extends BroadcastReceiver {
             changeTitleToAgentName(mqAgent.getNickname());
             Agent agent = MQUtils.parseMQAgentToAgent(mqAgent);
             setCurrentAgent(agent);
+
+            String conversationId = intent.getStringExtra("conversation_id");
+            if (!TextUtils.isEmpty(conversationId)) {
+                mConversationId = conversationId;
+                setNewConversationId(conversationId);
+            }
+        } else if (MQMessageManager.ACTION_INVITE_EVALUATION.equals(action)) {
+            String conversationId = intent.getStringExtra("conversation_id");
+            if (conversationId.equals(mConversationId)) {
+                inviteEvaluation();
+            }
         }
     }
 
@@ -65,4 +82,8 @@ public abstract class MessageReceiver extends BroadcastReceiver {
 
     public abstract void setCurrentAgent(Agent agent);
 
+
+    public abstract void inviteEvaluation();
+
+    public abstract void setNewConversationId(String newConversationId);
 }

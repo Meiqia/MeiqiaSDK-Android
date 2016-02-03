@@ -7,5 +7,5 @@ import com.meiqia.meiqiasdk.model.BaseMessage;
 import java.util.List;
 
 public interface OnClientOnlineCallback extends OnFailureCallBack {
-    void onSuccess(Agent agent, List<BaseMessage> messageList);
+    void onSuccess(Agent agent,String conversationId, List<BaseMessage> messageList);
 }

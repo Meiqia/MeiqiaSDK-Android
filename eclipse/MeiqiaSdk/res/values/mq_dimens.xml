@@ -16,4 +16,8 @@
 
     <dimen name="mq_textSize_level1">12sp</dimen>
     <dimen name="mq_textSize_level2">16sp</dimen>
+
+    <dimen name="mq_edit_toolbar_height">260dp</dimen>
+    <dimen name="mq_audio_edge">20dp</dimen>
+    <dimen name="mq_audio_textSize">16sp</dimen>
 </resources>

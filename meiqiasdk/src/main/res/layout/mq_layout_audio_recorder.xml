@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/mq_audio_edge">
+
+    <TextView
+        android:id="@+id/tv_audio_recorder_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/mq_audio_status_normal"
+        android:textColor="@color/mq_audio_gray"
+        android:textSize="@dimen/mq_audio_textSize" />
+
+    <ImageView
+        android:id="@+id/iv_audio_recorder_recorder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_audio_recorder_status"
+        android:layout_centerHorizontal="true"
+        android:clickable="true"
+        android:src="@drawable/mq_voice_level1" />
+
+</RelativeLayout>
