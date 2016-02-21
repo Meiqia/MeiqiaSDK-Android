@@ -1,7 +1,7 @@
 # 美洽移动应用 SDK 3.0 for Android 开发文档
 
 ## ScreenShot
-![美恰SDKDemo](https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/261123e1393215c7)
+![美恰SDKDemo](https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/155c91da06ea9bfd)
 
 ## 集成美洽 SDK
 
@@ -76,7 +76,7 @@ MQManager.init(context, "Your Appkey", new OnInitCallback() {
 ```
 如果您不知道 Appkey ，请使用美洽管理员帐号登录 美洽，在「设置」 -> 「SDK」 菜单中查看。如下图：
 
-![获取 Appkey](https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/8fbdaa6076d0b9d0)
+![获取 Appkey](https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/5a999b67233e77dc)
 
 ### 2.启动对话界面
 
