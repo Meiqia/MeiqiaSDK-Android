@@ -27,11 +27,10 @@ public class MainActivity extends Activity {
                 Toast.makeText(MainActivity.this, "init success", Toast.LENGTH_SHORT).show();
             }
 
-			@Override
-			public void onFailure(int arg0, String arg1) {
-				// TODO Auto-generated method stub
-				
-			}
+            @Override
+            public void onFailure(int code, String message) {
+                Toast.makeText(MainActivity.this, "int failure", Toast.LENGTH_SHORT).show();
+            }
         });
 
     }
