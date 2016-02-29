@@ -80,6 +80,7 @@ public class MQChatAdapter extends BaseAdapter {
 
     public void loadMoreMessage(List<BaseMessage> baseMessages) {
         mcMessageList.addAll(0, baseMessages);
+        notifyDataSetChanged();
         downloadAndNotifyDataSetChanged(baseMessages);
     }
 

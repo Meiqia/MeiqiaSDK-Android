@@ -20,6 +20,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,6 +31,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.meiqia.core.callback.OnEvaluateCallback;
@@ -82,8 +84,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private static MQController controller;
 
     // 控件
-    private View backBtn;
+    private RelativeLayout titleRl;
+    private RelativeLayout backRl;
     private TextView backTv;
+    private ImageView backIv;
     private TextView titleTv;
     private ListView conversationListView;
     private EditText inputEt;
@@ -125,8 +129,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // 保持屏幕长亮
         setContentView(R.layout.mq_activity_conversation);
 
-        init();
         findViews();
+        init();
         setListeners();
         applyConfig();
         registerReceiver();
@@ -139,15 +143,25 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      */
     private void applyConfig() {
         if (MQConfig.DEFAULT != MQConfig.bgColorTitle) {
-            View titleRl = findViewById(R.id.title_rl);
             Drawable tintDrawable = MQUtils.tintDrawable(this, titleRl.getBackground(), MQConfig.bgColorTitle);
             MQUtils.setBackground(titleRl, tintDrawable);
         }
+
+        if (MQConfig.DEFAULT != MQConfig.backArrowIconResId) {
+            backIv.setImageResource(MQConfig.backArrowIconResId);
+        }
+
+        if (MQConfig.MQTitleGravity.LEFT == MQConfig.titleGravity) {
+            RelativeLayout.LayoutParams titleTvParams = (RelativeLayout.LayoutParams) titleTv.getLayoutParams();
+            titleTvParams.addRule(RelativeLayout.RIGHT_OF, R.id.back_rl);
+            titleTv.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+            backTv.setVisibility(View.GONE);
+        }
+
         if (MQConfig.DEFAULT != MQConfig.textColorTitle) {
             titleTv.setTextColor(getResources().getColor(MQConfig.textColorTitle));
             backTv.setTextColor(getResources().getColor(MQConfig.textColorTitle));
-            ImageView backIconIv = (ImageView) findViewById(R.id.back_iv);
-            backIconIv.setColorFilter(MQConfig.textColorTitle);
+            backIv.setColorFilter(getResources().getColor(MQConfig.textColorTitle));
         }
     }
 
@@ -180,6 +194,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             mSoundPoolManager.release();
             LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
             unregisterReceiver(networkChangeReceiver);
+            // 退出的时候，如果没有客服，关闭服务
+            if (currentAgent == null) {
+                controller.closeService();
+            }
         } catch (Exception e) {
             //有些时候会出现未注册就取消注册的情况，暂时不知道为什么
         }
@@ -210,11 +228,15 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mHandler = new Handler();
 
         mSoundPoolManager = MQSoundPoolManager.getInstance(this);
+        chatMsgAdapter = new MQChatAdapter(MQConversationActivity.this, chatMessageList, conversationListView);
+        conversationListView.setAdapter(chatMsgAdapter);
     }
 
     private void findViews() {
-        backBtn = findViewById(R.id.back_rl);
+        titleRl = (RelativeLayout) findViewById(R.id.title_rl);
+        backRl = (RelativeLayout) findViewById(R.id.back_rl);
         backTv = (TextView) findViewById(R.id.back_tv);
+        backIv = (ImageView) findViewById(R.id.back_iv);
         conversationListView = (ListView) findViewById(R.id.messages_lv);
         inputEt = (EditText) findViewById(R.id.input_et);
         emojiSelectBtn = findViewById(R.id.emoji_select_btn);
@@ -232,7 +254,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     private void setListeners() {
-        backBtn.setOnClickListener(this);
+        backRl.setOnClickListener(this);
         sendTextBtn.setOnClickListener(this);
         photoSelectBtn.setOnClickListener(this);
         cameraSelectBtn.setOnClickListener(this);
@@ -434,7 +456,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 cleanVoiceMessage(messageList);
                 //添加时间戳
                 MQTimeUtils.refreshMQTimeItem(messageList);
-                chatMsgAdapter.loadMoreMessage(messageList);
+                chatMsgAdapter.loadMoreMessage(cleanDupMessages(chatMessageList, messageList));
                 conversationListView.setSelection(messageList.size());
                 swipeRefreshLayout.setRefreshing(false);
                 // 没有消息后，禁止下拉加载
@@ -466,7 +488,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 cleanVoiceMessage(messageList);
                 //添加时间戳
                 MQTimeUtils.refreshMQTimeItem(messageList);
-                chatMsgAdapter.loadMoreMessage(messageList);
+                chatMsgAdapter.loadMoreMessage(cleanDupMessages(chatMessageList, messageList));
                 conversationListView.setSelection(messageList.size());
                 swipeRefreshLayout.setRefreshing(false);
                 // 没有消息后，禁止下拉加载
@@ -481,6 +503,23 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    /**
+     * 过滤掉列表存在的消息
+     * @param messageList 列表中的消息
+     * @param newMessageList 加载的新消息
+     * @return
+     */
+    private List<BaseMessage> cleanDupMessages(List<BaseMessage> messageList, List<BaseMessage> newMessageList) {
+        Iterator<BaseMessage> iterator = newMessageList.iterator();
+        while (iterator.hasNext()) {
+            BaseMessage newMessage = iterator.next();
+            if (messageList.contains(newMessage)) {
+                iterator.remove();
+            }
+        }
+        return newMessageList;
     }
 
     /**
@@ -581,10 +620,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 message.setStatus(BaseMessage.STATE_ARRIVE);
             }
         }
-        chatMsgAdapter = new MQChatAdapter(MQConversationActivity.this, chatMessageList, conversationListView);
-        conversationListView.setAdapter(chatMsgAdapter);
         MQUtils.scrollListViewToBottom(conversationListView);
         chatMsgAdapter.downloadAndNotifyDataSetChanged(chatMessageList);
+        chatMsgAdapter.notifyDataSetChanged();
         hasLoadData = true;
     }
 
