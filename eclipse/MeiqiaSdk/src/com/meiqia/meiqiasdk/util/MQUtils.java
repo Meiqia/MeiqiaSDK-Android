@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.meiqia.core.bean.MQAgent;
 import com.meiqia.core.bean.MQMessage;
+import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
@@ -38,6 +39,9 @@ import com.meiqia.meiqiasdk.model.TextMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -393,6 +397,10 @@ public class MQUtils {
      * @return
      */
     public static String getRealPathByUri(Context context, Uri uri) {
+        if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
+            return uri.getPath();
+        }
+
         try {
             ContentResolver resolver = context.getContentResolver();
             String[] proj = new String[]{MediaStore.Images.Media.DATA};
@@ -430,5 +438,59 @@ public class MQUtils {
         DisplayMetrics dm = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(dm);
         return dm.widthPixels;
+    }
+
+    /**
+     * 将字符串转成MD5值
+     *
+     * @param string
+     * @return
+     */
+    public static String stringToMD5(String string) {
+        byte[] hash;
+
+        try {
+            hash = MessageDigest.getInstance("MD5").digest(string.getBytes("UTF-8"));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        StringBuilder hex = new StringBuilder(hash.length * 2);
+        for (byte b : hash) {
+            if ((b & 0xFF) < 0x10)
+                hex.append("0");
+            hex.append(Integer.toHexString(b & 0xFF));
+        }
+
+        return hex.toString();
+    }
+
+
+    public static File getImageDir(Context context) {
+        File imageDir = null;
+        if (isExternalStorageWritable()) {
+            String appName = context.getString(context.getApplicationInfo().labelRes);
+            imageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "MeiqiaSDK" + File.separator + appName);
+            if (!imageDir.exists()) {
+                imageDir.mkdirs();
+            }
+        } else {
+            MQUtils.showSafe(context, R.string.mq_no_sdcard);
+        }
+        return imageDir;
+    }
+
+    /**
+     * 判断外存储是否可写
+     *
+     * @return
+     */
+    public static boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
     }
 }

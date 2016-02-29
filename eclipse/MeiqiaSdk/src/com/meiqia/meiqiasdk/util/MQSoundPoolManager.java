@@ -33,6 +33,9 @@ public class MQSoundPoolManager {
     }
 
     public void playSound(@RawRes final int resId) {
+        if (mSoundSourceMap == null) {
+            return;
+        }
         int soundId;
         if (!mSoundSourceMap.containsKey(resId)) {
             mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {

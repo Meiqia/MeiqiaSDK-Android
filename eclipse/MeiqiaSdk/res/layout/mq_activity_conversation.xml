@@ -94,6 +94,7 @@
             android:minHeight="40dp"
             android:textColor="@color/mq_chat_text_left"
             android:textSize="@dimen/mq_textSize_level2"
+            android:hint="@string/mq_send_msg"
             tools:text="测试文本" />
 
 

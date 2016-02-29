@@ -143,4 +143,9 @@ public class ControllerImpl implements MQController {
         MQManager.getInstance(context).executeEvaluate(conversationId, level, content, onEvaluateCallback);
     }
 
+    @Override
+    public void closeService() {
+        MQManager.getInstance(context).closeMeiqiaService();
+    }
+
 }
