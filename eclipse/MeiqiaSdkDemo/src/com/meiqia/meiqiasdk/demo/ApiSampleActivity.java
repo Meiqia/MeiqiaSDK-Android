@@ -121,6 +121,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
             // 获取一个新的美洽 ID
             case R.id.get_new_meiqia_id_btn:
                 MQManager.getInstance(this).createMQClient(new OnGetMQClientIdCallBackOn() {
+                    @SuppressLint("NewApi")
                     @Override
                     public void onSuccess(String mqClientId) {
                         toast("成功复制到剪贴板 :\n" + mqClientId);
@@ -170,7 +171,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                 break;
             // 上传自定义信息
             case R.id.set_client_info:
-                final Map<String, String> info = new HashMap<>();
+                final Map<String, String> info = new HashMap<String,String>();
                 info.put("name", "富坚义博");
                 info.put("avatar", "https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/1dee88eabfbd7bd4");
                 info.put("sex", "男");
