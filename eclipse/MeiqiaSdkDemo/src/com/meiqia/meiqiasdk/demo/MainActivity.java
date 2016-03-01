@@ -21,6 +21,7 @@ public class MainActivity extends Activity {
         String meiqiaKey = "a71c257c80dfe883d92a64dca323ec20";
 
         MQManager.init(this, meiqiaKey, new OnInitCallback() {
+        	
             @Override
             public void onSuccess(String clientId) {
                 Toast.makeText(MainActivity.this, "init success", Toast.LENGTH_SHORT).show();
@@ -31,6 +32,7 @@ public class MainActivity extends Activity {
                 Toast.makeText(MainActivity.this, "int failure", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     /**
@@ -39,7 +41,7 @@ public class MainActivity extends Activity {
      * @param v
      */
     public void conversation(View v) {
-    	startActivity(new Intent(MainActivity.this, MQConversationActivity.class));
+        startActivity(new Intent(MainActivity.this, MQConversationActivity.class));
     }
 
     /**
@@ -50,13 +52,13 @@ public class MainActivity extends Activity {
     public void developer(View v) {
         startActivity(new Intent(MainActivity.this, ApiSampleActivity.class));
     }
-
+    
     /**
      * 自定义 Activity
-     *
      * @param view
      */
     public void customizedConversation(View view) {
         startActivity(new Intent(MainActivity.this, CustomizedMQConversationActivity.class));
     }
+
 }

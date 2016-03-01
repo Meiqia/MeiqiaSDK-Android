@@ -1,6 +1,7 @@
 package com.meiqia.meiqiasdk.util;
 
 import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 
 
 public class MQConfig {
@@ -21,5 +22,12 @@ public class MQConfig {
     public static int textColorChatBubbleLeft = DEFAULT; // 左边气泡文字颜色
     @ColorRes
     public static int textColorChatBubbleRight = DEFAULT; // 右边气泡文字颜色
+    public static MQTitleGravity titleGravity = MQTitleGravity.CENTER; // 标题文字对其方式
+    @DrawableRes
+    public static int backArrowIconResId = DEFAULT; // 返回箭头图标资源id
+
+    public enum MQTitleGravity {
+        LEFT, CENTER
+    }
 }
 

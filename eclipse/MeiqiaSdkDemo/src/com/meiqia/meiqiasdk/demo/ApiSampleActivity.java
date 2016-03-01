@@ -1,9 +1,5 @@
 package com.meiqia.meiqiasdk.demo;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -28,6 +24,9 @@ import com.meiqia.core.callback.OnGetMQClientIdCallBackOn;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.util.MQUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ApiSampleActivity extends Activity implements View.OnClickListener {
 
@@ -123,7 +122,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
             case R.id.get_new_meiqia_id_btn:
                 MQManager.getInstance(this).createMQClient(new OnGetMQClientIdCallBackOn() {
                     @SuppressLint("NewApi")
-					@Override
+                    @Override
                     public void onSuccess(String mqClientId) {
                         toast("成功复制到剪贴板 :\n" + mqClientId);
                         if (!TextUtils.isEmpty(mqClientId)) {
@@ -172,7 +171,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                 break;
             // 上传自定义信息
             case R.id.set_client_info:
-                final Map<String, String> info = new HashMap<>();
+                final Map<String, String> info = new HashMap<String,String>();
                 info.put("name", "富坚义博");
                 info.put("avatar", "https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/1dee88eabfbd7bd4");
                 info.put("sex", "男");

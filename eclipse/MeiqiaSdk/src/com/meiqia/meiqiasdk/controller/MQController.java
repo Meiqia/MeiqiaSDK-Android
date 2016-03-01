@@ -61,4 +61,6 @@ public interface MQController {
      * @param onEvaluateCallback 评价的回调接口
      */
     void executeEvaluate(String conversationId, int level, String content, OnEvaluateCallback onEvaluateCallback);
+
+    void closeService();
 }
