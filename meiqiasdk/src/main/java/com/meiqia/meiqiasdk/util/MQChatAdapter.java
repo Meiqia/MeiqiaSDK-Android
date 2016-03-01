@@ -22,6 +22,7 @@ import com.meiqia.core.MQManager;
 import com.meiqia.core.bean.MQMessage;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
+import com.meiqia.meiqiasdk.activity.MQViewPhotoActivity;
 import com.meiqia.meiqiasdk.model.AgentChangeMessage;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.EvaluateMessage;
@@ -247,7 +248,7 @@ public class MQChatAdapter extends BaseAdapter {
 
                                 @Override
                                 public void onClick(View arg0) {
-                                    mqConversationActivity.displayPhoto(imageUri);
+                                    mqConversationActivity.startActivity(MQViewPhotoActivity.newInstance(mqConversationActivity, MQUtils.getImageDir(mqConversationActivity), imageUri));
                                 }
                             });
                             finalViewHolder.contentImage.setImageDrawable(MQUtils.getRoundedDrawable(mqConversationActivity, loadedImage, 8f));

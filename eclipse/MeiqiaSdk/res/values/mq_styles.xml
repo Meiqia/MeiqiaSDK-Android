@@ -12,16 +12,7 @@
         <item name="android:windowIsFloating">true</item>
     </style>
 
-    <style name="MQDialog.Nodim">
-        <item name="android:backgroundDimEnabled">false</item>
-    </style>
-
     <style name="MQTheme" parent="@android:style/Theme.Light.NoTitleBar"></style>
-
-    <style name="MQPhotoDialogAnim" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/mq_view_photo_enter</item>
-        <item name="android:windowExitAnimation">@anim/mq_view_photo_exit</item>
-    </style>
 
     <style name="MQWrapMatch">
         <item name="android:layout_width">wrap_content</item>
