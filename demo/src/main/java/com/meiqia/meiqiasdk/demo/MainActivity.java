@@ -29,8 +29,6 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
         // 替换成自己的key
         // 发布sdk时用
         String meiqiaKey = "a71c257c80dfe883d92a64dca323ec20";
-        // 给测试打包时用，TODO 正式发布前记得删除
-        meiqiaKey = "67c9f3bcdc08c7cf435d7f2527378fa4";
 
         MQManager.init(this, meiqiaKey, new OnInitCallback() {
             @Override

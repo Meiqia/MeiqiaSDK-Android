@@ -273,6 +273,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             public boolean onTouch(View arg0, MotionEvent arg1) {
                 if (MotionEvent.ACTION_DOWN == arg1.getAction()) {
                     mEditToolbar.closeAllKeyboard();
+                    hideEmojiSelectIndicator();
+                    hideVoiceSelectIndicator();
                 }
                 return false;
             }
