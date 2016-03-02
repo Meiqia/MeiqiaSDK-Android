@@ -17,6 +17,14 @@
             android:theme="@style/MQTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
+        <activity
+            android:name="com.meiqia.meiqiasdk.activity.MQViewPhotoActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/MQTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
         <service android:name="com.meiqia.core.MeiQiaService" />
     </application>
 

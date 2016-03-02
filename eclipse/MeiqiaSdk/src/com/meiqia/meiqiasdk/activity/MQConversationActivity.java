@@ -1,6 +1,5 @@
 package com.meiqia.meiqiasdk.activity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -43,7 +42,6 @@ import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
 import com.meiqia.meiqiasdk.dialog.MQEvaluateDialog;
-import com.meiqia.meiqiasdk.dialog.MQViewPhotoDialog;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.AgentChangeMessage;
 import com.meiqia.meiqiasdk.model.BaseMessage;
@@ -72,7 +70,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public class MQConversationActivity extends Activity implements View.OnClickListener, MQEvaluateDialog.Callback, MQEditToolbar.Callback {
+public class MQConversationActivity extends Activity implements View.OnClickListener, MQEvaluateDialog.Callback, MQEditToolbar.Callback, View.OnTouchListener {
     private static final String TAG = MQConversationActivity.class.getSimpleName();
 
     public static final String CLIENT_ID = "clientId";
@@ -102,6 +100,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private SwipeRefreshLayout swipeRefreshLayout;
     private View emojiSelectIndicator;
     private ImageView emojiSelectImg;
+    private View voiceSelectIndicator;
+    private ImageView voiceSelectImg;
 
     private List<BaseMessage> chatMessageList = new ArrayList<>();
     private MQChatAdapter chatMsgAdapter;
@@ -118,7 +118,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private Agent currentAgent; // 当前客服
 
     private MQEditToolbar mEditToolbar;
-    private MQViewPhotoDialog mMQViewPhotoDialog;
     private MQEvaluateDialog mEvaluateDialog;
     private String mCameraPicPath;
 
@@ -252,6 +251,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         emojiSelectIndicator = findViewById(R.id.emoji_select_indicator);
         emojiSelectImg = (ImageView) findViewById(R.id.emoji_select_img);
+        voiceSelectIndicator = findViewById(R.id.conversation_voice_indicator);
+        voiceSelectImg = (ImageView) findViewById(R.id.conversation_voice_img);
     }
 
     private void setListeners() {
@@ -263,6 +264,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mEvaluateBtn.setOnClickListener(this);
         // 绑定 EditText 的监听器
         inputEt.addTextChangedListener(inputTextWatcher);
+        inputEt.setOnTouchListener(this);
         // 表情
         emojiSelectBtn.setOnClickListener(this);
         // 对话列表，单击「隐藏键盘」、「表情 panel」
@@ -271,6 +273,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             public boolean onTouch(View arg0, MotionEvent arg1) {
                 if (MotionEvent.ACTION_DOWN == arg1.getAction()) {
                     mEditToolbar.closeAllKeyboard();
+                    hideEmojiSelectIndicator();
+                    hideVoiceSelectIndicator();
                 }
                 return false;
             }
@@ -648,7 +652,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             // 表情按钮
 
             showEmojiSelectIndicator();
-            showEmojiSelectIndicator();
+            hideVoiceSelectIndicator();
             mEditToolbar.toggleEmotionOriginKeyboard();
         } else if (id == R.id.send_text_btn) {
             // 发送按钮
@@ -663,16 +667,24 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         } else if (id == R.id.photo_select_btn) {
             // 选择图片
             hideEmojiSelectIndicator();
+            hideVoiceSelectIndicator();
             choosePhotoFromGallery();
         } else if (id == R.id.camera_select_btn) {
             // 打开相机
             hideEmojiSelectIndicator();
+            hideVoiceSelectIndicator();
             choosePhotoFromCamera();
         } else if (id == R.id.mic_select_btn) {
+            if (mEditToolbar.isVoiceKeyboardVisible()) {
+                hideVoiceSelectIndicator();
+            } else {
+                showVoiceSelectIndicator();
+            }
             hideEmojiSelectIndicator();
             mEditToolbar.toggleVoiceOriginKeyboard();
         } else if (id == R.id.evaluate_select_btn) {
             hideEmojiSelectIndicator();
+            hideVoiceSelectIndicator();
             showEvaluateDialog();
         }
     }
@@ -700,6 +712,17 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mEditToolbar.closeEmotionKeyboard();
         emojiSelectIndicator.setVisibility(View.GONE);
         emojiSelectImg.setImageResource(R.drawable.mq_ic_emoji_normal);
+    }
+
+    private void showVoiceSelectIndicator() {
+        voiceSelectIndicator.setVisibility(View.VISIBLE);
+        voiceSelectImg.setImageResource(R.drawable.mq_ic_mic_active);
+    }
+
+    private void hideVoiceSelectIndicator() {
+        mEditToolbar.closeEmotionKeyboard();
+        voiceSelectIndicator.setVisibility(View.GONE);
+        voiceSelectImg.setImageResource(R.drawable.mq_ic_mic_normal);
     }
 
 
@@ -922,8 +945,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     // 监听EditText输入框数据到变化
     private TextWatcher inputTextWatcher = new MQSimpleTextWatcher() {
-        @SuppressLint("NewApi")
-		@Override
+        @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             // 向服务器发送一个正在输入的函数
             if (!TextUtils.isEmpty(s)) {
@@ -1017,6 +1039,13 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     @Override
     public void onAudioRecorderNoPermission() {
         MQUtils.show(this, R.string.mq_recorder_no_permission);
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        hideEmojiSelectIndicator();
+        hideVoiceSelectIndicator();
+        return false;
     }
 
     private class MessageReceiver extends com.meiqia.meiqiasdk.controller.MessageReceiver {
@@ -1157,15 +1186,4 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         return isSdcardAvailable;
     }
 
-    /**
-     * 展示图片，可以缩放
-     *
-     * @param picUrl 图片地址
-     */
-    public void displayPhoto(String picUrl) {
-        if (mMQViewPhotoDialog == null) {
-            mMQViewPhotoDialog = new MQViewPhotoDialog(this);
-        }
-        mMQViewPhotoDialog.show(picUrl);
-    }
 }

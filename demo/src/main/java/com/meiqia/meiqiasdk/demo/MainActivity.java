@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.meiqia.core.MQManager;
 import com.meiqia.core.callback.OnInitCallback;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
+import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
         setContentView(R.layout.activity_main);
 
         // 替换成自己的key
+        // 发布sdk时用
         String meiqiaKey = "a71c257c80dfe883d92a64dca323ec20";
 
         MQManager.init(this, meiqiaKey, new OnInitCallback() {
@@ -39,6 +41,8 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
                 Toast.makeText(MainActivity.this, "int failure", Toast.LENGTH_SHORT).show();
             }
         });
+        MQManager.setDebugMode(true);
+
     }
 
     /**
@@ -98,6 +102,13 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
     }
 
     private void conversation() {
+//        startActivity(new Intent(MainActivity.this, MQConversationActivity.class));
+
+
+        MQConfig.backArrowIconResId = android.support.v7.appcompat.R.drawable.abc_ic_ab_back_mtrl_am_alpha;
+        MQConfig.bgColorTitle = R.color.colorPrimary;
+        MQConfig.textColorTitle = android.R.color.white;
+        MQConfig.titleGravity = MQConfig.MQTitleGravity.LEFT;
         startActivity(new Intent(MainActivity.this, MQConversationActivity.class));
     }
 }

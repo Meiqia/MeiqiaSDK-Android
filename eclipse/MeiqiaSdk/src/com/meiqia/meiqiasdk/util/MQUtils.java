@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.ColorRes;
 import android.support.annotation.StringRes;
@@ -51,7 +52,7 @@ public class MQUtils {
      */
     public static final int KEYBOARD_CHANGE_DELAY = 300;
 
-    private static Handler sHandler = new Handler();
+    private static Handler sHandler = new Handler(Looper.getMainLooper());
 
     public static void runInThread(Runnable task) {
         new Thread(task).start();
