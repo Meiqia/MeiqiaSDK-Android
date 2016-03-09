@@ -1,0 +1,9 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+       android:shape="rectangle">
+
+    <gradient
+        android:centerColor="@color/mq_chat_event_gray"
+        android:endColor="@color/mq_white"
+        android:startColor="@color/mq_white"/>
+
+</shape>
