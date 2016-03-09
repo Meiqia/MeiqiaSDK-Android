@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 
 import com.meiqia.meiqiasdk.R;
@@ -17,8 +16,7 @@ import java.util.regex.Pattern;
 
 public class MQEmotionUtil {
     public static final String REGEX_EMOJI = ":[\u4e00-\u9fa5\\w]+:";
-    public static final String REGEX_WEBSITE = "([a-zA-Z]+://)?[a-zA-Z\\d-]+(\\.[a-zA-Z\\d-]+)*(\\.[a-zA-Z]+)+(:\\d+)?(/[\\w\\d\\.\\-~!@#$%^&*+?:_/=<>]*)?";
-    public static final String REGEX_GROUP = "(" + REGEX_EMOJI + ")|(" + REGEX_WEBSITE + ")";
+    public static final String REGEX_GROUP = "(" + REGEX_EMOJI + ")";
 
     private MQEmotionUtil() {
     }
@@ -126,7 +124,6 @@ public class MQEmotionUtil {
 
         while (matcher.find()) {
             String emojiStr = matcher.group(1);
-            String websiteStr = matcher.group(2);
             // 处理emoji表情
             if (emojiStr != null) {
                 ImageSpan imageSpan = null;
@@ -139,11 +136,6 @@ public class MQEmotionUtil {
                     int start = matcher.start(1);
                     spannableString.setSpan(imageSpan, start, start + emojiStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
-            }
-            // 处理网址
-            if (websiteStr != null) {
-                int start = matcher.start(2);
-                spannableString.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.mq_url_foreground)), start, start + websiteStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
         return spannableString;

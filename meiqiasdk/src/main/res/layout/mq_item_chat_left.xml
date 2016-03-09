@@ -24,8 +24,9 @@
             android:background="@drawable/mq_bg_msg_left"
             android:maxWidth="260dp"
             android:singleLine="false"
-            android:textColor="@color/mq_chat_text_left"
+            android:textColor="@color/mq_chat_left_textColor"
             android:textSize="16sp"
+            android:textColorLink="@color/mq_chat_left_link_textColor"
             android:visibility="visible"
             tools:text="I \ue32d emojicon\n\n\nsdf\n\n" />
 
@@ -49,7 +50,7 @@
                 android:layout_centerVertical="true"
                 android:background="@drawable/mq_bg_msg_left"
                 android:gravity="right"
-                android:textColor="@color/mq_chat_text_left"
+                android:textColor="@color/mq_chat_left_textColor"
                 android:textSize="@dimen/mq_textSize_level2"
                 tools:text="18" />
 
@@ -70,7 +71,7 @@
         android:layout_marginBottom="4dp"
         android:layout_marginLeft="4dp"
         android:layout_toRightOf="@+id/chat_box"
-        android:background="@drawable/mq_red_circle"
+        android:background="@drawable/mq_shape_chat_unread_circle_bg"
         android:visibility="gone"
         tools:visibility="visible" />
 </RelativeLayout>

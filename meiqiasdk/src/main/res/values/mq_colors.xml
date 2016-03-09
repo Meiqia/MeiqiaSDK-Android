@@ -1,39 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--公共的 START-->
+    <color name="mq_colorPrimary">#17C7D1</color>
+    <color name="mq_colorPrimaryDark">#8017C7D1</color>
+    <color name="mq_activity_bg">#F6F7F9</color>
+    <color name="mq_activity_title_textColor">@android:color/black</color>
+    <color name="mq_activity_title_bg">@android:color/white</color>
 
-    <color name="mq_url_foreground">#0f5a87</color>
-
-
-    <color name="mq_normal_text_white">#ffffffff</color>
-    <color name="mq_bg_color">#F6F7F9</color>
-    <color name="mq_event_gray">#808080</color>
-    <color name="mq_title_text">#000000</color>
-    <color name="mq_input_text">#aaaaaa</color>
-    <color name="mq_chat_text_left">#333333</color>
-    <color name="mq_chat_text_right">#FFFFFF</color>
-    <color name="mq_chat_box_bg">#c9c9ce</color>
-    <color name="mq_leave_msg_tip_bg">#f6bc66</color>
-    <color name="mq_net_not_work_bg">#e66b62</color>
-    <color name="mq_play_circle_round">#E6E6E6</color>
-    <color name="mq_play_circle_progress">#43CAA9</color>
-    <color name="mq_direct_agent_nickname_color">#43CAA9</color>
-    <color name="mq_transparent">#00FFFFFF</color>
-
-    <color name="mq_send_btn_text_color_pressed">#808080</color>
-    <color name="mq_send_btn_text_color_nor">#595959</color>
-    <color name="mq_titlebar_textColor">@android:color/white</color>
-
-    <color name="mq_dialog_bg_translucent">#01000000</color>
+    <color name="mq_white">@android:color/white</color>
+    <color name="mq_gray">#808080</color>
 
     <color name="mq_item_pressed">#EFEFEF</color>
     <color name="mq_item_normal">@android:color/white</color>
+    <!--公共的 END-->
 
-    <color name="mq_evalute_enabled">#17C4CE</color>
-    <color name="mq_evalute_not_enabled">#C6CACF</color>
-    <color name="mq_evalute_hint">#ACB1BA</color>
-    <color name="mq_evalute_good">#00CE7D</color>
-    <color name="mq_evalute_medium">#FFB652</color>
-    <color name="mq_evalute_bad">#FF5C5E</color>
+    <!--开发者在通过覆盖资源文件配置自定义UI时，请不要修改以下的资源 START-->
+    <color name="mq_chat_left_bubble_final">#ebecef</color>
+    <color name="mq_chat_right_bubble_final">#1fd0d9</color>
+    <!--开发者在通过覆盖资源文件配置自定义UI时，请不要修改以下的资源 END-->
 
-    <color name="mq_audio_gray">#767D85</color>
+    <!--聊天 START-->
+    <color name="mq_chat_left_textColor">#333333</color>
+    <color name="mq_chat_left_link_textColor">@color/mq_chat_left_textColor</color>
+    <color name="mq_chat_right_textColor">#FFFFFF</color>
+    <color name="mq_chat_right_link_textColor">@color/mq_chat_right_textColor</color>
+    <color name="mq_chat_unread_circle_bg">#E66B62</color>
+    <color name="mq_chat_event_gray">@color/mq_gray</color>
+    <color name="mq_chat_direct_agent_nickname_textColor">#43CAA9</color>
+    <color name="mq_chat_audio_tip_textColor">#767D85</color>
+    <color name="mq_chat_left_bubble">@color/mq_chat_left_bubble_final</color>
+    <color name="mq_chat_right_bubble">@color/mq_chat_right_bubble_final</color>
+    <!--聊天 END-->
+
+    <!--客服评价 START-->
+    <color name="mq_evaluate_enabled">@color/mq_colorPrimary</color>
+    <color name="mq_evaluate_not_enabled">#C6CACF</color>
+    <color name="mq_evaluate_hint">#ACB1BA</color>
+    <color name="mq_evaluate_good">#00CE7D</color>
+    <color name="mq_evaluate_medium">#FFB652</color>
+    <color name="mq_evaluate_bad">#FF5C5E</color>
+    <!--客服评价 END-->
+
+    <!--表单相关 START-->
+    <color name="mq_form_tip_textColor">#767D85</color>
+    <color name="mq_form_et_textColor">#303D42</color>
+    <color name="mq_form_et_textColorHint">#ADB2BB</color>
+    <color name="mq_form_et_bg_focus">@color/mq_colorPrimary</color>
+    <color name="mq_form_et_bg_normal">#C6CBD0</color>
+    <!--表单相关 END-->
+
+    <!--数据加载 START-->
+    <color name="mq_loading_progress_startColor">@android:color/white</color>
+    <color name="mq_loading_progress_centerColor">@color/mq_colorPrimary</color>
+    <color name="mq_loading_progress_endColor">@color/mq_colorPrimaryDark</color>
+    <!--数据加载 END-->
+
+    <!--图库 START-->
+    <color name="mq_photo_activity_bg">#1A1A1A</color>
+    <color name="mq_photo_title_bg">#303D42</color>
+    <color name="mq_photo_send_enabled">@color/mq_colorPrimary</color>
+    <color name="mq_photo_send_disabled">@color/mq_colorPrimaryDark</color>
+    <color name="mq_photo_selected_color">#4D000000</color>
+    <!--图库 END-->
 </resources>

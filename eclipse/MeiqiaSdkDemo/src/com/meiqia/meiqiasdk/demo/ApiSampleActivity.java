@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.meiqia.meiqiasdk.util.MQConfig;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.MQScheduleRule;
@@ -87,7 +88,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
         switch (id) {
             // 使用当前顾客上线
             case R.id.set_current_client_id_online_btn:
-                MQConversationActivity.registerController(new ControllerImpl(this));
+                MQConfig.registerController(new ControllerImpl(this));
                 Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
                 startActivity(intent);
                 break;
