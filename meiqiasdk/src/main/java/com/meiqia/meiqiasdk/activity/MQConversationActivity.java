@@ -439,7 +439,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
 
     private void setCurrentAgent(Agent agent) {
-        this.mCurrentAgent = agent;
+        mCurrentAgent = agent;
     }
 
     /**

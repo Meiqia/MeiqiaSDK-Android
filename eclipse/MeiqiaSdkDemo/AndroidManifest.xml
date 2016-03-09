@@ -49,7 +49,7 @@
 
         <!--图片查看界面-->
         <activity
-            android:name=".activity.MQPhotoPreviewActivity"
+            android:name="com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity"
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
@@ -75,7 +75,7 @@
 
         <!--留言表单界面-->
         <activity
-            android:name=".activity.MQMessageFormActivity"
+            android:name="com.meiqia.meiqiasdk.activity.MQMessageFormActivity"
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"

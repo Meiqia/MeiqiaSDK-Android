@@ -377,7 +377,7 @@ public class MQChatAdapter extends BaseAdapter {
                 evaluateViewHolder.levelBg.setBackgroundResource(R.drawable.mq_shape_evaluate_smiling);
                 break;
         }
-        final String context = evaluateMessage.getcontext();
+        final String context = evaluateMessage.getContent();
         if (!TextUtils.isEmpty(context)) {
             evaluateViewHolder.contentTv.setVisibility(View.VISIBLE);
             evaluateViewHolder.contentTv.setText(context);
