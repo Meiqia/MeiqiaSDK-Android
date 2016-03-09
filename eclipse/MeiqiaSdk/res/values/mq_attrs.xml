@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="MQFormInputLayout">
+        <!--提示文案-->
+        <attr name="mq_fil_tip" format="string" />
+        <!--是否为必填项-->
+        <attr name="mq_fil_required" format="boolean" />
+        <!--文本输入框hint-->
+        <attr name="android:hint" />
+        <!--输入类型-->
+        <attr name="android:inputType" />
+        <!--是否为单行输入框-->
+        <attr name="android:singleLine" />
+    </declare-styleable>
+
+</resources>
