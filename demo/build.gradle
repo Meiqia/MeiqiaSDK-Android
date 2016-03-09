@@ -24,7 +24,7 @@ dependencies {
     compile project(':meiqiasdk')
 
     // 兼容Android6.0动态权限
-    compile 'pub.devrel:easypermissions:0.1.2'
+    compile 'pub.devrel:easypermissions:0.1.5'
 
     // required
 //    compile 'com.meiqia:meiqiasdk:3.1.0@aar'

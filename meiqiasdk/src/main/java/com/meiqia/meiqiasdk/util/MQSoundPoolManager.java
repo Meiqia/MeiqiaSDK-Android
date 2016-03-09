@@ -11,18 +11,20 @@ import java.util.Map;
 
 public class MQSoundPoolManager {
 
+    private static final int SOUND_INTERNAL_TIME = 500;
+
     private static final int STREAMS_COUNT = 1;
     private SoundPool mSoundPool;
     private AudioManager mAudioManager;
     private Map<Integer, Integer> mSoundSourceMap;
-    private Context context;
+    private Context mContext;
 
     public static MQSoundPoolManager getInstance(Context context) {
-        return new MQSoundPoolManager(context);
+        return new MQSoundPoolManager(context.getApplicationContext());
     }
 
     private MQSoundPoolManager(Context context) {
-        this.context = context;
+        this.mContext = context;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mSoundPool = new SoundPool.Builder().setMaxStreams(STREAMS_COUNT).build();
         } else {
@@ -48,7 +50,7 @@ public class MQSoundPoolManager {
                     }
                 }
             });
-            mSoundPool.load(context.getApplicationContext(), resId, 1);
+            mSoundPool.load(mContext.getApplicationContext(), resId, 1);
         } else {
             soundId = mSoundSourceMap.get(resId);
             play(soundId);
@@ -56,6 +58,9 @@ public class MQSoundPoolManager {
     }
 
     private void play(int soundId) {
+        if (isPlaying()) {
+            return;
+        }
         if (mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
             mSoundPool.stop(soundId);
             mSoundPool.play(soundId, 1f, 1f, 0, 0, 1f);
@@ -66,7 +71,20 @@ public class MQSoundPoolManager {
         mSoundPool.release();
         mSoundPool = null;
         mAudioManager = null;
-        context = null;
+        mContext = null;
         mSoundSourceMap = null;
+    }
+
+    private long mPrePlayTime = 0;
+
+    private boolean isPlaying() {
+        boolean isPlaying;
+        if (System.currentTimeMillis() - mPrePlayTime > SOUND_INTERNAL_TIME) {
+            mPrePlayTime = System.currentTimeMillis();
+            isPlaying = false;
+        } else {
+            isPlaying = true;
+        }
+        return isPlaying;
     }
 }

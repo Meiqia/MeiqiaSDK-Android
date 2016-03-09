@@ -11,13 +11,19 @@ public class EvaluateMessage extends BaseMessage {
     public static final int EVALUATE_BAD = 0;
 
     private int level;
+    private String context;
 
-    public EvaluateMessage(int level) {
+    public EvaluateMessage(int level, String context) {
         this.level = level;
+        this.context = context;
         setItemViewType(TYPE_EVALUATE);
     }
 
     public int getLevel() {
         return level;
+    }
+
+    public String getcontext() {
+        return context;
     }
 }
