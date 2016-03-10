@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/mq_photo_send_disabled" />
+            <corners android:radius="@dimen/mq_size_level1" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/mq_photo_send_enabled" />
+            <corners android:radius="@dimen/mq_size_level1" />
+        </shape>
+    </item>
+</selector>

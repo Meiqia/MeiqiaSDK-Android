@@ -1,11 +1,14 @@
 package com.meiqia.meiqiasdk.controller;
 
 
-import com.meiqia.core.callback.OnEvaluateCallback;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
+import com.meiqia.meiqiasdk.callback.SimpleCallback;
 import com.meiqia.meiqiasdk.model.BaseMessage;
+
+import java.util.List;
+import java.util.Map;
 
 public interface MQController {
 
@@ -55,12 +58,36 @@ public interface MQController {
     /**
      * 对客服进行评价
      *
-     * @param conversationId     当前会话id
-     * @param level              评价的等级
-     * @param content            评价的内容
-     * @param onEvaluateCallback 评价的回调接口
+     * @param conversationId 当前会话id
+     * @param level          评价的等级
+     * @param content        评价的内容
+     * @param simpleCallback 评价的回调接口
      */
-    void executeEvaluate(String conversationId, int level, String content, OnEvaluateCallback onEvaluateCallback);
+    void executeEvaluate(String conversationId, int level, String content, SimpleCallback simpleCallback);
 
     void closeService();
+
+    /**
+     * 添加留言表单
+     *
+     * @param message        留言消息
+     * @param pictures       图片消息集合
+     * @param customInfoMap  自定义消息
+     * @param simpleCallback 添加留言表单的回调接口
+     */
+    void submitMessageForm(String message, List<String> pictures, Map<String, String> customInfoMap, SimpleCallback simpleCallback);
+
+    /**
+     * 刷新企业配置信息
+     *
+     * @param simpleCallback
+     */
+    void refreshEnterpriseConfig(SimpleCallback simpleCallback);
+
+    /**
+     * 获取离线消息模板
+     *
+     * @return
+     */
+    String getLeaveMessageTemplete();
 }

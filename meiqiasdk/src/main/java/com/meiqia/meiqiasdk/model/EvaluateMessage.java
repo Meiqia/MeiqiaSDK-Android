@@ -12,12 +12,14 @@ public class EvaluateMessage extends BaseMessage {
 
     private int level;
 
-    public EvaluateMessage(int level) {
+    public EvaluateMessage(int level, String content) {
         this.level = level;
+        setContent(content);
         setItemViewType(TYPE_EVALUATE);
     }
 
     public int getLevel() {
         return level;
     }
+
 }

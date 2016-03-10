@@ -6,11 +6,11 @@ import android.text.TextUtils;
 import com.meiqia.core.MQManager;
 import com.meiqia.core.bean.MQAgent;
 import com.meiqia.core.bean.MQMessage;
-import com.meiqia.core.callback.OnEvaluateCallback;
 import com.meiqia.core.callback.OnGetMessageListCallback;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
+import com.meiqia.meiqiasdk.callback.SimpleCallback;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
@@ -18,6 +18,7 @@ import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
 import java.util.List;
+import java.util.Map;
 
 public class ControllerImpl implements MQController {
 
@@ -139,8 +140,56 @@ public class ControllerImpl implements MQController {
     }
 
     @Override
-    public void executeEvaluate(String conversationId, int level, String content, OnEvaluateCallback onEvaluateCallback) {
-        MQManager.getInstance(context).executeEvaluate(conversationId, level, content, onEvaluateCallback);
+    public void executeEvaluate(String conversationId, int level, String content, final SimpleCallback simpleCallback) {
+        MQManager.getInstance(context).executeEvaluate(conversationId, level, content, new com.meiqia.core.callback.SimpleCallback() {
+
+            @Override
+            public void onFailure(int code, String message) {
+                simpleCallback.onFailure(code, message);
+            }
+
+            @Override
+            public void onSuccess() {
+                simpleCallback.onSuccess();
+            }
+        });
+    }
+
+    @Override
+    public void submitMessageForm(String message, List<String> pictures, Map<String, String> customInfoMap, final SimpleCallback simpleCallback) {
+        MQManager.getInstance(context).submitMessageForm(message, pictures, customInfoMap, new com.meiqia.core.callback.SimpleCallback() {
+
+            @Override
+            public void onFailure(int code, String message) {
+                simpleCallback.onFailure(code, message);
+            }
+
+            @Override
+            public void onSuccess() {
+                simpleCallback.onSuccess();
+            }
+        });
+    }
+
+    @Override
+    public void refreshEnterpriseConfig(final SimpleCallback simpleCallback) {
+        MQManager.getInstance(context).refreshEnterpriseConfig(new com.meiqia.core.callback.SimpleCallback() {
+
+            @Override
+            public void onFailure(int code, String message) {
+                simpleCallback.onFailure(code, message);
+            }
+
+            @Override
+            public void onSuccess() {
+                simpleCallback.onSuccess();
+            }
+        });
+    }
+
+    @Override
+    public String getLeaveMessageTemplete() {
+        return MQManager.getInstance(context).getLeaveMessageTemplete();
     }
 
     @Override

@@ -12,8 +12,8 @@
 
 ```
 // required     
-// 「3.1.2」改成 maven central 徽章后面对应的版本号，例如3.1.2
-compile 'com.meiqia:meiqiasdk:3.1.2@aar'
+// 「3.1.3」改成 maven central 徽章后面对应的版本号，例如3.1.3
+compile 'com.meiqia:meiqiasdk:3.1.3@aar'
 
 // 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
 compile 'com.android.support:support-v4:23.1.1'
@@ -41,6 +41,7 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 4.在你自己的工程的 AndroidManifest.xml 文件的 application 结点下加入以下代码
 
 ```
+<!--聊天界面-->
 <activity
     android:name="com.meiqia.meiqiasdk.activity.MQConversationActivity"
     android:configChanges="keyboardHidden|orientation"
@@ -48,6 +49,15 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     android:screenOrientation="portrait"
     android:theme="@style/MQTheme"
     android:windowSoftInputMode="stateHidden|adjustResize" />
+
+<!--图片查看界面-->
+<activity
+    android:name="com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity"
+    android:configChanges="keyboardHidden|orientation"
+    android:launchMode="singleTop"
+    android:screenOrientation="portrait"
+    android:theme="@style/MQTheme"
+    android:windowSoftInputMode="stateAlwaysHidden" />
 
 <service android:name="com.meiqia.core.MeiQiaService" />
 ```

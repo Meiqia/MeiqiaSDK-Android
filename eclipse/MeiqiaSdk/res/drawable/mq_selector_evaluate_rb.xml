@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true">
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <size android:width="@dimen/mq_size_level6" android:height="@dimen/mq_size_level6" />
+                    <solid android:color="@color/mq_evaluate_enabled" />
+                </shape>
+            </item>
+            <item android:bottom="@dimen/mq_size_level1" android:left="@dimen/mq_size_level1" android:right="@dimen/mq_size_level1" android:top="@dimen/mq_size_level1">
+                <shape android:shape="oval">
+                    <solid android:color="@android:color/white" />
+                </shape>
+            </item>
+            <item android:bottom="@dimen/mq_size_level2" android:left="@dimen/mq_size_level2" android:right="@dimen/mq_size_level2" android:top="@dimen/mq_size_level2">
+                <shape android:shape="oval">
+                    <solid android:color="@color/mq_evaluate_enabled" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item>
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <size android:width="@dimen/mq_size_level6" android:height="@dimen/mq_size_level6" />
+                    <solid android:color="@color/mq_evaluate_not_enabled" />
+                </shape>
+            </item>
+            <item android:bottom="@dimen/mq_size_level1" android:left="@dimen/mq_size_level1" android:right="@dimen/mq_size_level1" android:top="@dimen/mq_size_level1">
+                <shape android:shape="oval">
+                    <solid android:color="@android:color/white" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>

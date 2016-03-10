@@ -1,9 +1,7 @@
 package com.meiqia.meiqiasdk.util;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -22,7 +20,7 @@ import com.meiqia.core.MQManager;
 import com.meiqia.core.bean.MQMessage;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
-import com.meiqia.meiqiasdk.activity.MQViewPhotoActivity;
+import com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity;
 import com.meiqia.meiqiasdk.model.AgentChangeMessage;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.EvaluateMessage;
@@ -30,6 +28,8 @@ import com.meiqia.meiqiasdk.model.PhotoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.widget.CircleImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.io.File;
@@ -51,6 +51,7 @@ public class MQChatAdapter extends BaseAdapter {
     private int mCurrentDownloadingItemPosition = NO_POSITION;
     private int mMinItemWidth;
     private int mMaxItemWidth;
+    private ImageSize mImageSize;
 
     private Runnable mNotifyDataSetChangedRunnable = new Runnable() {
         @Override
@@ -67,6 +68,8 @@ public class MQChatAdapter extends BaseAdapter {
         int screenWidth = MQUtils.getScreenWidth(listView.getContext());
         mMaxItemWidth = (int) (screenWidth * 0.5f);
         mMinItemWidth = (int) (screenWidth * 0.18f);
+        int size = MQUtils.getScreenWidth(mqConversationActivity) / 4;
+        mImageSize = new ImageSize(size, size);
     }
 
     public void addMQMessage(BaseMessage baseMessage) {
@@ -117,7 +120,7 @@ public class MQChatAdapter extends BaseAdapter {
         ViewHolder viewHolder = null;
         TimeViewHolder timeViewHolder = null;
         TipViewHolder tipViewHolder = null;
-        EveluateViewHolder eveluateViewHolder = null;
+        EvaluateViewHolder evaluateViewHolder = null;
 
         //根据 type 创建不同的 ViewHolder，并缓存
         if (convertView == null) {
@@ -134,8 +137,9 @@ public class MQChatAdapter extends BaseAdapter {
                     viewHolder.unreadCircle = convertView.findViewById(R.id.unread_view);
                     // tint
                     configChatBubbleBg(viewHolder.contentText, true);
-                    configChatBubbleBg(viewHolder.voiceContainerRl, true);
+                    configChatBubbleBg(viewHolder.voiceContentTv, true);
                     configChatBubbleTextColor(viewHolder.contentText, true);
+                    configChatBubbleTextColor(viewHolder.voiceContentTv, true);
                     convertView.setTag(viewHolder);
                     break;
                 case BaseMessage.TYPE_CLIENT:
@@ -150,8 +154,9 @@ public class MQChatAdapter extends BaseAdapter {
                     viewHolder.sendState = (ImageView) convertView.findViewById(R.id.send_state);
                     // tint
                     configChatBubbleBg(viewHolder.contentText, false);
-                    configChatBubbleBg(viewHolder.voiceContainerRl, false);
+                    configChatBubbleBg(viewHolder.voiceContentTv, false);
                     configChatBubbleTextColor(viewHolder.contentText, false);
+                    configChatBubbleTextColor(viewHolder.voiceContentTv, false);
                     convertView.setTag(viewHolder);
                     break;
                 case BaseMessage.TYPE_TIME:
@@ -167,10 +172,13 @@ public class MQChatAdapter extends BaseAdapter {
                     convertView.setTag(tipViewHolder);
                     break;
                 case BaseMessage.TYPE_EVALUATE:
-                    eveluateViewHolder = new EveluateViewHolder();
+                    evaluateViewHolder = new EvaluateViewHolder();
                     convertView = LayoutInflater.from(mqConversationActivity).inflate(R.layout.mq_item_msg_evaluate, null, false);
-                    eveluateViewHolder.contentTv = (TextView) convertView.findViewById(R.id.tv_msg_evaluate_content);
-                    convertView.setTag(eveluateViewHolder);
+                    evaluateViewHolder.levelTv = (TextView) convertView.findViewById(R.id.tv_msg_evaluate_level);
+                    evaluateViewHolder.levelBg = convertView.findViewById(R.id.view_msg_evaluate_level);
+                    evaluateViewHolder.levelImg = (ImageView) convertView.findViewById(R.id.ic_msg_evaluate_level);
+                    evaluateViewHolder.contentTv = (TextView) convertView.findViewById(R.id.tv_msg_evaluate_content);
+                    convertView.setTag(evaluateViewHolder);
                     break;
             }
         } else {
@@ -188,7 +196,7 @@ public class MQChatAdapter extends BaseAdapter {
                     tipViewHolder = (TipViewHolder) convertView.getTag();
                     break;
                 case BaseMessage.TYPE_EVALUATE:
-                    eveluateViewHolder = (EveluateViewHolder) convertView.getTag();
+                    evaluateViewHolder = (EvaluateViewHolder) convertView.getTag();
                     break;
             }
         }
@@ -207,7 +215,7 @@ public class MQChatAdapter extends BaseAdapter {
         }
         // 显示评价消息
         else if (getItemViewType(position) == BaseMessage.TYPE_EVALUATE) {
-            handleBindEvaluateItem(eveluateViewHolder, (EvaluateMessage) mcMessage);
+            handleBindEvaluateItem(evaluateViewHolder, (EvaluateMessage) mcMessage);
         }
         //显示消息：文字、图片、语音
         else if (getItemViewType(position) == BaseMessage.TYPE_AGENT || getItemViewType(position) == BaseMessage.TYPE_CLIENT) {
@@ -236,7 +244,8 @@ public class MQChatAdapter extends BaseAdapter {
                     url = ((PhotoMessage) mcMessage).getUrl();
                 }
                 final ViewHolder finalViewHolder = viewHolder;
-                imageLoader.displayImage(url, viewHolder.contentImage, new SimpleImageLoadingListener() {
+
+                ImageLoader.getInstance().displayImage(url, new ImageViewAware(viewHolder.contentImage), null, mImageSize, new SimpleImageLoadingListener() {
                     @Override
                     public void onLoadingComplete(final String imageUri, View view, Bitmap loadedImage) {
                         if (loadedImage != null) {
@@ -245,16 +254,15 @@ public class MQChatAdapter extends BaseAdapter {
                             }
 
                             view.setOnClickListener(new OnClickListener() {
-
                                 @Override
                                 public void onClick(View arg0) {
-                                    mqConversationActivity.startActivity(MQViewPhotoActivity.newInstance(mqConversationActivity, MQUtils.getImageDir(mqConversationActivity), imageUri));
+                                    mqConversationActivity.startActivity(MQPhotoPreviewActivity.newIntent(mqConversationActivity, MQUtils.getImageDir(mqConversationActivity), imageUri));
                                 }
                             });
                             finalViewHolder.contentImage.setImageDrawable(MQUtils.getRoundedDrawable(mqConversationActivity, loadedImage, 8f));
                         }
                     }
-                });
+                }, null);
                 viewHolder.contentImage.setVisibility(View.VISIBLE);
 
             }
@@ -294,7 +302,7 @@ public class MQChatAdapter extends BaseAdapter {
             String text = String.format(tipTv.getResources().getString(R.string.mq_direct_content), agentNickName);
             int start = text.indexOf(agentNickName);
             SpannableStringBuilder style = new SpannableStringBuilder(text);
-            style.setSpan(new ForegroundColorSpan(tipTv.getResources().getColor(R.color.mq_direct_agent_nickname_color)), start, start + agentNickName.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            style.setSpan(new ForegroundColorSpan(tipTv.getResources().getColor(R.color.mq_chat_direct_agent_nickname_textColor)), start, start + agentNickName.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             tipTv.setText(style);
         }
     }
@@ -319,7 +327,10 @@ public class MQChatAdapter extends BaseAdapter {
         TextView contentTv;
     }
 
-    static class EveluateViewHolder {
+    static class EvaluateViewHolder {
+        TextView levelTv;
+        ImageView levelImg;
+        View levelBg;
         TextView contentTv;
     }
 
@@ -345,24 +356,36 @@ public class MQChatAdapter extends BaseAdapter {
     /**
      * 处理绑定声音类型的数据item
      *
-     * @param eveluateViewHolder
+     * @param evaluateViewHolder
      * @param evaluateMessage
      */
-    private void handleBindEvaluateItem(EveluateViewHolder eveluateViewHolder, EvaluateMessage evaluateMessage) {
-        String prefix = mqConversationActivity.getString(R.string.mq_evaluate_result_prefix);
-        Resources resources = mqConversationActivity.getResources();
-        String evaluateResult = resources.getString(R.string.mq_evaluate_good);
-        int evaluateColor = resources.getColor(R.color.mq_evalute_good);
-        if (evaluateMessage.getLevel() == EvaluateMessage.EVALUATE_MEDIUM) {
-            evaluateColor = resources.getColor(R.color.mq_evalute_medium);
-            evaluateResult = resources.getString(R.string.mq_evaluate_medium);
-        } else if (evaluateMessage.getLevel() == EvaluateMessage.EVALUATE_BAD) {
-            evaluateColor = resources.getColor(R.color.mq_evalute_bad);
-            evaluateResult = resources.getString(R.string.mq_evaluate_bad);
+    private void handleBindEvaluateItem(EvaluateViewHolder evaluateViewHolder, EvaluateMessage evaluateMessage) {
+        switch (evaluateMessage.getLevel()) {
+            case EvaluateMessage.EVALUATE_BAD:
+                evaluateViewHolder.levelImg.setImageResource(R.drawable.mq_ic_angry_face);
+                evaluateViewHolder.levelTv.setText(R.string.mq_evaluate_bad);
+                evaluateViewHolder.levelBg.setBackgroundResource(R.drawable.mq_shape_evaluate_angry);
+                break;
+            case EvaluateMessage.EVALUATE_MEDIUM:
+                evaluateViewHolder.levelImg.setImageResource(R.drawable.mq_ic_neutral_face);
+                evaluateViewHolder.levelTv.setText(R.string.mq_evaluate_medium);
+                evaluateViewHolder.levelBg.setBackgroundResource(R.drawable.mq_shape_evaluate_neutral);
+                break;
+            case EvaluateMessage.EVALUATE_GOOD:
+                evaluateViewHolder.levelImg.setImageResource(R.drawable.mq_ic_smiling_face);
+                evaluateViewHolder.levelTv.setText(R.string.mq_evaluate_good);
+                evaluateViewHolder.levelBg.setBackgroundResource(R.drawable.mq_shape_evaluate_smiling);
+                break;
         }
-        SpannableStringBuilder contentSsb = new SpannableStringBuilder(prefix + evaluateResult);
-        contentSsb.setSpan(new ForegroundColorSpan(evaluateColor), prefix.length(), contentSsb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        eveluateViewHolder.contentTv.setText(contentSsb);
+        final String context = evaluateMessage.getcontext();
+        if (!TextUtils.isEmpty(context)) {
+            evaluateViewHolder.contentTv.setVisibility(View.VISIBLE);
+            evaluateViewHolder.contentTv.setText(context);
+        } else {
+            evaluateViewHolder.contentTv.setVisibility(View.GONE);
+        }
+
+
     }
 
     /**
@@ -407,9 +430,9 @@ public class MQChatAdapter extends BaseAdapter {
             }
         } else {
             if (voiceMessage.getItemViewType() == BaseMessage.TYPE_AGENT) {
-                viewHolder.voiceAnimIv.setImageResource(R.drawable.mq_voice_left_playing);
+                viewHolder.voiceAnimIv.setImageResource(R.drawable.mq_anim_voice_left_playing);
             } else {
-                viewHolder.voiceAnimIv.setImageResource(R.drawable.mq_voice_right_playing);
+                viewHolder.voiceAnimIv.setImageResource(R.drawable.mq_anim_voice_right_playing);
             }
             AnimationDrawable animationDrawable = (AnimationDrawable) viewHolder.voiceAnimIv.getDrawable();
             animationDrawable.start();
@@ -573,13 +596,10 @@ public class MQChatAdapter extends BaseAdapter {
      * @param isLeft
      */
     private void configChatBubbleBg(View view, boolean isLeft) {
-        if (isLeft && (MQConfig.bgColorChatBubbleLeft != MQConfig.DEFAULT)) {
-            Drawable tintDrawable = MQUtils.tintDrawable(mqConversationActivity, view.getBackground(), MQConfig.bgColorChatBubbleLeft);
-            MQUtils.setBackground(view, tintDrawable);
-        }
-        if (!isLeft && (MQConfig.bgColorChatBubbleRight != MQConfig.DEFAULT)) {
-            Drawable tintDrawable = MQUtils.tintDrawable(mqConversationActivity, view.getBackground(), MQConfig.bgColorChatBubbleRight);
-            MQUtils.setBackground(view, tintDrawable);
+        if (isLeft) {
+            MQUtils.applyCustomUITintDrawable(view, R.color.mq_chat_left_bubble_final, R.color.mq_chat_left_bubble, MQConfig.ui.leftChatBubbleColorResId);
+        } else {
+            MQUtils.applyCustomUITintDrawable(view, R.color.mq_chat_right_bubble_final, R.color.mq_chat_right_bubble, MQConfig.ui.rightChatBubbleColorResId);
         }
     }
 
@@ -587,11 +607,10 @@ public class MQChatAdapter extends BaseAdapter {
      * 如果开发者有配置气泡内文字的颜色，改变气泡文字的颜色
      */
     private void configChatBubbleTextColor(TextView textView, boolean isLeft) {
-        if (isLeft && (MQConfig.textColorChatBubbleLeft != MQConfig.DEFAULT)) {
-            textView.setTextColor(mqConversationActivity.getResources().getColor(MQConfig.textColorChatBubbleLeft));
-        }
-        if (!isLeft && (MQConfig.textColorChatBubbleRight != MQConfig.DEFAULT)) {
-            textView.setTextColor(mqConversationActivity.getResources().getColor(MQConfig.textColorChatBubbleRight));
+        if (isLeft) {
+            MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_left_textColor, MQConfig.ui.leftChatTextColorResId, null, textView);
+        } else {
+            MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_right_textColor, MQConfig.ui.rightChatTextColorResId, null, textView);
         }
     }
 }

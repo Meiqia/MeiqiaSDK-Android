@@ -23,6 +23,7 @@ import com.meiqia.core.callback.OnEndConversationCallback;
 import com.meiqia.core.callback.OnGetMQClientIdCallBackOn;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
+import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
 import java.util.HashMap;
@@ -86,7 +87,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
         switch (id) {
             // 使用当前顾客上线
             case R.id.set_current_client_id_online_btn:
-                MQConversationActivity.registerController(new ControllerImpl(this));
+                MQConfig.registerController(new ControllerImpl(this));
                 Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
                 startActivity(intent);
                 break;

@@ -83,11 +83,11 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
     }
 
     @Override
-    public void onPermissionsGranted(List<String> perms) {
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
     }
 
     @Override
-    public void onPermissionsDenied(List<String> perms) {
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
         MQUtils.show(this, R.string.mq_permission_denied_tip);
     }
 
@@ -102,13 +102,10 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
     }
 
     private void conversation() {
-//        startActivity(new Intent(MainActivity.this, MQConversationActivity.class));
-
-
-        MQConfig.backArrowIconResId = android.support.v7.appcompat.R.drawable.abc_ic_ab_back_mtrl_am_alpha;
-        MQConfig.bgColorTitle = R.color.colorPrimary;
-        MQConfig.textColorTitle = android.R.color.white;
-        MQConfig.titleGravity = MQConfig.MQTitleGravity.LEFT;
+        MQConfig.ui.backArrowIconResId = android.support.v7.appcompat.R.drawable.abc_ic_ab_back_mtrl_am_alpha;
+        MQConfig.ui.titleBackgroundResId = R.color.colorPrimary;
+        MQConfig.ui.titleTextColorResId = android.R.color.white;
+        MQConfig.ui.titleGravity = MQConfig.ui.MQTitleGravity.LEFT;
         startActivity(new Intent(MainActivity.this, MQConversationActivity.class));
     }
 }

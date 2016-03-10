@@ -10,7 +10,7 @@
         android:layout_marginRight="10dp"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@drawable/mq_leave_tip_gradient_line"/>
+        android:background="@drawable/mq_shape_leave_tip_gradient_line"/>
 
     <TextView
         android:id="@+id/content_tv"
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:textColor="@color/mq_event_gray"
+        android:textColor="@color/mq_chat_event_gray"
         android:textSize="14sp"
         android:text="@string/mq_leave_msg_tips"/>
 
@@ -29,6 +29,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="5dp"
-        android:background="@drawable/mq_leave_tip_gradient_line"/>
+        android:background="@drawable/mq_shape_leave_tip_gradient_line"/>
 
 </LinearLayout>

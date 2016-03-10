@@ -23,11 +23,15 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.meiqia.core.bean.MQAgent;
@@ -38,6 +42,9 @@ import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -183,7 +190,81 @@ public class MQUtils {
         return roundedBitmapDrawable;
     }
 
+    /**
+     * 处理自定义图片和文字颜色
+     *
+     * @param resourceResId 通过资源文件id的形式自定义的id
+     * @param codeResId     通过java代码的方式自定义的id
+     * @param iconIv        要改变tint颜色的图片控件
+     * @param textViews     要改变文字颜色的文本控件
+     */
+    public static void applyCustomUITextAndImageColor(int resourceResId, int codeResId, ImageView iconIv, TextView... textViews) {
+        Context context = null;
+        if (iconIv != null) {
+            context = iconIv.getContext();
+        }
+        if (textViews != null && textViews.length > 0) {
+            context = textViews[0].getContext();
+        }
+
+        if (context != null) {
+            if (MQConfig.DEFAULT != codeResId) {
+                resourceResId = codeResId;
+            }
+
+            int color = context.getResources().getColor(resourceResId);
+            if (iconIv != null) {
+                iconIv.setColorFilter(color);
+            }
+            if (textViews != null) {
+                for (TextView textView : textViews) {
+                    textView.setTextColor(color);
+                }
+            }
+        }
+    }
+
+    /**
+     * 处理自定义标题文本对其方式
+     *
+     * @param backTv  返回文本控件
+     * @param titleTv 标题文本控件
+     */
+    public static void applyCustomUITitleGravity(TextView backTv, TextView titleTv) {
+        if (MQConfig.ui.MQTitleGravity.LEFT == MQConfig.ui.titleGravity) {
+            RelativeLayout.LayoutParams titleTvParams = (RelativeLayout.LayoutParams) titleTv.getLayoutParams();
+            titleTvParams.addRule(RelativeLayout.RIGHT_OF, R.id.back_rl);
+            titleTv.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+            if (backTv != null) {
+                backTv.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    /**
+     * 处理自定义图片背景色
+     *
+     * @param view          包含背景图片的控件
+     * @param finalResId    默认颜色的资源id
+     * @param resourceResId 通过资源文件id的形式自定义的id
+     * @param codeResId     通过java代码的方式自定义的id
+     */
+    public static void applyCustomUITintDrawable(View view, int finalResId, int resourceResId, int codeResId) {
+        Context context = view.getContext();
+        if (MQConfig.DEFAULT != codeResId) {
+            resourceResId = codeResId;
+        }
+        if (context.getResources().getColor(resourceResId) != context.getResources().getColor(finalResId)) {
+            Drawable tintDrawable = tintDrawable(context, view.getBackground(), resourceResId);
+            setBackground(view, tintDrawable);
+        }
+    }
+
     public static Drawable tintDrawable(Context context, Drawable drawable, @ColorRes int color) {
+        if (drawable == null) {
+            return null;
+        }
+
         final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
         DrawableCompat.setTint(wrappedDrawable, context.getResources().getColor(color));
         return wrappedDrawable;
@@ -493,5 +574,18 @@ public class MQUtils {
     public static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED.equals(state);
+    }
+
+    /**
+     * 初始化ImageLoader
+     *
+     * @param context
+     */
+    public static void initImageLoader(Context context) {
+        if (!ImageLoader.getInstance().isInited()) {
+            DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(R.drawable.mq_ic_gallery_holder).cacheInMemory(true).cacheOnDisk(true).build();
+            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).threadPoolSize(3).defaultDisplayImageOptions(options).build();
+            ImageLoader.getInstance().init(config);
+        }
     }
 }

@@ -2,7 +2,8 @@
 <resources>
     <dimen name="mq_title_height">48dp</dimen>
     <dimen name="mq_chat_box_height">50dp</dimen>
-    <dimen name="mq_titlebar_textSize">18sp</dimen>
+    <dimen name="mq_titlebar_textSize">20sp</dimen>
+    <dimen name="mq_title_left_right_textSize">16sp</dimen>
     <dimen name="mq_size_level1">4dp</dimen>
     <dimen name="mq_size_level2">8dp</dimen>
     <dimen name="mq_size_level3">12dp</dimen>

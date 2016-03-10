@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MQMatchMatch"
-    android:background="@color/mq_bg_color"
+    android:background="@color/mq_activity_bg"
     android:clickable="true">
 
     <RelativeLayout
@@ -31,8 +31,8 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/back_iv"
                 android:text="@string/mq_back"
-                android:textColor="@color/mq_title_text"
-                android:textSize="16dp"
+                android:textColor="@color/mq_activity_title_textColor"
+                android:textSize="@dimen/mq_title_left_right_textSize"
                 tools:text="返回" />
         </RelativeLayout>
 
@@ -43,7 +43,7 @@
             android:gravity="center"
             android:maxWidth="175dp"
             android:singleLine="true"
-            android:textColor="@color/mq_title_text"
+            android:textColor="@color/mq_activity_title_textColor"
             android:textSize="@dimen/mq_titlebar_textSize"
             tools:text="AgentNameAgentNameAgentNameAgentNameAgentNameAgentName" />
 
@@ -53,7 +53,7 @@
         style="@style/MQMatchMatch"
         android:layout_above="@+id/chat_foot_ll"
         android:layout_below="@id/title_rl"
-        android:background="@color/mq_bg_color">
+        android:background="@color/mq_activity_bg">
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh_layout"
@@ -63,7 +63,7 @@
                 android:id="@+id/messages_lv"
                 style="@style/MQMatchMatch"
                 android:layout_below="@+id/title_tip_tv"
-                android:background="@color/mq_bg_color"
+                android:background="@color/mq_activity_bg"
                 android:cacheColorHint="#00000000"
                 android:divider="#00000000"
                 android:listSelector="@android:color/transparent"
@@ -90,11 +90,11 @@
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
+            android:hint="@string/mq_send_msg"
             android:maxLines="5"
             android:minHeight="40dp"
-            android:textColor="@color/mq_chat_text_left"
+            android:textColor="@color/mq_chat_left_textColor"
             android:textSize="@dimen/mq_textSize_level2"
-            android:hint="@string/mq_send_msg"
             tools:text="测试文本" />
 
 
@@ -149,7 +149,7 @@
                         android:layout_width="@dimen/mq_size_level6"
                         android:layout_height="@dimen/mq_size_level6"
                         android:layout_centerInParent="true"
-                        android:src="@drawable/mq_ic_image_selector" />
+                        android:src="@drawable/mq_selector_ic_image" />
 
                 </RelativeLayout>
 
@@ -162,7 +162,7 @@
                         android:layout_width="@dimen/mq_size_level6"
                         android:layout_height="@dimen/mq_size_level6"
                         android:layout_centerInParent="true"
-                        android:src="@drawable/mq_ic_camera_selector" />
+                        android:src="@drawable/mq_selector_ic_camera" />
 
                 </RelativeLayout>
 
@@ -196,7 +196,7 @@
                         android:layout_width="@dimen/mq_size_level6"
                         android:layout_height="@dimen/mq_size_level6"
                         android:layout_centerInParent="true"
-                        android:src="@drawable/mq_ic_evaluate_selector" />
+                        android:src="@drawable/mq_selector_ic_evaluate" />
 
                 </RelativeLayout>
             </LinearLayout>
@@ -209,9 +209,32 @@
 
     <ProgressBar
         android:id="@+id/progressbar"
-        android:layout_width="20dp"
+        style="?android:progressBarStyle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:indeterminateDrawable="@anim/mq_loading" />
+        android:indeterminateDrawable="@drawable/mq_rotate_progress_bar" />
 
+    <LinearLayout
+        android:id="@+id/allocate_agent_ll"
+        style="@style/MQMatchMatch.Vertical"
+        android:background="@color/mq_activity_bg"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ProgressBar
+            style="?android:progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateDrawable="@drawable/mq_rotate_progress_bar" />
+
+        <TextView
+            style="@style/MQWrapWrap"
+            android:layout_marginTop="@dimen/mq_size_level3"
+            android:text="@string/mq_allocate_agent"
+            android:textColor="@color/mq_form_et_bg_focus"
+            android:textSize="@dimen/mq_textSize_level2"
+            android:visibility="gone" />
+
+    </LinearLayout>
 </RelativeLayout>
