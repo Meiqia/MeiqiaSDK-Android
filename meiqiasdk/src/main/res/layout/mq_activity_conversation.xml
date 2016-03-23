@@ -93,7 +93,8 @@
             android:hint="@string/mq_send_msg"
             android:maxLines="5"
             android:minHeight="40dp"
-            android:textColor="@color/mq_chat_left_textColor"
+            android:textColor="@color/mq_chat_et_textColor"
+            android:textCursorDrawable="@drawable/mq_shape_cursor"
             android:textSize="@dimen/mq_textSize_level2"
             tools:text="测试文本" />
 
@@ -135,7 +136,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="4dp"
                         android:layout_alignParentBottom="true"
-                        android:background="#ff17c7d1"
+                        android:background="@color/mq_indicator_selected"
                         android:visibility="gone" />
                 </RelativeLayout>
 
@@ -146,6 +147,7 @@
                     android:layout_height="match_parent">
 
                     <ImageView
+                        android:id="@+id/photo_select_iv"
                         android:layout_width="@dimen/mq_size_level6"
                         android:layout_height="@dimen/mq_size_level6"
                         android:layout_centerInParent="true"
@@ -159,6 +161,7 @@
                     android:layout_height="match_parent">
 
                     <ImageView
+                        android:id="@+id/camera_select_iv"
                         android:layout_width="@dimen/mq_size_level6"
                         android:layout_height="@dimen/mq_size_level6"
                         android:layout_centerInParent="true"
@@ -183,7 +186,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="4dp"
                         android:layout_alignParentBottom="true"
-                        android:background="#ff17c7d1"
+                        android:background="@color/mq_indicator_selected"
                         android:visibility="gone" />
                 </RelativeLayout>
 
@@ -193,6 +196,7 @@
                     android:layout_height="match_parent">
 
                     <ImageView
+                        android:id="@+id/evaluate_select_iv"
                         android:layout_width="@dimen/mq_size_level6"
                         android:layout_height="@dimen/mq_size_level6"
                         android:layout_centerInParent="true"
@@ -202,8 +206,8 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <com.meiqia.meiqiasdk.widget.MQEditToolbar
-            android:id="@+id/editToolbar"
+        <com.meiqia.meiqiasdk.widget.MQCustomKeyboardLayout
+            android:id="@+id/customKeyboardLayout"
             style="@style/MQMatchWrap" />
     </LinearLayout>
 
@@ -215,26 +219,4 @@
         android:layout_centerInParent="true"
         android:indeterminateDrawable="@drawable/mq_rotate_progress_bar" />
 
-    <LinearLayout
-        android:id="@+id/allocate_agent_ll"
-        style="@style/MQMatchMatch.Vertical"
-        android:background="@color/mq_activity_bg"
-        android:gravity="center"
-        android:visibility="gone">
-
-        <ProgressBar
-            style="?android:progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminateDrawable="@drawable/mq_rotate_progress_bar" />
-
-        <TextView
-            style="@style/MQWrapWrap"
-            android:layout_marginTop="@dimen/mq_size_level3"
-            android:text="@string/mq_allocate_agent"
-            android:textColor="@color/mq_form_et_bg_focus"
-            android:textSize="@dimen/mq_textSize_level2"
-            android:visibility="gone" />
-
-    </LinearLayout>
 </RelativeLayout>

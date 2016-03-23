@@ -16,8 +16,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.meiqia.core.MQManager;
-import com.meiqia.core.bean.MQMessage;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
 import com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity;
@@ -26,7 +24,7 @@ import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.EvaluateMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
-import com.meiqia.meiqiasdk.widget.CircleImageView;
+import com.meiqia.meiqiasdk.widget.MQCircleImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
@@ -133,7 +131,7 @@ public class MQChatAdapter extends BaseAdapter {
                     viewHolder.voiceContentTv = (TextView) convertView.findViewById(R.id.tv_voice_content);
                     viewHolder.voiceAnimIv = (ImageView) convertView.findViewById(R.id.iv_voice_anim);
                     viewHolder.voiceContainerRl = convertView.findViewById(R.id.rl_voice_container);
-                    viewHolder.usAvatar = (CircleImageView) convertView.findViewById(R.id.us_avatar_iv);
+                    viewHolder.usAvatar = (MQCircleImageView) convertView.findViewById(R.id.us_avatar_iv);
                     viewHolder.unreadCircle = convertView.findViewById(R.id.unread_view);
                     // tint
                     configChatBubbleBg(viewHolder.contentText, true);
@@ -220,17 +218,17 @@ public class MQChatAdapter extends BaseAdapter {
         //显示消息：文字、图片、语音
         else if (getItemViewType(position) == BaseMessage.TYPE_AGENT || getItemViewType(position) == BaseMessage.TYPE_CLIENT) {
             // 文字
-            if (MQMessage.TYPE_CONTENT_TEXT.equals(mcMessage.getContentType())) {
+            if (BaseMessage.TYPE_CONTENT_TEXT.equals(mcMessage.getContentType())) {
                 viewHolder.contentText.setVisibility(View.VISIBLE);
                 viewHolder.contentImage.setVisibility(View.GONE);
                 viewHolder.voiceContainerRl.setVisibility(View.GONE);
                 if (!TextUtils.isEmpty(mcMessage.getContent())) {
-                    viewHolder.contentText.setText(MQEmotionUtil.getEmotionText(mqConversationActivity, mcMessage.getContent()));
+                    viewHolder.contentText.setText(MQEmotionUtil.getEmotionText(mqConversationActivity, mcMessage.getContent(), 20));
                 }
 
             }
             // 图片
-            else if (MQMessage.TYPE_CONTENT_PHOTO.equals(mcMessage.getContentType())) {
+            else if (BaseMessage.TYPE_CONTENT_PHOTO.equals(mcMessage.getContentType())) {
                 viewHolder.contentText.setVisibility(View.GONE);
                 viewHolder.voiceContainerRl.setVisibility(View.GONE);
 
@@ -267,7 +265,7 @@ public class MQChatAdapter extends BaseAdapter {
 
             }
             //语音
-            else if (MQMessage.TYPE_CONTENT_VOICE.equals(mcMessage.getContentType())) {
+            else if (BaseMessage.TYPE_CONTENT_VOICE.equals(mcMessage.getContentType())) {
                 handleBindVoiceItem(viewHolder, (VoiceMessage) mcMessage, position);
             }
             //显示客服头像
@@ -277,13 +275,13 @@ public class MQChatAdapter extends BaseAdapter {
             //显示发送状态：发送中、发送失败
             else if (getItemViewType(position) == BaseMessage.TYPE_CLIENT) {
                 if (viewHolder.sendingProgressBar != null) {
-                    if (MQMessage.STATE_SENDING.equals(mcMessage.getStatus())) {
+                    if (BaseMessage.STATE_SENDING.equals(mcMessage.getStatus())) {
                         viewHolder.sendingProgressBar.setVisibility(View.VISIBLE);
                         viewHolder.sendState.setVisibility(View.GONE);
-                    } else if (MQMessage.STATE_ARRIVE.equals(mcMessage.getStatus())) {
+                    } else if (BaseMessage.STATE_ARRIVE.equals(mcMessage.getStatus())) {
                         viewHolder.sendingProgressBar.setVisibility(View.GONE);
                         viewHolder.sendState.setVisibility(View.GONE);
-                    } else if (MQMessage.STATE_FAILED.equals(mcMessage.getStatus())) {
+                    } else if (BaseMessage.STATE_FAILED.equals(mcMessage.getStatus())) {
                         viewHolder.sendingProgressBar.setVisibility(View.GONE);
                         viewHolder.sendState.setVisibility(View.VISIBLE);
                         viewHolder.sendState.setBackgroundResource(R.drawable.mq_ic_msg_failed);
@@ -315,7 +313,7 @@ public class MQChatAdapter extends BaseAdapter {
         View voiceContainerRl;
         ProgressBar sendingProgressBar;
         ImageView sendState;
-        CircleImageView usAvatar;
+        MQCircleImageView usAvatar;
         View unreadCircle;
     }
 
@@ -377,7 +375,7 @@ public class MQChatAdapter extends BaseAdapter {
                 evaluateViewHolder.levelBg.setBackgroundResource(R.drawable.mq_shape_evaluate_smiling);
                 break;
         }
-        final String context = evaluateMessage.getcontext();
+        final String context = evaluateMessage.getContent();
         if (!TextUtils.isEmpty(context)) {
             evaluateViewHolder.contentTv.setVisibility(View.VISIBLE);
             evaluateViewHolder.contentTv.setText(context);
@@ -425,8 +423,10 @@ public class MQChatAdapter extends BaseAdapter {
         if (mCurrentPlayingItemPosition != position) {
             if (voiceMessage.getItemViewType() == BaseMessage.TYPE_AGENT) {
                 viewHolder.voiceAnimIv.setImageResource(R.drawable.mq_voice_left_normal);
+                viewHolder.voiceAnimIv.setColorFilter(mqConversationActivity.getResources().getColor(R.color.mq_chat_left_textColor));
             } else {
                 viewHolder.voiceAnimIv.setImageResource(R.drawable.mq_voice_right_normal);
+                viewHolder.voiceAnimIv.setColorFilter(mqConversationActivity.getResources().getColor(R.color.mq_chat_right_textColor));
             }
         } else {
             if (voiceMessage.getItemViewType() == BaseMessage.TYPE_AGENT) {
@@ -503,7 +503,7 @@ public class MQChatAdapter extends BaseAdapter {
 
         // 设置已读状态
         voiceMessage.setIsRead(true);
-        MQManager.getInstance(mqConversationActivity).updateMessage(voiceMessage.getId(), true);
+        MQConfig.getController(mqConversationActivity).updateMessage(voiceMessage.getId(), true);
 
         mCurrentPlayingItemPosition = position;
         notifyDataSetChanged();

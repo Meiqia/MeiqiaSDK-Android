@@ -268,6 +268,7 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
             }
         } else if (resultCode == RESULT_CANCELED && requestCode == REQUEST_CODE_PREVIEW) {
             mPicAdapter.setSelectedImages(MQPhotoPickerPreviewActivity.getSelectedImages(data));
+            renderTopRightBtn();
         }
     }
 

@@ -5,9 +5,9 @@ import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.callback.SimpleCallback;
+import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 
-import java.util.List;
 import java.util.Map;
 
 public interface MQController {
@@ -49,6 +49,14 @@ public interface MQController {
     void setCurrentClientOnline(String clientId, String customizedId, OnClientOnlineCallback onClientOnlineCallback);
 
     /**
+     * 设置当前顾客的自定义信息
+     *
+     * @param clientInfo           当前顾客的自定义信息
+     * @param onClientInfoCallback 回调
+     */
+    void setClientInfo(Map<String, String> clientInfo, SimpleCallback onClientInfoCallback);
+
+    /**
      * 发送「顾客正在输入」状态
      *
      * @param content 内容
@@ -68,26 +76,17 @@ public interface MQController {
     void closeService();
 
     /**
-     * 添加留言表单
-     *
-     * @param message        留言消息
-     * @param pictures       图片消息集合
-     * @param customInfoMap  自定义消息
-     * @param simpleCallback 添加留言表单的回调接口
+     * 获取当前客服
+     * @return 当前客服，如果没有返回 null
      */
-    void submitMessageForm(String message, List<String> pictures, Map<String, String> customInfoMap, SimpleCallback simpleCallback);
+    Agent getCurrentAgent();
+
+    void updateMessage(long messageId, boolean isRead);
 
     /**
-     * 刷新企业配置信息
+     * 保存聊天界面不可见时的最后一条消息的时间
      *
-     * @param simpleCallback
+     * @param stopTime
      */
-    void refreshEnterpriseConfig(SimpleCallback simpleCallback);
-
-    /**
-     * 获取离线消息模板
-     *
-     * @return
-     */
-    String getLeaveMessageTemplete();
+    void saveConversationOnStopTime(long stopTime);
 }
