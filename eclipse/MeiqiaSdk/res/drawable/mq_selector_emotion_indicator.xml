@@ -2,13 +2,13 @@
     <item android:state_enabled="false">
         <shape android:shape="oval">
             <size android:width="5dp" android:height="5dp" />
-            <solid android:color="#EDEDED" />
+            <solid android:color="@color/mq_indicator_normal" />
         </shape>
     </item>
     <item>
         <shape android:shape="oval">
             <size android:width="5dp" android:height="5dp" />
-            <solid android:color="#f57257" />
+            <solid android:color="@color/mq_indicator_selected" />
         </shape>
     </item>
 </selector>

@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -17,6 +18,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -73,7 +75,7 @@ public class MQUtils {
         sHandler.postDelayed(task, delayMillis);
     }
 
-    public static BaseMessage parseMQMessageIntoChatBase(MQMessage message, BaseMessage baseMessage) {
+    public static BaseMessage parseMQMessageIntoBaseMessage(MQMessage message, BaseMessage baseMessage) {
         int itemType;
         if (MQMessage.TYPE_FROM_CLIENT.equals(message.getFrom_type())) {
             itemType = BaseMessage.TYPE_CLIENT;
@@ -86,6 +88,7 @@ public class MQUtils {
         baseMessage.setContentType(message.getContent_type());
         baseMessage.setStatus(message.getStatus());
         baseMessage.setId(message.getId());
+        baseMessage.setType(message.getType());
         baseMessage.setAgentNickname(message.getAgent_nickname());
         baseMessage.setCreatedOn(message.getCreated_on());
         baseMessage.setAvatar(message.getAvatar());
@@ -98,7 +101,7 @@ public class MQUtils {
         return baseMessage;
     }
 
-    public static BaseMessage parseMQMessageIntoChatBase(MQMessage message) {
+    public static BaseMessage parseMQMessageToBaseMessage(MQMessage message) {
         BaseMessage baseMessage;
         int itemType;
         if (MQMessage.TYPE_FROM_CLIENT.equals(message.getFrom_type())) {
@@ -131,6 +134,7 @@ public class MQUtils {
         baseMessage.setStatus(message.getStatus());
         baseMessage.setItemViewType(itemType);
         baseMessage.setContentType(message.getContent_type());
+        baseMessage.setType(message. getType());
         baseMessage.setStatus(message.getStatus());
         baseMessage.setId(message.getId());
         baseMessage.setAgentNickname(message.getAgent_nickname());
@@ -149,7 +153,7 @@ public class MQUtils {
     public static List<BaseMessage> parseMQMessageToChatBaseList(List<MQMessage> mqMessageList) {
         List<BaseMessage> baseMessages = new ArrayList<BaseMessage>();
         for (MQMessage mqMessage : mqMessageList) {
-            baseMessages.add(parseMQMessageIntoChatBase(mqMessage));
+            baseMessages.add(parseMQMessageToBaseMessage(mqMessage));
         }
         return baseMessages;
     }
@@ -276,6 +280,28 @@ public class MQUtils {
         } else {
             v.setBackgroundDrawable(bgDrawable);
         }
+    }
+
+    public static void tintPressedIndicator(ImageView imageView, @DrawableRes int normalResId, @DrawableRes int pressedResId) {
+        Drawable normal = imageView.getResources().getDrawable(normalResId);
+        Drawable pressed = imageView.getResources().getDrawable(pressedResId);
+        pressed = MQUtils.tintDrawable(imageView.getContext(), pressed, R.color.mq_indicator_selected);
+        imageView.setImageDrawable(getPressedSelectorDrawable(normal, pressed));
+    }
+
+    /**
+     * 得到点击改变状态的Selector,一般给setBackgroundDrawable使用
+     *
+     * @param normal
+     * @param pressed
+     * @return
+     */
+    public static StateListDrawable getPressedSelectorDrawable(Drawable normal, Drawable pressed) {
+        StateListDrawable bg = new StateListDrawable();
+        bg.addState(new int[]{android.R.attr.state_pressed, android.R.attr.state_enabled}, pressed);
+        bg.addState(new int[]{android.R.attr.state_enabled}, normal);
+        bg.addState(new int[]{}, normal);
+        return bg;
     }
 
     /**
@@ -438,16 +464,15 @@ public class MQUtils {
     /**
      * 打开键盘
      *
-     * @param context
      * @param editText
      */
-    public static void openKeyboard(final Context context, final EditText editText) {
+    public static void openKeyboard(final EditText editText) {
         runInUIThread(new Runnable() {
             @Override
             public void run() {
                 editText.requestFocus();
                 editText.setSelection(editText.getText().toString().length());
-                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
             }
         }, 300);

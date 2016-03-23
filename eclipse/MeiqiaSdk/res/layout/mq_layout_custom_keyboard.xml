@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MQMatchWrap"
+    android:background="@color/mq_item_normal">
+
+    <com.meiqia.meiqiasdk.widget.MQEmotionKeyboardLayout
+        android:id="@+id/emotionKeyboardLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/mq_custom_keyboard_height"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <com.meiqia.meiqiasdk.widget.MQRecorderKeyboardLayout
+        android:id="@+id/recorderKeyboardLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/mq_custom_keyboard_height"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <View style="@style/MQHLine" />
+</RelativeLayout>

@@ -156,17 +156,4 @@
         <item name="android:background">@drawable/mq_selector_item_bottom</item>
     </style>
 
-    <style name="MQFormDeleteIv" parent="MQWrapWrap">
-        <item name="android:layout_alignParentRight">true</item>
-        <item name="android:clickable">true</item>
-        <item name="android:src">@drawable/mq_ic_delete_icon</item>
-    </style>
-
-    <style name="MQFormImageSiv" parent="MQMatchWrap">
-        <item name="android:layout_marginRight">@dimen/mq_size_level3</item>
-        <item name="android:layout_marginTop">@dimen/mq_size_level3</item>
-        <item name="android:clickable">true</item>
-        <item name="android:scaleType">centerCrop</item>
-    </style>
-
 </resources>

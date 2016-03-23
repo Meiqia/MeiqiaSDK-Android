@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.util.MQAudioPlayerManager;
 import com.meiqia.meiqiasdk.util.MQAudioRecorderManager;
+import com.meiqia.meiqiasdk.util.MQUtils;
 
 import java.io.File;
 
@@ -23,7 +23,7 @@ import java.io.File;
  * 创建时间:16/1/25 下午2:46
  * 描述:
  */
-public class MQAudioRecorderLayout extends RelativeLayout implements MQAudioRecorderManager.Callback, View.OnTouchListener {
+public class MQRecorderKeyboardLayout extends RelativeLayout implements MQAudioRecorderManager.Callback, View.OnTouchListener {
     /**
      * 录音的最大时间
      */
@@ -53,7 +53,7 @@ public class MQAudioRecorderLayout extends RelativeLayout implements MQAudioReco
     private float mTime;
     private Callback mCallback;
     private TextView mStatusTv;
-    private ImageView mRecorderIv;
+    private ImageView mAnimIv;
 
     /**
      * 上一次提示录音时间太短的时间戳
@@ -71,7 +71,8 @@ public class MQAudioRecorderLayout extends RelativeLayout implements MQAudioReco
                 case WHAT_VOICE_CHANGED:
                     if (mCurrentState == STATE_RECORDING) {
                         int resId = getContext().getResources().getIdentifier("mq_voice_level" + mAudioRecorderManager.getVoiceLevel(VOICE_LEVEL_COUNT), "drawable", getContext().getPackageName());
-                        mRecorderIv.setImageResource(resId);
+                        mAnimIv.setImageResource(resId);
+                        mAnimIv.setColorFilter(getResources().getColor(R.color.mq_chat_audio_recorder_icon));
 
                         int remainingTime = Math.round(RECORDER_MAX_TIME - mTime);
                         if (remainingTime <= 10) {
@@ -107,14 +108,15 @@ public class MQAudioRecorderLayout extends RelativeLayout implements MQAudioReco
         }
     };
 
-    public MQAudioRecorderLayout(Context context, AttributeSet attrs) {
+    public MQRecorderKeyboardLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        View.inflate(context, R.layout.mq_layout_audio_recorder, this);
-        mStatusTv = (TextView) findViewById(R.id.tv_audio_recorder_status);
-        mRecorderIv = (ImageView) findViewById(R.id.iv_audio_recorder_recorder);
-        mRecorderIv.setOnTouchListener(this);
+        View.inflate(context, R.layout.mq_layout_recorder_keyboard, this);
+        mStatusTv = (TextView) findViewById(R.id.tv_recorder_keyboard_status);
+        mAnimIv = (ImageView) findViewById(R.id.iv_recorder_keyboard_anim);
+        mAnimIv.setColorFilter(getResources().getColor(R.color.mq_chat_audio_recorder_icon));
+        mAnimIv.setOnTouchListener(this);
 
-        mDistanceCancel = dp2px(context, 10);
+        mDistanceCancel = MQUtils.dip2px(context, 10);
         mAudioRecorderManager = MQAudioRecorderManager.getInstance(context);
         mAudioRecorderManager.setCallback(this);
     }
@@ -136,14 +138,16 @@ public class MQAudioRecorderLayout extends RelativeLayout implements MQAudioReco
             switch (mCurrentState) {
                 case STATE_NORMAL:
                     mStatusTv.setText(R.string.mq_audio_status_normal);
-                    mRecorderIv.setImageResource(R.drawable.mq_voice_level1);
+                    mAnimIv.setImageResource(R.drawable.mq_voice_level1);
+                    mAnimIv.setColorFilter(getResources().getColor(R.color.mq_chat_audio_recorder_icon));
                     break;
                 case STATE_RECORDING:
                     mStatusTv.setText(R.string.mq_audio_status_recording);
                     break;
                 case STATE_WANT_CANCEL:
                     mStatusTv.setText(R.string.mq_audio_status_want_cancel);
-                    mRecorderIv.setImageResource(R.drawable.mq_voice_want_cancel);
+                    mAnimIv.setImageResource(R.drawable.mq_voice_want_cancel);
+                    mAnimIv.clearColorFilter();
                     break;
             }
         }
@@ -262,9 +266,5 @@ public class MQAudioRecorderLayout extends RelativeLayout implements MQAudioReco
         void onAudioRecorderTooShort();
 
         void onAudioRecorderNoPermission();
-    }
-
-    public static int dp2px(Context context, float dpValue) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, context.getResources().getDisplayMetrics());
     }
 }
