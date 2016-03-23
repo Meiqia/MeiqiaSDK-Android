@@ -18,15 +18,18 @@ import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.MQScheduleRule;
+import com.meiqia.core.bean.MQMessage;
 import com.meiqia.core.callback.OnClientInfoCallback;
 import com.meiqia.core.callback.OnEndConversationCallback;
 import com.meiqia.core.callback.OnGetMQClientIdCallBackOn;
+import com.meiqia.core.callback.OnGetMessageListCallback;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ApiSampleActivity extends Activity implements View.OnClickListener {
@@ -39,6 +42,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
     private View setAgentTokenOnlineBtn;
     private View setGroupTokenOnlineBtn;
     private View setClientInfoBtn;
+    private View getUnreadMessageBtn;
     private View offlineClientBtn;
     private View endConversationBtn;
 
@@ -65,6 +69,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
         setAgentTokenOnlineBtn = findViewById(R.id.set_specified_agent_token_btn);
         setGroupTokenOnlineBtn = findViewById(R.id.set_specified_agent_group_token_btn);
         setClientInfoBtn = findViewById(R.id.set_client_info);
+        getUnreadMessageBtn = findViewById(R.id.get_unread_message_btn);
         offlineClientBtn = findViewById(R.id.set_client_offline_btn);
         endConversationBtn = findViewById(R.id.end_conversation_btn);
     }
@@ -77,6 +82,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
         setAgentTokenOnlineBtn.setOnClickListener(this);
         setGroupTokenOnlineBtn.setOnClickListener(this);
         setClientInfoBtn.setOnClickListener(this);
+        getUnreadMessageBtn.setOnClickListener(this);
         offlineClientBtn.setOnClickListener(this);
         endConversationBtn.setOnClickListener(this);
     }
@@ -207,6 +213,29 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                 });
                 dialog.show();
                 break;
+            case R.id.get_unread_message_btn:
+                AlertDialog.Builder unreadAlertBuilder = new AlertDialog.Builder(this);
+                unreadAlertBuilder.setTitle("注意");
+                unreadAlertBuilder.setMessage("退出界面后收到的消息，都将算作未读消息");
+                AlertDialog unreadDialog = unreadAlertBuilder.create();
+                unreadDialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        MQManager.getInstance(ApiSampleActivity.this).getUnreadMessages(new OnGetMessageListCallback() {
+                            @Override
+                            public void onSuccess(List<MQMessage> messageList) {
+                                toast("unread message count = " + messageList.size());
+                            }
+
+                            @Override
+                            public void onFailure(int code, String message) {
+                                toast("get unread message failed");
+                            }
+                        });
+                    }
+                });
+                unreadDialog.show();
+                break;
             // 设置顾客离线
             case R.id.set_client_offline_btn:
                 MQManager.getInstance(this).setClientOffline();
@@ -252,7 +281,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
             }
         });
         inputDialog.show();
-        MQUtils.openKeyboard(this, valueEt);
+        MQUtils.openKeyboard(valueEt);
     }
 
     public interface EditDialogOnClickListener {

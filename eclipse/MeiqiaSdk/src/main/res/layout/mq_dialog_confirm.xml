@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MQMatchWrap.Vertical"
+    android:layout_marginLeft="@dimen/mq_size_level10"
+    android:layout_marginRight="@dimen/mq_size_level10"
+    android:background="@drawable/mq_shape_dialog_bg">
+
+    <TextView
+        android:id="@+id/tv_comfirm_title"
+        style="@style/MQMatchWrap"
+        android:padding="@dimen/mq_size_level4"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/mq_textSize_level2"
+        android:textStyle="bold"
+        tools:text="我是标题" />
+
+    <TextView
+        android:id="@+id/tv_comfirm_content"
+        style="@style/MQMatchWrap"
+        android:paddingBottom="@dimen/mq_size_level4"
+        android:paddingLeft="@dimen/mq_size_level4"
+        android:paddingRight="@dimen/mq_size_level4"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/mq_textSize_level2"
+        tools:text="我是内容" />
+
+    <View style="@style/MQHLine" />
+
+    <LinearLayout style="@style/MQMatchWrap.Horizontal">
+
+        <TextView
+            android:id="@+id/tv_confirm_cancel"
+            style="@style/MQAutoWrap"
+            android:background="@drawable/mq_selector_item_bottom_left"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="@dimen/mq_size_level3"
+            android:text="@string/mq_cancel"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/mq_textSize_level2" />
+
+        <View style="@style/MQVLine" />
+
+        <TextView
+            android:id="@+id/tv_confirm_confirm"
+            style="@style/MQAutoWrap"
+            android:background="@drawable/mq_selector_item_bottom_right"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="@dimen/mq_size_level3"
+            android:text="@string/mq_confirm"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/mq_textSize_level2" />
+    </LinearLayout>
+</LinearLayout>
