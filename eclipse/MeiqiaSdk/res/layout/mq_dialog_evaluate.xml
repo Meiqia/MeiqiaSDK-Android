@@ -5,10 +5,7 @@
     android:layout_marginRight="@dimen/mq_size_level10"
     android:background="@drawable/mq_shape_dialog_bg"
     android:focusableInTouchMode="true"
-    android:paddingBottom="@dimen/mq_size_level3"
-    android:paddingLeft="@dimen/mq_size_level5"
-    android:paddingRight="@dimen/mq_size_level5"
-    android:paddingTop="@dimen/mq_size_level3">
+    android:padding="@dimen/mq_size_level6">
 
     <TextView
         style="@style/MQMatchWrap"
@@ -19,7 +16,7 @@
     <RadioGroup
         android:id="@+id/rg_evaluate_content"
         style="@style/MQMatchWrap.Vertical"
-        android:layout_marginTop="@dimen/mq_size_level3">
+        android:layout_marginTop="@dimen/mq_size_level6">
 
         <RadioButton
             android:id="@+id/rb_evaluate_good"
@@ -37,7 +34,7 @@
         <RadioButton
             android:id="@+id/rb_evaluate_medium"
             style="@style/MQMatchWrap"
-            android:layout_marginTop="@dimen/mq_size_level2"
+            android:layout_marginTop="@dimen/mq_size_level5"
             android:background="@android:color/transparent"
             android:button="@null"
             android:drawableLeft="@drawable/mq_evaluate_medium"
@@ -50,7 +47,7 @@
         <RadioButton
             android:id="@+id/rb_evaluate_bad"
             style="@style/MQMatchWrap"
-            android:layout_marginTop="@dimen/mq_size_level2"
+            android:layout_marginTop="@dimen/mq_size_level5"
             android:background="@android:color/transparent"
             android:button="@null"
             android:drawableLeft="@drawable/mq_evaluate_bad"
@@ -64,19 +61,18 @@
     <EditText
         android:id="@+id/et_evaluate_content"
         style="@style/MQMatchWrap"
-        android:layout_marginTop="@dimen/mq_size_level3"
+        android:layout_marginTop="@dimen/mq_size_level6"
         android:background="@drawable/mq_selector_evaluate_et"
         android:hint="@string/mq_evaluate_hint"
         android:padding="@dimen/mq_size_level1"
         android:singleLine="true"
         android:textColor="@color/mq_chat_event_gray"
         android:textColorHint="@color/mq_evaluate_hint"
-        android:textCursorDrawable="@drawable/mq_shape_cursor"
         android:textSize="@dimen/mq_textSize_level2" />
 
     <LinearLayout
         style="@style/MQMatchWrap.Horizontal"
-        android:layout_marginTop="@dimen/mq_size_level3"
+        android:layout_marginTop="@dimen/mq_size_level6"
         android:gravity="right">
 
         <TextView

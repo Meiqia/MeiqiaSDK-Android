@@ -254,7 +254,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
             }
         });
         inputDialog.show();
-        MQUtils.openKeyboard(valueEt);
+        MQUtils.openKeyboard(this, valueEt);
     }
 
     public interface EditDialogOnClickListener {

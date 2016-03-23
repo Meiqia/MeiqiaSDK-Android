@@ -6,6 +6,9 @@ import android.support.annotation.DrawableRes;
 
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
+import com.meiqia.meiqiasdk.model.CustomInfoModel;
+
+import java.util.ArrayList;
 
 
 public final class MQConfig {
@@ -37,6 +40,8 @@ public final class MQConfig {
     public static boolean isSoundSwitchOpen = true; // 声音开关
     public static boolean isLoadMessagesFromNativeOpen = false; // 加载本地数据开关
 
+    public static ArrayList<CustomInfoModel> customInfoModels; // 自定义留言表单字段
+
     private static MQController sController;
 
     public static MQController getController(Context context) {
@@ -52,6 +57,12 @@ public final class MQConfig {
 
     public static void registerController(MQController controller) {
         sController = controller;
+    }
+
+    public static MQChatType chatType = MQChatType.ONLY_CHAT;
+
+    public enum MQChatType {
+        ONLY_CHAT, ONLY_FORM, CHAT_OR_FORM
     }
 }
 

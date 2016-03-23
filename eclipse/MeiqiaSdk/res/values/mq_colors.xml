@@ -12,8 +12,6 @@
 
     <color name="mq_item_pressed">#EFEFEF</color>
     <color name="mq_item_normal">@android:color/white</color>
-    <color name="mq_indicator_selected">@color/mq_colorPrimary</color>
-    <color name="mq_indicator_normal">#EDEDED</color>
     <!--公共的 END-->
 
     <!--开发者在通过覆盖资源文件配置自定义UI时，请不要修改以下的资源 START-->
@@ -22,16 +20,14 @@
     <!--开发者在通过覆盖资源文件配置自定义UI时，请不要修改以下的资源 END-->
 
     <!--聊天 START-->
-    <color name="mq_chat_et_textColor">#333333</color>
     <color name="mq_chat_left_textColor">#333333</color>
     <color name="mq_chat_left_link_textColor">@color/mq_chat_left_textColor</color>
-    <color name="mq_chat_right_textColor">@android:color/white</color>
+    <color name="mq_chat_right_textColor">#FFFFFF</color>
     <color name="mq_chat_right_link_textColor">@color/mq_chat_right_textColor</color>
     <color name="mq_chat_unread_circle_bg">#E66B62</color>
     <color name="mq_chat_event_gray">@color/mq_gray</color>
     <color name="mq_chat_direct_agent_nickname_textColor">#43CAA9</color>
-    <color name="mq_chat_audio_recorder_tip_textColor">#767D85</color>
-    <color name="mq_chat_audio_recorder_icon">@color/mq_colorPrimary</color>
+    <color name="mq_chat_audio_tip_textColor">#767D85</color>
     <color name="mq_chat_left_bubble">@color/mq_chat_left_bubble_final</color>
     <color name="mq_chat_right_bubble">@color/mq_chat_right_bubble_final</color>
     <!--聊天 END-->
@@ -45,6 +41,14 @@
     <color name="mq_evaluate_bad">#FF5C5E</color>
     <!--客服评价 END-->
 
+    <!--表单相关 START-->
+    <color name="mq_form_tip_textColor">#767D85</color>
+    <color name="mq_form_et_textColor">#303D42</color>
+    <color name="mq_form_et_textColorHint">#ADB2BB</color>
+    <color name="mq_form_et_bg_focus">@color/mq_colorPrimary</color>
+    <color name="mq_form_et_bg_normal">#C6CBD0</color>
+    <!--表单相关 END-->
+
     <!--数据加载 START-->
     <color name="mq_loading_progress_startColor">@android:color/white</color>
     <color name="mq_loading_progress_centerColor">@color/mq_colorPrimary</color>
@@ -54,8 +58,8 @@
     <!--图库 START-->
     <color name="mq_photo_activity_bg">#1A1A1A</color>
     <color name="mq_photo_title_bg">#303D42</color>
-    <color name="mq_photo_send_enabled">#17C7D1</color>
-    <color name="mq_photo_send_disabled">#8017C7D1</color>
+    <color name="mq_photo_send_enabled">@color/mq_colorPrimary</color>
+    <color name="mq_photo_send_disabled">@color/mq_colorPrimaryDark</color>
     <color name="mq_photo_selected_color">#4D000000</color>
     <!--图库 END-->
 </resources>

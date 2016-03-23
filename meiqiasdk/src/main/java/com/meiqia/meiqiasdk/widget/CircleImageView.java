@@ -16,7 +16,7 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-public class MQCircleImageView extends ImageView {
+public class CircleImageView extends ImageView {
 
     private static final ScaleType SCALE_TYPE = ScaleType.CENTER_CROP;
 
@@ -47,17 +47,17 @@ public class MQCircleImageView extends ImageView {
     private boolean mReady;
     private boolean mSetupPending;
 
-    public MQCircleImageView(Context context) {
+    public CircleImageView(Context context) {
         super(context);
 
         init();
     }
 
-    public MQCircleImageView(Context context, AttributeSet attrs) {
+    public CircleImageView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public MQCircleImageView(Context context, AttributeSet attrs, int defStyle) {
+    public CircleImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mBorderWidth = DEFAULT_BORDER_WIDTH;
         mBorderColor = DEFAULT_BORDER_COLOR;

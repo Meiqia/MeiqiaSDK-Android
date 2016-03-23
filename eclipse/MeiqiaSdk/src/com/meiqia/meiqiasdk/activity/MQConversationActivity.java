@@ -23,16 +23,15 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
@@ -59,22 +58,19 @@ import com.meiqia.meiqiasdk.util.MQSimpleTextWatcher;
 import com.meiqia.meiqiasdk.util.MQSoundPoolManager;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.util.MQUtils;
-import com.meiqia.meiqiasdk.widget.MQCustomKeyboardLayout;
+import com.meiqia.meiqiasdk.widget.MQEditToolbar;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class MQConversationActivity extends Activity implements View.OnClickListener, MQEvaluateDialog.Callback, MQCustomKeyboardLayout.Callback, View.OnTouchListener {
+public class MQConversationActivity extends Activity implements View.OnClickListener, MQEvaluateDialog.Callback, MQEditToolbar.Callback, View.OnTouchListener {
     private static final String TAG = MQConversationActivity.class.getSimpleName();
 
     public static final String CLIENT_ID = "clientId";
     public static final String CUSTOMIZED_ID = "customizedId";
-    public static final String CLIENT_INFO = "clientInfo";
 
     public static final int REQUEST_CODE_CAMERA = 0;
     public static final int REQUEST_CODE_PHOTO = 1;
@@ -97,6 +93,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private View mVoiceBtn;
     private View mEvaluateBtn;
     private ProgressBar mLoadProgressBar;
+    private LinearLayout mAllocateAgentLl;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private View mEmojiSelectIndicator;
     private ImageView mEmojiSelectImg;
@@ -117,7 +114,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     private Agent mCurrentAgent; // 当前客服
 
-    private MQCustomKeyboardLayout mCustomKeyboardLayout;
+    private MQEditToolbar mEditToolbar;
     private MQEvaluateDialog mEvaluateDialog;
     private String mCameraPicPath;
 
@@ -127,6 +124,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mController = MQConfig.getController(this);
+        if (MQConfig.chatType == MQConfig.MQChatType.ONLY_FORM) {
+            startActivity(new Intent(this, MQMessageFormActivity.class));
+            finish();
+        }
+
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // 保持屏幕长亮
         setContentView(R.layout.mq_activity_conversation);
@@ -137,7 +139,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         applyCustomUIConfig();
         registerReceiver();
 
-        mCustomKeyboardLayout.init(this, mInputEt, this);
+        mEditToolbar.init(this, mInputEt, this);
+
+
+        if (MQConfig.chatType == MQConfig.MQChatType.CHAT_OR_FORM) {
+            mAllocateAgentLl.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -156,11 +163,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
         // 处理标题文本的对其方式
         MQUtils.applyCustomUITitleGravity(mBackTv, mTitleTv);
-
-        // 处理底部功能按钮图片
-        MQUtils.tintPressedIndicator((ImageView) findViewById(R.id.photo_select_iv), R.drawable.mq_ic_image_normal, R.drawable.mq_ic_image_active);
-        MQUtils.tintPressedIndicator((ImageView) findViewById(R.id.camera_select_iv), R.drawable.mq_ic_camera_normal, R.drawable.mq_ic_camera_active);
-        MQUtils.tintPressedIndicator((ImageView) findViewById(R.id.evaluate_select_iv), R.drawable.mq_ic_evaluate_normal, R.drawable.mq_ic_evaluate_active);
     }
 
     @Override
@@ -184,20 +186,18 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             mChatMsgAdapter.stopPlayVoice();
             MQAudioPlayerManager.release();
         }
-        if (mChatMessageList != null && mChatMessageList.size() > 0) {
-            mController.saveConversationOnStopTime(mChatMessageList.get(mChatMessageList.size() - 1).getCreatedOn());
-        } else {
-            mController.saveConversationOnStopTime(System.currentTimeMillis());
-        }
     }
 
     @Override
     protected void onDestroy() {
-        MQUtils.closeKeyboard(this);
         try {
             mSoundPoolManager.release();
             LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
             unregisterReceiver(mNetworkChangeReceiver);
+            // 退出的时候，如果没有客服，关闭服务
+            if (mCurrentAgent == null) {
+                mController.closeService();
+            }
         } catch (Exception e) {
             //有些时候会出现未注册就取消注册的情况，暂时不知道为什么
         }
@@ -207,8 +207,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         //如果在表情选择的时候按下 Back 键，隐藏表情 panel
-        if (keyCode == KeyEvent.KEYCODE_BACK && mCustomKeyboardLayout.isEmotionKeyboardVisible()) {
-            mCustomKeyboardLayout.closeEmotionKeyboard();
+        if (keyCode == KeyEvent.KEYCODE_BACK && mEditToolbar.isEmotionKeyboardVisible()) {
+            mEditToolbar.closeEmotionKeyboard();
             return true;
         }
         return super.onKeyUp(keyCode, event);
@@ -238,13 +238,14 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mConversationListView = (ListView) findViewById(R.id.messages_lv);
         mInputEt = (EditText) findViewById(R.id.input_et);
         mEmojiSelectBtn = findViewById(R.id.emoji_select_btn);
-        mCustomKeyboardLayout = (MQCustomKeyboardLayout) findViewById(R.id.customKeyboardLayout);
+        mEditToolbar = (MQEditToolbar) findViewById(R.id.editToolbar);
         mSendTextBtn = (ImageButton) findViewById(R.id.send_text_btn);
         mPhotoSelectBtn = findViewById(R.id.photo_select_btn);
         mCameraSelectBtn = findViewById(R.id.camera_select_btn);
         mVoiceBtn = findViewById(R.id.mic_select_btn);
         mEvaluateBtn = findViewById(R.id.evaluate_select_btn);
         mLoadProgressBar = (ProgressBar) findViewById(R.id.progressbar);
+        mAllocateAgentLl = (LinearLayout) findViewById(R.id.allocate_agent_ll);
         mTitleTv = (TextView) findViewById(R.id.title_tv);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mEmojiSelectIndicator = findViewById(R.id.emoji_select_indicator);
@@ -263,17 +264,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         // 绑定 EditText 的监听器
         mInputEt.addTextChangedListener(inputTextWatcher);
         mInputEt.setOnTouchListener(this);
-        mInputEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    mSendTextBtn.performClick();
-                    MQUtils.closeKeyboard(MQConversationActivity.this);
-                    return true;
-                }
-                return false;
-            }
-        });
         // 表情
         mEmojiSelectBtn.setOnClickListener(this);
         // 对话列表，单击「隐藏键盘」、「表情 panel」
@@ -281,7 +271,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             @Override
             public boolean onTouch(View arg0, MotionEvent arg1) {
                 if (MotionEvent.ACTION_DOWN == arg1.getAction()) {
-                    mCustomKeyboardLayout.closeAllKeyboard();
+                    mEditToolbar.closeAllKeyboard();
                     hideEmojiSelectIndicator();
                     hideVoiceSelectIndicator();
                 }
@@ -374,6 +364,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 将 title 改为没有客服的状态
      */
     protected void changeTitleToNoAgentState() {
+        if (MQConfig.chatType == MQConfig.MQChatType.CHAT_OR_FORM) {
+            startActivity(new Intent(MQConversationActivity.this, MQMessageFormActivity.class));
+            overridePendingTransition(R.anim.mq_message_form_enter, R.anim.mq_message_form_exit);
+            finish();
+        }
+
         mTitleTv.setText(getResources().getString(R.string.mq_title_leave_msg));
         mEvaluateBtn.setVisibility(View.GONE);
     }
@@ -443,7 +439,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
 
     private void setCurrentAgent(Agent agent) {
-        mCurrentAgent = agent;
+        this.mCurrentAgent = agent;
     }
 
     /**
@@ -538,26 +534,22 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             // Title 显示正在分配客服
             changeTitleToAllocatingAgent();
 
-            // 从 intent 获取 clientId、customizedId 和 clientInfo
+            // 从 intent 获取 clientId 和 customizedId
             Intent intent = getIntent();
             String clientId = null;
             String customizedId = null;
-            HashMap<String, String> clientInfo = null;
             if (intent != null) {
                 clientId = getIntent().getStringExtra(CLIENT_ID);
                 customizedId = getIntent().getStringExtra(CUSTOMIZED_ID);
-                Serializable clientInfoSerializable = getIntent().getSerializableExtra(CLIENT_INFO);
-                if (clientInfoSerializable != null) {
-                    clientInfo = (HashMap<String, String>) clientInfoSerializable;
-                }
             }
-            final HashMap<String, String> finalClientInfo = clientInfo;
 
             // 上线
             mController.setCurrentClientOnline(clientId, customizedId, new OnClientOnlineCallback() {
 
                 @Override
                 public void onSuccess(Agent agent, String conversationId, List<BaseMessage> conversationMessageList) {
+                    mAllocateAgentLl.setVisibility(View.GONE);
+
                     setCurrentAgent(agent);
                     changeTitleToAgentName(agent);
                     removeLeaveMessageTip();
@@ -572,11 +564,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     mChatMessageList.addAll(conversationMessageList);
                     loadData();
                     onLoadDataComplete(MQConversationActivity.this, agent);
-
-                    // 上线成功后，根据设置是否上传顾客信息
-                    if (finalClientInfo != null) {
-                        mController.setClientInfo(finalClientInfo, null);
-                    }
                 }
 
                 @Override
@@ -588,13 +575,14 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                         changeTitleToNoAgentState();
                     } else {
                         changeTitleToUnknownErrorState();
-                        Toast.makeText(MQConversationActivity.this, "code = " + code + "\n" + "message = " + message, Toast.LENGTH_SHORT).show();
                     }
                     //如果没有加载数据，则加载数据
                     if (!mHasLoadData) {
                         getMessageDataFromDatabaseAndLoad();
                         onLoadDataComplete(MQConversationActivity.this, null);
                     }
+
+                    mAllocateAgentLl.setVisibility(View.GONE);
                 }
             });
         } else {
@@ -665,15 +653,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         } else if (id == R.id.emoji_select_btn) {
             // 表情按钮
 
-            if (mCustomKeyboardLayout.isEmotionKeyboardVisible()) {
-                hideEmojiSelectIndicator();
-            } else {
-                showEmojiSelectIndicator();
-            }
-
+            showEmojiSelectIndicator();
             hideVoiceSelectIndicator();
-
-            mCustomKeyboardLayout.toggleEmotionOriginKeyboard();
+            mEditToolbar.toggleEmotionOriginKeyboard();
         } else if (id == R.id.send_text_btn) {
             // 发送按钮
 
@@ -688,22 +670,20 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             // 选择图片
             hideEmojiSelectIndicator();
             hideVoiceSelectIndicator();
-            chooseFromPhotoPicker();
+            choosePhotoFromGallery();
         } else if (id == R.id.camera_select_btn) {
             // 打开相机
             hideEmojiSelectIndicator();
             hideVoiceSelectIndicator();
             choosePhotoFromCamera();
         } else if (id == R.id.mic_select_btn) {
-            if (mCustomKeyboardLayout.isVoiceKeyboardVisible()) {
+            if (mEditToolbar.isVoiceKeyboardVisible()) {
                 hideVoiceSelectIndicator();
             } else {
                 showVoiceSelectIndicator();
             }
-
             hideEmojiSelectIndicator();
-
-            mCustomKeyboardLayout.toggleVoiceOriginKeyboard();
+            mEditToolbar.toggleVoiceOriginKeyboard();
         } else if (id == R.id.evaluate_select_btn) {
             hideEmojiSelectIndicator();
             hideVoiceSelectIndicator();
@@ -713,8 +693,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     private void showEvaluateDialog() {
         // 如果没有正在录音才弹出评价对话框
-        if (!mCustomKeyboardLayout.isRecording()) {
-            mCustomKeyboardLayout.closeAllKeyboard();
+        if (!mEditToolbar.isRecording()) {
+            mEditToolbar.closeAllKeyboard();
             if (!TextUtils.isEmpty(mConversationId)) {
                 if (mEvaluateDialog == null) {
                     mEvaluateDialog = new MQEvaluateDialog(this);
@@ -728,38 +708,42 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private void showEmojiSelectIndicator() {
         mEmojiSelectIndicator.setVisibility(View.VISIBLE);
         mEmojiSelectImg.setImageResource(R.drawable.mq_ic_emoji_active);
-        mEmojiSelectImg.setColorFilter(getResources().getColor(R.color.mq_indicator_selected));
     }
 
     private void hideEmojiSelectIndicator() {
+        mEditToolbar.closeEmotionKeyboard();
         mEmojiSelectIndicator.setVisibility(View.GONE);
         mEmojiSelectImg.setImageResource(R.drawable.mq_ic_emoji_normal);
-        mEmojiSelectImg.clearColorFilter();
     }
 
     private void showVoiceSelectIndicator() {
         mVoiceSelectIndicator.setVisibility(View.VISIBLE);
         mVoiceSelectImg.setImageResource(R.drawable.mq_ic_mic_active);
-        mVoiceSelectImg.setColorFilter(getResources().getColor(R.color.mq_indicator_selected));
     }
 
     private void hideVoiceSelectIndicator() {
+        mEditToolbar.closeEmotionKeyboard();
         mVoiceSelectIndicator.setVisibility(View.GONE);
         mVoiceSelectImg.setImageResource(R.drawable.mq_ic_mic_normal);
-        mVoiceSelectImg.clearColorFilter();
     }
 
 
     /**
      * 从本地选择图片
      */
-    private void chooseFromPhotoPicker() {
+    private void choosePhotoFromGallery() {
         if (!mHasLoadData) {
             MQUtils.show(this, R.string.mq_data_is_loading);
             return;
         }
 
-        startActivityForResult(MQPhotoPickerActivity.newIntent(this, null, 6, null, getString(R.string.mq_send)), REQUEST_CODE_PHOTO);
+        MQUtils.closeKeyboard(MQConversationActivity.this);
+
+        try {
+            startActivityForResult(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI), MQConversationActivity.REQUEST_CODE_PHOTO);
+        } catch (Exception e) {
+            MQUtils.show(this, R.string.mq_photo_not_support);
+        }
     }
 
 
@@ -822,12 +806,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 if (cameraPicFile != null) {
                     createAndSendImageMessage(cameraPicFile);
                 }
-            } else if (requestCode == REQUEST_CODE_PHOTO) {
+            } else if (requestCode == REQUEST_CODE_PHOTO && null != data) {
                 // 从 相册 获取的图片
 
-                ArrayList<String> selectedPhotos = MQPhotoPickerActivity.getSelectedImages(data);
-                for (String photoPath : selectedPhotos) {
-                    createAndSendImageMessage(new File(photoPath));
+                File imageFile = new File(MQUtils.getRealPathByUri(this, data.getData()));
+                if (imageFile.exists()) {
+                    createAndSendImageMessage(imageFile);
                 }
             }
         }
@@ -1016,8 +1000,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      *
      * @param level 评价的等级
      */
-    protected void addEvaluateMessageTip(int level, String content) {
-        EvaluateMessage evaluateMessage = new EvaluateMessage(level, content);
+    protected void addEvaluateMessageTip(int level, String context) {
+        EvaluateMessage evaluateMessage = new EvaluateMessage(level, context);
         mChatMsgAdapter.addMQMessage(evaluateMessage);
     }
 
@@ -1184,8 +1168,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 if (!isFirstReceiveBroadcast) {
                     // 有网络
                     if (info != null && info.isAvailable()) {
-                        // 断网后，返回重新进入， 又有网了刷新 Agent
-                        mCurrentAgent = mController.getCurrentAgent();
                         changeTitleToAgentName(mCurrentAgent);
                     }
                     // 没有网络

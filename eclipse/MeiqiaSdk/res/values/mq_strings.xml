@@ -64,4 +64,6 @@
     <string name="mq_submit">提交</string>
     <string name="mq_toast_photo_picker_max">最多只能选择 %1$s 张图片</string>
     <string name="mq_choose">选择</string>
+
+    <string name="mq_submit_leave_msg_success">留言提交成功</string>
 </resources>

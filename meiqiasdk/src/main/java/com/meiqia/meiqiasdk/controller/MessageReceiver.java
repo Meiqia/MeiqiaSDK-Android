@@ -34,7 +34,7 @@ public abstract class MessageReceiver extends BroadcastReceiver {
             MQMessage message = messageManager.getMQMessage(msgId);
             if (message != null) {
                 //处理消息，并发送广播
-                baseMessage = MQUtils.parseMQMessageToBaseMessage(message);
+                baseMessage = MQUtils.parseMQMessageIntoChatBase(message);
                 receiveNewMsg(baseMessage);
             }
         }

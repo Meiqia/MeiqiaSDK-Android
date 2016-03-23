@@ -73,6 +73,15 @@
             android:theme="@style/MQTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
+        <!--留言表单界面-->
+        <activity
+            android:name="com.meiqia.meiqiasdk.activity.MQMessageFormActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/MQTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+
         <service android:name="com.meiqia.core.MeiQiaService" />
     </application>
 

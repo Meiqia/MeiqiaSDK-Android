@@ -114,7 +114,7 @@ public class MQEmotionUtil {
         return integer == null ? -1 : integer;
     }
 
-    public static SpannableString getEmotionText(Context context, String source, int emotionSizeDp) {
+    public static SpannableString getEmotionText(Context context, String source) {
         SpannableString spannableString = new SpannableString(source);
         Pattern pattern = Pattern.compile(REGEX_GROUP);
         Matcher matcher = pattern.matcher(spannableString);
@@ -126,7 +126,12 @@ public class MQEmotionUtil {
             String emojiStr = matcher.group(1);
             // 处理emoji表情
             if (emojiStr != null) {
-                ImageSpan imageSpan = getImageSpan(context, emojiStr, emotionSizeDp);
+                ImageSpan imageSpan = null;
+                int imgRes = getImgByName(emojiStr);
+                Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), imgRes);
+                if (bitmap != null) {
+                    imageSpan = new ImageSpan(context, bitmap);
+                }
                 if (imageSpan != null) {
                     int start = matcher.start(1);
                     spannableString.setSpan(imageSpan, start, start + emojiStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -134,17 +139,5 @@ public class MQEmotionUtil {
             }
         }
         return spannableString;
-    }
-
-    public static ImageSpan getImageSpan(Context context, String emojiStr, int emotionSizeDp) {
-        ImageSpan imageSpan = null;
-        int imgRes = getImgByName(emojiStr);
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), imgRes);
-        if (bitmap != null) {
-            int size = MQUtils.dip2px(context, emotionSizeDp);
-            bitmap = Bitmap.createScaledBitmap(bitmap, size, size, true);
-            imageSpan = new ImageSpan(context, bitmap);
-        }
-        return imageSpan;
     }
 }

@@ -32,7 +32,6 @@ public class BaseMessage {
     private String status;
     private long id;
     private String contentType;
-    private String type;
     private String content;
     private String avatar;
     private boolean isRead;
@@ -89,14 +88,6 @@ public class BaseMessage {
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getContent() {
