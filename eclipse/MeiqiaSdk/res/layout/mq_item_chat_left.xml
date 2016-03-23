@@ -4,7 +4,7 @@
     style="@style/MQWrapWrap"
     android:padding="8dp">
 
-    <com.meiqia.meiqiasdk.widget.CircleImageView
+    <com.meiqia.meiqiasdk.widget.MQCircleImageView
         android:id="@+id/us_avatar_iv"
         android:layout_width="35dp"
         android:layout_height="35dp"
