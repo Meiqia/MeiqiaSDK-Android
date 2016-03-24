@@ -12,8 +12,8 @@
 
 ```
 // required     
-// 「3.1.3」改成 maven central 徽章后面对应的版本号，例如3.1.3
-compile 'com.meiqia:meiqiasdk:3.1.3@aar'
+// 「3.1.4」改成 maven central 徽章后面对应的版本号，例如3.1.4
+compile 'com.meiqia:meiqiasdk:3.1.4@aar'
 
 // 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
 compile 'com.android.support:support-v4:23.1.1'
@@ -59,6 +59,23 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     android:theme="@style/MQTheme"
     android:windowSoftInputMode="stateAlwaysHidden" />
 
+<!--图片选择界面-->
+<activity
+    android:name="com.meiqia.meiqiasdk.activity.MQPhotoPickerActivity"
+    android:configChanges="keyboardHidden|orientation"
+    android:launchMode="singleTop"
+    android:screenOrientation="portrait"
+    android:theme="@style/MQTheme"
+    android:windowSoftInputMode="stateAlwaysHidden" />
+<!--图片选择预览界面-->
+<activity
+    android:name="com.meiqia.meiqiasdk.activity.MQPhotoPickerPreviewActivity"
+    android:configChanges="keyboardHidden|orientation"
+    android:launchMode="singleTop"
+    android:screenOrientation="portrait"
+    android:theme="@style/MQTheme"
+    android:windowSoftInputMode="stateAlwaysHidden" />
+
 <service android:name="com.meiqia.core.MeiQiaService" />
 ```
 
@@ -93,7 +110,7 @@ MQManager.init(context, "Your Appkey", new OnInitCallback() {
 初始化成功后，就可以直接启动对话界面
 
 ``` java
-Intent intent = new Intent(MainActivity.this, MQConversationActivity.class);
+Intent intent = new MQIntentBuilder(this).build();
 startActivity(intent);
 ```
 ### 3.可选设置

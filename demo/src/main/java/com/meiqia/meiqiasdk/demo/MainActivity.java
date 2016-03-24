@@ -9,8 +9,8 @@ import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.callback.OnInitCallback;
-import com.meiqia.meiqiasdk.activity.MQConversationActivity;
 import com.meiqia.meiqiasdk.util.MQConfig;
+import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
 import java.util.List;
@@ -73,7 +73,8 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
      * @param view
      */
     public void customizedConversation(View view) {
-        startActivity(new Intent(MainActivity.this, CustomizedMQConversationActivity.class));
+        Intent intent = new MQIntentBuilder(this, CustomizedMQConversationActivity.class).build();
+        startActivity(intent);
     }
 
     // 处理 Android 6.0 的权限获取
@@ -106,6 +107,8 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
         MQConfig.ui.titleBackgroundResId = R.color.colorPrimary;
         MQConfig.ui.titleTextColorResId = android.R.color.white;
         MQConfig.ui.titleGravity = MQConfig.ui.MQTitleGravity.LEFT;
-        startActivity(new Intent(MainActivity.this, MQConversationActivity.class));
+
+        Intent intent = new MQIntentBuilder(this).build();
+        startActivity(intent);
     }
 }

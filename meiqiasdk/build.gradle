@@ -25,4 +25,4 @@ dependencies {
 }
 
 // gradle uploadArchives
-apply from: 'central-publish.gradle'
+//apply from: 'central-publish.gradle'

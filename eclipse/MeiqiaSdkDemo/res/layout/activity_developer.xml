@@ -64,6 +64,11 @@
                 android:text="上传自定义信息" />
 
             <Button
+                android:id="@+id/get_unread_message_btn"
+                style="@style/DemoTv"
+                android:text="获取未读消息数目" />
+
+            <Button
                 android:id="@+id/set_client_offline_btn"
                 style="@style/DemoTv"
                 android:text="设置当前顾客为离线状态" />

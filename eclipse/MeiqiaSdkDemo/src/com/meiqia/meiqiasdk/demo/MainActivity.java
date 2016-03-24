@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.meiqia.core.MQManager;
 import com.meiqia.core.callback.OnInitCallback;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
+import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 
 public class MainActivity extends Activity {
 
@@ -41,7 +42,8 @@ public class MainActivity extends Activity {
      * @param v
      */
     public void conversation(View v) {
-        startActivity(new Intent(MainActivity.this, MQConversationActivity.class));
+    	Intent intent = new MQIntentBuilder(this).build();
+        startActivity(intent);
     }
 
     /**
@@ -58,7 +60,8 @@ public class MainActivity extends Activity {
      * @param view
      */
     public void customizedConversation(View view) {
-        startActivity(new Intent(MainActivity.this, CustomizedMQConversationActivity.class));
+    	Intent intent = new MQIntentBuilder(this, CustomizedMQConversationActivity.class).build();
+        startActivity(intent);
     }
 
 }

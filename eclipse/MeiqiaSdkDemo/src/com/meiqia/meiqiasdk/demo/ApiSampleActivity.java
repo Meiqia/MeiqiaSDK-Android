@@ -1,6 +1,5 @@
 package com.meiqia.meiqiasdk.demo;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -16,19 +15,20 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.meiqia.meiqiasdk.util.MQConfig;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.MQScheduleRule;
-import com.meiqia.core.callback.OnClientInfoCallback;
+import com.meiqia.core.bean.MQMessage;
 import com.meiqia.core.callback.OnEndConversationCallback;
 import com.meiqia.core.callback.OnGetMQClientIdCallBackOn;
-import com.meiqia.meiqiasdk.activity.MQConversationActivity;
+import com.meiqia.core.callback.OnGetMessageListCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
+import com.meiqia.meiqiasdk.util.MQConfig;
+import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class ApiSampleActivity extends Activity implements View.OnClickListener {
 
@@ -40,6 +40,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
     private View setAgentTokenOnlineBtn;
     private View setGroupTokenOnlineBtn;
     private View setClientInfoBtn;
+    private View getUnreadMessageBtn;
     private View offlineClientBtn;
     private View endConversationBtn;
 
@@ -66,6 +67,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
         setAgentTokenOnlineBtn = findViewById(R.id.set_specified_agent_token_btn);
         setGroupTokenOnlineBtn = findViewById(R.id.set_specified_agent_group_token_btn);
         setClientInfoBtn = findViewById(R.id.set_client_info);
+        getUnreadMessageBtn = findViewById(R.id.get_unread_message_btn);
         offlineClientBtn = findViewById(R.id.set_client_offline_btn);
         endConversationBtn = findViewById(R.id.end_conversation_btn);
     }
@@ -78,6 +80,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
         setAgentTokenOnlineBtn.setOnClickListener(this);
         setGroupTokenOnlineBtn.setOnClickListener(this);
         setClientInfoBtn.setOnClickListener(this);
+        getUnreadMessageBtn.setOnClickListener(this);
         offlineClientBtn.setOnClickListener(this);
         endConversationBtn.setOnClickListener(this);
     }
@@ -89,7 +92,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
             // 使用当前顾客上线
             case R.id.set_current_client_id_online_btn:
                 MQConfig.registerController(new ControllerImpl(this));
-                Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
+                Intent intent = new MQIntentBuilder(this).build();
                 startActivity(intent);
                 break;
             // 使用指定 美洽顾客id 上线
@@ -98,8 +101,9 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                     @Override
                     public void onInput(String clientId) {
                         if (!TextUtils.isEmpty(clientId)) {
-                            Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
-                            intent.putExtra(MQConversationActivity.CLIENT_ID, clientId);
+                            Intent intent = new MQIntentBuilder(ApiSampleActivity.this)
+                                    .setClientId(clientId)
+                                    .build();
                             startActivity(intent);
                             updateId();
                         }
@@ -112,8 +116,9 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                     @Override
                     public void onInput(String customizedId) {
                         if (!TextUtils.isEmpty(customizedId)) {
-                            Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
-                            intent.putExtra(MQConversationActivity.CUSTOMIZED_ID, customizedId);
+                            Intent intent = new MQIntentBuilder(ApiSampleActivity.this)
+                                    .setCustomizedId(customizedId)
+                                    .build();
                             startActivity(intent);
                             updateId();
                         }
@@ -123,7 +128,6 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
             // 获取一个新的美洽 ID
             case R.id.get_new_meiqia_id_btn:
                 MQManager.getInstance(this).createMQClient(new OnGetMQClientIdCallBackOn() {
-                    @SuppressLint("NewApi")
                     @Override
                     public void onSuccess(String mqClientId) {
                         toast("成功复制到剪贴板 :\n" + mqClientId);
@@ -150,8 +154,10 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                     @Override
                     public void onInput(String agentId) {
                         if (!TextUtils.isEmpty(agentId)) {
-                            MQManager.getInstance(ApiSampleActivity.this).setScheduledAgentOrGroupWithId(agentId, "", MQScheduleRule.REDIRECT_ENTERPRISE);
-                            Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
+                            Intent intent = new MQIntentBuilder(ApiSampleActivity.this)
+                                    .setScheduledAgent(agentId)
+                                    .setScheduleRule(MQScheduleRule.REDIRECT_ENTERPRISE)
+                                    .build();
                             startActivity(intent);
                             updateId();
                         }
@@ -164,8 +170,10 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                     @Override
                     public void onInput(String groupId) {
                         if (!TextUtils.isEmpty(groupId)) {
-                            MQManager.getInstance(ApiSampleActivity.this).setScheduledAgentOrGroupWithId("", groupId, MQScheduleRule.REDIRECT_ENTERPRISE);
-                            Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
+                            Intent intent = new MQIntentBuilder(ApiSampleActivity.this)
+                                    .setScheduledGroup(groupId)
+                                    .setScheduleRule(MQScheduleRule.REDIRECT_ENTERPRISE)
+                                    .build();
                             startActivity(intent);
                         }
                     }
@@ -173,7 +181,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                 break;
             // 上传自定义信息
             case R.id.set_client_info:
-                final Map<String, String> info = new HashMap<String,String>();
+                final HashMap<String, String> info = new HashMap<String, String>();
                 info.put("name", "富坚义博");
                 info.put("avatar", "https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/1dee88eabfbd7bd4");
                 info.put("sex", "男");
@@ -194,20 +202,36 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                 dialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        MQManager.getInstance(ApiSampleActivity.this).setClientInfo(info, new OnClientInfoCallback() {
+                        Intent intent = new MQIntentBuilder(ApiSampleActivity.this)
+                                .setClientInfo(info)
+                                .build();
+                        startActivity(intent);
+                    }
+                });
+                dialog.show();
+                break;
+            case R.id.get_unread_message_btn:
+                AlertDialog.Builder unreadAlertBuilder = new AlertDialog.Builder(this);
+                unreadAlertBuilder.setTitle("注意");
+                unreadAlertBuilder.setMessage("退出界面后收到的消息，都将算作未读消息");
+                AlertDialog unreadDialog = unreadAlertBuilder.create();
+                unreadDialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        MQManager.getInstance(ApiSampleActivity.this).getUnreadMessages(new OnGetMessageListCallback() {
                             @Override
-                            public void onSuccess() {
-                                toast("set client info success");
+                            public void onSuccess(List<MQMessage> messageList) {
+                                toast("unread message count = " + messageList.size());
                             }
 
                             @Override
                             public void onFailure(int code, String message) {
-                                toast("set client info failed");
+                                toast("get unread message failed");
                             }
                         });
                     }
                 });
-                dialog.show();
+                unreadDialog.show();
                 break;
             // 设置顾客离线
             case R.id.set_client_offline_btn:

@@ -19,18 +19,16 @@ import android.widget.Toast;
 import com.meiqia.core.MQManager;
 import com.meiqia.core.MQScheduleRule;
 import com.meiqia.core.bean.MQMessage;
-import com.meiqia.core.callback.OnClientInfoCallback;
 import com.meiqia.core.callback.OnEndConversationCallback;
 import com.meiqia.core.callback.OnGetMQClientIdCallBackOn;
 import com.meiqia.core.callback.OnGetMessageListCallback;
-import com.meiqia.meiqiasdk.activity.MQConversationActivity;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.util.MQConfig;
+import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ApiSampleActivity extends Activity implements View.OnClickListener {
 
@@ -94,7 +92,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
             // 使用当前顾客上线
             case R.id.set_current_client_id_online_btn:
                 MQConfig.registerController(new ControllerImpl(this));
-                Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
+                Intent intent = new MQIntentBuilder(this).build();
                 startActivity(intent);
                 break;
             // 使用指定 美洽顾客id 上线
@@ -103,8 +101,9 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                     @Override
                     public void onInput(String clientId) {
                         if (!TextUtils.isEmpty(clientId)) {
-                            Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
-                            intent.putExtra(MQConversationActivity.CLIENT_ID, clientId);
+                            Intent intent = new MQIntentBuilder(ApiSampleActivity.this)
+                                    .setClientId(clientId)
+                                    .build();
                             startActivity(intent);
                             updateId();
                         }
@@ -117,8 +116,9 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                     @Override
                     public void onInput(String customizedId) {
                         if (!TextUtils.isEmpty(customizedId)) {
-                            Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
-                            intent.putExtra(MQConversationActivity.CUSTOMIZED_ID, customizedId);
+                            Intent intent = new MQIntentBuilder(ApiSampleActivity.this)
+                                    .setCustomizedId(customizedId)
+                                    .build();
                             startActivity(intent);
                             updateId();
                         }
@@ -154,8 +154,10 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                     @Override
                     public void onInput(String agentId) {
                         if (!TextUtils.isEmpty(agentId)) {
-                            MQManager.getInstance(ApiSampleActivity.this).setScheduledAgentOrGroupWithId(agentId, "", MQScheduleRule.REDIRECT_ENTERPRISE);
-                            Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
+                            Intent intent = new MQIntentBuilder(ApiSampleActivity.this)
+                                    .setScheduledAgent(agentId)
+                                    .setScheduleRule(MQScheduleRule.REDIRECT_ENTERPRISE)
+                                    .build();
                             startActivity(intent);
                             updateId();
                         }
@@ -168,8 +170,10 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                     @Override
                     public void onInput(String groupId) {
                         if (!TextUtils.isEmpty(groupId)) {
-                            MQManager.getInstance(ApiSampleActivity.this).setScheduledAgentOrGroupWithId("", groupId, MQScheduleRule.REDIRECT_ENTERPRISE);
-                            Intent intent = new Intent(ApiSampleActivity.this, MQConversationActivity.class);
+                            Intent intent = new MQIntentBuilder(ApiSampleActivity.this)
+                                    .setScheduledGroup(groupId)
+                                    .setScheduleRule(MQScheduleRule.REDIRECT_ENTERPRISE)
+                                    .build();
                             startActivity(intent);
                         }
                     }
@@ -177,7 +181,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                 break;
             // 上传自定义信息
             case R.id.set_client_info:
-                final Map<String, String> info = new HashMap<>();
+                final HashMap<String, String> info = new HashMap<>();
                 info.put("name", "富坚义博");
                 info.put("avatar", "https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/1dee88eabfbd7bd4");
                 info.put("sex", "男");
@@ -198,17 +202,10 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                 dialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        MQManager.getInstance(ApiSampleActivity.this).setClientInfo(info, new OnClientInfoCallback() {
-                            @Override
-                            public void onSuccess() {
-                                toast("set client info success");
-                            }
-
-                            @Override
-                            public void onFailure(int code, String message) {
-                                toast("set client info failed");
-                            }
-                        });
+                        Intent intent = new MQIntentBuilder(ApiSampleActivity.this)
+                                .setClientInfo(info)
+                                .build();
+                        startActivity(intent);
                     }
                 });
                 dialog.show();
