@@ -6,7 +6,7 @@ Version 3.1.4 *(2016-03-23)*
 - 增加获取未读消息接口
 - 增加自定义图片选择器
 - 增加自定义聊天界面
-- 增加MQIntentBuilder来构建打开MQConversationActivity的Intent
+- 增加 MQIntentBuilder 来构建打开 MQConversationActivity 的 Intent
 - 优化自定义键盘切换速度
 - 优化上线成功后设置顾客信息
 - 修复指定分配后进入留言，发送留言失败

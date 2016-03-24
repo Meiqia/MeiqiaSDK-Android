@@ -184,7 +184,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                 final HashMap<String, String> info = new HashMap<>();
                 info.put("name", "富坚义博");
                 info.put("avatar", "https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/1dee88eabfbd7bd4");
-                info.put("sex", "男");
+                info.put("gender", "男");
                 info.put("tel", "111111");
                 info.put("技能1", "休刊");
                 info.put("技能2", "外出取材");

@@ -109,10 +109,57 @@ MQManager.init(context, "Your Appkey", new OnInitCallback() {
 
 初始化成功后，就可以直接启动对话界面
 
+> 使用当前 id 分配上线
+
 ``` java
 Intent intent = new MQIntentBuilder(this).build();
 startActivity(intent);
 ```
+
+============== 下面是可选设置 ==============
+
+> 绑定开发者用户 id 上线
+
+``` java
+Intent intent = new MQIntentBuilder(this)
+        .setCustomizedId("开发者的 id") // 相同的 id 会被识别为同一个顾客
+        .build();
+startActivity(intent);
+```
+
+> 设置顾客信息
+
+``` java
+HashMap<String, String> clientInfo = new HashMap<>();
+clientInfo.put("name", "富坚义博");
+clientInfo.put("avatar", "https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/1dee88eabfbd7bd4");
+clientInfo.put("gender", "男");
+clientInfo.put("tel", "1300000000");
+clientInfo.put("技能1", "休刊");
+Intent intent = new MQIntentBuilder(this)
+        .setClientInfo(clientInfo)
+        .build();
+startActivity(intent);
+```
+
+> 指定客服分配
+
+``` java
+Intent intent = new MQIntentBuilder(this)
+        .setScheduledAgent(agentId) // agentId 可以从工作台查询
+        .build();
+startActivity(intent);
+```
+
+> 指定客服分组分配
+
+``` java
+Intent intent = new MQIntentBuilder(this)
+        .setScheduledGroup(groupId) // groupId 可以从工作台查询
+        .build();
+startActivity(intent);
+```
+
 ### 3.可选设置
 * [绑定自定义 id 并设置上线][2]
 * [绑定美洽 id 并设置上线][3]
