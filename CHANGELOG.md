@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 3.1.5 *(2016-03-31)*
+----------------------------
+- 初始化美洽 SDK 由以前的 MQManager.init(context, appKey, onInitCallBack)改为MQConfig.init(context, appKey, imageLoader, onInitCallBack)
+- 优化图片加载库的使用，目前支持 glide、picasso、universalimageloader
+- 修复直接给 AndroidManifest.xml 的 application 节点的 label 属性指定字符串时，保存图片出现空指针异常
+- 修复特殊情况下断网时出现空指针异常
+
 Version 3.1.4 *(2016-03-23)*
 ----------------------------
 - 增加获取未读消息接口

@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#17c7d1</color>
+    <color name="colorPrimary">#fc5369</color>
+    <color name="colorPrimaryDark">@color/colorPrimary</color>
+
+    <color name="test_red">#fc5369</color>
+    <color name="test_green">#00ce7d</color>
+    <color name="test_blue">#50a3fc</color>
+
+
+    <!--通过覆盖资源id的形式自定义美洽UI START-->
+    <color name="mq_colorPrimary">@color/colorPrimary</color>
+    <color name="mq_colorPrimaryDark">@color/colorPrimaryDark</color>
+
+    <color name="mq_activity_title_textColor">@android:color/white</color>
+    <color name="mq_activity_title_bg">@color/colorPrimary</color>
+
+    <color name="mq_chat_left_textColor">@android:color/white</color>
+    <color name="mq_chat_right_textColor">@android:color/white</color>
+
+    <color name="mq_chat_left_bubble">@color/test_green</color>
+    <color name="mq_chat_right_bubble">@color/colorPrimary</color>
+    <!--通过覆盖资源id的形式自定义美洽UI END-->
 </resources>

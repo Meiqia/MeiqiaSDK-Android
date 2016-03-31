@@ -8,7 +8,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
@@ -21,8 +20,6 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -44,9 +41,6 @@ import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -163,6 +157,8 @@ public class MQUtils {
         Agent agent = new Agent();
         agent.setId(mqAgent.getId());
         agent.setNickname(mqAgent.getNickname());
+        agent.setStatus(mqAgent.getStatus());
+        agent.setIsOnline(mqAgent.isOnLine());
         return agent;
     }
 
@@ -179,19 +175,6 @@ public class MQUtils {
         }
         lastClickTime = time;
         return false;
-    }
-
-    /**
-     * @param context
-     * @param bitmap
-     * @param cornerRadius
-     * @return
-     */
-    public static RoundedBitmapDrawable getRoundedDrawable(Context context, Bitmap bitmap, float cornerRadius) {
-        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), bitmap);
-        roundedBitmapDrawable.setAntiAlias(true);
-        roundedBitmapDrawable.setCornerRadius(cornerRadius);
-        return roundedBitmapDrawable;
     }
 
     /**
@@ -580,7 +563,7 @@ public class MQUtils {
     public static File getImageDir(Context context) {
         File imageDir = null;
         if (isExternalStorageWritable()) {
-            String appName = context.getString(context.getApplicationInfo().labelRes);
+            String appName = context.getApplicationInfo().loadLabel(context.getPackageManager()).toString();
             imageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "MeiqiaSDK" + File.separator + appName);
             if (!imageDir.exists()) {
                 imageDir.mkdirs();
@@ -599,18 +582,5 @@ public class MQUtils {
     public static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED.equals(state);
-    }
-
-    /**
-     * 初始化ImageLoader
-     *
-     * @param context
-     */
-    public static void initImageLoader(Context context) {
-        if (!ImageLoader.getInstance().isInited()) {
-            DisplayImageOptions options = new DisplayImageOptions.Builder().showImageOnLoading(R.drawable.mq_ic_gallery_holder).cacheInMemory(true).cacheOnDisk(true).build();
-            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).threadPoolSize(3).defaultDisplayImageOptions(options).build();
-            ImageLoader.getInstance().init(config);
-        }
     }
 }

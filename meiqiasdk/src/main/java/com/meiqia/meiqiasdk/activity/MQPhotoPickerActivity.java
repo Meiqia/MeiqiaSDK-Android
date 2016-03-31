@@ -20,11 +20,10 @@ import android.widget.TextView;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.model.ImageFolderModel;
 import com.meiqia.meiqiasdk.pw.MQPhotoFolderPw;
+import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQImageCaptureManager;
 import com.meiqia.meiqiasdk.util.MQUtils;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
+import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -153,9 +152,6 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
 
         // 获取右上角按钮文本
         mTopRightBtnText = getIntent().getStringExtra(EXTRA_TOP_RIGHT_BTN_TEXT);
-
-
-        MQUtils.initImageLoader(this);
 
         mPicAdapter = new PicAdapter();
         mPicAdapter.setSelectedImages(getIntent().getStringArrayListExtra(EXTRA_SELECTED_IMAGES));
@@ -356,12 +352,13 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
     private class PicAdapter extends BaseAdapter {
         private ArrayList<String> mSelectedImages = new ArrayList<>();
         private ArrayList<String> mDatas;
-        private ImageSize mImageSize;
+        private int mImageWidth;
+        private int mImageHeight;
 
         public PicAdapter() {
             mDatas = new ArrayList<>();
-            int size = MQUtils.getScreenWidth(getApplicationContext()) / 10;
-            mImageSize = new ImageSize(size, size);
+            mImageWidth = MQUtils.getScreenWidth(getApplicationContext()) / 9;
+            mImageHeight = mImageWidth;
         }
 
         @Override
@@ -386,7 +383,7 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
             if (convertView == null) {
                 convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.mq_item_square_image, parent, false);
                 picViewHolder = new PicViewHolder();
-                picViewHolder.photoIv = (ImageView) convertView.findViewById(R.id.photo_iv);
+                picViewHolder.photoIv = (MQImageView) convertView.findViewById(R.id.photo_iv);
                 picViewHolder.tipTv = (TextView) convertView.findViewById(R.id.tip_tv);
                 picViewHolder.flagIv = (ImageView) convertView.findViewById(R.id.flag_iv);
                 convertView.setTag(picViewHolder);
@@ -398,7 +395,7 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
             if (mCurrentImageFolderModel.isTakePhotoEnabled() && position == 0) {
                 picViewHolder.tipTv.setVisibility(View.VISIBLE);
                 picViewHolder.photoIv.setScaleType(ImageView.ScaleType.CENTER);
-                ImageLoader.getInstance().displayImage("drawable://" + R.drawable.mq_ic_gallery_camera, picViewHolder.photoIv);
+                picViewHolder.photoIv.setImageResource(R.drawable.mq_ic_gallery_camera);
 
                 picViewHolder.flagIv.setVisibility(View.INVISIBLE);
 
@@ -406,11 +403,10 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
             } else {
                 picViewHolder.tipTv.setVisibility(View.INVISIBLE);
                 picViewHolder.photoIv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                ImageLoader.getInstance().displayImage("file://" + imagePath, new ImageViewAware(picViewHolder.photoIv), null, mImageSize, null, null);
+                MQConfig.getImageLoader(MQPhotoPickerActivity.this).displayImage(picViewHolder.photoIv, imagePath, R.drawable.mq_ic_holder_dark, R.drawable.mq_ic_holder_dark, mImageWidth, mImageHeight, null);
 
                 picViewHolder.flagIv.setVisibility(View.VISIBLE);
-
-
+                
                 if (mSelectedImages.contains(imagePath)) {
                     picViewHolder.flagIv.setImageResource(R.drawable.mq_ic_cb_checked);
                     picViewHolder.photoIv.setColorFilter(getResources().getColor(R.color.mq_photo_selected_color));
@@ -476,7 +472,7 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
     }
 
     private class PicViewHolder {
-        public ImageView photoIv;
+        public MQImageView photoIv;
         public TextView tipTv;
         public ImageView flagIv;
     }

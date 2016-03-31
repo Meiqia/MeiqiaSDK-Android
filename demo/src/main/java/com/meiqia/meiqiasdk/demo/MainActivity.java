@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.meiqia.core.MQManager;
 import com.meiqia.core.callback.OnInitCallback;
+import com.meiqia.meiqiasdk.uilimageloader.UILImageLoader;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.meiqia.meiqiasdk.util.MQUtils;
@@ -26,11 +26,17 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initMeiqiaSDK();
+
+        customConfig();
+    }
+
+    private void initMeiqiaSDK() {
         // 替换成自己的key
         // 发布sdk时用
         String meiqiaKey = "a71c257c80dfe883d92a64dca323ec20";
 
-        MQManager.init(this, meiqiaKey, new OnInitCallback() {
+        MQConfig.init(this, meiqiaKey, new UILImageLoader(), new OnInitCallback() {
             @Override
             public void onSuccess(String clientId) {
                 Toast.makeText(MainActivity.this, "init success", Toast.LENGTH_SHORT).show();
@@ -41,7 +47,18 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
                 Toast.makeText(MainActivity.this, "int failure", Toast.LENGTH_SHORT).show();
             }
         });
-        MQManager.setDebugMode(true);
+    }
+
+    private void customConfig() {
+        // 配置自定义信息
+        MQConfig.ui.titleGravity = MQConfig.ui.MQTitleGravity.LEFT;
+        MQConfig.ui.backArrowIconResId = android.support.v7.appcompat.R.drawable.abc_ic_ab_back_mtrl_am_alpha;
+//        MQConfig.ui.titleBackgroundResId = R.color.test_red;
+//        MQConfig.ui.titleTextColorResId = R.color.test_blue;
+//        MQConfig.ui.leftChatBubbleColorResId = R.color.test_green;
+//        MQConfig.ui.leftChatTextColorResId = R.color.test_red;
+//        MQConfig.ui.rightChatBubbleColorResId = R.color.test_red;
+//        MQConfig.ui.rightChatTextColorResId = R.color.test_green;
 
     }
 
@@ -103,11 +120,6 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
     }
 
     private void conversation() {
-        MQConfig.ui.backArrowIconResId = android.support.v7.appcompat.R.drawable.abc_ic_ab_back_mtrl_am_alpha;
-        MQConfig.ui.titleBackgroundResId = R.color.colorPrimary;
-        MQConfig.ui.titleTextColorResId = android.R.color.white;
-        MQConfig.ui.titleGravity = MQConfig.ui.MQTitleGravity.LEFT;
-
         Intent intent = new MQIntentBuilder(this).build();
         startActivity(intent);
     }

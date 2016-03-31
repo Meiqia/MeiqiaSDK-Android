@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MQWrapWrap"
     android:padding="8dp">
 
-    <com.meiqia.meiqiasdk.widget.MQCircleImageView
+    <com.meiqia.meiqiasdk.widget.MQImageView
         android:id="@+id/us_avatar_iv"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginRight="6dp"
+        app:mq_iv_isCircle="true"
         tools:background="#f00" />
 
     <RelativeLayout
@@ -25,18 +27,19 @@
             android:maxWidth="260dp"
             android:singleLine="false"
             android:textColor="@color/mq_chat_left_textColor"
-            android:textSize="16sp"
             android:textColorLink="@color/mq_chat_left_link_textColor"
+            android:textSize="16sp"
             android:visibility="visible"
             tools:text="I \ue32d emojicon\n\n\nsdf\n\n" />
 
-        <ImageView
+        <com.meiqia.meiqiasdk.widget.MQImageView
             android:id="@+id/content_pic"
             style="@style/MQWrapWrap"
             android:focusable="true"
             android:maxHeight="105dp"
             android:maxWidth="105dp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:mq_iv_cornerRadius="3dp" />
 
         <RelativeLayout
             android:id="@+id/rl_voice_container"

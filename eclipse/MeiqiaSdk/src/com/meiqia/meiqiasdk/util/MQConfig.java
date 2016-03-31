@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 
+import com.meiqia.core.MQManager;
+import com.meiqia.core.callback.OnInitCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
 
@@ -52,6 +54,25 @@ public final class MQConfig {
 
     public static void registerController(MQController controller) {
         sController = controller;
+    }
+
+    private static MQImageLoader sImageLoader;
+
+    public static MQImageLoader getImageLoader(Context context) {
+        if (sImageLoader == null) {
+            synchronized (MQConfig.class) {
+                if (sImageLoader == null) {
+                    throw new RuntimeException("请调用MQConfig.init方法初始化美洽 SDK，并传入MQImageLoader接口的实现类");
+                }
+            }
+        }
+        return sImageLoader;
+    }
+
+    public static void init(Context context, String appKey, MQImageLoader imageLoader, final OnInitCallback onInitCallBack) {
+        sImageLoader = imageLoader;
+
+        MQManager.init(context, appKey, onInitCallBack);
     }
 }
 

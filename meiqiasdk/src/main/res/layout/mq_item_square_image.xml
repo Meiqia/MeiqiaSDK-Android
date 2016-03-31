@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/MQMatchWrap.Horizontal"
     android:background="#303d42">
 
-    <com.meiqia.meiqiasdk.widget.MQSquareImageView
+    <com.meiqia.meiqiasdk.widget.MQImageView
         android:id="@+id/photo_iv"
         style="@style/MQMatchWrap"
         android:scaleType="center"
+        app:mq_iv_isSquare="true"
         tools:src="@drawable/mq_ic_camera_active" />
 
     <TextView

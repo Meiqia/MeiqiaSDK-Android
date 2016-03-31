@@ -16,6 +16,7 @@ public interface MQController {
     String ACTION_AGENT_INPUTTING = "agent_inputting_action";
     String ACTION_CLIENT_IS_REDIRECTED_EVENT = "agent_change_action";
     String ACTION_INVITE_EVALUATION = "invite_evaluation";
+    String ACTION_AGENT_STATUS_UPDATE_EVENT = "action_agent_status_update_event";
 
     void sendMessage(BaseMessage baseMessage, OnMessageSendCallback onMessageSendCallback);
 

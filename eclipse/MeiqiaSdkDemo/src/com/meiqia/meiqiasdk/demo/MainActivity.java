@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.meiqia.core.MQManager;
 import com.meiqia.core.callback.OnInitCallback;
-import com.meiqia.meiqiasdk.activity.MQConversationActivity;
+import com.meiqia.meiqiasdk.uilimageloader.UILImageLoader;
+import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 
 public class MainActivity extends Activity {
@@ -18,11 +18,14 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initMeiqiaSDK();
+    }
+    
+    private void initMeiqiaSDK() {
         // 替换成自己的key
         String meiqiaKey = "a71c257c80dfe883d92a64dca323ec20";
 
-        MQManager.init(this, meiqiaKey, new OnInitCallback() {
-        	
+        MQConfig.init(this, meiqiaKey, new UILImageLoader(), new OnInitCallback() {
             @Override
             public void onSuccess(String clientId) {
                 Toast.makeText(MainActivity.this, "init success", Toast.LENGTH_SHORT).show();
@@ -33,7 +36,6 @@ public class MainActivity extends Activity {
                 Toast.makeText(MainActivity.this, "int failure", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     /**
