@@ -1,8 +1,5 @@
 package com.meiqia.meiqiasdk.demo;
 
-import java.util.HashMap;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -27,6 +24,9 @@ import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.meiqia.meiqiasdk.util.MQUtils;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class ApiSampleActivity extends Activity implements View.OnClickListener {
 
