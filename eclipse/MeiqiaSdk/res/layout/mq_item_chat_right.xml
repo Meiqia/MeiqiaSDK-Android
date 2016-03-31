@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MQWrapWrap"
     android:padding="8dp">
@@ -29,18 +30,19 @@
             android:maxWidth="270dp"
             android:singleLine="false"
             android:text="hellodewfrefre"
-            android:textColorLink="@color/mq_chat_right_link_textColor"
             android:textColor="@color/mq_chat_right_textColor"
+            android:textColorLink="@color/mq_chat_right_link_textColor"
             android:textSize="16sp"
             android:visibility="gone" />
 
-        <ImageView
+        <com.meiqia.meiqiasdk.widget.MQImageView
             android:id="@+id/content_pic"
             style="@style/MQWrapWrap"
             android:focusable="true"
             android:maxHeight="105dp"
             android:maxWidth="105dp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:mq_iv_cornerRadius="3dp" />
 
         <RelativeLayout
             android:id="@+id/rl_voice_container"

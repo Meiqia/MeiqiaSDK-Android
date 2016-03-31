@@ -16,13 +16,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQHackyViewPager;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import java.util.ArrayList;
 
-import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
@@ -155,9 +155,6 @@ public class MQPhotoPickerPreviewActivity extends Activity implements View.OnCli
         // 获取右上角按钮文本
         mTopRightBtnText = getIntent().getStringExtra(EXTRA_TOP_RIGHT_BTN_TEXT);
 
-
-        MQUtils.initImageLoader(this);
-
         int currentPosition = getIntent().getIntExtra(EXTRA_CURRENT_POSITION, 0);
         mContentHvp.setAdapter(new ImagePageAdapter());
         mContentHvp.setCurrentItem(currentPosition);
@@ -285,18 +282,21 @@ public class MQPhotoPickerPreviewActivity extends Activity implements View.OnCli
 
         @Override
         public View instantiateItem(ViewGroup container, int position) {
-            final PhotoView photoView = new PhotoView(container.getContext());
-            container.addView(photoView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            MQImageView imageView = new MQImageView(container.getContext());
+            container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            final PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(imageView);
+            photoViewAttacher.setOnViewTapListener(MQPhotoPickerPreviewActivity.this);
 
-            photoView.setOnViewTapListener(MQPhotoPickerPreviewActivity.this);
+            imageView.setDrawableChangedCallback(new MQImageView.OnDrawableChangedCallback() {
+                @Override
+                public void onDrawableChanged() {
+                    photoViewAttacher.update();
+                }
+            });
 
-            String photoPath = mPreviewImages.get(position);
-            if (photoPath.startsWith("http")) {
-                ImageLoader.getInstance().displayImage(mPreviewImages.get(position), photoView);
-            } else {
-                ImageLoader.getInstance().displayImage("file://" + mPreviewImages.get(position), photoView);
-            }
-            return photoView;
+            MQConfig.getImageLoader(MQPhotoPickerPreviewActivity.this).displayImage(imageView, mPreviewImages.get(position), R.drawable.mq_ic_holder_dark, R.drawable.mq_ic_holder_dark, MQUtils.getScreenWidth(MQPhotoPickerPreviewActivity.this), MQUtils.getScreenHeight(MQPhotoPickerPreviewActivity.this), null);
+
+            return imageView;
         }
 
         @Override

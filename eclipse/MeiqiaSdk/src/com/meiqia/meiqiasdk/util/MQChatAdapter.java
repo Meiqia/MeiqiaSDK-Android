@@ -1,6 +1,5 @@
 package com.meiqia.meiqiasdk.util;
 
-import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -24,11 +23,7 @@ import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.EvaluateMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
-import com.meiqia.meiqiasdk.widget.MQCircleImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import java.io.File;
 import java.util.List;
@@ -41,15 +36,14 @@ public class MQChatAdapter extends BaseAdapter {
     private List<BaseMessage> mcMessageList;
     private ListView listView;
 
-    // ImageLoader
-    private ImageLoader imageLoader;
-
     private static final int NO_POSITION = -1;
     private int mCurrentPlayingItemPosition = NO_POSITION;
     private int mCurrentDownloadingItemPosition = NO_POSITION;
     private int mMinItemWidth;
     private int mMaxItemWidth;
-    private ImageSize mImageSize;
+
+    private int mImageWidth;
+    private int mImageHeight;
 
     private Runnable mNotifyDataSetChangedRunnable = new Runnable() {
         @Override
@@ -62,12 +56,12 @@ public class MQChatAdapter extends BaseAdapter {
         this.mqConversationActivity = mqConversationActivity;
         this.mcMessageList = mcMessageList;
         this.listView = listView;
-        this.imageLoader = ImageLoader.getInstance();
         int screenWidth = MQUtils.getScreenWidth(listView.getContext());
         mMaxItemWidth = (int) (screenWidth * 0.5f);
         mMinItemWidth = (int) (screenWidth * 0.18f);
-        int size = MQUtils.getScreenWidth(mqConversationActivity) / 4;
-        mImageSize = new ImageSize(size, size);
+
+        mImageWidth = screenWidth / 3;
+        mImageHeight = mImageWidth;
     }
 
     public void addMQMessage(BaseMessage baseMessage) {
@@ -127,11 +121,11 @@ public class MQChatAdapter extends BaseAdapter {
                     viewHolder = new ViewHolder();
                     convertView = LayoutInflater.from(mqConversationActivity).inflate(R.layout.mq_item_chat_left, null);
                     viewHolder.contentText = (TextView) convertView.findViewById(R.id.content_text);
-                    viewHolder.contentImage = (ImageView) convertView.findViewById(R.id.content_pic);
+                    viewHolder.contentImage = (MQImageView) convertView.findViewById(R.id.content_pic);
                     viewHolder.voiceContentTv = (TextView) convertView.findViewById(R.id.tv_voice_content);
                     viewHolder.voiceAnimIv = (ImageView) convertView.findViewById(R.id.iv_voice_anim);
                     viewHolder.voiceContainerRl = convertView.findViewById(R.id.rl_voice_container);
-                    viewHolder.usAvatar = (MQCircleImageView) convertView.findViewById(R.id.us_avatar_iv);
+                    viewHolder.usAvatar = (MQImageView) convertView.findViewById(R.id.us_avatar_iv);
                     viewHolder.unreadCircle = convertView.findViewById(R.id.unread_view);
                     // tint
                     configChatBubbleBg(viewHolder.contentText, true);
@@ -144,7 +138,7 @@ public class MQChatAdapter extends BaseAdapter {
                     viewHolder = new ViewHolder();
                     convertView = LayoutInflater.from(mqConversationActivity).inflate(R.layout.mq_item_chat_right, null);
                     viewHolder.contentText = (TextView) convertView.findViewById(R.id.content_text);
-                    viewHolder.contentImage = (ImageView) convertView.findViewById(R.id.content_pic);
+                    viewHolder.contentImage = (MQImageView) convertView.findViewById(R.id.content_pic);
                     viewHolder.voiceContentTv = (TextView) convertView.findViewById(R.id.tv_voice_content);
                     viewHolder.voiceAnimIv = (ImageView) convertView.findViewById(R.id.iv_voice_anim);
                     viewHolder.voiceContainerRl = convertView.findViewById(R.id.rl_voice_container);
@@ -237,30 +231,27 @@ public class MQChatAdapter extends BaseAdapter {
 
                 String url;
                 if (isLocalImageExist) {
-                    url = "file://" + ((PhotoMessage) mcMessage).getLocalPath();
+                    url = ((PhotoMessage) mcMessage).getLocalPath();
                 } else {
                     url = ((PhotoMessage) mcMessage).getUrl();
                 }
-                final ViewHolder finalViewHolder = viewHolder;
 
-                ImageLoader.getInstance().displayImage(url, new ImageViewAware(viewHolder.contentImage), null, mImageSize, new SimpleImageLoadingListener() {
+                MQConfig.getImageLoader(mqConversationActivity).displayImage(viewHolder.contentImage, url, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, new MQImageLoader.MQDisplayImageListener() {
                     @Override
-                    public void onLoadingComplete(final String imageUri, View view, Bitmap loadedImage) {
-                        if (loadedImage != null) {
-                            if (listView.getLastVisiblePosition() == (listView.getCount() - 1)) {
-                                listView.setSelection(getCount() - 1);
-                            }
-
-                            view.setOnClickListener(new OnClickListener() {
-                                @Override
-                                public void onClick(View arg0) {
-                                    mqConversationActivity.startActivity(MQPhotoPreviewActivity.newIntent(mqConversationActivity, MQUtils.getImageDir(mqConversationActivity), imageUri));
-                                }
-                            });
-                            finalViewHolder.contentImage.setImageDrawable(MQUtils.getRoundedDrawable(mqConversationActivity, loadedImage, 8f));
+                    public void onSuccess(View view, final String url) {
+                        if (listView.getLastVisiblePosition() == (getCount() - 1)) {
+                            listView.setSelection(getCount() - 1);
                         }
+
+                        view.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View arg0) {
+                                mqConversationActivity.startActivity(MQPhotoPreviewActivity.newIntent(mqConversationActivity, MQUtils.getImageDir(mqConversationActivity), url));
+                            }
+                        });
                     }
-                }, null);
+                });
+
                 viewHolder.contentImage.setVisibility(View.VISIBLE);
 
             }
@@ -270,7 +261,7 @@ public class MQChatAdapter extends BaseAdapter {
             }
             //显示客服头像
             if (getItemViewType(position) == BaseMessage.TYPE_AGENT) {
-                imageLoader.displayImage(mcMessage.getAvatar(), viewHolder.usAvatar);
+                MQConfig.getImageLoader(mqConversationActivity).displayImage(viewHolder.usAvatar, mcMessage.getAvatar(), R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, 100, 100, null);
             }
             //显示发送状态：发送中、发送失败
             else if (getItemViewType(position) == BaseMessage.TYPE_CLIENT) {
@@ -307,13 +298,13 @@ public class MQChatAdapter extends BaseAdapter {
 
     static class ViewHolder {
         TextView contentText;
-        ImageView contentImage;
+        MQImageView contentImage;
         TextView voiceContentTv;
         ImageView voiceAnimIv;
         View voiceContainerRl;
         ProgressBar sendingProgressBar;
         ImageView sendState;
-        MQCircleImageView usAvatar;
+        MQImageView usAvatar;
         View unreadCircle;
     }
 

@@ -9,18 +9,15 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.model.ImageFolderModel;
+import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
+import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,14 +119,13 @@ public class MQPhotoFolderPw extends MQBasePopupWindow implements AdapterView.On
 
     private class FolderAdapter extends BaseAdapter {
         private List<ImageFolderModel> mDatas;
-        private DisplayImageOptions mDisplayImageOptions;
-        private ImageSize mImageSize;
+        private int mImageWidth;
+        private int mImageHeight;
 
         public FolderAdapter() {
             mDatas = new ArrayList<>();
-            mDisplayImageOptions = new DisplayImageOptions.Builder().cacheInMemory(true).showImageOnLoading(R.drawable.mq_ic_gallery_holder).build();
-            int size = MQUtils.getScreenWidth(mActivity) / 4;
-            mImageSize = new ImageSize(size, size);
+            mImageWidth = MQUtils.getScreenWidth(mActivity) / 10;
+            mImageHeight = mImageWidth;
         }
 
         @Override
@@ -153,7 +149,7 @@ public class MQPhotoFolderPw extends MQBasePopupWindow implements AdapterView.On
             if (convertView == null) {
                 convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.mq_item_photo_folder, parent, false);
                 folderViewHolder = new FolderViewHolder();
-                folderViewHolder.photoIv = (ImageView) convertView.findViewById(R.id.photo_iv);
+                folderViewHolder.photoIv = (MQImageView) convertView.findViewById(R.id.photo_iv);
                 folderViewHolder.nameTv = (TextView) convertView.findViewById(R.id.name_tv);
                 folderViewHolder.countTv = (TextView) convertView.findViewById(R.id.count_tv);
                 convertView.setTag(folderViewHolder);
@@ -164,7 +160,7 @@ public class MQPhotoFolderPw extends MQBasePopupWindow implements AdapterView.On
             ImageFolderModel imageFolderModel = getItem(position);
             folderViewHolder.nameTv.setText(imageFolderModel.name);
             folderViewHolder.countTv.setText(String.valueOf(imageFolderModel.getCount()));
-            ImageLoader.getInstance().displayImage("file://" + imageFolderModel.coverPath, new ImageViewAware(folderViewHolder.photoIv), mDisplayImageOptions, mImageSize, null, null);
+            MQConfig.getImageLoader(mActivity).displayImage(folderViewHolder.photoIv, imageFolderModel.coverPath, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, null);
 
             return convertView;
         }
@@ -180,7 +176,7 @@ public class MQPhotoFolderPw extends MQBasePopupWindow implements AdapterView.On
     }
 
     private class FolderViewHolder {
-        public ImageView photoIv;
+        public MQImageView photoIv;
         public TextView nameTv;
         public TextView countTv;
     }
