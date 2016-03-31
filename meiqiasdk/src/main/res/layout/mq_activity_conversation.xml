@@ -40,6 +40,7 @@
             android:id="@+id/title_tv"
             style="@style/MQWrapMatch"
             android:layout_centerHorizontal="true"
+            android:drawablePadding="@dimen/mq_size_level1"
             android:gravity="center"
             android:maxWidth="175dp"
             android:singleLine="true"

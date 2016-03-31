@@ -12,15 +12,25 @@
 
 ```
 // required     
-// 「3.1.4」改成 maven central 徽章后面对应的版本号，例如3.1.4
-compile 'com.meiqia:meiqiasdk:3.1.4@aar'
+// 「3.1.5」改成 maven central 徽章后面对应的版本号，例如3.1.5
+compile 'com.meiqia:meiqiasdk:3.1.5@aar'
 
 // 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
 compile 'com.android.support:support-v4:23.1.1'
 compile 'com.squareup.okhttp:okhttp:2.7.0'
 compile 'org.java-websocket:Java-WebSocket:1.3.0'
 compile 'com.commit451:PhotoView:1.2.4'
+
+// 目前支持常见的三种图片加载库，选择其中一种作为 MQConfig.init 方法的第三个参数进行初始化
+compile 'com.meiqia:uilimageloader:1.0.0@aar'
 compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+
+//    compile 'com.meiqia:glideimageloader:1.0.0@aar'
+//    compile 'com.github.bumptech.glide:glide:3.7.0'
+
+//    compile 'com.meiqia:picassoimageloader:1.0.0@aar'
+//    compile 'com.squareup.picasso:picasso:2.5.2'
+
 ```
 
 ### Eclipse
@@ -87,18 +97,18 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
 ### 1.初始化
 ``` java
-MQManager.init(context, "Your Appkey", new OnInitCallback() {
-	@Override
-	public void onSuccess(String clientId) {
-		// 初始化成功
-	    Toast.makeText(MainActivity.this, "init success", Toast.LENGTH_SHORT).show();
-	}
 
-	@Override
-	public void onFailure(int code, String message) {
-		// 初始化失败
-	    Toast.makeText(MainActivity.this, "init failure", Toast.LENGTH_SHORT).show();
-	}
+// MQImageLoader 的实现类目前有 GlideImageloader、PicassoImageLoader、UILImageLoader，根据你自己项目中已使用的图片加载库来选择
+MQConfig.init(this, "Your Appkey", new MQImageLoader的实现类(), new OnInitCallback() {
+    @Override
+    public void onSuccess(String clientId) {
+        Toast.makeText(MainActivity.this, "init success", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onFailure(int code, String message) {
+        Toast.makeText(MainActivity.this, "int failure", Toast.LENGTH_SHORT).show();
+    }
 });
 ```
 如果您不知道 Appkey ，请使用美洽管理员帐号登录 美洽，在「设置」 -> 「SDK」 菜单中查看。如下图：

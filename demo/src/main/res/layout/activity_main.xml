@@ -10,8 +10,8 @@
         android:layout_weight="1">
 
         <ImageView
-            android:layout_centerInParent="true"
             style="@style/MQWrapWrap"
+            android:layout_centerInParent="true"
             android:layout_margin="16dp"
             android:src="@drawable/ic_logo" />
     </RelativeLayout>
@@ -24,14 +24,14 @@
         android:orientation="vertical">
 
         <Button
-            android:layout_marginBottom="8dp"
             style="@style/DemoTv"
+            android:layout_marginBottom="8dp"
             android:onClick="conversation"
             android:text="咨询客服" />
 
         <Button
-            android:layout_marginBottom="8dp"
             style="@style/DemoTv"
+            android:layout_marginBottom="8dp"
             android:onClick="developer"
             android:text="开发者功能" />
 

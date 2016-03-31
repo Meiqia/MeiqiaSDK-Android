@@ -18,11 +18,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.util.MQConfig;
+import com.meiqia.meiqiasdk.util.MQImageLoader;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQHackyViewPager;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
-import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttacher.OnViewTapListener, View.OnClickListener {
@@ -123,8 +122,6 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
     }
 
     private void processLogic(Bundle savedInstanceState) {
-        MQUtils.initImageLoader(this);
-
         mSaveImgDir = (File) getIntent().getSerializableExtra(EXTRA_SAVE_IMG_DIR);
         if (mSaveImgDir == null) {
             mDownloadIv.setVisibility(View.INVISIBLE);
@@ -228,44 +225,38 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
             return;
         }
 
-        ImageLoader.getInstance().loadImage(url, new SimpleImageLoadingListener() {
+        MQConfig.getImageLoader(MQPhotoPreviewActivity.this).downloadImage(this, url, new MQImageLoader.MQDownloadImageListener() {
             @Override
-            public void onLoadingComplete(String imageUri, View view, final Bitmap loadedImage) {
-                // 图片处理
-                new Thread() {
-                    @Override
-                    public void run() {
-                        FileOutputStream fos = null;
-                        try {
-                            // 通过MD5加密url生成文件名，避免多次保存同一张图片
-                            File newFile = new File(mSaveImgDir, MQUtils.stringToMD5(url) + ".png");
-                            if (!newFile.exists()) {
-                                fos = new FileOutputStream(newFile);
-                                loadedImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                                fos.flush();
+            public void onSuccess(String url, Bitmap bitmap) {
+                FileOutputStream fos = null;
+                try {
+                    // 通过MD5加密url生成文件名，避免多次保存同一张图片
+                    File newFile = new File(mSaveImgDir, MQUtils.stringToMD5(url) + ".png");
+                    if (!newFile.exists()) {
+                        fos = new FileOutputStream(newFile);
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                        fos.flush();
 
-                                // 通知图库更新
-                                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(newFile)));
-                            }
-                            MQUtils.showSafe(MQPhotoPreviewActivity.this, getString(R.string.mq_save_img_success_folder, mSaveImgDir.getAbsolutePath()));
+                        // 通知图库更新
+                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(newFile)));
+                    }
+                    MQUtils.showSafe(MQPhotoPreviewActivity.this, getString(R.string.mq_save_img_success_folder, mSaveImgDir.getAbsolutePath()));
+                } catch (IOException e) {
+                    MQUtils.showSafe(MQPhotoPreviewActivity.this, R.string.mq_save_img_failure);
+                } finally {
+                    if (fos != null) {
+                        try {
+                            fos.close();
                         } catch (IOException e) {
                             MQUtils.showSafe(MQPhotoPreviewActivity.this, R.string.mq_save_img_failure);
-                        } finally {
-                            if (fos != null) {
-                                try {
-                                    fos.close();
-                                } catch (IOException e) {
-                                    MQUtils.showSafe(MQPhotoPreviewActivity.this, R.string.mq_save_img_failure);
-                                }
-                            }
-                            mSemaphore.release();
                         }
                     }
-                }.start();
+                    mSemaphore.release();
+                }
             }
 
             @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+            public void onFailed(String url) {
                 MQUtils.showSafe(MQPhotoPreviewActivity.this, R.string.mq_save_img_failure);
                 mSemaphore.release();
             }
@@ -281,18 +272,21 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
 
         @Override
         public View instantiateItem(ViewGroup container, int position) {
-            final PhotoView photoView = new PhotoView(container.getContext());
-            container.addView(photoView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            MQImageView imageView = new MQImageView(container.getContext());
+            container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            final PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(imageView);
+            photoViewAttacher.setOnViewTapListener(MQPhotoPreviewActivity.this);
 
-            photoView.setOnViewTapListener(MQPhotoPreviewActivity.this);
+            imageView.setDrawableChangedCallback(new MQImageView.OnDrawableChangedCallback() {
+                @Override
+                public void onDrawableChanged() {
+                    photoViewAttacher.update();
+                }
+            });
 
-            String photoPath = mPreviewImages.get(position);
-            if (photoPath.startsWith("http") || photoPath.startsWith("file")) {
-                ImageLoader.getInstance().displayImage(mPreviewImages.get(position), photoView);
-            } else {
-                ImageLoader.getInstance().displayImage("file://" + mPreviewImages.get(position), photoView);
-            }
-            return photoView;
+            MQConfig.getImageLoader(MQPhotoPreviewActivity.this).displayImage(imageView, mPreviewImages.get(position), R.drawable.mq_ic_holder_dark, R.drawable.mq_ic_holder_dark, MQUtils.getScreenWidth(MQPhotoPreviewActivity.this), MQUtils.getScreenHeight(MQPhotoPreviewActivity.this), null);
+
+            return imageView;
         }
 
         @Override

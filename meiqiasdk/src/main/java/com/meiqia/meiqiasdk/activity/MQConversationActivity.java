@@ -136,8 +136,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         setListeners();
         applyCustomUIConfig();
         registerReceiver();
-
-        mCustomKeyboardLayout.init(this, mInputEt, this);
     }
 
     /**
@@ -219,8 +217,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             mController = new ControllerImpl(this);
         }
         MQTimeUtils.init(this);
-        // 初始化 ImageLoader
-        MQUtils.initImageLoader(this);
 
         // handler
         mHandler = new Handler();
@@ -228,6 +224,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mSoundPoolManager = MQSoundPoolManager.getInstance(this);
         mChatMsgAdapter = new MQChatAdapter(MQConversationActivity.this, mChatMessageList, mConversationListView);
         mConversationListView.setAdapter(mChatMsgAdapter);
+
+        if (!MQConfig.isVoiceSwitchOpen) {
+            mVoiceBtn.setVisibility(View.GONE);
+        }
+        mCustomKeyboardLayout.init(this, mInputEt, this);
     }
 
     private void findViews() {
@@ -325,6 +326,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         intentFilter.addAction(MQController.ACTION_NEW_MESSAGE_RECEIVED);
         intentFilter.addAction(MQController.ACTION_CLIENT_IS_REDIRECTED_EVENT);
         intentFilter.addAction(MQController.ACTION_INVITE_EVALUATION);
+        intentFilter.addAction(MQController.ACTION_AGENT_STATUS_UPDATE_EVENT);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, intentFilter);
 
         // 网络监听
@@ -341,6 +343,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      */
     protected void changeTitleToAgentName(String agentName) {
         mTitleTv.setText(agentName);
+
+        updateAgentOnlineOfflineStatus();
     }
 
     /**
@@ -351,6 +355,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     protected void changeTitleToAgentName(Agent agent) {
         if (agent != null) {
             mTitleTv.setText(agent.getNickname());
+
+            updateAgentOnlineOfflineStatus();
         } else {
             changeTitleToNoAgentState();
         }
@@ -361,6 +367,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      */
     protected void changeTitleToInputting() {
         mTitleTv.setText(getResources().getString(R.string.mq_title_inputting));
+
+        updateAgentOnlineOfflineStatus();
     }
 
     /**
@@ -368,6 +376,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      */
     protected void changeTitleToAllocatingAgent() {
         mTitleTv.setText(getResources().getString(R.string.mq_allocate_agent));
+
+        hiddenAgentStatusCircle();
     }
 
     /**
@@ -376,6 +386,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     protected void changeTitleToNoAgentState() {
         mTitleTv.setText(getResources().getString(R.string.mq_title_leave_msg));
         mEvaluateBtn.setVisibility(View.GONE);
+
+        hiddenAgentStatusCircle();
     }
 
     /**
@@ -383,6 +395,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      */
     protected void changeTitleToNetErrorState() {
         mTitleTv.setText(getResources().getString(R.string.mq_title_net_not_work));
+
+        hiddenAgentStatusCircle();
     }
 
     /**
@@ -390,6 +404,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      */
     protected void changeTitleToUnknownErrorState() {
         mTitleTv.setText(getResources().getString(R.string.mq_title_unknown_error));
+
+        hiddenAgentStatusCircle();
     }
 
     /**
@@ -402,6 +418,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         AgentChangeMessage agentChangeMessage = new AgentChangeMessage();
         agentChangeMessage.setAgentNickname(agentNickName);
         mChatMsgAdapter.addMQMessage(agentChangeMessage);
+
+        updateAgentOnlineOfflineStatus();
     }
 
     private boolean isAddLeaveTip;
@@ -1066,6 +1084,26 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         return false;
     }
 
+    private void updateAgentOnlineOfflineStatus() {
+//        Agent agent = mController.getCurrentAgent();
+//
+//        if (agent != null) {
+//            if (!agent.isOnline()) {
+//                mTitleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.mq_shape_agent_status_offline, 0);
+//            } else if (agent.isOffDuty()) {
+//                mTitleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.mq_shape_agent_status_off_duty, 0);
+//            } else {
+//                mTitleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.mq_shape_agent_status_online, 0);
+//            }
+//        } else {
+//            hiddenAgentStatusCircle();
+//        }
+    }
+
+    private void hiddenAgentStatusCircle() {
+//        mTitleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+    }
+
     private class MessageReceiver extends com.meiqia.meiqiasdk.controller.MessageReceiver {
 
         @Override
@@ -1114,6 +1152,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         public void setNewConversationId(String newConversationId) {
             mConversationId = newConversationId;
             removeLeaveMessageTip();
+        }
+
+        @Override
+        public void updateAgentOnlineOfflineStatus() {
+            MQConversationActivity.this.updateAgentOnlineOfflineStatus();
         }
     }
 
@@ -1199,11 +1242,4 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         }
 
     }
-
-    private boolean isSdcardAvailable() {
-        boolean isSdcardAvailable = MQUtils.isSdcardAvailable();
-        if (!isSdcardAvailable) MQUtils.show(MQConversationActivity.this, R.string.mq_no_sdcard);
-        return isSdcardAvailable;
-    }
-
 }
