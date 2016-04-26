@@ -25,11 +25,13 @@ import com.meiqia.meiqiasdk.R;
  * 描述:
  */
 public class MQImageView extends ImageView {
+    private int mDefaultImageId;
     private int mCornerRadius = 0;
     private boolean mIsCircle = false;
     private boolean mIsSquare = false;
     private int mBorderWidth = 0;
     private int mBorderColor = Color.WHITE;
+    private RectF mRect;
 
     private Paint mBorderPaint;
     private OnDrawableChangedCallback mOnDrawableChangedCallback;
@@ -48,6 +50,10 @@ public class MQImageView extends ImageView {
         initCustomAttrs(context, attrs);
 
         initBorderPaint();
+
+        setDefaultImage();
+
+        mRect = new RectF();
     }
 
     private void initBorderPaint() {
@@ -68,7 +74,9 @@ public class MQImageView extends ImageView {
     }
 
     private void initCustomAttr(int attr, TypedArray typedArray) {
-        if (attr == R.styleable.MQImageView_mq_iv_isCircle) {
+        if (attr == R.styleable.MQImageView_android_src) {
+            mDefaultImageId = typedArray.getResourceId(attr, 0);
+        } else if (attr == R.styleable.MQImageView_mq_iv_isCircle) {
             mIsCircle = typedArray.getBoolean(attr, mIsCircle);
         } else if (attr == R.styleable.MQImageView_mq_iv_cornerRadius) {
             mCornerRadius = typedArray.getDimensionPixelSize(attr, mCornerRadius);
@@ -78,6 +86,12 @@ public class MQImageView extends ImageView {
             mBorderWidth = typedArray.getDimensionPixelSize(attr, mBorderWidth);
         } else if (attr == R.styleable.MQImageView_mq_iv_borderColor) {
             mBorderColor = typedArray.getColor(attr, mBorderColor);
+        }
+    }
+
+    private void setDefaultImage() {
+        if (mDefaultImageId != 0) {
+            setImageResource(mDefaultImageId);
         }
     }
 
@@ -141,7 +155,11 @@ public class MQImageView extends ImageView {
             if (mIsCircle) {
                 canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - mBorderWidth / 2, mBorderPaint);
             } else {
-                canvas.drawRoundRect(new RectF(0, 0, getWidth(), getHeight()), mCornerRadius, mCornerRadius, mBorderPaint);
+                mRect.left = 0;
+                mRect.top = 0;
+                mRect.right = getWidth();
+                mRect.bottom = getHeight();
+                canvas.drawRoundRect(mRect, mCornerRadius, mCornerRadius, mBorderPaint);
             }
         }
     }

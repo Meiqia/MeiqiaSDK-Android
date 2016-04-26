@@ -19,6 +19,7 @@ public class BaseMessage {
     public static final String TYPE_CONTENT_TEXT = "text";
     public static final String TYPE_CONTENT_PHOTO = "photo";
     public static final String TYPE_CONTENT_VOICE = "audio";
+    public static final String TYPE_CONTENT_FILE = "file";
 
     public static final int TYPE_CLIENT = 0;
     public static final int TYPE_AGENT = 1;
@@ -36,6 +37,7 @@ public class BaseMessage {
     private String content;
     private String avatar;
     private boolean isRead;
+    private long conversationId;
 
     public BaseMessage() {
         this.createdOn = System.currentTimeMillis();
@@ -121,6 +123,14 @@ public class BaseMessage {
 
     public void setIsRead(boolean isRead) {
         this.isRead = isRead;
+    }
+
+    public long getConversationId() {
+        return conversationId;
+    }
+
+    public void setConversationId(long conversationId) {
+        this.conversationId = conversationId;
     }
 
     @Override
