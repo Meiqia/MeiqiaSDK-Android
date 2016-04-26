@@ -30,6 +30,9 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 //    compile 'com.meiqia:picassoimageloader:1.0.0@aar'
 //    compile 'com.squareup.picasso:picasso:2.5.2'
 
+//    compile 'com.meiqia:xutilsimageloader:1.0.0@aar'
+//    compile 'org.xutils:xutils:3.3.32'
+
 ```
 
 ### Eclipse
