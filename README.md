@@ -20,7 +20,7 @@ compile 'com.android.support:support-v4:23.1.1'
 compile 'com.squareup.okhttp:okhttp:2.7.0'
 compile 'com.commit451:PhotoView:1.2.4'
 
-// 目前支持常见的三种图片加载库，选择其中一种作为 MQConfig.init 方法的第三个参数进行初始化
+// 目前支持常见的 4 种图片加载库，选择其中一种作为 MQConfig.init 方法的第三个参数进行初始化
 compile 'com.meiqia:uilimageloader:1.0.0@aar'
 compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
