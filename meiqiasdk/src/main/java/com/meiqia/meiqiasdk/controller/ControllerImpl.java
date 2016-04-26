@@ -8,7 +8,9 @@ import com.meiqia.core.bean.MQAgent;
 import com.meiqia.core.bean.MQMessage;
 import com.meiqia.core.callback.OnClientInfoCallback;
 import com.meiqia.core.callback.OnGetMessageListCallback;
+import com.meiqia.core.callback.OnProgressCallback;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
+import com.meiqia.meiqiasdk.callback.OnDownloadFileCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.callback.SimpleCallback;
@@ -81,6 +83,8 @@ public class ControllerImpl implements MQController {
                 if (onMessageSendCallback != null) {
                     onMessageSendCallback.onFailure(failureMessage, code, failureInfo);
                 }
+                // 重发失败后删除之前保存的消息
+                MQManager.getInstance(context).deleteMessage(preId);
             }
         });
     }
@@ -213,6 +217,41 @@ public class ControllerImpl implements MQController {
     @Override
     public void saveConversationOnStopTime(long stopTime) {
         MQManager.getInstance(context).saveConversationOnStopTime(stopTime);
+    }
+
+    @Override
+    public void downloadFile(BaseMessage fileMessage, final OnDownloadFileCallback onDownloadFileCallback) {
+        MQMessage message = MQUtils.parseBaseMessageToMQMessage(fileMessage);
+        MQManager.getInstance(context).downloadFile(message, new OnProgressCallback() {
+            @Override
+            public void onSuccess() {
+                if (onDownloadFileCallback == null) {
+                    return;
+                }
+                onDownloadFileCallback.onSuccess(null);
+            }
+
+            @Override
+            public void onProgress(int progress) {
+                if (onDownloadFileCallback == null) {
+                    return;
+                }
+                onDownloadFileCallback.onProgress(progress);
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+                if (onDownloadFileCallback == null) {
+                    return;
+                }
+                onDownloadFileCallback.onFailure(code, message);
+            }
+        });
+    }
+
+    @Override
+    public void cancelDownload(String url) {
+        MQManager.getInstance(context).cancelDownload(url);
     }
 
     @Override

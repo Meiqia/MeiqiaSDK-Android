@@ -64,6 +64,13 @@
                 android:layout_marginLeft="@dimen/mq_size_level5"
                 android:src="@drawable/mq_voice_left_normal" />
         </RelativeLayout>
+
+        <com.meiqia.meiqiasdk.widget.MQChatFileItem
+            android:id="@+id/file_container"
+            style="@style/MQWrapWrap"
+            android:background="@drawable/mq_bg_msg_left"
+            android:visibility="gone"/>
+
     </RelativeLayout>
 
     <ImageView

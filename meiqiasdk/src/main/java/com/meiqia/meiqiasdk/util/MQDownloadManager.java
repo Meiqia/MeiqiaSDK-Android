@@ -1,6 +1,7 @@
 package com.meiqia.meiqiasdk.util;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -39,6 +40,13 @@ public class MQDownloadManager {
     }
 
     public void downloadVoice(final String url, final Callback callback) {
+        if (TextUtils.isEmpty(url) || !url.startsWith("http")) {
+            if (callback != null) {
+                callback.onFailure();
+            }
+            return;
+        }
+
         Request request = new Request.Builder().url(url).build();
         mOkHttpClient.newCall(request).enqueue(new com.squareup.okhttp.Callback() {
             @Override
