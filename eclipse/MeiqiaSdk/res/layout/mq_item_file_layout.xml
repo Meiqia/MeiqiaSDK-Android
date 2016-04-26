@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="225dp"
+    android:layout_height="56dp">
+
+    <ImageView
+        android:id="@+id/mq_file_iv"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:background="@drawable/mq_ic_file" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="40dp"
+        android:layout_toRightOf="@id/mq_file_iv"
+        android:orientation="vertical"
+        android:paddingLeft="8dp">
+
+        <TextView
+            android:id="@+id/mq_file_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:singleLine="true"
+            android:text="Title"
+            android:textColor="@color/mq_activity_title_textColor"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/mq_file_sub_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="SubTitle"
+            android:textColor="@color/mq_gray"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/mq_right_iv"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/mq_ic_download_gray" />
+
+    <com.meiqia.meiqiasdk.widget.CircularProgressBar
+        android:id="@+id/progressbar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone" />
+
+</RelativeLayout>

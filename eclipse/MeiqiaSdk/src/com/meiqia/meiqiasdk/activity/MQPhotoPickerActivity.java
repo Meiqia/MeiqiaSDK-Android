@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.view.ViewCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -309,23 +310,43 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
             while (cursor.moveToNext()) {
                 String imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
 
-                if (firstInto) {
-                    allImageFolderModel.name = getString(R.string.mq_all_image);
-                    allImageFolderModel.coverPath = imagePath;
-                    firstInto = false;
-                }
-                // 所有图片目录每次都添加
-                allImageFolderModel.addLastImage(imagePath);
+                if (!TextUtils.isEmpty(imagePath)) {
+                    if (firstInto) {
+                        allImageFolderModel.name = getString(R.string.mq_all_image);
+                        allImageFolderModel.coverPath = imagePath;
+                        firstInto = false;
+                    }
+                    // 所有图片目录每次都添加
+                    allImageFolderModel.addLastImage(imagePath);
 
-                // 其他图片目录
-                String folderName = new File(imagePath).getParentFile().getName();
-                if (imageFolderModelMap.containsKey(folderName)) {
-                    otherImageFolderModel = imageFolderModelMap.get(folderName);
-                } else {
-                    otherImageFolderModel = new ImageFolderModel(folderName, imagePath);
-                    imageFolderModelMap.put(folderName, otherImageFolderModel);
+                    String folderPath = null;
+                    // 其他图片目录
+                    File folder = new File(imagePath).getParentFile();
+                    if (folder != null) {
+                        folderPath = folder.getAbsolutePath();
+                    }
+
+                    if (TextUtils.isEmpty(folderPath)) {
+                        int end = imagePath.lastIndexOf(File.separator);
+                        if (end != -1) {
+                            folderPath = imagePath.substring(0, end);
+                        }
+                    }
+
+                    if (!TextUtils.isEmpty(folderPath)) {
+                        if (imageFolderModelMap.containsKey(folderPath)) {
+                            otherImageFolderModel = imageFolderModelMap.get(folderPath);
+                        } else {
+                            String folderName = folderPath.substring(folderPath.lastIndexOf(File.separator) + 1);
+                            if (TextUtils.isEmpty(folderName)) {
+                                folderName = "/";
+                            }
+                            otherImageFolderModel = new ImageFolderModel(folderName, imagePath);
+                            imageFolderModelMap.put(folderPath, otherImageFolderModel);
+                        }
+                        otherImageFolderModel.addLastImage(imagePath);
+                    }
                 }
-                otherImageFolderModel.addLastImage(imagePath);
             }
             cursor.close();
         }
@@ -406,7 +427,7 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
                 MQConfig.getImageLoader(MQPhotoPickerActivity.this).displayImage(picViewHolder.photoIv, imagePath, R.drawable.mq_ic_holder_dark, R.drawable.mq_ic_holder_dark, mImageWidth, mImageHeight, null);
 
                 picViewHolder.flagIv.setVisibility(View.VISIBLE);
-                
+
                 if (mSelectedImages.contains(imagePath)) {
                     picViewHolder.flagIv.setImageResource(R.drawable.mq_ic_cb_checked);
                     picViewHolder.photoIv.setColorFilter(getResources().getColor(R.color.mq_photo_selected_color));
