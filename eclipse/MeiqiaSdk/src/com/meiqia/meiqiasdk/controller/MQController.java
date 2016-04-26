@@ -2,6 +2,7 @@ package com.meiqia.meiqiasdk.controller;
 
 
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
+import com.meiqia.meiqiasdk.callback.OnDownloadFileCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.callback.SimpleCallback;
@@ -17,6 +18,7 @@ public interface MQController {
     String ACTION_CLIENT_IS_REDIRECTED_EVENT = "agent_change_action";
     String ACTION_INVITE_EVALUATION = "invite_evaluation";
     String ACTION_AGENT_STATUS_UPDATE_EVENT = "action_agent_status_update_event";
+    String ACTION_BLACK_ADD = "action_black_add";
 
     void sendMessage(BaseMessage baseMessage, OnMessageSendCallback onMessageSendCallback);
 
@@ -78,6 +80,7 @@ public interface MQController {
 
     /**
      * 获取当前客服
+     *
      * @return 当前客服，如果没有返回 null
      */
     Agent getCurrentAgent();
@@ -90,4 +93,18 @@ public interface MQController {
      * @param stopTime
      */
     void saveConversationOnStopTime(long stopTime);
+
+    /**
+     * 下载文件
+     * @param fileMessage 文件消息
+     * @param onDownloadFileCallback 回调
+     */
+    void downloadFile(BaseMessage fileMessage, OnDownloadFileCallback onDownloadFileCallback);
+
+    /**
+     * 取消下载
+     * @param url 下载 url
+     */
+    void cancelDownload(String url);
+
 }

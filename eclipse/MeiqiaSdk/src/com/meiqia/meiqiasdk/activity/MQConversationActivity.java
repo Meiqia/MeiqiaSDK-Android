@@ -16,12 +16,15 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
@@ -35,6 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.callback.FileStateCallback;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
@@ -46,6 +50,7 @@ import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.AgentChangeMessage;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.EvaluateMessage;
+import com.meiqia.meiqiasdk.model.FileMessage;
 import com.meiqia.meiqiasdk.model.LeaveTipMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
@@ -69,7 +74,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class MQConversationActivity extends Activity implements View.OnClickListener, MQEvaluateDialog.Callback, MQCustomKeyboardLayout.Callback, View.OnTouchListener {
+public class MQConversationActivity extends Activity implements View.OnClickListener, MQEvaluateDialog.Callback, MQCustomKeyboardLayout.Callback, View.OnTouchListener, FileStateCallback {
     private static final String TAG = MQConversationActivity.class.getSimpleName();
 
     public static final String CLIENT_ID = "clientId";
@@ -79,6 +84,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     public static final int REQUEST_CODE_CAMERA = 0;
     public static final int REQUEST_CODE_PHOTO = 1;
     private static int MESSAGE_PAGE_COUNT = 30; //消息每页加载数量
+    private static final long AUTO_DISMISS_TOP_TIP_TIME = 2000; // TopTip 自动隐藏时间
 
     private MQController mController;
 
@@ -88,6 +94,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private TextView mBackTv;
     private ImageView mBackIv;
     private TextView mTitleTv;
+    private RelativeLayout mChatBodyRl;
     private ListView mConversationListView;
     private EditText mInputEt;
     private ImageButton mSendTextBtn;
@@ -114,6 +121,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     // 是否已经加载数据的标识
     private boolean mHasLoadData = false;
     private boolean isPause;
+    private boolean isDestroy;
+
+    // 是否被拉黑
+    private boolean isBlackState;
 
     private Agent mCurrentAgent; // 当前客服
 
@@ -199,6 +210,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         } catch (Exception e) {
             //有些时候会出现未注册就取消注册的情况，暂时不知道为什么
         }
+        isDestroy = true;
+        cancelAllDownload();
         super.onDestroy();
     }
 
@@ -229,6 +242,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             mVoiceBtn.setVisibility(View.GONE);
         }
         mCustomKeyboardLayout.init(this, mInputEt, this);
+        isDestroy = false;
     }
 
     private void findViews() {
@@ -236,6 +250,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         backRl = (RelativeLayout) findViewById(R.id.back_rl);
         mBackTv = (TextView) findViewById(R.id.back_tv);
         mBackIv = (ImageView) findViewById(R.id.back_iv);
+        mChatBodyRl = (RelativeLayout) findViewById(R.id.chat_body_rl);
         mConversationListView = (ListView) findViewById(R.id.messages_lv);
         mInputEt = (EditText) findViewById(R.id.input_et);
         mEmojiSelectBtn = findViewById(R.id.emoji_select_btn);
@@ -327,6 +342,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         intentFilter.addAction(MQController.ACTION_CLIENT_IS_REDIRECTED_EVENT);
         intentFilter.addAction(MQController.ACTION_INVITE_EVALUATION);
         intentFilter.addAction(MQController.ACTION_AGENT_STATUS_UPDATE_EVENT);
+        intentFilter.addAction(MQController.ACTION_BLACK_ADD);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, intentFilter);
 
         // 网络监听
@@ -422,6 +438,18 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         updateAgentOnlineOfflineStatus();
     }
 
+    /**
+     * 添加 被拉黑 的消息 Tip 到列表
+     */
+    protected void addBlacklistTip(int blackTipRes) {
+        isBlackState = true;
+        changeTitleToNoAgentState();
+        BaseMessage blacklistMessage = new BaseMessage();
+        blacklistMessage.setItemViewType(BaseMessage.TYPE_TIP);
+        blacklistMessage.setContent(getResources().getString(blackTipRes));
+        mChatMsgAdapter.addMQMessage(blacklistMessage);
+    }
+
     private boolean isAddLeaveTip;
 
     /**
@@ -432,6 +460,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         if (!isAddLeaveTip) {
             changeTitleToNoAgentState();
             LeaveTipMessage leaveTip = new LeaveTipMessage();
+            leaveTip.setContent(getResources().getString(R.string.mq_leave_msg_tips));
             //添加到当前消息的上一个位置
             int position = mChatMessageList.size();
             if (position != 0) {
@@ -457,6 +486,43 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             }
         }
         isAddLeaveTip = false;
+    }
+
+    private TextView mTopTipViewTv;
+    private Runnable autoDismissTopTipRunnable;
+
+    /**
+     * 弹出顶部 Tip
+     *
+     * @param contentRes tip 文本内容的资源 id
+     */
+    public void popTopTip(final int contentRes) {
+        if (mTopTipViewTv == null) {
+            mTopTipViewTv = (TextView) getLayoutInflater().inflate(R.layout.mq_top_pop_tip, null);
+            mTopTipViewTv.setText(contentRes);
+            int height = getResources().getDimensionPixelOffset(R.dimen.mq_top_tip_height);
+            mChatBodyRl.addView(mTopTipViewTv, ViewGroup.LayoutParams.MATCH_PARENT, height);
+            ViewCompat.setTranslationY(mTopTipViewTv, -height); // 初始化位置
+            ViewCompat.animate(mTopTipViewTv).translationY(0).setDuration(300).start();
+            if (autoDismissTopTipRunnable == null) {
+                autoDismissTopTipRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        popTopTip(contentRes);
+                    }
+                };
+            }
+            mHandler.postDelayed(autoDismissTopTipRunnable, AUTO_DISMISS_TOP_TIP_TIME);
+        } else {
+            mHandler.removeCallbacks(autoDismissTopTipRunnable);
+            ViewCompat.animate(mTopTipViewTv).translationY(-mTopTipViewTv.getHeight()).setListener(new ViewPropertyAnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(View view) {
+                    mChatBodyRl.removeView(mTopTipViewTv);
+                    mTopTipViewTv = null;
+                }
+            }).setDuration(300).start();
+        }
     }
 
 
@@ -604,11 +670,18 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     } else if (ErrorCode.NO_AGENT_ONLINE == code) {
                         setCurrentAgent(null);
                         changeTitleToNoAgentState();
+                        // 没有分配到客服，也根据设置是否上传顾客信息
+                        if (finalClientInfo != null) {
+                            mController.setClientInfo(finalClientInfo, null);
+                        }
+                    } else if (ErrorCode.BLACKLIST == code) {
+                        changeTitleToNoAgentState();
+                        isBlackState = true;
                     } else {
                         changeTitleToUnknownErrorState();
                         Toast.makeText(MQConversationActivity.this, "code = " + code + "\n" + "message = " + message, Toast.LENGTH_SHORT).show();
                     }
-                    //如果没有加载数据，则加载数据
+                    // 如果没有加载数据，则加载数据
                     if (!mHasLoadData) {
                         getMessageDataFromDatabaseAndLoad();
                         onLoadDataComplete(MQConversationActivity.this, null);
@@ -651,11 +724,20 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         MQTimeUtils.refreshMQTimeItem(mChatMessageList);
         // 加载到UI
         mLoadProgressBar.setVisibility(View.GONE);
-        // 将正在发送显示为已发送
-        for (BaseMessage message : mChatMessageList) {
+        Iterator<BaseMessage> messageIterator = mChatMessageList.iterator();
+        while (messageIterator.hasNext()) {
+            BaseMessage message = messageIterator.next();
+            // 将正在发送显示为已发送
             if (BaseMessage.STATE_SENDING.equals(message.getStatus())) {
                 message.setStatus(BaseMessage.STATE_ARRIVE);
             }
+            // 如果是黑名单状态，不显示结束对话的消息
+            else if (BaseMessage.TYPE_ENDING.equals(message.getType()) && isBlackState) {
+                messageIterator.remove();
+            }
+        }
+        if (isBlackState) {
+            addBlacklistTip(R.string.mq_blacklist_online_tips);
         }
         MQUtils.scrollListViewToBottom(mConversationListView);
         mChatMsgAdapter.downloadAndNotifyDataSetChanged(mChatMessageList);
@@ -932,6 +1014,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
             @Override
             public void onFailure(BaseMessage failureMessage, int code, String failureInfo) {
+                if (code == ErrorCode.BLACKLIST) {
+                    addBlacklistTip(R.string.mq_blacklist_msg_tips);
+                }
                 mChatMsgAdapter.notifyDataSetChanged();
             }
         });
@@ -949,10 +1034,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             @Override
             public void onSuccess(BaseMessage message, int state) {
                 renameVoiceFilename(message);
-
-                // 刷新界面
-                mChatMsgAdapter.notifyDataSetChanged();
-
+                updateResendMessage(message, 0);
                 // 客服不在线的时候，会自动发送留言消息，这个时候要添加一个 tip 到列表
                 if (ErrorCode.NO_AGENT_ONLINE == state) {
                     addLeaveMessageTip();
@@ -961,9 +1043,26 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
             @Override
             public void onFailure(BaseMessage failureMessage, int code, String failureInfo) {
-                mChatMsgAdapter.notifyDataSetChanged();
+                updateResendMessage(failureMessage, code);
             }
         });
+    }
+
+    private void updateResendMessage(BaseMessage message, int code) {
+        // 重发失败，移动到列表最下面
+        int messagePosition = mChatMessageList.indexOf(message); // 当前消息的位置
+        mChatMessageList.remove(message);
+        // 如果下一条 消息是黑名单 tip，黑名单的 tip 也要删除
+        if (isBlackState && mChatMessageList.size() > messagePosition && mChatMessageList.get(messagePosition).getItemViewType() == BaseMessage.TYPE_TIP) {
+            mChatMessageList.remove(messagePosition);
+        }
+        MQTimeUtils.refreshMQTimeItem(mChatMessageList);
+        mChatMsgAdapter.addMQMessage(message);
+
+        if (code == ErrorCode.BLACKLIST) {
+            addBlacklistTip(R.string.mq_blacklist_msg_tips);
+        }
+        scrollContentToBottom();
     }
 
     /**
@@ -1085,23 +1184,54 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     private void updateAgentOnlineOfflineStatus() {
-//        Agent agent = mController.getCurrentAgent();
-//
-//        if (agent != null) {
-//            if (!agent.isOnline()) {
-//                mTitleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.mq_shape_agent_status_offline, 0);
-//            } else if (agent.isOffDuty()) {
-//                mTitleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.mq_shape_agent_status_off_duty, 0);
-//            } else {
-//                mTitleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.mq_shape_agent_status_online, 0);
-//            }
-//        } else {
-//            hiddenAgentStatusCircle();
-//        }
+        Agent agent = mController.getCurrentAgent();
+
+        if (agent != null) {
+            if (!agent.isOnline()) {
+                mTitleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.mq_shape_agent_status_offline, 0);
+            } else if (agent.isOffDuty()) {
+                mTitleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.mq_shape_agent_status_off_duty, 0);
+            } else {
+                mTitleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.mq_shape_agent_status_online, 0);
+            }
+        } else {
+            hiddenAgentStatusCircle();
+        }
     }
 
     private void hiddenAgentStatusCircle() {
-//        mTitleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        mTitleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+    }
+
+    @Override
+    public void onFileMessageDownloadFailure(FileMessage fileMessage, int code, String message) {
+        // 避免界面销毁了还更新 UI
+        if (isDestroy) {
+            return;
+        }
+
+        popTopTip(R.string.mq_download_error);
+    }
+
+    @Override
+    public void onFileMessageExpired(FileMessage fileMessage) {
+        // 避免界面销毁了还更新 UI
+        if (isDestroy) {
+            return;
+        }
+
+        popTopTip(R.string.mq_expired_top_tip);
+    }
+
+    /**
+     * 退出界面后，取消所有下载
+     */
+    private void cancelAllDownload() {
+        for (BaseMessage message : mChatMessageList) {
+            if (message instanceof FileMessage) {
+                MQConfig.getController(this).cancelDownload(((FileMessage) message).getUrl());
+            }
+        }
     }
 
     private class MessageReceiver extends com.meiqia.meiqiasdk.controller.MessageReceiver {
@@ -1158,6 +1288,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         public void updateAgentOnlineOfflineStatus() {
             MQConversationActivity.this.updateAgentOnlineOfflineStatus();
         }
+
+        @Override
+        public void blackAdd() {
+            isBlackState = true;
+            changeTitleToNoAgentState();
+        }
     }
 
     /**
@@ -1169,6 +1305,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         if (mChatMsgAdapter != null && !isDupMessage(baseMessage)) {
             // 如果是配置了不显示语音，收到语音消息直接过滤
             if (!MQConfig.isVoiceSwitchOpen && BaseMessage.TYPE_CONTENT_VOICE.equals(baseMessage.getContentType())) {
+                return;
+            }
+
+            // 被拉黑状态，不显示结束对话消息
+            if (BaseMessage.TYPE_ENDING.equals(baseMessage.getType()) && isBlackState) {
                 return;
             }
 

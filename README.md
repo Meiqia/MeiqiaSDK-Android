@@ -12,16 +12,15 @@
 
 ```
 // required     
-// 「3.1.5」改成 maven central 徽章后面对应的版本号，例如3.1.5
-compile 'com.meiqia:meiqiasdk:3.1.5@aar'
+// 「3.1.5」改成 maven central 徽章后面对应的版本号，例如3.1.6
+compile 'com.meiqia:meiqiasdk:3.1.6@aar'
 
 // 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
 compile 'com.android.support:support-v4:23.1.1'
 compile 'com.squareup.okhttp:okhttp:2.7.0'
-compile 'org.java-websocket:Java-WebSocket:1.3.0'
 compile 'com.commit451:PhotoView:1.2.4'
 
-// 目前支持常见的三种图片加载库，选择其中一种作为 MQConfig.init 方法的第三个参数进行初始化
+// 目前支持常见的 4 种图片加载库，选择其中一种作为 MQConfig.init 方法的第三个参数进行初始化
 compile 'com.meiqia:uilimageloader:1.0.0@aar'
 compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
@@ -30,6 +29,9 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
 //    compile 'com.meiqia:picassoimageloader:1.0.0@aar'
 //    compile 'com.squareup.picasso:picasso:2.5.2'
+
+//    compile 'com.meiqia:xutilsimageloader:1.0.0@aar'
+//    compile 'org.xutils:xutils:3.3.32'
 
 ```
 

@@ -21,8 +21,10 @@ import com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity;
 import com.meiqia.meiqiasdk.model.AgentChangeMessage;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.EvaluateMessage;
+import com.meiqia.meiqiasdk.model.FileMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
+import com.meiqia.meiqiasdk.widget.MQChatFileItem;
 import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import java.io.File;
@@ -127,11 +129,13 @@ public class MQChatAdapter extends BaseAdapter {
                     viewHolder.voiceContainerRl = convertView.findViewById(R.id.rl_voice_container);
                     viewHolder.usAvatar = (MQImageView) convertView.findViewById(R.id.us_avatar_iv);
                     viewHolder.unreadCircle = convertView.findViewById(R.id.unread_view);
+                    viewHolder.chatFileItem = (MQChatFileItem) convertView.findViewById(R.id.file_container);
                     // tint
                     configChatBubbleBg(viewHolder.contentText, true);
                     configChatBubbleBg(viewHolder.voiceContentTv, true);
                     configChatBubbleTextColor(viewHolder.contentText, true);
                     configChatBubbleTextColor(viewHolder.voiceContentTv, true);
+                    // TODO: 3/30/16 文件进度 tint
                     convertView.setTag(viewHolder);
                     break;
                 case BaseMessage.TYPE_CLIENT:
@@ -144,6 +148,7 @@ public class MQChatAdapter extends BaseAdapter {
                     viewHolder.voiceContainerRl = convertView.findViewById(R.id.rl_voice_container);
                     viewHolder.sendingProgressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
                     viewHolder.sendState = (ImageView) convertView.findViewById(R.id.send_state);
+                    viewHolder.chatFileItem = (MQChatFileItem) convertView.findViewById(R.id.file_container);
                     // tint
                     configChatBubbleBg(viewHolder.contentText, false);
                     configChatBubbleBg(viewHolder.voiceContentTv, false);
@@ -202,7 +207,7 @@ public class MQChatAdapter extends BaseAdapter {
             if (mcMessage instanceof AgentChangeMessage) {
                 setDirectionMessageContent(mcMessage.getAgentNickname(), tipViewHolder.contentTv);
             } else {
-                tipViewHolder.contentTv.setText(R.string.mq_leave_msg_tips);
+                tipViewHolder.contentTv.setText(mcMessage.getContent());
             }
         }
         // 显示评价消息
@@ -211,53 +216,51 @@ public class MQChatAdapter extends BaseAdapter {
         }
         //显示消息：文字、图片、语音
         else if (getItemViewType(position) == BaseMessage.TYPE_AGENT || getItemViewType(position) == BaseMessage.TYPE_CLIENT) {
+            // 根据消息类型，显示 item
+            holderState(viewHolder, mcMessage.getContentType());
             // 文字
-            if (BaseMessage.TYPE_CONTENT_TEXT.equals(mcMessage.getContentType())) {
-                viewHolder.contentText.setVisibility(View.VISIBLE);
-                viewHolder.contentImage.setVisibility(View.GONE);
-                viewHolder.voiceContainerRl.setVisibility(View.GONE);
-                if (!TextUtils.isEmpty(mcMessage.getContent())) {
-                    viewHolder.contentText.setText(MQEmotionUtil.getEmotionText(mqConversationActivity, mcMessage.getContent(), 20));
-                }
-
-            }
-            // 图片
-            else if (BaseMessage.TYPE_CONTENT_PHOTO.equals(mcMessage.getContentType())) {
-                viewHolder.contentText.setVisibility(View.GONE);
-                viewHolder.voiceContainerRl.setVisibility(View.GONE);
-
-                String path = ((PhotoMessage) mcMessage).getLocalPath();
-                boolean isLocalImageExist = MQUtils.isFileExist(path);
-
-                String url;
-                if (isLocalImageExist) {
-                    url = ((PhotoMessage) mcMessage).getLocalPath();
-                } else {
-                    url = ((PhotoMessage) mcMessage).getUrl();
-                }
-
-                MQConfig.getImageLoader(mqConversationActivity).displayImage(viewHolder.contentImage, url, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, new MQImageLoader.MQDisplayImageListener() {
-                    @Override
-                    public void onSuccess(View view, final String url) {
-                        if (listView.getLastVisiblePosition() == (getCount() - 1)) {
-                            listView.setSelection(getCount() - 1);
-                        }
-
-                        view.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View arg0) {
-                                mqConversationActivity.startActivity(MQPhotoPreviewActivity.newIntent(mqConversationActivity, MQUtils.getImageDir(mqConversationActivity), url));
-                            }
-                        });
+            switch (mcMessage.getContentType()) {
+                case BaseMessage.TYPE_CONTENT_TEXT:
+                    if (!TextUtils.isEmpty(mcMessage.getContent())) {
+                        viewHolder.contentText.setText(MQEmotionUtil.getEmotionText(mqConversationActivity, mcMessage.getContent(), 20));
                     }
-                });
+                    break;
+                // 图片
+                case BaseMessage.TYPE_CONTENT_PHOTO:
+                    String path = ((PhotoMessage) mcMessage).getLocalPath();
+                    boolean isLocalImageExist = MQUtils.isFileExist(path);
 
-                viewHolder.contentImage.setVisibility(View.VISIBLE);
+                    String url;
+                    if (isLocalImageExist) {
+                        url = ((PhotoMessage) mcMessage).getLocalPath();
+                    } else {
+                        url = ((PhotoMessage) mcMessage).getUrl();
+                    }
 
-            }
-            //语音
-            else if (BaseMessage.TYPE_CONTENT_VOICE.equals(mcMessage.getContentType())) {
-                handleBindVoiceItem(viewHolder, (VoiceMessage) mcMessage, position);
+                    MQConfig.getImageLoader(mqConversationActivity).displayImage(viewHolder.contentImage, url, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, new MQImageLoader.MQDisplayImageListener() {
+                        @Override
+                        public void onSuccess(View view, final String url) {
+                            if (listView.getLastVisiblePosition() == (getCount() - 1)) {
+                                listView.setSelection(getCount() - 1);
+                            }
+
+                            view.setOnClickListener(new OnClickListener() {
+                                @Override
+                                public void onClick(View arg0) {
+                                    mqConversationActivity.startActivity(MQPhotoPreviewActivity.newIntent(mqConversationActivity, MQUtils.getImageDir(mqConversationActivity), url));
+                                }
+                            });
+                        }
+                    });
+                    break;
+                // 语音
+                case BaseMessage.TYPE_CONTENT_VOICE:
+                    handleBindVoiceItem(viewHolder, (VoiceMessage) mcMessage, position);
+                    break;
+                // 文件
+                case BaseMessage.TYPE_CONTENT_FILE:
+                    handleBindFileItem(viewHolder, (FileMessage) mcMessage);
+                    break;
             }
             //显示客服头像
             if (getItemViewType(position) == BaseMessage.TYPE_AGENT) {
@@ -266,18 +269,22 @@ public class MQChatAdapter extends BaseAdapter {
             //显示发送状态：发送中、发送失败
             else if (getItemViewType(position) == BaseMessage.TYPE_CLIENT) {
                 if (viewHolder.sendingProgressBar != null) {
-                    if (BaseMessage.STATE_SENDING.equals(mcMessage.getStatus())) {
-                        viewHolder.sendingProgressBar.setVisibility(View.VISIBLE);
-                        viewHolder.sendState.setVisibility(View.GONE);
-                    } else if (BaseMessage.STATE_ARRIVE.equals(mcMessage.getStatus())) {
-                        viewHolder.sendingProgressBar.setVisibility(View.GONE);
-                        viewHolder.sendState.setVisibility(View.GONE);
-                    } else if (BaseMessage.STATE_FAILED.equals(mcMessage.getStatus())) {
-                        viewHolder.sendingProgressBar.setVisibility(View.GONE);
-                        viewHolder.sendState.setVisibility(View.VISIBLE);
-                        viewHolder.sendState.setBackgroundResource(R.drawable.mq_ic_msg_failed);
-                        viewHolder.sendState.setOnClickListener(new FailedMessageOnClickListener(mcMessage));
-                        viewHolder.sendState.setTag(mcMessage.getId());
+                    switch (mcMessage.getStatus()) {
+                        case BaseMessage.STATE_SENDING:
+                            viewHolder.sendingProgressBar.setVisibility(View.VISIBLE);
+                            viewHolder.sendState.setVisibility(View.GONE);
+                            break;
+                        case BaseMessage.STATE_ARRIVE:
+                            viewHolder.sendingProgressBar.setVisibility(View.GONE);
+                            viewHolder.sendState.setVisibility(View.GONE);
+                            break;
+                        case BaseMessage.STATE_FAILED:
+                            viewHolder.sendingProgressBar.setVisibility(View.GONE);
+                            viewHolder.sendState.setVisibility(View.VISIBLE);
+                            viewHolder.sendState.setBackgroundResource(R.drawable.mq_ic_msg_failed);
+                            viewHolder.sendState.setOnClickListener(new FailedMessageOnClickListener(mcMessage));
+                            viewHolder.sendState.setTag(mcMessage.getId());
+                            break;
                     }
                 }
             }
@@ -296,6 +303,27 @@ public class MQChatAdapter extends BaseAdapter {
         }
     }
 
+    private void holderState(ViewHolder viewHolder, String state) {
+        viewHolder.contentText.setVisibility(View.GONE);
+        viewHolder.contentImage.setVisibility(View.GONE);
+        viewHolder.voiceContainerRl.setVisibility(View.GONE);
+        viewHolder.chatFileItem.setVisibility(View.GONE);
+        switch (state) {
+            case BaseMessage.TYPE_CONTENT_TEXT:
+                viewHolder.contentText.setVisibility(View.VISIBLE);
+                break;
+            case BaseMessage.TYPE_CONTENT_PHOTO:
+                viewHolder.contentImage.setVisibility(View.VISIBLE);
+                break;
+            case BaseMessage.TYPE_CONTENT_VOICE:
+                viewHolder.voiceContainerRl.setVisibility(View.VISIBLE);
+                break;
+            case BaseMessage.TYPE_CONTENT_FILE:
+                viewHolder.chatFileItem.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
     static class ViewHolder {
         TextView contentText;
         MQImageView contentImage;
@@ -306,6 +334,7 @@ public class MQChatAdapter extends BaseAdapter {
         ImageView sendState;
         MQImageView usAvatar;
         View unreadCircle;
+        MQChatFileItem chatFileItem;
     }
 
     static class TimeViewHolder {
@@ -385,11 +414,7 @@ public class MQChatAdapter extends BaseAdapter {
      * @param position
      */
     private void handleBindVoiceItem(ViewHolder viewHolder, final VoiceMessage voiceMessage, final int position) {
-        viewHolder.contentText.setVisibility(View.GONE);
-        viewHolder.contentImage.setVisibility(View.GONE);
-        viewHolder.voiceContainerRl.setVisibility(View.VISIBLE);
-
-        viewHolder.voiceContainerRl.setOnClickListener(new View.OnClickListener() {
+        viewHolder.voiceContainerRl.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleClickVoiceBtn(voiceMessage, position);
@@ -578,6 +603,26 @@ public class MQChatAdapter extends BaseAdapter {
     private void setVoiceMessageDuration(VoiceMessage voiceMessage, String audioFilePath) {
         voiceMessage.setLocalPath(audioFilePath);
         voiceMessage.setDuration(MQAudioPlayerManager.getDurationByFilePath(mqConversationActivity, audioFilePath));
+    }
+
+    private void handleBindFileItem(final ViewHolder viewHolder, final FileMessage fileMessage) {
+        viewHolder.chatFileItem.setFileStateCallback(mqConversationActivity);
+        viewHolder.chatFileItem.initFileItem(this, fileMessage);
+        switch (fileMessage.getFileState()) {
+            case FileMessage.FILE_STATE_NOT_EXIST:
+                viewHolder.chatFileItem.downloadInitState();
+                break;
+            case FileMessage.FILE_STATE_DOWNLOADING:
+                viewHolder.chatFileItem.downloadingState();
+                viewHolder.chatFileItem.setProgress(fileMessage.getProgress());
+                break;
+            case FileMessage.FILE_STATE_FINISH:
+                viewHolder.chatFileItem.downloadSuccessState();
+                break;
+            case FileMessage.FILE_STATE_FAILED:
+                viewHolder.chatFileItem.downloadFailedState();
+                break;
+        }
     }
 
     /**

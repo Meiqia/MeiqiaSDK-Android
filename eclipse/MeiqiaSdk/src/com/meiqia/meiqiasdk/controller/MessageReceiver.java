@@ -71,6 +71,8 @@ public abstract class MessageReceiver extends BroadcastReceiver {
             }
         } else if (MQMessageManager.ACTION_AGENT_STATUS_UPDATE_EVENT.equals(action)) {
             updateAgentOnlineOfflineStatus();
+        } else if (MQMessageManager.ACTION_BLACK_ADD.equals(action)) {
+            blackAdd();
         }
     }
 
@@ -84,10 +86,11 @@ public abstract class MessageReceiver extends BroadcastReceiver {
 
     public abstract void setCurrentAgent(Agent agent);
 
-
     public abstract void inviteEvaluation();
 
     public abstract void setNewConversationId(String newConversationId);
 
     public abstract void updateAgentOnlineOfflineStatus();
+
+    public abstract void blackAdd();
 }

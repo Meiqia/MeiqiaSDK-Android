@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="mq_expire_after"> %1$s 小时后过期</string>
+    <string name="mq_expired">已过期</string>
+    <string name="mq_expired_top_tip">文件已过期，无法下载</string>
+    <string name="mq_downloading">下载中 …</string>
+    <string name="mq_download_complete">下载完成</string>
+    <string name="mq_download_error">下载文件失败</string>
     <string name="mq_send">发送</string>
     <string name="mq_title_net_not_work">网络加载失败</string>
     <string name="mq_copy_success">复制成功</string>
     <string name="mq_dialog_select_camera">相机</string>
     <string name="mq_dialog_select_gallery">图库</string>
     <string name="mq_dialog_select_title">请选择图片来源：</string>
-    <string name="mq_title_leave_msg">留言</string>
+    <string name="mq_title_leave_msg">在线客服</string>
     <string name="mq_title_unknown_error">未知错误</string>
     <string name="mq_title_inputting">正在输入...</string>
     <string name="mq_input_hint">请输入...</string>
     <string name="mq_allocate_agent">正在分配客服...</string>
     <string name="mq_leave_msg_tips">抱歉，现在没有客服人员在线\n你可以继续写下你的问题，我们会尽快回复</string>
+    <string name="mq_blacklist_msg_tips">对方已经拒绝接收你的消息</string>
+    <string name="mq_blacklist_online_tips">抱歉，你已被加入黑名单</string>
     <string name="mq_photo_not_support">当前设备不支持发送图片</string>
     <string name="mq_no_sdcard">SD卡不存在</string>
     <string name="mq_record_not_support">当前设别不支持语音</string>
@@ -28,6 +36,7 @@
     <string name="mq_cancel">取消</string>
     <string name="mq_runtime_permission_tip">咨询客服需要以下权限:\n\n1.访问设备上的照片\n2.录制音频</string>
     <string name="mq_permission_denied_tip">您拒绝了咨询客服所需要的相关权限!</string>
+    <string name="mq_no_app_open_file">当前没有应用打开此文件</string>
     <string name="mq_back"></string>
 
 

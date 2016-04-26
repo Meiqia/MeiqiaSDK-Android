@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Version 3.1.6 *(2016-04-26)*
+----------------------------
+- 新增「黑名单」功能
+- 新增「文件传输」功能
+- 新增 切换当前顾客接口
+- 修复 上传顾客信息失败后不会重新上传问题
+- 优化代码，提高代码健壮性
+
 Version 3.1.5 *(2016-03-31)*
 ----------------------------
 - 初始化美洽 SDK 由以前的 MQManager.init(context, appKey, onInitCallBack)改为MQConfig.init(context, appKey, imageLoader, onInitCallBack)
