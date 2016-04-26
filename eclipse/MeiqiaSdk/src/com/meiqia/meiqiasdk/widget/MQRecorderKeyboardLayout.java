@@ -1,6 +1,7 @@
 package com.meiqia.meiqiasdk.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -8,7 +9,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
@@ -23,7 +23,7 @@ import java.io.File;
  * 创建时间:16/1/25 下午2:46
  * 描述:
  */
-public class MQRecorderKeyboardLayout extends RelativeLayout implements MQAudioRecorderManager.Callback, View.OnTouchListener {
+public class MQRecorderKeyboardLayout extends MQBaseCustomCompositeView implements MQAudioRecorderManager.Callback, View.OnTouchListener {
     /**
      * 录音的最大时间
      */
@@ -108,16 +108,50 @@ public class MQRecorderKeyboardLayout extends RelativeLayout implements MQAudioR
         }
     };
 
+    public MQRecorderKeyboardLayout(Context context) {
+        super(context);
+    }
+
     public MQRecorderKeyboardLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        View.inflate(context, R.layout.mq_layout_recorder_keyboard, this);
-        mStatusTv = (TextView) findViewById(R.id.tv_recorder_keyboard_status);
-        mAnimIv = (ImageView) findViewById(R.id.iv_recorder_keyboard_anim);
-        mAnimIv.setColorFilter(getResources().getColor(R.color.mq_chat_audio_recorder_icon));
-        mAnimIv.setOnTouchListener(this);
+    }
 
-        mDistanceCancel = MQUtils.dip2px(context, 10);
-        mAudioRecorderManager = MQAudioRecorderManager.getInstance(context);
+    public MQRecorderKeyboardLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.mq_layout_recorder_keyboard;
+    }
+
+    @Override
+    protected void initView() {
+        mStatusTv = getViewById(R.id.tv_recorder_keyboard_status);
+        mAnimIv = getViewById(R.id.iv_recorder_keyboard_anim);
+    }
+
+    @Override
+    protected void setListener() {
+        mAnimIv.setOnTouchListener(this);
+    }
+
+    @Override
+    protected int[] getAttrs() {
+        return new int[0];
+    }
+
+    @Override
+    protected void initAttr(int attr, TypedArray typedArray) {
+    }
+
+    @Override
+    protected void processLogic() {
+        mAnimIv.setColorFilter(getResources().getColor(R.color.mq_chat_audio_recorder_icon));
+
+        mDistanceCancel = MQUtils.dip2px(getContext(), 10);
+        mAudioRecorderManager = MQAudioRecorderManager.getInstance(getContext());
         mAudioRecorderManager.setCallback(this);
     }
 

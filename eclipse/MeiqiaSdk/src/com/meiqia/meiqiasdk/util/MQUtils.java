@@ -38,9 +38,12 @@ import com.meiqia.core.bean.MQMessage;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.BaseMessage;
+import com.meiqia.meiqiasdk.model.FileMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -83,6 +86,7 @@ public class MQUtils {
         baseMessage.setStatus(message.getStatus());
         baseMessage.setId(message.getId());
         baseMessage.setType(message.getType());
+        baseMessage.setConversationId(message.getConversation_id());
         baseMessage.setAgentNickname(message.getAgent_nickname());
         baseMessage.setCreatedOn(message.getCreated_on());
         baseMessage.setAvatar(message.getAvatar());
@@ -91,6 +95,11 @@ public class MQUtils {
             ((PhotoMessage) baseMessage).setUrl(message.getMedia_url());
         } else if (MQMessage.TYPE_CONTENT_VOICE.equals(message.getContent_type())) {
             ((VoiceMessage) baseMessage).setUrl(message.getMedia_url());
+        } else if (MQMessage.TYPE_CONTENT_FILE.equals(message.getContent_type())) {
+            FileMessage fileMessage = ((FileMessage) baseMessage);
+            fileMessage.setUrl(message.getMedia_url());
+            fileMessage.setExtra(message.getExtra());
+            updateFileState(fileMessage);
         }
         return baseMessage;
     }
@@ -121,14 +130,26 @@ public class MQUtils {
                 ((VoiceMessage) baseMessage).setUrl(message.getMedia_url());
             }
             baseMessage.setContent("[voice]");
+        } else if (MQMessage.TYPE_CONTENT_FILE.equals(message.getContent_type())) {
+            baseMessage = new FileMessage(message.getMedia_url());
+            if (isLocalPath(message.getMedia_url())) {
+                ((FileMessage) baseMessage).setLocalPath(message.getMedia_url());
+            } else {
+                ((FileMessage) baseMessage).setUrl(message.getMedia_url());
+            }
+            ((FileMessage) baseMessage).setExtra(message.getExtra());
+            baseMessage.setContent("[file]");
+            baseMessage.setId(message.getId());
+            updateFileState(((FileMessage) baseMessage));
         } else {
             baseMessage = new TextMessage(message.getContent());
             baseMessage.setContent(message.getContent());
         }
+        baseMessage.setConversationId(message.getConversation_id());
         baseMessage.setStatus(message.getStatus());
         baseMessage.setItemViewType(itemType);
         baseMessage.setContentType(message.getContent_type());
-        baseMessage.setType(message. getType());
+        baseMessage.setType(message.getType());
         baseMessage.setStatus(message.getStatus());
         baseMessage.setId(message.getId());
         baseMessage.setAgentNickname(message.getAgent_nickname());
@@ -136,6 +157,24 @@ public class MQUtils {
         baseMessage.setAvatar(message.getAvatar());
         baseMessage.setIsRead(message.is_read());
         return baseMessage;
+    }
+
+    public static MQMessage parseBaseMessageToMQMessage(BaseMessage baseMessage) {
+        MQMessage message = new MQMessage(baseMessage.getContentType());
+        message.setConversation_id(baseMessage.getConversationId());
+        message.setStatus(baseMessage.getStatus());
+        message.setContent_type(baseMessage.getContentType());
+        message.setType(baseMessage.getType());
+        message.setStatus(baseMessage.getStatus());
+        message.setId(baseMessage.getId());
+        message.setAgent_nickname(baseMessage.getAgentNickname());
+        message.setCreated_on(baseMessage.getCreatedOn());
+        message.setAvatar(baseMessage.getAvatar());
+        if (baseMessage instanceof FileMessage) {
+            message.setExtra(((FileMessage) baseMessage).getExtra());
+            message.setMedia_url(((FileMessage) baseMessage).getUrl());
+        }
+        return message;
     }
 
     /**
@@ -313,6 +352,47 @@ public class MQUtils {
             isFileExist = false;
         }
         return isFileExist;
+    }
+
+    public static boolean updateFileState(FileMessage fileMessage) {
+        boolean isExist = isFileExist(getFileMessageFilePath(fileMessage));
+        if (isExist) {
+            fileMessage.setFileState(FileMessage.FILE_STATE_FINISH);
+        }
+        return isExist;
+    }
+
+    public static void delFile(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return;
+        }
+
+        try {
+            File file = new File(path);
+            if (file.exists()) {
+                file.delete();
+            }
+        } catch (Exception ignore) {
+
+        }
+    }
+
+    public static String getFileMessageFilePath(FileMessage fileMessage) {
+        String path = null;
+        try {
+            JSONObject extraJsonObj = new JSONObject(fileMessage.getExtra());
+            // 命名规则：文件名后面加上消息 id
+            String destFileName = extraJsonObj.optString("filename");
+            int lastIndexOf = destFileName.lastIndexOf(".");
+            String prefix = destFileName.substring(0, lastIndexOf);
+            String suffix = destFileName.substring(lastIndexOf, destFileName.length());
+            destFileName = prefix + fileMessage.getId() + suffix;
+            String destFileDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+            path = destFileDir + "/" + destFileName;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return path;
     }
 
     public static String getPicStorePath(Context ctx) {

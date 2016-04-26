@@ -67,6 +67,13 @@
                 android:src="@drawable/mq_voice_right_normal" />
 
         </RelativeLayout>
+
+        <com.meiqia.meiqiasdk.widget.MQChatFileItem
+            android:id="@+id/file_container"
+            android:layout_toRightOf="@id/progress_bar"
+            style="@style/MQWrapWrap"
+            android:background="@drawable/mq_bg_msg_right"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <ImageView

@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class MQTimeUtils {
     // 2分钟
@@ -99,5 +100,19 @@ public class MQTimeUtils {
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.MILLISECOND, 0);
         return cal.getTimeInMillis();
+    }
+
+    public static long parseTimeToLong(String time) {
+        if (null == time) return System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date d;
+        try {
+            d = sdf.parse(time);
+            return d.getTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return System.currentTimeMillis();
     }
 }
