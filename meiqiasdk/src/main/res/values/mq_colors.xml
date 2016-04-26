@@ -34,6 +34,7 @@
     <color name="mq_chat_audio_recorder_icon">@color/mq_colorPrimary</color>
     <color name="mq_chat_left_bubble">@color/mq_chat_left_bubble_final</color>
     <color name="mq_chat_right_bubble">@color/mq_chat_right_bubble_final</color>
+    <color name="mq_top_pop_tip_bg">#969faa</color>
     <!--聊天 END-->
 
     <!--客服评价 START-->
@@ -58,4 +59,9 @@
     <color name="mq_photo_send_disabled">#8017C7D1</color>
     <color name="mq_photo_selected_color">#4D000000</color>
     <!--图库 END-->
+
+    <!--进度条 START-->
+    <color name="mq_circle_progress_bg">#c6cbd0</color>
+    <color name="mq_circle_progress_color">@color/mq_colorPrimary</color>
+    <!--进度条 END-->
 </resources>

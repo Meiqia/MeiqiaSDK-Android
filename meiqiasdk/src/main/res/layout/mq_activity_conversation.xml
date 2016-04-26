@@ -52,6 +52,7 @@
 
     <RelativeLayout
         style="@style/MQMatchMatch"
+        android:id="@+id/chat_body_rl"
         android:layout_above="@+id/chat_foot_ll"
         android:layout_below="@id/title_rl"
         android:background="@color/mq_activity_bg">
