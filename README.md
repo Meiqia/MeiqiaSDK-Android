@@ -128,6 +128,9 @@ Intent intent = new MQIntentBuilder(this).build();
 startActivity(intent);
 ```
 
+### 3.Android M 权限处理
+[参考 Demo][8]
+
 ============== 下面是可选设置 ==============
 
 > 绑定开发者用户 id 上线
@@ -190,3 +193,4 @@ startActivity(intent);
  [5]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-10
  [6]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-19
  [7]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-32
+ [8]: https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/demo%2Fsrc%2Fmain%2Fjava%2Fcom%2Fmeiqia%2Fmeiqiasdk%2Fdemo%2FMainActivity.java
