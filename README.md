@@ -132,7 +132,7 @@ startActivity(intent);
 
 如果你的 App 需要兼容 Android M，需要处理权限问题。 [参考 Demo][8]
 
-## 下面是可选设置
+## 可选设置
 
 > 绑定开发者用户 id 上线
 
