@@ -129,6 +129,7 @@ startActivity(intent);
 ```
 
 ### 3.Android M 权限处理
+
 如果你的 App 需要兼容 Android M，需要处理权限问题。 [参考 Demo][8]
 
 ============== 下面是可选设置 ==============
