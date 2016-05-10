@@ -1,5 +1,6 @@
 package com.meiqia.meiqiasdk.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,6 +22,7 @@ import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,6 +39,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.FileStateCallback;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
@@ -65,6 +68,7 @@ import com.meiqia.meiqiasdk.util.MQSoundPoolManager;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQCustomKeyboardLayout;
+import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.io.File;
 import java.io.Serializable;
@@ -241,6 +245,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         if (!MQConfig.isVoiceSwitchOpen) {
             mVoiceBtn.setVisibility(View.GONE);
         }
+
+        mEvaluateBtn.setVisibility(MQConfig.isEvaluateSwitchOpen?View.VISIBLE:View.GONE);
+
         mCustomKeyboardLayout.init(this, mInputEt, this);
         isDestroy = false;
     }
@@ -272,10 +279,42 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private void setListeners() {
         backRl.setOnClickListener(this);
         mSendTextBtn.setOnClickListener(this);
-        mPhotoSelectBtn.setOnClickListener(this);
-        mCameraSelectBtn.setOnClickListener(this);
-        mVoiceBtn.setOnClickListener(this);
         mEvaluateBtn.setOnClickListener(this);
+
+//        mPhotoSelectBtn.setOnClickListener(this);
+//        mCameraSelectBtn.setOnClickListener(this);
+//        mVoiceBtn.setOnClickListener(this);
+
+        RxPermissions rxPermissions = RxPermissions.getInstance(this);
+        rxPermissions.setLogging(true);
+
+        RxView.clicks(mPhotoSelectBtn)
+                .compose(rxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE))
+                .subscribe(granted -> {
+                            Log.i(TAG, " doPickerPhoto,TRIGGER Received result " + granted);
+                            if (granted)
+                                doPickerPhoto();
+                        }
+                );
+
+        RxView.clicks(mCameraSelectBtn)
+                .compose(rxPermissions.ensure(Manifest.permission.CAMERA))
+                .subscribe(granted -> {
+                            Log.i(TAG, " openCamera,TRIGGER Received result " + granted);
+                            if (granted)
+                                openCamera();
+                        }
+                );
+
+        RxView.clicks(mVoiceBtn)
+                .compose(rxPermissions.ensure(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO))
+                .subscribe(granted -> {
+                            Log.i(TAG, " openVoice,TRIGGER Received result " + granted);
+                            if (granted)
+                                openVoice();
+                        }
+                );
+
         // 绑定 EditText 的监听器
         mInputEt.addTextChangedListener(inputTextWatcher);
         mInputEt.setOnTouchListener(this);
@@ -475,6 +514,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 从列表移除 留言 的 Tip
      */
     protected void removeLeaveMessageTip() {
+        if(MQConfig.isEvaluateSwitchOpen)
         mEvaluateBtn.setVisibility(View.VISIBLE);
         Iterator<BaseMessage> chatItemViewBaseIterator = mChatMessageList.iterator();
         while (chatItemViewBaseIterator.hasNext()) {
@@ -784,32 +824,61 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
             createAndSendTextMessage();
 
-        } else if (id == R.id.photo_select_btn) {
-            // 选择图片
-            hideEmojiSelectIndicator();
-            hideVoiceSelectIndicator();
-            chooseFromPhotoPicker();
-        } else if (id == R.id.camera_select_btn) {
-            // 打开相机
-            hideEmojiSelectIndicator();
-            hideVoiceSelectIndicator();
-            choosePhotoFromCamera();
-        } else if (id == R.id.mic_select_btn) {
-            if (mCustomKeyboardLayout.isVoiceKeyboardVisible()) {
-                hideVoiceSelectIndicator();
-            } else {
-                showVoiceSelectIndicator();
-            }
-
-            hideEmojiSelectIndicator();
-
-            mCustomKeyboardLayout.toggleVoiceOriginKeyboard();
-        } else if (id == R.id.evaluate_select_btn) {
+        }
+//        else if (id == R.id.photo_select_btn) {
+//           doPickerPhoto();
+//        } else if (id == R.id.camera_select_btn) {
+//           openCamera();
+//        } else if (id == R.id.mic_select_btn) {
+//            openVoice();
+//        }
+        else if (id == R.id.evaluate_select_btn) {
             hideEmojiSelectIndicator();
             hideVoiceSelectIndicator();
             showEvaluateDialog();
         }
     }
+
+    /**
+     * 选择图片
+     * @author thearyong
+     * @date 2016-5-10
+     * */
+    private void doPickerPhoto(){
+        hideEmojiSelectIndicator();
+        hideVoiceSelectIndicator();
+        chooseFromPhotoPicker();
+    }
+
+    /**
+     * 打开相机
+     * @author thearyong
+     * @date 2016-5-10
+     * */
+    private void openCamera(){
+        hideEmojiSelectIndicator();
+        hideVoiceSelectIndicator();
+        choosePhotoFromCamera();
+    }
+
+    /**
+     * 语音
+     * @author thearyong
+     * @date 2016-5-10
+     * */
+    private void openVoice(){
+        if (mCustomKeyboardLayout.isVoiceKeyboardVisible()) {
+            hideVoiceSelectIndicator();
+        } else {
+            showVoiceSelectIndicator();
+        }
+
+        hideEmojiSelectIndicator();
+
+        mCustomKeyboardLayout.toggleVoiceOriginKeyboard();
+    }
+
+
 
     private void showEvaluateDialog() {
         // 如果没有正在录音才弹出评价对话框

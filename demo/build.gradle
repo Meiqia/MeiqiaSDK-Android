@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.meiqia.meiqiasdk.demo"
-        minSdkVersion 10
+        minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -21,25 +21,25 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-//    compile project(':meiqiasdk')
+    compile project(':meiqiasdk')
 
     // 兼容Android6.0动态权限
-    compile 'pub.devrel:easypermissions:0.1.5'
+//    compile 'pub.devrel:easypermissions:0.1.5'
 
     // required
-    compile 'com.meiqia:meiqiasdk:3.1.6@aar'
+//    compile 'com.meiqia:meiqiasdk:3.1.6@aar'
 
     // 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
-    compile 'com.android.support:support-v4:23.1.1'
-    compile 'com.squareup.okhttp:okhttp:2.7.0'
-    compile 'com.commit451:PhotoView:1.2.4'
+//    compile 'com.android.support:support-v4:23.1.1'
+//    compile 'com.squareup.okhttp:okhttp:2.7.0'
+//    compile 'com.commit451:PhotoView:1.2.4'
 
     // 目前实现了三种图片加载库，选择其中一种作为MQConfig.init方法的参数进行初始化
-    compile 'com.meiqia:uilimageloader:1.0.0@aar'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+//    compile 'com.meiqia:uilimageloader:1.0.0@aar'
+//    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
-//    compile 'com.meiqia:glideimageloader:1.0.0@aar'
-//    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.meiqia:glideimageloader:1.0.0@aar'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 
 //    compile 'com.meiqia:picassoimageloader:1.0.0@aar'
 //    compile 'com.squareup.picasso:picasso:2.5.2'

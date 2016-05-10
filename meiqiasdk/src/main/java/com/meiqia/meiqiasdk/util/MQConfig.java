@@ -37,6 +37,8 @@ public final class MQConfig {
 
     public static boolean isVoiceSwitchOpen = true; // 语音开关
     public static boolean isSoundSwitchOpen = true; // 声音开关
+    public static boolean isEvaluateSwitchOpen = true;//评价开关
+
     public static boolean isLoadMessagesFromNativeOpen = false; // 加载本地数据开关
 
     private static MQController sController;
