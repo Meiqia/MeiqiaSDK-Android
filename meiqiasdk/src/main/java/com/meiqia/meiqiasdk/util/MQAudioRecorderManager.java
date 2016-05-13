@@ -80,10 +80,11 @@ public class MQAudioRecorderManager {
             if (mMediaRecorder != null) {
                 mMediaRecorder.stop();
                 mMediaRecorder.release();
-                mMediaRecorder = null;
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            mMediaRecorder = null;
         }
     }
 

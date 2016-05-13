@@ -259,4 +259,9 @@ public class ControllerImpl implements MQController {
         MQManager.getInstance(context).closeMeiqiaService();
     }
 
+    @Override
+    public void openService() {
+        MQManager.getInstance(context).openMeiqiaService();
+    }
+
 }
