@@ -1,5 +1,6 @@
 package com.meiqia.meiqiasdk.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -62,7 +63,10 @@ public class MQIntentBuilder {
     }
 
     public Intent build() {
-        MQManager.getInstance(mContext).setScheduledAgentOrGroupWithId(mAgentId,mGroupId,mScheduleRule);
+        MQManager.getInstance(mContext).setScheduledAgentOrGroupWithId(mAgentId, mGroupId, mScheduleRule);
+        if (!(mContext instanceof Activity)) {
+            mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
         return mIntent;
     }
 

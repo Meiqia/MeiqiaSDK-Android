@@ -12,8 +12,8 @@
 
 ```
 // required     
-// 「3.1.5」改成 maven central 徽章后面对应的版本号，例如3.1.6
-compile 'com.meiqia:meiqiasdk:3.1.6@aar'
+// 「3.1.7」改成 maven central 徽章后面对应的版本号，例如3.1.7
+compile 'com.meiqia:meiqiasdk:3.1.7@aar'
 
 // 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
 compile 'com.android.support:support-v4:23.1.1'
@@ -93,7 +93,10 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
 5.如果你自己的工程中已经添加了 **/eclipse/MeiqiaSdk/libs** 中的 jar 包，拷贝你自己的工程中对应的 jar 包替换 **/eclipse/MeiqiaSdk/libs** 中的 jar 包
 
-**注意：**报 Cannot find the class file for java.nio.file.OpenOption 错的解决方法：Project -> Properties -> Java Build Path -> Libraries -> Add Library -> JRE System Library -> Select Workspace Default (jdk 1.7*)
+**注意：**
+报 Cannot find the class file for java.nio.file.OpenOption 错的解决方法：Project -> Properties -> Java Build Path -> Libraries -> Add Library -> JRE System Library -> Select Workspace Default (jdk 1.7*)
+
+如果编译失败, Project Build Target 必须指定 Android 6.0
 
 ## 使用美洽
 
