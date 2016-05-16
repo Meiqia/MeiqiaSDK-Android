@@ -414,7 +414,7 @@ public class MQChatAdapter extends BaseAdapter {
      * @param position
      */
     private void handleBindVoiceItem(ViewHolder viewHolder, final VoiceMessage voiceMessage, final int position) {
-        viewHolder.voiceContainerRl.setOnClickListener(new OnClickListener() {
+        viewHolder.voiceContainerRl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleClickVoiceBtn(voiceMessage, position);

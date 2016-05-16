@@ -18,10 +18,10 @@
     <string name="mq_input_hint">请输入...</string>
     <string name="mq_allocate_agent">正在分配客服...</string>
     <string name="mq_leave_msg_tips">抱歉，现在没有客服人员在线\n你可以继续写下你的问题，我们会尽快回复</string>
-    <string name="mq_blacklist_msg_tips">对方已经拒绝接收你的消息</string>
-    <string name="mq_blacklist_online_tips">抱歉，你已被加入黑名单</string>
+    <string name="mq_blacklist_tips">对不起，当前客服系统暂时无法使用</string>
     <string name="mq_photo_not_support">当前设备不支持发送图片</string>
     <string name="mq_no_sdcard">SD卡不存在</string>
+    <string name="mq_sdcard_no_permission">当前没有媒体访问权限</string>
     <string name="mq_record_not_support">当前设别不支持语音</string>
     <string name="mq_record_up_and_cancel">上滑，取消发送</string>
     <string name="mq_record_cancel">取消发送</string>
