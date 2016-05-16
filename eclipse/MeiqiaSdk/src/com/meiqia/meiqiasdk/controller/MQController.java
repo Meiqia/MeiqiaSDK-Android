@@ -76,7 +76,15 @@ public interface MQController {
      */
     void executeEvaluate(String conversationId, int level, String content, SimpleCallback simpleCallback);
 
+    /**
+     * 关闭美洽服务
+     */
     void closeService();
+
+    /**
+     * 打开美洽服务
+     */
+    void openService();
 
     /**
      * 获取当前客服
@@ -96,13 +104,15 @@ public interface MQController {
 
     /**
      * 下载文件
-     * @param fileMessage 文件消息
+     *
+     * @param fileMessage            文件消息
      * @param onDownloadFileCallback 回调
      */
     void downloadFile(BaseMessage fileMessage, OnDownloadFileCallback onDownloadFileCallback);
 
     /**
      * 取消下载
+     *
      * @param url 下载 url
      */
     void cancelDownload(String url);

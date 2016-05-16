@@ -1,25 +1,27 @@
 package com.meiqia.meiqiasdk.demo;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Toast;
 
+import com.meiqia.core.MQManager;
 import com.meiqia.core.callback.OnInitCallback;
 import com.meiqia.meiqiasdk.uilimageloader.UILImageLoader;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
-import java.util.List;
-
-import pub.devrel.easypermissions.AfterPermissionGranted;
-import pub.devrel.easypermissions.EasyPermissions;
-
-public class MainActivity extends Activity implements EasyPermissions.PermissionCallbacks {
-    private static final int REQUEST_CODE_CONVERSATION_PERMISSIONS = 1;
+public class MainActivity extends Activity {
+    private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,7 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
         // 发布sdk时用
         String meiqiaKey = "a71c257c80dfe883d92a64dca323ec20";
 
+        MQManager.setDebugMode(true);
         MQConfig.init(this, meiqiaKey, new UILImageLoader(), new OnInitCallback() {
             @Override
             public void onSuccess(String clientId) {
@@ -94,28 +97,29 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
         startActivity(intent);
     }
 
-    // 处理 Android 6.0 的权限获取
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case WRITE_EXTERNAL_STORAGE_REQUEST_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    conversationWrapper();
+                } else {
+                    MQUtils.show(this, R.string.mq_sdcard_no_permission);
+                }
+                break;
+            }
+        }
+
     }
 
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-    }
-
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-        MQUtils.show(this, R.string.mq_permission_denied_tip);
-    }
-
-    @AfterPermissionGranted(REQUEST_CODE_CONVERSATION_PERMISSIONS)
     private void conversationWrapper() {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO};
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            conversation();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    WRITE_EXTERNAL_STORAGE_REQUEST_CODE);
         } else {
-            EasyPermissions.requestPermissions(this, getString(R.string.mq_runtime_permission_tip), REQUEST_CODE_CONVERSATION_PERMISSIONS, perms);
+            conversation();
         }
     }
 

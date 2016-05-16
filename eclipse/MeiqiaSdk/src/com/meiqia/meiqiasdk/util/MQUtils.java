@@ -397,6 +397,9 @@ public class MQUtils {
 
     public static String getPicStorePath(Context ctx) {
         File file = ctx.getExternalFilesDir(null);
+        if (file == null) {
+            file = ctx.getFilesDir();
+        }
         if (!file.exists()) {
             file.mkdir();
         }

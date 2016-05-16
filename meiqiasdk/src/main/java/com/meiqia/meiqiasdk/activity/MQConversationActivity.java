@@ -1,5 +1,7 @@
 package com.meiqia.meiqiasdk.activity;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,6 +17,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
@@ -76,6 +81,10 @@ import java.util.List;
 
 public class MQConversationActivity extends Activity implements View.OnClickListener, MQEvaluateDialog.Callback, MQCustomKeyboardLayout.Callback, View.OnTouchListener, FileStateCallback {
     private static final String TAG = MQConversationActivity.class.getSimpleName();
+
+    // 权限
+    private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 1;
+    private static final int RECORD_AUDIO_REQUEST_CODE = 2;
 
     public static final String CLIENT_ID = "clientId";
     public static final String CUSTOMIZED_ID = "customizedId";
@@ -173,6 +182,15 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        // 在已经加载数据的情况下,重新进入界面,需要再次打开服务
+        if (mHasLoadData) {
+            mController.openService();
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         // 设置顾客上线，请求分配客服
@@ -238,9 +256,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mChatMsgAdapter = new MQChatAdapter(MQConversationActivity.this, mChatMessageList, mConversationListView);
         mConversationListView.setAdapter(mChatMsgAdapter);
 
-        if (!MQConfig.isVoiceSwitchOpen) {
-            mVoiceBtn.setVisibility(View.GONE);
-        }
+        mVoiceBtn.setVisibility(MQConfig.isVoiceSwitchOpen ? View.VISIBLE : View.GONE);
+        mEvaluateBtn.setVisibility(MQConfig.isEvaluateSwitchOpen ? View.VISIBLE : View.GONE);
+
         mCustomKeyboardLayout.init(this, mInputEt, this);
         isDestroy = false;
     }
@@ -475,7 +493,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 从列表移除 留言 的 Tip
      */
     protected void removeLeaveMessageTip() {
-        mEvaluateBtn.setVisibility(View.VISIBLE);
+        mEvaluateBtn.setVisibility(MQConfig.isEvaluateSwitchOpen ? View.VISIBLE : View.GONE);
         Iterator<BaseMessage> chatItemViewBaseIterator = mChatMessageList.iterator();
         while (chatItemViewBaseIterator.hasNext()) {
             BaseMessage baseMessage = chatItemViewBaseIterator.next();
@@ -737,7 +755,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             }
         }
         if (isBlackState) {
-            addBlacklistTip(R.string.mq_blacklist_online_tips);
+            addBlacklistTip(R.string.mq_blacklist_tips);
         }
         MQUtils.scrollListViewToBottom(mConversationListView);
         mChatMsgAdapter.downloadAndNotifyDataSetChanged(mChatMessageList);
@@ -785,29 +803,69 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             createAndSendTextMessage();
 
         } else if (id == R.id.photo_select_btn) {
-            // 选择图片
-            hideEmojiSelectIndicator();
-            hideVoiceSelectIndicator();
-            chooseFromPhotoPicker();
-        } else if (id == R.id.camera_select_btn) {
-            // 打开相机
-            hideEmojiSelectIndicator();
-            hideVoiceSelectIndicator();
-            choosePhotoFromCamera();
-        } else if (id == R.id.mic_select_btn) {
-            if (mCustomKeyboardLayout.isVoiceKeyboardVisible()) {
+            if (checkStoragePermission()) {
+                // 选择图片
+                hideEmojiSelectIndicator();
                 hideVoiceSelectIndicator();
-            } else {
-                showVoiceSelectIndicator();
+                chooseFromPhotoPicker();
             }
+        } else if (id == R.id.camera_select_btn) {
+            if (checkStoragePermission()) {
+                // 打开相机
+                hideEmojiSelectIndicator();
+                hideVoiceSelectIndicator();
+                choosePhotoFromCamera();
+            }
+        } else if (id == R.id.mic_select_btn) {
+            if (checkAudioPermission()) {
+                if (mCustomKeyboardLayout.isVoiceKeyboardVisible()) {
+                    hideVoiceSelectIndicator();
+                } else {
+                    showVoiceSelectIndicator();
+                }
 
-            hideEmojiSelectIndicator();
+                hideEmojiSelectIndicator();
 
-            mCustomKeyboardLayout.toggleVoiceOriginKeyboard();
+                mCustomKeyboardLayout.toggleVoiceOriginKeyboard();
+            }
         } else if (id == R.id.evaluate_select_btn) {
             hideEmojiSelectIndicator();
             hideVoiceSelectIndicator();
             showEvaluateDialog();
+        }
+    }
+
+    /**
+     * 检查存储权限
+     *
+     * @return true, 已经获取权限;false,没有权限,尝试获取
+     */
+    private boolean checkStoragePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            //申请WRITE_EXTERNAL_STORAGE权限
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    WRITE_EXTERNAL_STORAGE_REQUEST_CODE);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * 检查录音权限
+     *
+     * @return true, 已经获取权限;false,没有权限,尝试获取
+     */
+    private boolean checkAudioPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+            //申请WRITE_EXTERNAL_STORAGE权限
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
+                    RECORD_AUDIO_REQUEST_CODE);
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -909,6 +967,29 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         PhotoMessage imageMessage = new PhotoMessage();
         imageMessage.setLocalPath(imageFile.getAbsolutePath());
         sendMessage(imageMessage);
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case WRITE_EXTERNAL_STORAGE_REQUEST_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // nothing
+                } else {
+                    MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_sdcard_no_permission);
+                }
+                break;
+            }
+            case RECORD_AUDIO_REQUEST_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mVoiceBtn.performClick();
+                } else {
+                    MQUtils.show(this, R.string.mq_recorder_no_permission);
+                }
+                break;
+            }
+        }
     }
 
     @Override
@@ -1015,7 +1096,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             @Override
             public void onFailure(BaseMessage failureMessage, int code, String failureInfo) {
                 if (code == ErrorCode.BLACKLIST) {
-                    addBlacklistTip(R.string.mq_blacklist_msg_tips);
+                    addBlacklistTip(R.string.mq_blacklist_tips);
                 }
                 mChatMsgAdapter.notifyDataSetChanged();
             }
@@ -1060,7 +1141,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mChatMsgAdapter.addMQMessage(message);
 
         if (code == ErrorCode.BLACKLIST) {
-            addBlacklistTip(R.string.mq_blacklist_msg_tips);
+            addBlacklistTip(R.string.mq_blacklist_tips);
         }
         scrollContentToBottom();
     }
