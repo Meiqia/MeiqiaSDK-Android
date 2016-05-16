@@ -22,15 +22,15 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.1.1'
-    compile project(':meiqiasdk')
+//    compile project(':meiqiasdk')
 
-//    // required
-//    compile 'com.meiqia:meiqiasdk:3.1.6@aar'
-//
-//    // 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
-//    compile 'com.android.support:support-v4:23.1.1'
-//    compile 'com.squareup.okhttp:okhttp:2.7.0'
-//    compile 'com.commit451:PhotoView:1.2.4'
+    // required
+    compile 'com.meiqia:meiqiasdk:3.1.7@aar'
+
+    // 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
+    compile 'com.android.support:support-v4:23.1.1'
+    compile 'com.squareup.okhttp:okhttp:2.7.0'
+    compile 'com.commit451:PhotoView:1.2.4'
 
     // 目前实现了三种图片加载库，选择其中一种作为MQConfig.init方法的参数进行初始化
     compile 'com.meiqia:uilimageloader:1.0.0@aar'
