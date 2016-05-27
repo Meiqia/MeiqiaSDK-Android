@@ -9,6 +9,7 @@ import com.meiqia.meiqiasdk.callback.SimpleCallback;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 
+import java.util.List;
 import java.util.Map;
 
 public interface MQController {
@@ -19,6 +20,7 @@ public interface MQController {
     String ACTION_INVITE_EVALUATION = "invite_evaluation";
     String ACTION_AGENT_STATUS_UPDATE_EVENT = "action_agent_status_update_event";
     String ACTION_BLACK_ADD = "action_black_add";
+    String ACTION_BLACK_DEL = "action_black_del";
 
     void sendMessage(BaseMessage baseMessage, OnMessageSendCallback onMessageSendCallback);
 
@@ -116,5 +118,70 @@ public interface MQController {
      * @param url 下载 url
      */
     void cancelDownload(String url);
+
+    /**
+     * 添加留言表单
+     *
+     * @param message        留言消息
+     * @param pictures       图片消息集合
+     * @param customInfoMap  自定义消息
+     * @param simpleCallback 添加留言表单的回调接口
+     */
+    void submitMessageForm(String message, List<String> pictures, Map<String, String> customInfoMap, SimpleCallback simpleCallback);
+
+    /**
+     * 刷新企业配置信息
+     *
+     * @param simpleCallback
+     */
+    void refreshEnterpriseConfig(SimpleCallback simpleCallback);
+
+    /**
+     * 获取留言表单引导文案
+     *
+     * @return
+     */
+    String getLeaveMessageIntro();
+
+    /**
+     * 评价机器人回答的问题
+     *
+     * @param messageId      消息id
+     * @param questionId     问题id
+     * @param useful         是否有用
+     * @param simpleCallback 评价的回调接口
+     */
+    void evaluateRobotAnswer(long messageId, long questionId, int useful, SimpleCallback simpleCallback);
+
+    /**
+     * 设置是否强制分配客服
+     *
+     * @param isForceRedirectHuman
+     */
+    void setForceRedirectHuman(boolean isForceRedirectHuman);
+
+    /**
+     * 获取评价客服时，窗口顶部的提示信息
+     *
+     * @return
+     */
+    String getEvaluateHumanTip();
+
+    /**
+     * 是否显示强制转人工按钮
+     *
+     * @return
+     */
+    boolean getIsShowRedirectHumanButton();
+
+    /**
+     * 对话界面开启时候的回调
+     */
+    void onConversationClose();
+
+    /**
+     * 对话界面关闭时候的回调
+     */
+    void onConversationOpen();
 
 }

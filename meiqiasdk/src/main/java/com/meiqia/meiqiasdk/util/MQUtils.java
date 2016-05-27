@@ -40,6 +40,7 @@ import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.FileMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
+import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 
@@ -73,14 +74,8 @@ public class MQUtils {
     }
 
     public static BaseMessage parseMQMessageIntoBaseMessage(MQMessage message, BaseMessage baseMessage) {
-        int itemType;
-        if (MQMessage.TYPE_FROM_CLIENT.equals(message.getFrom_type())) {
-            itemType = BaseMessage.TYPE_CLIENT;
-        } else {
-            itemType = BaseMessage.TYPE_AGENT;
-        }
         baseMessage.setStatus(message.getStatus());
-        baseMessage.setItemViewType(itemType);
+        baseMessage.setItemViewType(getItemType(message));
         baseMessage.setContent(message.getContent());
         baseMessage.setContentType(message.getContent_type());
         baseMessage.setStatus(message.getStatus());
@@ -104,15 +99,29 @@ public class MQUtils {
         return baseMessage;
     }
 
+    private static int getItemType(MQMessage message) {
+        // 如果不是机器人，也不客户时，默认是客服
+        int itemType = BaseMessage.TYPE_AGENT;
+        if (TextUtils.equals(MQMessage.TYPE_FROM_ROBOT, message.getFrom_type())) {
+            itemType = BaseMessage.TYPE_ROBOT;
+        } else if (MQMessage.TYPE_FROM_CLIENT.equals(message.getFrom_type())) {
+            itemType = BaseMessage.TYPE_CLIENT;
+        }
+        return itemType;
+    }
+
     public static BaseMessage parseMQMessageToBaseMessage(MQMessage message) {
         BaseMessage baseMessage;
-        int itemType;
-        if (MQMessage.TYPE_FROM_CLIENT.equals(message.getFrom_type())) {
-            itemType = BaseMessage.TYPE_CLIENT;
-        } else {
-            itemType = BaseMessage.TYPE_AGENT;
-        }
-        if (MQMessage.TYPE_CONTENT_PHOTO.equals(message.getContent_type())) {
+
+        if (TextUtils.equals(MQMessage.TYPE_FROM_ROBOT, message.getFrom_type())) {
+            RobotMessage robotMessage = new RobotMessage();
+            robotMessage.setContentRobot(message.getContent_robot());
+            robotMessage.setContent(message.getContent());
+            robotMessage.setSubType(message.getSub_type());
+            robotMessage.setQuestionId(message.getQuestion_id());
+            robotMessage.setAlreadyFeedback(message.isAlreadyFeedback());
+            baseMessage = robotMessage;
+        } else if (MQMessage.TYPE_CONTENT_PHOTO.equals(message.getContent_type())) {
             // message.getMedia_url() 可能是本地路径
             baseMessage = new PhotoMessage();
             if (isLocalPath(message.getMedia_url())) {
@@ -145,9 +154,10 @@ public class MQUtils {
             baseMessage = new TextMessage(message.getContent());
             baseMessage.setContent(message.getContent());
         }
+
         baseMessage.setConversationId(message.getConversation_id());
         baseMessage.setStatus(message.getStatus());
-        baseMessage.setItemViewType(itemType);
+        baseMessage.setItemViewType(getItemType(message));
         baseMessage.setContentType(message.getContent_type());
         baseMessage.setType(message.getType());
         baseMessage.setStatus(message.getStatus());
@@ -198,6 +208,7 @@ public class MQUtils {
         agent.setNickname(mqAgent.getNickname());
         agent.setStatus(mqAgent.getStatus());
         agent.setIsOnline(mqAgent.isOnLine());
+        agent.setPrivilege(mqAgent.getPrivilege());
         return agent;
     }
 

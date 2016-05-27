@@ -48,11 +48,25 @@
             android:textSize="@dimen/mq_titlebar_textSize"
             tools:text="AgentNameAgentNameAgentNameAgentNameAgentNameAgentName" />
 
+        <TextView
+            android:id="@+id/redirect_human_tv"
+            style="@style/MQWrapMatch"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/mq_size_level3"
+            android:paddingRight="@dimen/mq_size_level3"
+            android:text="@string/mq_redirect_human"
+            android:textColor="@color/mq_activity_title_textColor"
+            android:textSize="@dimen/mq_title_left_right_textSize"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
     </RelativeLayout>
 
     <RelativeLayout
-        style="@style/MQMatchMatch"
         android:id="@+id/chat_body_rl"
+        style="@style/MQMatchMatch"
         android:layout_above="@+id/chat_foot_ll"
         android:layout_below="@id/title_rl"
         android:background="@color/mq_activity_bg">
@@ -195,7 +209,9 @@
                 <RelativeLayout
                     android:id="@+id/evaluate_select_btn"
                     android:layout_width="48dp"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
                     <ImageView
                         android:id="@+id/evaluate_select_iv"

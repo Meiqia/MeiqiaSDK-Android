@@ -46,9 +46,12 @@ public abstract class MQBaseCustomCompositeView extends RelativeLayout implement
 
     protected abstract void setListener();
 
-    protected abstract int[] getAttrs();
+    protected int[] getAttrs() {
+        return new int[0];
+    }
 
-    protected abstract void initAttr(int attr, TypedArray typedArray);
+    protected void initAttr(int attr, TypedArray typedArray) {
+    }
 
     protected abstract void processLogic();
 
