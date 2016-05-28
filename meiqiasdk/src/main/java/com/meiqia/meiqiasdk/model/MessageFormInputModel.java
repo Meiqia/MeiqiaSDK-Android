@@ -7,8 +7,8 @@ import android.text.InputType;
  * 创建时间:16/2/24 下午2:25
  * 描述:
  */
-public class CustomInfoModel {
-    public boolean singleLine;
+public class MessageFormInputModel {
+    public boolean singleLine = true;
     public int inputType = InputType.TYPE_CLASS_TEXT;
     public String tip;
     public String key;

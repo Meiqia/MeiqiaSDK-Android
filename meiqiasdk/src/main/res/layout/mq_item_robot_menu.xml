@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MQMatchWrap"
+    android:padding="@dimen/mq_size_level2"
+    android:textColor="@color/mq_chat_robot_menu_item_textColor"
+    android:textSize="@dimen/mq_textSize_level1"
+    tools:text="前端培训有哪些课程" />

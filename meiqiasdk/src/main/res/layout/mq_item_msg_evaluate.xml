@@ -11,7 +11,7 @@
         android:id="@+id/view_msg_evaluate_level"
         android:layout_width="60dp"
         android:layout_height="24dp"
-        android:layout_below="@id/timeTv"
+        android:layout_below="@+id/timeTv"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="12dp"
         android:background="@drawable/mq_shape_evaluate_neutral">

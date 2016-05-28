@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/MQMatchWrap">
+
+    <TextView
+        android:id="@+id/tip_tv"
+        style="@style/MQWrapWrap"
+        android:layout_marginBottom="@dimen/mq_size_level1"
+        android:layout_marginRight="@dimen/mq_size_level1"
+        android:layout_marginTop="@dimen/mq_size_level4"
+        android:textColor="@color/mq_form_tip_textColor"
+        android:textSize="@dimen/mq_textSize_level1"
+        tools:text="@string/mq_leave_msg" />
+
+    <EditText
+        android:id="@+id/content_et"
+        style="@style/MQMatchWrap"
+        android:layout_below="@id/tip_tv"
+        android:background="@drawable/mq_selector_input_bg"
+        android:paddingBottom="@dimen/mq_size_level2"
+        android:paddingTop="@dimen/mq_size_level4"
+        android:textColor="@color/mq_form_et_textColor"
+        android:textColorHint="@color/mq_form_et_textColorHint"
+        android:textCursorDrawable="@drawable/mq_shape_cursor"
+        android:textSize="@dimen/mq_textSize_level2"
+        tools:hint="@string/mq_leave_msg_hint" />
+
+</RelativeLayout>

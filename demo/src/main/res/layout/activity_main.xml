@@ -19,7 +19,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
@@ -37,8 +37,14 @@
 
         <Button
             style="@style/DemoTv"
+            android:layout_marginBottom="8dp"
             android:onClick="customizedConversation"
             android:text="自定义 Conversation" />
+
+        <Button
+            style="@style/DemoTv"
+            android:onClick="leaveMessageForm"
+            android:text="留言表单" />
     </LinearLayout>
 
 </LinearLayout>

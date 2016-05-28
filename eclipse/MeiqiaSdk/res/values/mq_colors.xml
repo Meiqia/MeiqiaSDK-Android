@@ -35,6 +35,9 @@
     <color name="mq_chat_left_bubble">@color/mq_chat_left_bubble_final</color>
     <color name="mq_chat_right_bubble">@color/mq_chat_right_bubble_final</color>
     <color name="mq_top_pop_tip_bg">#969faa</color>
+    <color name="mq_chat_robot_menu_item_textColor">@color/mq_colorPrimary</color>
+    <color name="mq_chat_robot_menu_tip_textColor">#767D85</color>
+    <color name="mq_chat_robot_evaluate_textColor">@color/mq_colorPrimary</color>
     <!--聊天 END-->
 
     <!--客服评价 START-->
@@ -64,4 +67,12 @@
     <color name="mq_circle_progress_bg">#c6cbd0</color>
     <color name="mq_circle_progress_color">@color/mq_colorPrimary</color>
     <!--进度条 END-->
+
+    <!--表单相关 START-->
+    <color name="mq_form_tip_textColor">#767D85</color>
+    <color name="mq_form_et_textColor">#303D42</color>
+    <color name="mq_form_et_textColorHint">#ADB2BB</color>
+    <color name="mq_form_et_bg_focus">@color/mq_colorPrimary</color>
+    <color name="mq_form_et_bg_normal">#C6CBD0</color>
+    <!--表单相关 END-->
 </resources>

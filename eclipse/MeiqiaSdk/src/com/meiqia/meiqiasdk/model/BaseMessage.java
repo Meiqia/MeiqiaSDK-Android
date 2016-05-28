@@ -26,8 +26,11 @@ public class BaseMessage {
     public static final int TYPE_TIME = 2;
     public static final int TYPE_TIP = 3;
     public static final int TYPE_EVALUATE = 4;
+    public static final int TYPE_ROBOT = 5;
+    public static final int TYPE_NO_AGENT_TIP = 6;
+    public static final int TYPE_USELESS_REDIRECT = 7;
 
-    public static final int MAX_TYPE = 5;
+    public static final int MAX_TYPE = 8;
     private long createdOn;
     private String agentNickname;
     private String status;

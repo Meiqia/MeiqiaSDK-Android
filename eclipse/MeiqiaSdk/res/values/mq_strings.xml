@@ -17,6 +17,8 @@
     <string name="mq_title_inputting">正在输入...</string>
     <string name="mq_input_hint">请输入...</string>
     <string name="mq_allocate_agent">正在分配客服...</string>
+    <string name="mq_allocate_agent_tip">正在为您分配客服，请稍后重发。</string>
+    <string name="mq_send_robot_msg_time_limit_tip">您发送的太快啦，请休息一下吧~</string>
     <string name="mq_leave_msg_tips">抱歉，现在没有客服人员在线\n你可以继续写下你的问题，我们会尽快回复</string>
     <string name="mq_blacklist_tips">对不起，当前客服系统暂时无法使用</string>
     <string name="mq_photo_not_support">当前设备不支持发送图片</string>
@@ -73,4 +75,22 @@
     <string name="mq_submit">提交</string>
     <string name="mq_toast_photo_picker_max">最多只能选择 %1$s 张图片</string>
     <string name="mq_choose">选择</string>
+
+    <string name="mq_leave_msg">留言</string>
+    <string name="mq_submit_leave_msg_success">留言提交成功</string>
+
+    <string name="mq_email">邮箱</string>
+    <string name="mq_email_hint">请输入你的邮箱</string>
+
+    <string name="mq_phone">手机</string>
+    <string name="mq_phone_hint">请输入你的手机</string>
+
+    <string name="mq_useless">未解决</string>
+    <string name="mq_useful">解决</string>
+    <string name="mq_already_feedback">已反馈</string>
+    <string name="mq_robot_menu_tip">点击问题或回复对应数字查看答案</string>
+    <string name="mq_redirect_human">转人工</string>
+    <string name="mq_no_agent_leave_msg_tip">抱歉，当前没有客服在线，你可以给我们</string>
+    <string name="mq_useless_redirect_tip">很抱歉您不满意机器人的回答，您可以尝试</string>
+    <string name="mq_queue_leave_msg">请稍等，你前面还有 %1$s 个访客，你也可以选择给我们</string>
 </resources>

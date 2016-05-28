@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#fc5369</color>
+    <color name="colorPrimary">#6C9EFC</color>
     <color name="colorPrimaryDark">@color/colorPrimary</color>
 
     <color name="test_red">#fc5369</color>
@@ -15,10 +15,10 @@
     <color name="mq_activity_title_textColor">@android:color/white</color>
     <color name="mq_activity_title_bg">@color/colorPrimary</color>
 
-    <color name="mq_chat_left_textColor">@android:color/white</color>
+    <color name="mq_chat_left_textColor">@android:color/black</color>
     <color name="mq_chat_right_textColor">@android:color/white</color>
 
-    <color name="mq_chat_left_bubble">@color/test_green</color>
+    <color name="mq_chat_left_bubble">#E6E6EA</color>
     <color name="mq_chat_right_bubble">@color/colorPrimary</color>
     <!--通过覆盖资源id的形式自定义美洽UI END-->
 </resources>
