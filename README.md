@@ -12,12 +12,12 @@
 
 ```
 // required     
-// 「3.1.8」改成 maven central 徽章后面对应的版本号，例如3.1.8
-compile 'com.meiqia:meiqiasdk:3.1.8@aar'
+// 「3.2.0」改成 maven central 徽章后面对应的版本号，例如3.2.0
+compile 'com.meiqia:meiqiasdk:3.2.0@aar'
 
 // 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
 compile 'com.android.support:support-v4:23.1.1'
-compile 'com.squareup.okhttp:okhttp:2.7.0'
+compile 'com.squareup.okhttp3:okhttp:3.2.0'
 compile 'com.commit451:PhotoView:1.2.4'
 
 // 目前支持常见的 4 种图片加载库，选择其中一种作为 MQConfig.init 方法的第三个参数进行初始化
@@ -88,6 +88,15 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     android:theme="@style/MQTheme"
     android:windowSoftInputMode="stateAlwaysHidden" />
 
+<!--留言表单界面-->
+<activity
+    android:name="com.meiqia.meiqiasdk.activity.MQMessageFormActivity"
+    android:configChanges="keyboardHidden|orientation"
+    android:launchMode="singleTop"
+    android:screenOrientation="portrait"
+    android:theme="@style/MQTheme"
+    android:windowSoftInputMode="stateHidden|adjustResize" />
+
 <service android:name="com.meiqia.core.MeiQiaService" />
 ```
 
@@ -131,7 +140,15 @@ Intent intent = new MQIntentBuilder(this).build();
 startActivity(intent);
 ```
 
-### 3.Android M 权限处理
+### 3.启动留言表单界面
+
+初始化成功后，就可以直接启动留言表单界面
+
+``` java
+startActivity(new Intent(this, MQMessageFormActivity.class));
+```
+
+### 4.Android M 权限处理
 
 如果你的 App 需要兼容 Android M，需要处理权限问题。 [参考 Demo][8]
 
@@ -177,6 +194,45 @@ Intent intent = new MQIntentBuilder(this)
         .setScheduledGroup(groupId) // groupId 可以从工作台查询
         .build();
 startActivity(intent);
+```
+
+> 自定义留言表单引导文案
+
+配置了该引导文案后将不会读取工作台配置的引导文案
+
+``` java
+MQConfig.leaveMessageIntro = "自定义留言表单引导文案";
+```
+
+> 自定义留言表单输入项
+
+如果不配置该选项则留言表单界面默认有「留言」「邮箱」「手机」这三个输入项
+
+``` java
+MQConfig.messageFormInputModels = new ArrayList<>();
+MessageFormInputModel phoneMfim = new MessageFormInputModel();
+phoneMfim.tip = "手机";
+phoneMfim.key = "tel";
+phoneMfim.required = true;
+phoneMfim.hint = "请输入你的手机号";
+phoneMfim.inputType = InputType.TYPE_CLASS_PHONE;
+
+MessageFormInputModel emailMfim = new MessageFormInputModel();
+emailMfim.tip = "邮箱";
+emailMfim.key = "email";
+emailMfim.required = true;
+emailMfim.hint = "请输入你的邮箱";
+emailMfim.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
+
+MessageFormInputModel nameMfim = new MessageFormInputModel();
+nameMfim.tip = "姓名";
+nameMfim.key = "name";
+nameMfim.hint = "请输入你的姓名";
+nameMfim.inputType = InputType.TYPE_CLASS_TEXT;
+
+MQConfig.messageFormInputModels.add(phoneMfim);
+MQConfig.messageFormInputModels.add(emailMfim);
+MQConfig.messageFormInputModels.add(nameMfim);
 ```
 
 ### 3.可选设置
