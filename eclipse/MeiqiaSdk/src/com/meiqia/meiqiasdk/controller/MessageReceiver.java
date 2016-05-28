@@ -16,7 +16,7 @@ public abstract class MessageReceiver extends BroadcastReceiver {
     private String mConversationId;
 
     public void setConversationId(String conversationId) {
-        this.mConversationId = conversationId;
+        mConversationId = conversationId;
     }
 
     @Override
@@ -55,7 +55,6 @@ public abstract class MessageReceiver extends BroadcastReceiver {
                 addDirectAgentMessageTip(mqAgent.getNickname());
             }
 
-            changeTitleToAgentName(mqAgent.getNickname());
             Agent agent = MQUtils.parseMQAgentToAgent(mqAgent);
             setCurrentAgent(agent);
 
@@ -73,14 +72,14 @@ public abstract class MessageReceiver extends BroadcastReceiver {
             updateAgentOnlineOfflineStatus();
         } else if (MQMessageManager.ACTION_BLACK_ADD.equals(action)) {
             blackAdd();
+        } else if (MQMessageManager.ACTION_BLACK_DEL.equals(action)) {
+            blackDel();
         }
     }
 
     public abstract void receiveNewMsg(BaseMessage message);
 
     public abstract void changeTitleToInputting();
-
-    public abstract void changeTitleToAgentName(String agentNickname);
 
     public abstract void addDirectAgentMessageTip(String agentNickname);
 
@@ -93,4 +92,6 @@ public abstract class MessageReceiver extends BroadcastReceiver {
     public abstract void updateAgentOnlineOfflineStatus();
 
     public abstract void blackAdd();
+
+    public abstract void blackDel();
 }

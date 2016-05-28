@@ -3,13 +3,13 @@ package com.meiqia.meiqiasdk.util;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
 import java.io.File;
 import java.io.IOException;
 
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okio.BufferedSink;
 import okio.Okio;
 
@@ -48,24 +48,24 @@ public class MQDownloadManager {
         }
 
         Request request = new Request.Builder().url(url).build();
-        mOkHttpClient.newCall(request).enqueue(new com.squareup.okhttp.Callback() {
+        mOkHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 if (callback != null) {
                     callback.onFailure();
                 }
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, final Response response) throws IOException {
                 if (response.isSuccessful()) {
                     try {
-                        File voiceFile = MQAudioRecorderManager.getCachedVoiceFileByUrl(mContext, url);
-                        BufferedSink sink = Okio.buffer(Okio.sink(voiceFile));
+                        File file = MQAudioRecorderManager.getCachedVoiceFileByUrl(mContext, url);
+                        BufferedSink sink = Okio.buffer(Okio.sink(file));
                         sink.writeAll(response.body().source());
                         sink.close();
                         if (callback != null) {
-                            callback.onSuccess(voiceFile);
+                            callback.onSuccess(file);
                         }
                     } catch (IOException e) {
                         if (callback != null) {

@@ -255,6 +255,16 @@ public class ControllerImpl implements MQController {
     }
 
     @Override
+    public void onConversationClose() {
+        MQManager.getInstance(context).onConversationClose();
+    }
+
+    @Override
+    public void onConversationOpen() {
+        MQManager.getInstance(context).onConversationOpen();
+    }
+
+    @Override
     public void closeService() {
         MQManager.getInstance(context).closeMeiqiaService();
     }
@@ -264,4 +274,78 @@ public class ControllerImpl implements MQController {
         MQManager.getInstance(context).openMeiqiaService();
     }
 
+    public void submitMessageForm(String message, List<String> pictures, Map<String, String> customInfoMap, final SimpleCallback simpleCallback) {
+        MQManager.getInstance(context).submitMessageForm(message, pictures, customInfoMap, new com.meiqia.core.callback.SimpleCallback() {
+            @Override
+            public void onFailure(int code, String message) {
+                if (simpleCallback != null) {
+                    simpleCallback.onFailure(code, message);
+                }
+            }
+
+            @Override
+            public void onSuccess() {
+                if (simpleCallback != null) {
+                    simpleCallback.onSuccess();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void refreshEnterpriseConfig(final SimpleCallback simpleCallback) {
+        MQManager.getInstance(context).refreshEnterpriseConfig(new com.meiqia.core.callback.SimpleCallback() {
+            @Override
+            public void onFailure(int code, String message) {
+                if (simpleCallback != null) {
+                    simpleCallback.onFailure(code, message);
+                }
+            }
+
+            @Override
+            public void onSuccess() {
+                if (simpleCallback != null) {
+                    simpleCallback.onSuccess();
+                }
+            }
+        });
+    }
+
+    @Override
+    public String getLeaveMessageIntro() {
+        return MQManager.getInstance(context).getLeaveMessageIntro();
+    }
+
+    @Override
+    public void evaluateRobotAnswer(long messageId, long questionId, int useful, final SimpleCallback simpleCallback) {
+        MQManager.getInstance(context).evaluateRobotAnswer(messageId, questionId, useful, new com.meiqia.core.callback.SimpleCallback() {
+            @Override
+            public void onFailure(int code, String message) {
+                if (simpleCallback != null) {
+                    simpleCallback.onFailure(code, message);
+                }
+            }
+
+            @Override
+            public void onSuccess() {
+                if (simpleCallback != null) {
+                    simpleCallback.onSuccess();
+                }
+            }
+        });
+    }
+
+    public void setForceRedirectHuman(boolean isForceRedirectHuman) {
+        MQManager.getInstance(context).setForceRedirectHuman(isForceRedirectHuman);
+    }
+
+    @Override
+    public String getEvaluateHumanTip() {
+        return MQManager.getInstance(context).getEvaluateHumanTip();
+    }
+
+    @Override
+    public boolean getIsShowRedirectHumanButton() {
+        return MQManager.getInstance(context).getIsShowRedirectHumanButton();
+    }
 }
