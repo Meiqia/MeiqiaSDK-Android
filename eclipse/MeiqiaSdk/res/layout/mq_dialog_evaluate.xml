@@ -11,6 +11,7 @@
     android:paddingTop="@dimen/mq_size_level3">
 
     <TextView
+        android:id="@+id/tv_evaluate_tip"
         style="@style/MQMatchWrap"
         android:text="@string/mq_evaluate_title"
         android:textColor="@color/mq_chat_event_gray"

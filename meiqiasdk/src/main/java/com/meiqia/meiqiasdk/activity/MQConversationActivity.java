@@ -43,7 +43,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.meiqia.meiqiasdk.R;
-import com.meiqia.meiqiasdk.callback.FileStateCallback;
+import com.meiqia.meiqiasdk.callback.LeaveMessageCallback;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
@@ -57,8 +57,11 @@ import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.EvaluateMessage;
 import com.meiqia.meiqiasdk.model.FileMessage;
 import com.meiqia.meiqiasdk.model.LeaveTipMessage;
+import com.meiqia.meiqiasdk.model.NoAgentLeaveMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
+import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
+import com.meiqia.meiqiasdk.model.UselessRedirectMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.util.ErrorCode;
 import com.meiqia.meiqiasdk.util.MQAudioPlayerManager;
@@ -70,6 +73,8 @@ import com.meiqia.meiqiasdk.util.MQSoundPoolManager;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQCustomKeyboardLayout;
+import com.meiqia.meiqiasdk.widget.MQRobotItem;
+import com.meiqia.meiqiasdk.widget.MQUselessRedirectItem;
 
 import java.io.File;
 import java.io.Serializable;
@@ -79,7 +84,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class MQConversationActivity extends Activity implements View.OnClickListener, MQEvaluateDialog.Callback, MQCustomKeyboardLayout.Callback, View.OnTouchListener, FileStateCallback {
+public class MQConversationActivity extends Activity implements View.OnClickListener, MQEvaluateDialog.Callback, MQCustomKeyboardLayout.Callback, View.OnTouchListener, MQRobotItem.Callback, LeaveMessageCallback, MQUselessRedirectItem.Callback {
     private static final String TAG = MQConversationActivity.class.getSimpleName();
 
     // 权限
@@ -99,10 +104,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     // 控件
     private RelativeLayout mTitleRl;
-    private RelativeLayout backRl;
+    private RelativeLayout mBackRl;
     private TextView mBackTv;
     private ImageView mBackIv;
     private TextView mTitleTv;
+    private TextView mRedirectHumanTv;
     private RelativeLayout mChatBodyRl;
     private ListView mConversationListView;
     private EditText mInputEt;
@@ -143,10 +149,23 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     private String mConversationId;
 
+    private TextView mTopTipViewTv;
+    private Runnable mAutoDismissTopTipRunnable;
+
+    // 上一次发送机器人消息的时间戳
+    private long mLastSendRobotMessageTime;
+    private boolean mIsAllocatingAgent;
+    private boolean mIsShowRedirectHumanButton;
+    private boolean isAddLeaveTip;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mController = MQConfig.getController(this);
+        mController.onConversationOpen();
+        if (savedInstanceState != null) {
+            mCameraPicPath = savedInstanceState.getString("mCameraPicPath");
+        }
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); // 保持屏幕长亮
         setContentView(R.layout.mq_activity_conversation);
@@ -156,6 +175,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         setListeners();
         applyCustomUIConfig();
         registerReceiver();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("mCameraPicPath", mCameraPicPath);
     }
 
     /**
@@ -170,7 +195,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         MQUtils.applyCustomUITintDrawable(mTitleRl, android.R.color.white, R.color.mq_activity_title_bg, MQConfig.ui.titleBackgroundResId);
 
         // 处理标题、返回、返回箭头颜色
-        MQUtils.applyCustomUITextAndImageColor(R.color.mq_activity_title_textColor, MQConfig.ui.titleTextColorResId, mBackIv, mBackTv, mTitleTv);
+        MQUtils.applyCustomUITextAndImageColor(R.color.mq_activity_title_textColor, MQConfig.ui.titleTextColorResId, mBackIv, mBackTv, mTitleTv, mRedirectHumanTv);
 
         // 处理标题文本的对其方式
         MQUtils.applyCustomUITitleGravity(mBackTv, mTitleTv);
@@ -194,7 +219,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     protected void onResume() {
         super.onResume();
         // 设置顾客上线，请求分配客服
-        setClientOnline();
+        setClientOnline(false);
         isPause = false;
     }
 
@@ -230,6 +255,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         }
         isDestroy = true;
         cancelAllDownload();
+        mController.onConversationClose();
         super.onDestroy();
     }
 
@@ -265,9 +291,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     private void findViews() {
         mTitleRl = (RelativeLayout) findViewById(R.id.title_rl);
-        backRl = (RelativeLayout) findViewById(R.id.back_rl);
+        mBackRl = (RelativeLayout) findViewById(R.id.back_rl);
         mBackTv = (TextView) findViewById(R.id.back_tv);
         mBackIv = (ImageView) findViewById(R.id.back_iv);
+        mRedirectHumanTv = (TextView) findViewById(R.id.redirect_human_tv);
         mChatBodyRl = (RelativeLayout) findViewById(R.id.chat_body_rl);
         mConversationListView = (ListView) findViewById(R.id.messages_lv);
         mInputEt = (EditText) findViewById(R.id.input_et);
@@ -288,7 +315,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     private void setListeners() {
-        backRl.setOnClickListener(this);
+        mBackRl.setOnClickListener(this);
+        mRedirectHumanTv.setOnClickListener(this);
         mSendTextBtn.setOnClickListener(this);
         mPhotoSelectBtn.setOnClickListener(this);
         mCameraSelectBtn.setOnClickListener(this);
@@ -361,6 +389,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         intentFilter.addAction(MQController.ACTION_INVITE_EVALUATION);
         intentFilter.addAction(MQController.ACTION_AGENT_STATUS_UPDATE_EVENT);
         intentFilter.addAction(MQController.ACTION_BLACK_ADD);
+        intentFilter.addAction(MQController.ACTION_BLACK_DEL);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, intentFilter);
 
         // 网络监听
@@ -371,38 +400,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     /**
-     * 将 title 改为客服名字
-     *
-     * @param agentName 客服名
-     */
-    protected void changeTitleToAgentName(String agentName) {
-        mTitleTv.setText(agentName);
-
-        updateAgentOnlineOfflineStatus();
-    }
-
-    /**
-     * 将 title 改为客服名字
-     *
-     * @param agent 客服实体
-     */
-    protected void changeTitleToAgentName(Agent agent) {
-        if (agent != null) {
-            mTitleTv.setText(agent.getNickname());
-
-            updateAgentOnlineOfflineStatus();
-        } else {
-            changeTitleToNoAgentState();
-        }
-    }
-
-    /**
      * 将 title 改为 正在输入
      */
     protected void changeTitleToInputting() {
         mTitleTv.setText(getResources().getString(R.string.mq_title_inputting));
 
-        updateAgentOnlineOfflineStatus();
+        updateAgentOnlineOfflineStatusAndRedirectHuman();
     }
 
     /**
@@ -411,7 +414,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     protected void changeTitleToAllocatingAgent() {
         mTitleTv.setText(getResources().getString(R.string.mq_allocate_agent));
 
-        hiddenAgentStatusCircle();
+        hiddenAgentStatusAndRedirectHuman();
     }
 
     /**
@@ -419,9 +422,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      */
     protected void changeTitleToNoAgentState() {
         mTitleTv.setText(getResources().getString(R.string.mq_title_leave_msg));
-        mEvaluateBtn.setVisibility(View.GONE);
 
-        hiddenAgentStatusCircle();
+        hiddenAgentStatusAndRedirectHuman();
     }
 
     /**
@@ -430,7 +432,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     protected void changeTitleToNetErrorState() {
         mTitleTv.setText(getResources().getString(R.string.mq_title_net_not_work));
 
-        hiddenAgentStatusCircle();
+        hiddenAgentStatusAndRedirectHuman();
     }
 
     /**
@@ -439,7 +441,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     protected void changeTitleToUnknownErrorState() {
         mTitleTv.setText(getResources().getString(R.string.mq_title_unknown_error));
 
-        hiddenAgentStatusCircle();
+        hiddenAgentStatusAndRedirectHuman();
     }
 
     /**
@@ -448,12 +450,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * @param agentNickName 客服名字
      */
     protected void addDirectAgentMessageTip(String agentNickName) {
-        mTitleTv.setText(agentNickName);
         AgentChangeMessage agentChangeMessage = new AgentChangeMessage();
         agentChangeMessage.setAgentNickname(agentNickName);
         mChatMsgAdapter.addMQMessage(agentChangeMessage);
-
-        updateAgentOnlineOfflineStatus();
     }
 
     /**
@@ -468,15 +467,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mChatMsgAdapter.addMQMessage(blacklistMessage);
     }
 
-    private boolean isAddLeaveTip;
-
     /**
      * 添加 留言 的 Tip
      */
     protected void addLeaveMessageTip() {
-        mEvaluateBtn.setVisibility(View.GONE);
+        changeTitleToNoAgentState();
         if (!isAddLeaveTip) {
-            changeTitleToNoAgentState();
             LeaveTipMessage leaveTip = new LeaveTipMessage();
             leaveTip.setContent(getResources().getString(R.string.mq_leave_msg_tips));
             //添加到当前消息的上一个位置
@@ -493,7 +489,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 从列表移除 留言 的 Tip
      */
     protected void removeLeaveMessageTip() {
-        mEvaluateBtn.setVisibility(MQConfig.isEvaluateSwitchOpen ? View.VISIBLE : View.GONE);
         Iterator<BaseMessage> chatItemViewBaseIterator = mChatMessageList.iterator();
         while (chatItemViewBaseIterator.hasNext()) {
             BaseMessage baseMessage = chatItemViewBaseIterator.next();
@@ -505,9 +500,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         }
         isAddLeaveTip = false;
     }
-
-    private TextView mTopTipViewTv;
-    private Runnable autoDismissTopTipRunnable;
 
     /**
      * 弹出顶部 Tip
@@ -522,17 +514,17 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             mChatBodyRl.addView(mTopTipViewTv, ViewGroup.LayoutParams.MATCH_PARENT, height);
             ViewCompat.setTranslationY(mTopTipViewTv, -height); // 初始化位置
             ViewCompat.animate(mTopTipViewTv).translationY(0).setDuration(300).start();
-            if (autoDismissTopTipRunnable == null) {
-                autoDismissTopTipRunnable = new Runnable() {
+            if (mAutoDismissTopTipRunnable == null) {
+                mAutoDismissTopTipRunnable = new Runnable() {
                     @Override
                     public void run() {
                         popTopTip(contentRes);
                     }
                 };
             }
-            mHandler.postDelayed(autoDismissTopTipRunnable, AUTO_DISMISS_TOP_TIP_TIME);
+            mHandler.postDelayed(mAutoDismissTopTipRunnable, AUTO_DISMISS_TOP_TIP_TIME);
         } else {
-            mHandler.removeCallbacks(autoDismissTopTipRunnable);
+            mHandler.removeCallbacks(mAutoDismissTopTipRunnable);
             ViewCompat.animate(mTopTipViewTv).translationY(-mTopTipViewTv.getHeight()).setListener(new ViewPropertyAnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(View view) {
@@ -543,9 +535,31 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         }
     }
 
+    /**
+     * 设置当前agent
+     *
+     * @param newAgent
+     */
+    private void setCurrentAgent(Agent newAgent) {
+        Agent oldAgent = mCurrentAgent;
+        mCurrentAgent = newAgent;
 
-    private void setCurrentAgent(Agent agent) {
-        mCurrentAgent = agent;
+        if (mCurrentAgent == null) {
+            changeTitleToNoAgentState();
+        } else {
+            mTitleTv.setText(newAgent.getNickname());
+            updateAgentOnlineOfflineStatusAndRedirectHuman();
+
+            if (oldAgent != mCurrentAgent) {
+                // 新老agent不相等时才去移除「留言提示消息」
+                removeLeaveMessageTip();
+                // 新老agent不相等，并且新的agent不是人工时才移除「没有客服的提示留言消息」和「转接人工的排队消息」
+                if (!mCurrentAgent.isRobot()) {
+                    removeNoAgentLeaveMsg();
+                    removeUselessRedirectMessage();
+                }
+            }
+        }
     }
 
     /**
@@ -633,10 +647,24 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     /**
-     * 设置顾客上线
+     * 强制转人工
      */
-    private void setClientOnline() {
-        if (mCurrentAgent == null) {
+    private void forceRedirectHuman() {
+        if (mController.getCurrentAgent() != null && mController.getCurrentAgent().isRobot()) {
+            mController.setForceRedirectHuman(true);
+            setClientOnline(true);
+        }
+    }
+
+    /**
+     * 设置顾客上线
+     *
+     * @param isForceRedirectHuman 是否强制转人工
+     */
+    private void setClientOnline(final boolean isForceRedirectHuman) {
+        if (isForceRedirectHuman || (!isForceRedirectHuman && mCurrentAgent == null)) {
+            mIsAllocatingAgent = true;
+
             // Title 显示正在分配客服
             changeTitleToAllocatingAgent();
 
@@ -644,56 +672,58 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             Intent intent = getIntent();
             String clientId = null;
             String customizedId = null;
-            HashMap<String, String> clientInfo = null;
             if (intent != null) {
                 clientId = getIntent().getStringExtra(CLIENT_ID);
                 customizedId = getIntent().getStringExtra(CUSTOMIZED_ID);
-                Serializable clientInfoSerializable = getIntent().getSerializableExtra(CLIENT_INFO);
-                if (clientInfoSerializable != null) {
-                    clientInfo = (HashMap<String, String>) clientInfoSerializable;
-                }
             }
-            final HashMap<String, String> finalClientInfo = clientInfo;
 
             // 上线
             mController.setCurrentClientOnline(clientId, customizedId, new OnClientOnlineCallback() {
 
                 @Override
                 public void onSuccess(Agent agent, String conversationId, List<BaseMessage> conversationMessageList) {
+                    mIsAllocatingAgent = false;
+
                     setCurrentAgent(agent);
-                    changeTitleToAgentName(agent);
-                    removeLeaveMessageTip();
+
                     mConversationId = conversationId;
                     mMessageReceiver.setConversationId(conversationId);
 
                     // 根据设置，过滤语音消息
                     cleanVoiceMessage(conversationMessageList);
 
-                    //加载数据
                     mChatMessageList.clear();
                     mChatMessageList.addAll(conversationMessageList);
-                    loadData();
-                    onLoadDataComplete(MQConversationActivity.this, agent);
 
-                    // 上线成功后，根据设置是否上传顾客信息
-                    if (finalClientInfo != null) {
-                        mController.setClientInfo(finalClientInfo, null);
+                    // 如果是强转人工，并且服务端返回的最后一条消息是欢迎消息，则显示「接下来有 xxx 为你服务」
+                    if (isForceRedirectHuman && mChatMessageList.size() > 0 && TextUtils.equals(BaseMessage.TYPE_WELCOME, mChatMessageList.get(mChatMessageList.size() - 1).getType())) {
+                        AgentChangeMessage agentChangeMessage = new AgentChangeMessage();
+                        agentChangeMessage.setAgentNickname(agent.getNickname());
+                        mChatMessageList.add(conversationMessageList.size() - 1, agentChangeMessage);
                     }
+
+                    loadData();
+
+                    setClientInfo();
                 }
 
                 @Override
                 public void onFailure(int code, String message) {
+                    mIsAllocatingAgent = false;
+
                     if (ErrorCode.NET_NOT_WORK == code) {
                         changeTitleToNetErrorState();
                     } else if (ErrorCode.NO_AGENT_ONLINE == code) {
-                        setCurrentAgent(null);
-                        changeTitleToNoAgentState();
-                        // 没有分配到客服，也根据设置是否上传顾客信息
-                        if (finalClientInfo != null) {
-                            mController.setClientInfo(finalClientInfo, null);
+                        if (isForceRedirectHuman) {
+                            setCurrentAgent(mCurrentAgent);
+                            addNoAgentLeaveMsg();
+                        } else {
+                            setCurrentAgent(null);
+                            // 没有分配到客服，也根据设置是否上传顾客信息
+                            setClientInfo();
                         }
                     } else if (ErrorCode.BLACKLIST == code) {
-                        changeTitleToNoAgentState();
+                        setCurrentAgent(null);
                         isBlackState = true;
                     } else {
                         changeTitleToUnknownErrorState();
@@ -702,12 +732,24 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     // 如果没有加载数据，则加载数据
                     if (!mHasLoadData) {
                         getMessageDataFromDatabaseAndLoad();
-                        onLoadDataComplete(MQConversationActivity.this, null);
                     }
                 }
             });
         } else {
-            changeTitleToAgentName(mCurrentAgent);
+            setCurrentAgent(mCurrentAgent);
+        }
+    }
+
+    /**
+     * 根据设置是否上传顾客信息
+     */
+    private void setClientInfo() {
+        if (getIntent() != null) {
+            Serializable clientInfoSerializable = getIntent().getSerializableExtra(CLIENT_INFO);
+            if (clientInfoSerializable != null) {
+                HashMap<String, String> clientInfo = (HashMap<String, String>) clientInfoSerializable;
+                mController.setClientInfo(clientInfo, null);
+            }
         }
     }
 
@@ -729,7 +771,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
             @Override
             public void onFailure(int code, String responseString) {
-
             }
         });
     }
@@ -760,6 +801,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         MQUtils.scrollListViewToBottom(mConversationListView);
         mChatMsgAdapter.downloadAndNotifyDataSetChanged(mChatMessageList);
         mChatMsgAdapter.notifyDataSetChanged();
+
+        if (!mHasLoadData) {
+            onLoadDataComplete(MQConversationActivity.this, mCurrentAgent);
+        }
         mHasLoadData = true;
     }
 
@@ -778,7 +823,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         int id = v.getId();
         if (id == R.id.back_rl) {
             // 返回按钮
-
             onBackPressed();
         } else if (id == R.id.emoji_select_btn) {
             // 表情按钮
@@ -795,8 +839,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         } else if (id == R.id.send_text_btn) {
             // 发送按钮
 
-            if (!mHasLoadData) {
-                MQUtils.show(this, R.string.mq_data_is_loading);
+            if (!checkSendable()) {
                 return;
             }
 
@@ -832,6 +875,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             hideEmojiSelectIndicator();
             hideVoiceSelectIndicator();
             showEvaluateDialog();
+        } else if (id == R.id.redirect_human_tv) {
+            forceRedirectHuman();
         }
     }
 
@@ -875,7 +920,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             mCustomKeyboardLayout.closeAllKeyboard();
             if (!TextUtils.isEmpty(mConversationId)) {
                 if (mEvaluateDialog == null) {
-                    mEvaluateDialog = new MQEvaluateDialog(this);
+                    mEvaluateDialog = new MQEvaluateDialog(this, mController.getEvaluateHumanTip());
                     mEvaluateDialog.setCallback(this);
                 }
                 mEvaluateDialog.show();
@@ -912,8 +957,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 从本地选择图片
      */
     private void chooseFromPhotoPicker() {
-        if (!mHasLoadData) {
-            MQUtils.show(this, R.string.mq_data_is_loading);
+        if (!checkSendable()) {
             return;
         }
 
@@ -925,8 +969,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 打开相机
      */
     private void choosePhotoFromCamera() {
-        if (!mHasLoadData) {
-            MQUtils.show(this, R.string.mq_data_is_loading);
+        if (!checkSendable()) {
             return;
         }
 
@@ -1060,6 +1103,28 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mInputEt.setText("");
         MQTimeUtils.refreshMQTimeItem(mChatMessageList);
         mChatMsgAdapter.notifyDataSetChanged();
+        return true;
+    }
+
+    private boolean checkSendable() {
+        if (mIsAllocatingAgent) {
+            MQUtils.show(this, R.string.mq_allocate_agent_tip);
+            return false;
+        }
+        if (!mHasLoadData) {
+            MQUtils.show(this, R.string.mq_data_is_loading);
+            return false;
+        }
+
+        // 如果当前客服是机器人，则限制发送频率为1秒
+        if (mCurrentAgent != null && mCurrentAgent.isRobot()) {
+            if (System.currentTimeMillis() - mLastSendRobotMessageTime <= 1000) {
+                MQUtils.show(this, R.string.mq_send_robot_msg_time_limit_tip);
+                return false;
+            } else {
+                mLastSendRobotMessageTime = System.currentTimeMillis();
+            }
+        }
         return true;
     }
 
@@ -1221,6 +1286,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     @Override
     public void executeEvaluate(final int level, final String content) {
+        if (!checkSendable()) {
+            return;
+        }
+
         mController.executeEvaluate(mConversationId, level, content, new SimpleCallback() {
             @Override
             public void onFailure(int code, String message) {
@@ -1236,6 +1305,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     @Override
     public void onAudioRecorderFinish(int time, String filePath) {
+        if (!checkSendable()) {
+            return;
+        }
+
         VoiceMessage voiceMessage = new VoiceMessage();
         voiceMessage.setDuration(time);
         voiceMessage.setLocalPath(filePath);
@@ -1264,7 +1337,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         return false;
     }
 
-    private void updateAgentOnlineOfflineStatus() {
+    /**
+     * 修改客服在线状态和转人工按钮
+     */
+    private void updateAgentOnlineOfflineStatusAndRedirectHuman() {
         Agent agent = mController.getCurrentAgent();
 
         if (agent != null) {
@@ -1275,16 +1351,29 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             } else {
                 mTitleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.mq_shape_agent_status_online, 0);
             }
+
+            if (agent.isRobot()) {
+                mRedirectHumanTv.setVisibility(mIsShowRedirectHumanButton ? View.VISIBLE : View.GONE);
+                mEvaluateBtn.setVisibility(View.GONE);
+            } else {
+                mRedirectHumanTv.setVisibility(View.GONE);
+                mEvaluateBtn.setVisibility(MQConfig.isEvaluateSwitchOpen ? View.VISIBLE : View.GONE);
+            }
         } else {
-            hiddenAgentStatusCircle();
+            hiddenAgentStatusAndRedirectHuman();
         }
     }
 
-    private void hiddenAgentStatusCircle() {
+    /**
+     * 隐藏客服在线状态和转人工按钮
+     */
+    private void hiddenAgentStatusAndRedirectHuman() {
         mTitleTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+
+        mRedirectHumanTv.setVisibility(View.GONE);
+        mEvaluateBtn.setVisibility(View.GONE);
     }
 
-    @Override
     public void onFileMessageDownloadFailure(FileMessage fileMessage, int code, String message) {
         // 避免界面销毁了还更新 UI
         if (isDestroy) {
@@ -1294,7 +1383,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         popTopTip(R.string.mq_download_error);
     }
 
-    @Override
     public void onFileMessageExpired(FileMessage fileMessage) {
         // 避免界面销毁了还更新 UI
         if (isDestroy) {
@@ -1315,6 +1403,121 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         }
     }
 
+    @Override
+    public void onEvaluateRobotAnswer(final RobotMessage robotMessage, final int useful) {
+        mController.evaluateRobotAnswer(robotMessage.getId(), robotMessage.getQuestionId(), useful, new SimpleCallback() {
+            @Override
+            public void onFailure(int code, String message) {
+                MQUtils.show(MQConversationActivity.this, R.string.mq_evaluate_failure);
+            }
+
+            @Override
+            public void onSuccess() {
+                robotMessage.setAlreadyFeedback(true);
+                mChatMsgAdapter.notifyDataSetChanged();
+
+                if (RobotMessage.EVALUATE_USELESS == useful) {
+                    addUselessRedirectMessage();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onClickRobotMenuItem(String text) {
+        sendMessage(new TextMessage(text));
+    }
+
+    /**
+     * 刷新强转人工按钮
+     */
+    private void refreshRedirectHumanBtn() {
+        mIsShowRedirectHumanButton = MQConfig.getController(this).getIsShowRedirectHumanButton();
+        // mCurrentAgent不为空时才刷新，否则会导致正在分配客服的标题不会显示
+        if (mCurrentAgent != null) {
+            // 把当前agent传进去，复用之前的逻辑
+            setCurrentAgent(mCurrentAgent);
+        }
+    }
+
+    /**
+     * 添加【没有客服请留言】的提示消息到消息流的末尾
+     */
+    private void addNoAgentLeaveMsg() {
+        // 如果之前已经添加过【没有客服请留言】的提示消息，并且是在消息流的末尾，则不再执行后面的操作。否则先移除再添加到消息流的末尾
+        if (mChatMessageList != null && mChatMessageList.size() > 0 && mChatMessageList.get(mChatMessageList.size() - 1) instanceof NoAgentLeaveMessage) {
+            return;
+        }
+
+        removeNoAgentLeaveMsg();
+
+        if (mCurrentAgent == null) {
+            changeTitleToNoAgentState();
+        }
+
+        mChatMsgAdapter.addMQMessage(new NoAgentLeaveMessage());
+        MQUtils.scrollListViewToBottom(mConversationListView);
+    }
+
+    /**
+     * 从消息流中移除【没有客服请留言】的提示消息
+     */
+    private void removeNoAgentLeaveMsg() {
+        Iterator<BaseMessage> chatItemViewBaseIterator = mChatMessageList.iterator();
+        while (chatItemViewBaseIterator.hasNext()) {
+            BaseMessage baseMessage = chatItemViewBaseIterator.next();
+            if (baseMessage instanceof NoAgentLeaveMessage) {
+                chatItemViewBaseIterator.remove();
+                mChatMsgAdapter.notifyDataSetChanged();
+                return;
+            }
+        }
+    }
+
+    /**
+     * 添加【提示转人工】的提示消息到消息流的末尾
+     */
+    private void addUselessRedirectMessage() {
+        // 如果当前客服不为空，并且是真人客服时，则不再执行后面的操作
+        if (mCurrentAgent != null && !mCurrentAgent.isRobot()) {
+            return;
+        }
+
+        // 如果之前已经添加过【提示转人工】的提示消息，并且是在消息流的末尾，则不再执行后面的操作。否则先移除再添加到消息流的末尾
+        if (mChatMessageList != null && mChatMessageList.size() > 0 && mChatMessageList.get(mChatMessageList.size() - 1) instanceof UselessRedirectMessage) {
+            return;
+        }
+        removeUselessRedirectMessage();
+
+        mChatMsgAdapter.addMQMessage(new UselessRedirectMessage());
+        MQUtils.scrollListViewToBottom(mConversationListView);
+    }
+
+    /**
+     * 移除【提示转人工】的提示消息到消息流的末尾
+     */
+    private void removeUselessRedirectMessage() {
+        Iterator<BaseMessage> chatItemViewBaseIterator = mChatMessageList.iterator();
+        while (chatItemViewBaseIterator.hasNext()) {
+            BaseMessage baseMessage = chatItemViewBaseIterator.next();
+            if (baseMessage instanceof UselessRedirectMessage) {
+                chatItemViewBaseIterator.remove();
+                mChatMsgAdapter.notifyDataSetChanged();
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void onClickLeaveMessage() {
+        startActivity(new Intent(this, MQMessageFormActivity.class));
+    }
+
+    @Override
+    public void onClickForceRedirectHuman() {
+        forceRedirectHuman();
+    }
+
     private class MessageReceiver extends com.meiqia.meiqiasdk.controller.MessageReceiver {
 
         @Override
@@ -1333,15 +1536,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    MQConversationActivity.this.changeTitleToAgentName(mCurrentAgent);
+                    MQConversationActivity.this.setCurrentAgent(mCurrentAgent);
                 }
             }, 2000);
 
-        }
-
-        @Override
-        public void changeTitleToAgentName(String agentNickname) {
-            MQConversationActivity.this.changeTitleToAgentName(agentNickname);
         }
 
         @Override
@@ -1356,24 +1554,32 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
         @Override
         public void inviteEvaluation() {
+            if (!checkSendable()) {
+                return;
+            }
+
             showEvaluateDialog();
         }
 
         @Override
         public void setNewConversationId(String newConversationId) {
             mConversationId = newConversationId;
-            removeLeaveMessageTip();
         }
 
         @Override
         public void updateAgentOnlineOfflineStatus() {
-            MQConversationActivity.this.updateAgentOnlineOfflineStatus();
+            MQConversationActivity.this.updateAgentOnlineOfflineStatusAndRedirectHuman();
         }
 
         @Override
         public void blackAdd() {
             isBlackState = true;
             changeTitleToNoAgentState();
+        }
+
+        @Override
+        public void blackDel() {
+            isBlackState = false;
         }
     }
 
@@ -1399,6 +1605,15 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
             if (baseMessage instanceof VoiceMessage) {
                 mChatMsgAdapter.downloadAndNotifyDataSetChanged(Arrays.asList(baseMessage));
+            } else if (baseMessage instanceof RobotMessage) {
+                RobotMessage robotMessage = (RobotMessage) baseMessage;
+                if (RobotMessage.SUB_TYPE_REDIRECT.equals(robotMessage.getSubType())) {
+                    forceRedirectHuman();
+                } else if (RobotMessage.SUB_TYPE_REPLY.equals(robotMessage.getSubType())) {
+                    addNoAgentLeaveMsg();
+                } else {
+                    mChatMsgAdapter.notifyDataSetChanged();
+                }
             } else {
                 mChatMsgAdapter.notifyDataSetChanged();
             }
@@ -1450,8 +1665,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     // 有网络
                     if (info != null && info.isAvailable()) {
                         // 断网后，返回重新进入， 又有网了刷新 Agent
-                        mCurrentAgent = mController.getCurrentAgent();
-                        changeTitleToAgentName(mCurrentAgent);
+                        setCurrentAgent(mController.getCurrentAgent());
                     }
                     // 没有网络
                     else {

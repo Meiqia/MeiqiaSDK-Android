@@ -8,6 +8,9 @@ import com.meiqia.core.MQManager;
 import com.meiqia.core.callback.OnInitCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
+import com.meiqia.meiqiasdk.model.MessageFormInputModel;
+
+import java.util.ArrayList;
 
 
 public final class MQConfig {
@@ -29,6 +32,12 @@ public final class MQConfig {
         public static int rightChatTextColorResId = DEFAULT; // 右边气泡文字颜色
         @DrawableRes
         public static int backArrowIconResId = DEFAULT; // 返回箭头图标资源id
+        @ColorRes
+        public static int robotMenuItemTextColorResId = DEFAULT; // 机器人菜单消息列表文字颜色
+        @ColorRes
+        public static int robotMenuTipTextColorResId = DEFAULT; // 机器人菜单消息提示文本颜色
+        @ColorRes
+        public static int robotEvaluateTextColorResId = DEFAULT; // 机器人消息评价按钮的文字颜色
 
         public enum MQTitleGravity {
             LEFT, CENTER
@@ -39,6 +48,9 @@ public final class MQConfig {
     public static boolean isSoundSwitchOpen = true; // 声音开关
     public static boolean isLoadMessagesFromNativeOpen = false; // 加载本地数据开关
     public static boolean isEvaluateSwitchOpen = true; // 是否开启评价
+
+    public static ArrayList<MessageFormInputModel> messageFormInputModels; // 自定义留言表单字段
+    public static String leaveMessageIntro; // 自定义留言表单引导文案，配置了该引导文案后将不会读取工作台配置的引导文案
 
     private static MQController sController;
 

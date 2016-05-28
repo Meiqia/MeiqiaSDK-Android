@@ -2,7 +2,6 @@ package com.meiqia.meiqiasdk.widget;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.net.Uri;
 import android.text.format.Formatter;
 import android.util.AttributeSet;
@@ -12,11 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.meiqia.meiqiasdk.R;
-import com.meiqia.meiqiasdk.callback.FileStateCallback;
 import com.meiqia.meiqiasdk.callback.OnDownloadFileCallback;
 import com.meiqia.meiqiasdk.model.FileMessage;
 import com.meiqia.meiqiasdk.util.ErrorCode;
-import com.meiqia.meiqiasdk.util.MQChatAdapter;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.util.MQUtils;
@@ -37,10 +34,9 @@ public class MQChatFileItem extends MQBaseCustomCompositeView implements View.On
     private View mRightIv;
     private View root;
     private FileMessage mFileMessage;
-    private MQChatAdapter mAdapter;
+    private Callback mCallback;
 
     private boolean isCancel;
-    private FileStateCallback mFileStateCallback;
 
     public MQChatFileItem(Context context) {
         super(context);
@@ -76,22 +72,7 @@ public class MQChatFileItem extends MQBaseCustomCompositeView implements View.On
     }
 
     @Override
-    protected int[] getAttrs() {
-        return new int[0];
-    }
-
-    @Override
-    protected void initAttr(int attr, TypedArray typedArray) {
-
-    }
-
-    @Override
     protected void processLogic() {
-
-    }
-
-    public void setFileStateCallback(FileStateCallback fileStateCallback) {
-        this.mFileStateCallback = fileStateCallback;
     }
 
     @Override
@@ -119,13 +100,13 @@ public class MQChatFileItem extends MQBaseCustomCompositeView implements View.On
                                 return;
                             }
                             mFileMessage.setFileState(FileMessage.FILE_STATE_FINISH);
-                            mAdapter.notifyDataSetChanged();
+                            mCallback.notifyDataSetChanged();
                         }
 
                         @Override
                         public void onProgress(int progress) {
                             mFileMessage.setProgress(progress);
-                            mAdapter.notifyDataSetChanged();
+                            mCallback.notifyDataSetChanged();
                         }
 
                         @Override
@@ -139,9 +120,7 @@ public class MQChatFileItem extends MQBaseCustomCompositeView implements View.On
                             downloadFailedState();
                             // 下载失败，删除文件
                             cancelDownloading();
-                            if (mFileStateCallback != null) {
-                                mFileStateCallback.onFileMessageDownloadFailure(mFileMessage, code, message);
-                            }
+                            mCallback.onFileMessageDownloadFailure(mFileMessage, code, message);
                         }
                     });
                     break;
@@ -153,16 +132,14 @@ public class MQChatFileItem extends MQBaseCustomCompositeView implements View.On
                     root.performClick();
                     break;
                 case FileMessage.FILE_STATE_EXPIRED:
-                    if (mFileStateCallback != null) {
-                        mFileStateCallback.onFileMessageExpired(mFileMessage);
-                    }
+                    mCallback.onFileMessageExpired(mFileMessage);
                     break;
             }
         }
     }
 
-    public void initFileItem(MQChatAdapter adapter, FileMessage fileMessage) {
-        mAdapter = adapter;
+    public void initFileItem(Callback callback, FileMessage fileMessage) {
+        mCallback = callback;
         mFileMessage = fileMessage;
         downloadInitState();
     }
@@ -186,7 +163,7 @@ public class MQChatFileItem extends MQBaseCustomCompositeView implements View.On
         MQConfig.getController(getContext()).cancelDownload(mFileMessage.getUrl());
         String filePath = MQUtils.getFileMessageFilePath(mFileMessage);
         MQUtils.delFile(filePath);
-        mAdapter.notifyDataSetChanged();
+        mCallback.notifyDataSetChanged();
     }
 
     public void setProgress(int progress) {
@@ -277,5 +254,13 @@ public class MQChatFileItem extends MQBaseCustomCompositeView implements View.On
             cancelDownloading();
         }
         return false;
+    }
+
+    public interface Callback {
+        void notifyDataSetChanged();
+
+        void onFileMessageDownloadFailure(FileMessage fileMessage, int code, String message);
+
+        void onFileMessageExpired(FileMessage fileMessage);
     }
 }
