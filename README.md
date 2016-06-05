@@ -12,8 +12,8 @@
 
 ```
 // required     
-// 「3.2.0」改成 maven central 徽章后面对应的版本号，例如3.2.0
-compile 'com.meiqia:meiqiasdk:3.2.0@aar'
+// 「3.2.1」改成 maven central 徽章后面对应的版本号，例如3.2.1
+compile 'com.meiqia:meiqiasdk:3.2.1@aar'
 
 // 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
 compile 'com.android.support:support-v4:23.1.1'
