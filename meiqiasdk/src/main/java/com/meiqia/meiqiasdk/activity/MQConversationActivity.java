@@ -10,7 +10,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -175,6 +174,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         setListeners();
         applyCustomUIConfig();
         registerReceiver();
+        refreshEnterpriseConfig();
     }
 
     @Override
@@ -1429,6 +1429,23 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     /**
+     * 刷新企业配置信息
+     */
+    private void refreshEnterpriseConfig() {
+        refreshRedirectHumanBtn();
+        MQConfig.getController(this).refreshEnterpriseConfig(new SimpleCallback() {
+            @Override
+            public void onFailure(int code, String message) {
+            }
+
+            @Override
+            public void onSuccess() {
+                refreshRedirectHumanBtn();
+            }
+        });
+    }
+
+    /**
      * 刷新强转人工按钮
      */
     private void refreshRedirectHumanBtn() {
@@ -1650,8 +1667,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 监听网络
      */
     private class NetworkChangeReceiver extends BroadcastReceiver {
-
-        private ConnectivityManager connectivityManager;
         // 第一次进入的时候，会立即收到广播，需要避免以下
         private boolean isFirstReceiveBroadcast = true;
 
@@ -1659,11 +1674,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         public void onReceive(Context arg0, Intent intent) {
             String action = intent.getAction();
             if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo info = connectivityManager.getActiveNetworkInfo();
                 if (!isFirstReceiveBroadcast) {
                     // 有网络
-                    if (info != null && info.isAvailable()) {
+                    if (MQUtils.isNetworkAvailable(getApplicationContext())) {
                         // 断网后，返回重新进入， 又有网了刷新 Agent
                         setCurrentAgent(mController.getCurrentAgent());
                     }
