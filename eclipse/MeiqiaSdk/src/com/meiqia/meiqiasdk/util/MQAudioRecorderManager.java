@@ -17,23 +17,12 @@ public class MQAudioRecorderManager {
     private File mCurrentFile;
     private Callback mCallback;
 
-    private static MQAudioRecorderManager sInstance;
     private boolean mIsPrepared;
     private Context mContext;
 
-    private MQAudioRecorderManager(Context context) {
-        mContext = context;
-    }
-
-    public static MQAudioRecorderManager getInstance(Context context) {
-        if (sInstance == null) {
-            synchronized (MQAudioRecorderManager.class) {
-                if (sInstance == null) {
-                    sInstance = new MQAudioRecorderManager(context.getApplicationContext());
-                }
-            }
-        }
-        return sInstance;
+    public MQAudioRecorderManager(Context context, Callback callback) {
+        mContext = context.getApplicationContext();
+        mCallback = callback;
     }
 
     public void prepareAudio() {
@@ -99,10 +88,6 @@ public class MQAudioRecorderManager {
     @Nullable
     public String getCurrenFilePath() {
         return mCurrentFile == null ? null : mCurrentFile.getAbsolutePath();
-    }
-
-    public void setCallback(Callback callback) {
-        mCallback = callback;
     }
 
     public interface Callback {
