@@ -12,7 +12,7 @@
     <string name="mq_dialog_select_camera">相机</string>
     <string name="mq_dialog_select_gallery">图库</string>
     <string name="mq_dialog_select_title">请选择图片来源：</string>
-    <string name="mq_title_leave_msg">在线客服</string>
+    <string name="mq_title_leave_msg">留言</string>
     <string name="mq_title_unknown_error">未知错误</string>
     <string name="mq_title_inputting">正在输入...</string>
     <string name="mq_input_hint">请输入...</string>

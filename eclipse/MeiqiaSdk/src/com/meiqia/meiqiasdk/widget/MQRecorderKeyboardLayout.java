@@ -1,9 +1,7 @@
 package com.meiqia.meiqiasdk.widget;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.os.Handler;
-import android.os.Message;
+import android.graphics.drawable.LevelListDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -34,11 +32,6 @@ public class MQRecorderKeyboardLayout extends MQBaseCustomCompositeView implemen
     private static final int STATE_RECORDING = 2;
     private static final int STATE_WANT_CANCEL = 3;
 
-    private static final int WHAT_AUDIO_PREPARED = 1;
-    private static final int WHAT_VOICE_CHANGED = 2;
-    private static final int WHAT_HANDLE_OVERTIME = 3;
-
-
     private int mCurrentState = STATE_NORMAL;
     private boolean mIsRecording;
     /**
@@ -60,34 +53,6 @@ public class MQRecorderKeyboardLayout extends MQBaseCustomCompositeView implemen
      */
     private long mLastTipTooShortTime;
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case WHAT_AUDIO_PREPARED:
-                    mIsRecording = true;
-                    new Thread(mGetVoiceLevelRunnable).start();
-                    break;
-                case WHAT_VOICE_CHANGED:
-                    if (mCurrentState == STATE_RECORDING) {
-                        int resId = getContext().getResources().getIdentifier("mq_voice_level" + mAudioRecorderManager.getVoiceLevel(VOICE_LEVEL_COUNT), "drawable", getContext().getPackageName());
-                        mAnimIv.setImageResource(resId);
-                        mAnimIv.setColorFilter(getResources().getColor(R.color.mq_chat_audio_recorder_icon));
-
-                        int remainingTime = Math.round(RECORDER_MAX_TIME - mTime);
-                        if (remainingTime <= 10) {
-                            mStatusTv.setText(getContext().getString(R.string.mq_recorder_remaining_time, remainingTime));
-                        }
-                    }
-                    break;
-                case WHAT_HANDLE_OVERTIME:
-                    mIsOvertime = true;
-                    handleActionUp();
-                    break;
-            }
-        }
-    };
-
     private Runnable mGetVoiceLevelRunnable = new Runnable() {
         @Override
         public void run() {
@@ -96,10 +61,10 @@ public class MQRecorderKeyboardLayout extends MQBaseCustomCompositeView implemen
                     Thread.sleep(100);
                     mTime += 0.1f;
                     if (mTime <= RECORDER_MAX_TIME) {
-                        mHandler.sendEmptyMessage(WHAT_VOICE_CHANGED);
+                        refreshVoiceLevel();
                     } else {
-                        mHandler.sendEmptyMessage(WHAT_HANDLE_OVERTIME);
-                        break;
+                        mIsOvertime = true;
+                        handleActionUp();
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -120,7 +85,6 @@ public class MQRecorderKeyboardLayout extends MQBaseCustomCompositeView implemen
         super(context, attrs, defStyleAttr);
     }
 
-
     @Override
     protected int getLayoutId() {
         return R.layout.mq_layout_recorder_keyboard;
@@ -138,26 +102,27 @@ public class MQRecorderKeyboardLayout extends MQBaseCustomCompositeView implemen
     }
 
     @Override
-    protected int[] getAttrs() {
-        return new int[0];
-    }
-
-    @Override
-    protected void initAttr(int attr, TypedArray typedArray) {
-    }
-
-    @Override
     protected void processLogic() {
-        mAnimIv.setColorFilter(getResources().getColor(R.color.mq_chat_audio_recorder_icon));
+        initLevelListDrawable();
 
         mDistanceCancel = MQUtils.dip2px(getContext(), 10);
-        mAudioRecorderManager = MQAudioRecorderManager.getInstance(getContext());
-        mAudioRecorderManager.setCallback(this);
+        mAudioRecorderManager = new MQAudioRecorderManager(getContext(), this);
+    }
+
+    private void initLevelListDrawable() {
+        LevelListDrawable levelListDrawable = new LevelListDrawable();
+        for (int i = 0; i < 9; i++) {
+            int resId = getContext().getResources().getIdentifier("mq_voice_level" + (i + 1), "drawable", getContext().getPackageName());
+            levelListDrawable.addLevel(i, i + 1, MQUtils.tintDrawable(getContext(), getResources().getDrawable(resId), R.color.mq_chat_audio_recorder_icon));
+        }
+        levelListDrawable.addLevel(9, 10, getResources().getDrawable(R.drawable.mq_voice_want_cancel));
+        mAnimIv.setImageDrawable(levelListDrawable);
     }
 
     @Override
     public void wellPrepared() {
-        mHandler.sendEmptyMessage(WHAT_AUDIO_PREPARED);
+        mIsRecording = true;
+        new Thread(mGetVoiceLevelRunnable).start();
     }
 
     @Override
@@ -166,22 +131,36 @@ public class MQRecorderKeyboardLayout extends MQBaseCustomCompositeView implemen
         reset();
     }
 
+    private void refreshVoiceLevel() {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                if (mCurrentState == STATE_RECORDING) {
+                    mAnimIv.setImageLevel(mAudioRecorderManager.getVoiceLevel(VOICE_LEVEL_COUNT));
+
+                    int remainingTime = Math.round(RECORDER_MAX_TIME - mTime);
+                    if (remainingTime <= 10) {
+                        mStatusTv.setText(getContext().getString(R.string.mq_recorder_remaining_time, remainingTime));
+                    }
+                }
+            }
+        });
+    }
+
     private void changeState(int status) {
         if (mCurrentState != status) {
             mCurrentState = status;
             switch (mCurrentState) {
                 case STATE_NORMAL:
                     mStatusTv.setText(R.string.mq_audio_status_normal);
-                    mAnimIv.setImageResource(R.drawable.mq_voice_level1);
-                    mAnimIv.setColorFilter(getResources().getColor(R.color.mq_chat_audio_recorder_icon));
+                    mAnimIv.setImageLevel(1);
                     break;
                 case STATE_RECORDING:
                     mStatusTv.setText(R.string.mq_audio_status_recording);
                     break;
                 case STATE_WANT_CANCEL:
                     mStatusTv.setText(R.string.mq_audio_status_want_cancel);
-                    mAnimIv.setImageResource(R.drawable.mq_voice_want_cancel);
-                    mAnimIv.clearColorFilter();
+                    mAnimIv.setImageLevel(10);
                     break;
             }
         }
@@ -226,29 +205,34 @@ public class MQRecorderKeyboardLayout extends MQBaseCustomCompositeView implemen
     }
 
     private void handleActionUp() {
-        if (!mIsOvertime && mHasPermission) {
-            // 录音没有超时的情况
+        post(new Runnable() {
+            @Override
+            public void run() {
+                if (!mIsOvertime && mHasPermission) {
+                    // 录音没有超时的情况
 
-            if (!mIsRecording || mTime < 1) {
-                // prepare未完成
-                mAudioRecorderManager.cancel();
+                    if (!mIsRecording || mTime < 1) {
+                        // prepare未完成
+                        mAudioRecorderManager.cancel();
 
-                if (System.currentTimeMillis() - mLastTipTooShortTime > 1000) {
-                    mLastTipTooShortTime = System.currentTimeMillis();
-                    mCallback.onAudioRecorderTooShort();
+                        if (System.currentTimeMillis() - mLastTipTooShortTime > 1000) {
+                            mLastTipTooShortTime = System.currentTimeMillis();
+                            mCallback.onAudioRecorderTooShort();
+                        }
+                    } else if (mCurrentState == STATE_RECORDING) {
+                        endRecorder();
+                    } else if (mCurrentState == STATE_WANT_CANCEL) {
+                        mAudioRecorderManager.cancel();
+                    }
+                } else if (mIsRecording) {
+                    // 录音超时，并且正在录音时
+
+                    endRecorder();
                 }
-            } else if (mCurrentState == STATE_RECORDING) {
-                endRecorder();
-            } else if (mCurrentState == STATE_WANT_CANCEL) {
-                mAudioRecorderManager.cancel();
+
+                reset();
             }
-        } else if (mIsRecording) {
-            // 录音超时，并且正在录音时
-
-            endRecorder();
-        }
-
-        reset();
+        });
     }
 
     /**
