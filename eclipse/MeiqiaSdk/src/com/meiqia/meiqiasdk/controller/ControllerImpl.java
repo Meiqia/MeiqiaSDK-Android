@@ -7,6 +7,7 @@ import com.meiqia.core.MQManager;
 import com.meiqia.core.bean.MQAgent;
 import com.meiqia.core.bean.MQMessage;
 import com.meiqia.core.callback.OnClientInfoCallback;
+import com.meiqia.core.callback.OnClientPositionInQueueCallback;
 import com.meiqia.core.callback.OnGetMessageListCallback;
 import com.meiqia.core.callback.OnProgressCallback;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
@@ -347,5 +348,34 @@ public class ControllerImpl implements MQController {
     @Override
     public boolean getIsShowRedirectHumanButton() {
         return MQManager.getInstance(context).getIsShowRedirectHumanButton();
+    }
+
+    @Override
+    public void getClientPositionInQueue(final OnClientPositionInQueueCallback onClientPositionInQueueCallback) {
+        MQManager.getInstance(context).getClientPositionInQueue(new OnClientPositionInQueueCallback() {
+            @Override
+            public void onSuccess(int position) {
+                if (onClientPositionInQueueCallback != null) {
+                    onClientPositionInQueueCallback.onSuccess(position);
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+                if (onClientPositionInQueueCallback != null) {
+                    onClientPositionInQueueCallback.onFailure(code, message);
+                }
+            }
+        });
+    }
+
+    @Override
+    public boolean getIsWaitingInQueue() {
+        return MQManager.getInstance(context).getIsWaitingInQueue();
+    }
+
+    @Override
+    public String getCurrentClientId() {
+        return MQManager.getInstance(context).getCurrentClientId();
     }
 }

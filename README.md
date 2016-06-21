@@ -12,8 +12,8 @@
 
 ```
 // required     
-// 「3.2.2」改成 maven central 徽章后面对应的版本号，例如3.2.2
-compile 'com.meiqia:meiqiasdk:3.2.2@aar'
+// 「3.2.3」改成 maven central 徽章后面对应的版本号，例如3.2.3
+compile 'com.meiqia:meiqiasdk:3.2.3@aar'
 
 // 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
 compile 'com.android.support:support-v4:23.1.1'
@@ -142,7 +142,12 @@ startActivity(intent);
 
 ### 3.启动留言表单界面
 
-初始化成功后，就可以直接启动留言表单界面
+目前是两种模式：
+(1) 完全对话模式
+无机器人时：如果当前客服不在线，直接聊天界面输入就是留言，客服上线后能够直接回复，如果客服在线，则进入正常客服对话模式。
+有机器人时：如果当前客服不在线时，直接聊天界面输入的话，还是由机器人回答，顾客点击留言就会跳转到表单。
+(2) 单一表单模式
+不管客服是否在线都会进入表单，顾客提交后，不会有聊天的界面。这种主要用于一些 App 只需要用户反馈，不需要直接回复的形式。
 
 ``` java
 startActivity(new Intent(this, MQMessageFormActivity.class));
@@ -198,7 +203,8 @@ startActivity(intent);
 
 > 自定义留言表单引导文案
 
-配置了该引导文案后将不会读取工作台配置的引导文案
+配置了该引导文案后将不会读取工作台配置的引导文案。
+最佳实践：劲量不要在 SDK 中配置引导文案，而是通过工作台配置引导文案，方便在节假日的时候统一配置各终端的引导文案，避免重新打包发布 App。
 
 ``` java
 MQConfig.leaveMessageIntro = "自定义留言表单引导文案";

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewCompat;
@@ -18,21 +17,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.util.MQAsyncTask;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQImageLoader;
+import com.meiqia.meiqiasdk.util.MQSavePhotoTask;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQHackyViewPager;
 import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 
-public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttacher.OnViewTapListener, View.OnClickListener {
+public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttacher.OnViewTapListener, View.OnClickListener, MQAsyncTask.Callback<Void> {
     private static final String EXTRA_SAVE_IMG_DIR = "EXTRA_SAVE_IMG_DIR";
     private static final String EXTRA_PREVIEW_IMAGES = "EXTRA_PREVIEW_IMAGES";
     private static final String EXTRA_CURRENT_POSITION = "EXTRA_CURRENT_POSITION";
@@ -51,7 +49,7 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
     private File mSaveImgDir;
 
     private boolean mIsHidden = false;
-    private Semaphore mSemaphore;
+    private MQSavePhotoTask mSavePhotoTask;
 
     /**
      * 上一次标题栏显示或隐藏的时间戳
@@ -143,8 +141,6 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
         // 处理第一次进来时指示数字
         renderTitleTv();
 
-        mSemaphore = new Semaphore(1);
-
         // 过2秒隐藏标题栏
         mTitleRl.postDelayed(new Runnable() {
             @Override
@@ -197,70 +193,66 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
         if (v.getId() == R.id.back_iv) {
             onBackPressed();
         } else if (v.getId() == R.id.download_iv) {
-            try {
-                mSemaphore.acquire();
+            if (mSavePhotoTask == null) {
                 savePic();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
     }
 
-    private void savePic() {
+    private synchronized void savePic() {
+        if (mSavePhotoTask != null) {
+            return;
+        }
+
         final String url = mPreviewImages.get(mContentHvp.getCurrentItem());
         File file;
         if (url.startsWith("file")) {
             file = new File(url.replace("file://", ""));
             if (file.exists()) {
                 MQUtils.showSafe(MQPhotoPreviewActivity.this, getString(R.string.mq_save_img_success_folder, file.getParentFile().getAbsolutePath()));
-                mSemaphore.release();
                 return;
             }
         }
 
+        // 通过MD5加密url生成文件名，避免多次保存同一张图片
         file = new File(mSaveImgDir, MQUtils.stringToMD5(url) + ".png");
         if (file.exists()) {
             MQUtils.showSafe(MQPhotoPreviewActivity.this, getString(R.string.mq_save_img_success_folder, mSaveImgDir.getAbsolutePath()));
-            mSemaphore.release();
             return;
         }
 
+        mSavePhotoTask = new MQSavePhotoTask(MQPhotoPreviewActivity.this, MQPhotoPreviewActivity.this.getApplication(), file);
         MQConfig.getImageLoader(MQPhotoPreviewActivity.this).downloadImage(this, url, new MQImageLoader.MQDownloadImageListener() {
             @Override
             public void onSuccess(String url, Bitmap bitmap) {
-                FileOutputStream fos = null;
-                try {
-                    // 通过MD5加密url生成文件名，避免多次保存同一张图片
-                    File newFile = new File(mSaveImgDir, MQUtils.stringToMD5(url) + ".png");
-                    if (!newFile.exists()) {
-                        fos = new FileOutputStream(newFile);
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                        fos.flush();
-
-                        // 通知图库更新
-                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(newFile)));
-                    }
-                    MQUtils.showSafe(MQPhotoPreviewActivity.this, getString(R.string.mq_save_img_success_folder, mSaveImgDir.getAbsolutePath()));
-                } catch (IOException e) {
-                    MQUtils.showSafe(MQPhotoPreviewActivity.this, R.string.mq_save_img_failure);
-                } finally {
-                    if (fos != null) {
-                        try {
-                            fos.close();
-                        } catch (IOException e) {
-                            MQUtils.showSafe(MQPhotoPreviewActivity.this, R.string.mq_save_img_failure);
-                        }
-                    }
-                    mSemaphore.release();
-                }
+                mSavePhotoTask.setBitmapAndPerform(bitmap);
             }
 
             @Override
             public void onFailed(String url) {
+                mSavePhotoTask = null;
                 MQUtils.showSafe(MQPhotoPreviewActivity.this, R.string.mq_save_img_failure);
-                mSemaphore.release();
             }
         });
+    }
+
+    @Override
+    public void onPostExecute(Void aVoid) {
+        mSavePhotoTask = null;
+    }
+
+    @Override
+    public void onCancled() {
+        mSavePhotoTask = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mSavePhotoTask != null) {
+            mSavePhotoTask.cancelTask();
+            mSavePhotoTask = null;
+        }
+        super.onDestroy();
     }
 
     private class ImagePageAdapter extends PagerAdapter {

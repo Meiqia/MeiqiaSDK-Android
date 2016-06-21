@@ -17,6 +17,8 @@
     <string name="mq_title_inputting">正在输入...</string>
     <string name="mq_input_hint">请输入...</string>
     <string name="mq_allocate_agent">正在分配客服...</string>
+    <string name="mq_allocate_queue_title">排队等待中...</string>
+    <string name="mq_allocate_queue_tip">正在排队，请等待客服接入后发送消息</string>
     <string name="mq_allocate_agent_tip">正在为您分配客服，请稍后重发。</string>
     <string name="mq_send_robot_msg_time_limit_tip">您发送的太快啦，请休息一下吧~</string>
     <string name="mq_leave_msg_tips">抱歉，现在没有客服人员在线\n你可以继续写下你的问题，我们会尽快回复</string>
