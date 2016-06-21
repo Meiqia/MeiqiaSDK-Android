@@ -11,6 +11,7 @@ import com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.EvaluateMessage;
 import com.meiqia.meiqiasdk.model.FileMessage;
+import com.meiqia.meiqiasdk.model.RedirectQueueMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.widget.MQAgentItem;
@@ -18,6 +19,7 @@ import com.meiqia.meiqiasdk.widget.MQBaseBubbleItem;
 import com.meiqia.meiqiasdk.widget.MQClientItem;
 import com.meiqia.meiqiasdk.widget.MQEvaluateItem;
 import com.meiqia.meiqiasdk.widget.MQNoAgentItem;
+import com.meiqia.meiqiasdk.widget.MQRedirectQueueItem;
 import com.meiqia.meiqiasdk.widget.MQRobotItem;
 import com.meiqia.meiqiasdk.widget.MQTimeItem;
 import com.meiqia.meiqiasdk.widget.MQTipItem;
@@ -121,6 +123,9 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
                 case BaseMessage.TYPE_USELESS_REDIRECT:
                     convertView = new MQUselessRedirectItem(mConversationActivity);
                     break;
+                case BaseMessage.TYPE_QUEUE_TIP:
+                    convertView = new MQRedirectQueueItem(mConversationActivity, mConversationActivity);
+                    break;
             }
         }
 
@@ -140,6 +145,8 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
             ((MQTipItem) convertView).setMessage(mcMessage);
         } else if (getItemViewType(position) == BaseMessage.TYPE_EVALUATE) {
             ((MQEvaluateItem) convertView).setMessage((EvaluateMessage) mcMessage);
+        } else if (getItemViewType(position) == BaseMessage.TYPE_QUEUE_TIP) {
+            ((MQRedirectQueueItem) convertView).setMessage((RedirectQueueMessage) mcMessage);
         }
 
         return convertView;

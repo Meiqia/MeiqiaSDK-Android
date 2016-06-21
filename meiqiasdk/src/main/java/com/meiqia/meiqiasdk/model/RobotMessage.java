@@ -13,6 +13,8 @@ public class RobotMessage extends BaseMessage {
     public static final String SUB_TYPE_REDIRECT = "redirect";
     public static final String SUB_TYPE_REPLY = "reply";
     public static final String SUB_TYPE_MESSAGE = "message";
+    public static final String SUB_TYPE_MENU = "menu";
+    public static final String SUB_TYPE_QUEUEING = "queueing";
 
     private String subType;
     private String contentRobot;

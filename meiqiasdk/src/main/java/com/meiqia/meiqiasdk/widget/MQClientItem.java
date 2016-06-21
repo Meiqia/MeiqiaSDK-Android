@@ -81,7 +81,6 @@ public class MQClientItem extends MQBaseBubbleItem {
         @Override
         public void onClick(View v) {
             if (!MQUtils.isFastClick()) {
-                mFailedMessage.setStatus(BaseMessage.STATE_SENDING);
                 mCallback.resendFailedMessage(mFailedMessage);
             }
         }

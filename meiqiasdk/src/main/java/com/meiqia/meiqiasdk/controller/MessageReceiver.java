@@ -74,6 +74,10 @@ public abstract class MessageReceiver extends BroadcastReceiver {
             blackAdd();
         } else if (MQMessageManager.ACTION_BLACK_DEL.equals(action)) {
             blackDel();
+        } else if (TextUtils.equals(MQMessageManager.ACTION_QUEUEING_REMOVE, action)) {
+            removeQueue();
+        } else if (TextUtils.equals(MQMessageManager.ACTION_QUEUEING_INIT_CONV, action)) {
+            queueingInitConv();
         }
     }
 
@@ -94,4 +98,8 @@ public abstract class MessageReceiver extends BroadcastReceiver {
     public abstract void blackAdd();
 
     public abstract void blackDel();
+
+    public abstract void removeQueue();
+
+    public abstract void queueingInitConv();
 }

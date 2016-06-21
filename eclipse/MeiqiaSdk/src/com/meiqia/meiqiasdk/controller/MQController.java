@@ -1,6 +1,7 @@
 package com.meiqia.meiqiasdk.controller;
 
 
+import com.meiqia.core.callback.OnClientPositionInQueueCallback;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
 import com.meiqia.meiqiasdk.callback.OnDownloadFileCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
@@ -21,6 +22,8 @@ public interface MQController {
     String ACTION_AGENT_STATUS_UPDATE_EVENT = "action_agent_status_update_event";
     String ACTION_BLACK_ADD = "action_black_add";
     String ACTION_BLACK_DEL = "action_black_del";
+    String ACTION_QUEUEING_REMOVE = "action_queueing_remove";
+    String ACTION_QUEUEING_INIT_CONV = "action_queueing_init_conv";
 
     void sendMessage(BaseMessage baseMessage, OnMessageSendCallback onMessageSendCallback);
 
@@ -184,4 +187,24 @@ public interface MQController {
      */
     void onConversationOpen();
 
+    /**
+     * 获取当前顾客在排队队列中的位置
+     *
+     * @param onClientPositionInQueueCallback
+     */
+    void getClientPositionInQueue(OnClientPositionInQueueCallback onClientPositionInQueueCallback);
+
+    /**
+     * 是否正在排队转人工
+     *
+     * @return
+     */
+    boolean getIsWaitingInQueue();
+
+    /**
+     * 获取当前用户id
+     *
+     * @return
+     */
+    String getCurrentClientId();
 }

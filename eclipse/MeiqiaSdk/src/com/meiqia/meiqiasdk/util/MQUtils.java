@@ -6,6 +6,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -693,5 +694,35 @@ public class MQUtils {
         }
         NetworkInfo info = connectivityManager.getActiveNetworkInfo();
         return info != null && info.isAvailable() && info.isConnected();
+    }
+
+    /**
+     * 设置未发送的文本消息
+     *
+     * @param context
+     * @param text
+     */
+    public static void setUnSendTextMessage(Context context, String clientId, String text) {
+        putString(context, "mq_un_send_text_msg" + clientId, text);
+    }
+
+    /**
+     * 获取未发送的文本消息
+     *
+     * @param context
+     * @return
+     */
+    public static String getUnSendTextMessage(Context context, String clientId) {
+        return getString(context, "mq_un_send_text_msg" + clientId, "");
+    }
+
+    public static void putString(Context context, String key, String value) {
+        SharedPreferences.Editor editor = context.getSharedPreferences("MeiqiaSDK", Context.MODE_PRIVATE).edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+    public static String getString(Context context, String key, String def) {
+        return context.getSharedPreferences("MeiqiaSDK", Context.MODE_PRIVATE).getString(key, def);
     }
 }
