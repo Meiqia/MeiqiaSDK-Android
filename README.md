@@ -12,12 +12,12 @@
 
 ```
 // required     
-// 「3.2.3」改成 maven central 徽章后面对应的版本号，例如3.2.3
-compile 'com.meiqia:meiqiasdk:3.2.3@aar'
+// 「3.2.4」改成 maven central 徽章后面对应的版本号，例如3.2.4
+compile 'com.meiqia:meiqiasdk:3.2.4@aar'
 
 // 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
 compile 'com.android.support:support-v4:23.1.1'
-compile 'com.squareup.okhttp3:okhttp:3.2.0'
+compile 'com.squareup.okhttp3:okhttp:3.3.1'
 compile 'com.commit451:PhotoView:1.2.4'
 
 // 目前支持常见的 4 种图片加载库，选择其中一种作为 MQConfig.init 方法的第三个参数进行初始化
@@ -113,7 +113,7 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 ``` java
 
 // MQImageLoader 的实现类目前有 GlideImageloader、PicassoImageLoader、UILImageLoader，根据你自己项目中已使用的图片加载库来选择
-MQConfig.init(this, "Your Appkey", new MQImageLoader的实现类(), new OnInitCallback() {
+MQConfig.init(this, "Your Appkey", new OnInitCallback() {
     @Override
     public void onSuccess(String clientId) {
         Toast.makeText(MainActivity.this, "init success", Toast.LENGTH_SHORT).show();
