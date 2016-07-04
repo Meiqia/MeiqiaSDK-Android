@@ -22,14 +22,14 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.1.1'
-//    compile project(':meiqiasdk')
+    compile project(':meiqiasdk')
 
     // required
-    compile 'com.meiqia:meiqiasdk:3.2.3@aar'
+//    compile 'com.meiqia:meiqiasdk:3.2.4@aar'
 
     // 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
     compile 'com.android.support:support-v4:23.1.1'
-    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.squareup.okhttp3:okhttp:3.3.1'
     compile 'com.commit451:PhotoView:1.2.4'
 
     // 目前支持常见的 4 种图片加载库，选择其中一种作为 MQConfig.init 方法的第三个参数进行初始化

@@ -35,7 +35,9 @@ public abstract class MessageReceiver extends BroadcastReceiver {
             if (message != null) {
                 //处理消息，并发送广播
                 baseMessage = MQUtils.parseMQMessageToBaseMessage(message);
-                receiveNewMsg(baseMessage);
+                if (baseMessage != null) {
+                    receiveNewMsg(baseMessage);
+                }
             }
         }
 

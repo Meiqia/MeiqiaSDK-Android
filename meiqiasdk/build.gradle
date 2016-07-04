@@ -17,10 +17,13 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-    compile 'com.android.support:support-v4:23.1.1'
-    compile 'com.squareup.okhttp3:okhttp:3.2.0'
-    compile 'com.commit451:PhotoView:1.2.4'
+    provided 'com.android.support:support-v4:23.1.1'
+    provided 'com.commit451:PhotoView:1.2.5'
+    provided 'com.squareup.okhttp3:okhttp:3.3.1'
+    provided 'com.github.bumptech.glide:glide:3.7.0'
+    provided 'com.squareup.picasso:picasso:2.5.2'
+    provided 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    provided 'org.xutils:xutils:3.3.36'
 }
 
 // gradle uploadArchives
-//apply from: 'central-publish.gradle'

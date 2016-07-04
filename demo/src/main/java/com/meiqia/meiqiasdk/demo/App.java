@@ -7,7 +7,6 @@ import android.widget.Toast;
 import com.meiqia.core.MQManager;
 import com.meiqia.core.callback.OnInitCallback;
 import com.meiqia.meiqiasdk.model.MessageFormInputModel;
-import com.meiqia.meiqiasdk.uilimageloader.UILImageLoader;
 import com.meiqia.meiqiasdk.util.MQConfig;
 
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class App extends Application {
 
         // 替换成自己的key
         String meiqiaKey = "a71c257c80dfe883d92a64dca323ec20";
-        MQConfig.init(this, meiqiaKey, new UILImageLoader(), new OnInitCallback() {
+        MQConfig.init(this, meiqiaKey, new OnInitCallback() {
             @Override
             public void onSuccess(String clientId) {
                 Toast.makeText(App.this, "init success", Toast.LENGTH_SHORT).show();

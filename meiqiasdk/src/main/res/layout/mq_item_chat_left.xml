@@ -65,7 +65,7 @@
                 android:src="@drawable/mq_voice_left_normal" />
         </RelativeLayout>
 
-        <com.meiqia.meiqiasdk.widget.MQChatFileItem
+        <com.meiqia.meiqiasdk.chatitem.MQChatFileItem
             android:id="@+id/file_container"
             style="@style/MQWrapWrap"
             android:background="@drawable/mq_bg_msg_left"
