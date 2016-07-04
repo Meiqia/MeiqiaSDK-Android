@@ -8,6 +8,7 @@ import com.meiqia.core.MQManager;
 import com.meiqia.core.callback.OnInitCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
+import com.meiqia.meiqiasdk.imageloader.MQImageLoader;
 import com.meiqia.meiqiasdk.model.MessageFormInputModel;
 
 import java.util.ArrayList;
@@ -69,22 +70,12 @@ public final class MQConfig {
         sController = controller;
     }
 
-    private static MQImageLoader sImageLoader;
-
-    public static MQImageLoader getImageLoader(Context context) {
-        if (sImageLoader == null) {
-            synchronized (MQConfig.class) {
-                if (sImageLoader == null) {
-                    throw new RuntimeException("请调用MQConfig.init方法初始化美洽 SDK，并传入MQImageLoader接口的实现类");
-                }
-            }
-        }
-        return sImageLoader;
+    @Deprecated
+    public static void init(Context context, String appKey, MQImageLoader imageLoader, final OnInitCallback onInitCallBack) {
+        MQManager.init(context, appKey, onInitCallBack);
     }
 
-    public static void init(Context context, String appKey, MQImageLoader imageLoader, final OnInitCallback onInitCallBack) {
-        sImageLoader = imageLoader;
-
+    public static void init(Context context, String appKey, OnInitCallback onInitCallBack) {
         MQManager.init(context, appKey, onInitCallBack);
     }
 }

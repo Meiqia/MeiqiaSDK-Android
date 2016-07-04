@@ -1,4 +1,4 @@
-package com.meiqia.meiqiasdk.widget;
+package com.meiqia.meiqiasdk.chatitem;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +17,8 @@ import com.meiqia.meiqiasdk.util.ErrorCode;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.util.MQUtils;
+import com.meiqia.meiqiasdk.widget.CircularProgressBar;
+import com.meiqia.meiqiasdk.widget.MQBaseCustomCompositeView;
 
 import org.json.JSONObject;
 

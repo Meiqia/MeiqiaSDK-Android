@@ -1,4 +1,4 @@
-package com.meiqia.meiqiasdk.widget;
+package com.meiqia.meiqiasdk.chatitem;
 
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.imageloader.MQImage;
+import com.meiqia.meiqiasdk.imageloader.MQImageLoader;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.FileMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
@@ -17,8 +19,9 @@ import com.meiqia.meiqiasdk.util.MQAudioPlayerManager;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQDownloadManager;
 import com.meiqia.meiqiasdk.util.MQEmotionUtil;
-import com.meiqia.meiqiasdk.util.MQImageLoader;
 import com.meiqia.meiqiasdk.util.MQUtils;
+import com.meiqia.meiqiasdk.widget.MQBaseCustomCompositeView;
+import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import java.io.File;
 
@@ -127,6 +130,9 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
             case BaseMessage.TYPE_CONTENT_FILE:
                 chatFileItem.setVisibility(View.VISIBLE);
                 break;
+            default:
+                contentText.setVisibility(View.VISIBLE);
+                break;
         }
     }
 
@@ -149,7 +155,7 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
                     url = ((PhotoMessage) baseMessage).getUrl();
                 }
 
-                MQConfig.getImageLoader(getContext()).displayImage(contentImage, url, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, new MQImageLoader.MQDisplayImageListener() {
+                MQImage.displayImage(contentImage, url, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, new MQImageLoader.MQDisplayImageListener() {
                     @Override
                     public void onSuccess(View view, final String url) {
                         postDelayed(new Runnable() {
@@ -177,6 +183,10 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
             // 文件
             case BaseMessage.TYPE_CONTENT_FILE:
                 handleBindFileItem((FileMessage) baseMessage);
+                break;
+            // 默认文字消息处理
+            default:
+                contentText.setText(getResources().getString(R.string.mq_unknown_msg_tip));
                 break;
         }
     }

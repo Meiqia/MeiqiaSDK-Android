@@ -43,6 +43,7 @@ import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.FileMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
+import com.meiqia.meiqiasdk.model.RichTextMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
@@ -109,6 +110,8 @@ public class MQUtils {
             itemType = BaseMessage.TYPE_ROBOT;
         } else if (MQMessage.TYPE_FROM_CLIENT.equals(message.getFrom_type())) {
             itemType = BaseMessage.TYPE_CLIENT;
+        } else if (MQMessage.TYPE_CONTENT_RICH_TEXT.equals(message.getContent_type())) {
+            itemType = BaseMessage.TYPE_RICH_TEXT;
         }
         return itemType;
     }
@@ -124,6 +127,9 @@ public class MQUtils {
             robotMessage.setQuestionId(message.getQuestion_id());
             robotMessage.setAlreadyFeedback(message.isAlreadyFeedback());
             baseMessage = robotMessage;
+        } else if (MQMessage.TYPE_CONTENT_TEXT.equals(message.getContent_type())) {
+            baseMessage = new TextMessage(message.getContent());
+            baseMessage.setContent(message.getContent());
         } else if (MQMessage.TYPE_CONTENT_PHOTO.equals(message.getContent_type())) {
             // message.getMedia_url() 可能是本地路径
             baseMessage = new PhotoMessage();
@@ -153,13 +159,19 @@ public class MQUtils {
             baseMessage.setContent("[file]");
             baseMessage.setId(message.getId());
             updateFileState(((FileMessage) baseMessage));
-        } else {
-            baseMessage = new TextMessage(message.getContent());
+        } else if (MQMessage.TYPE_CONTENT_RICH_TEXT.equals(message.getContent_type())) {
+            baseMessage = new RichTextMessage();
             baseMessage.setContent(message.getContent());
+            ((RichTextMessage) baseMessage).setExtra(message.getExtra());
+        } else {
+            // TYPE 设置 unknown,在 adapter 渲染内容
+            baseMessage = new TextMessage(message.getContent());
+            baseMessage.setContentType(BaseMessage.TYPE_CONTENT_UNKNOWN);
         }
 
         baseMessage.setConversationId(message.getConversation_id());
         baseMessage.setStatus(message.getStatus());
+        // 注意 type
         baseMessage.setItemViewType(getItemType(message));
         baseMessage.setContentType(message.getContent_type());
         baseMessage.setType(message.getType());

@@ -20,6 +20,8 @@ public class BaseMessage {
     public static final String TYPE_CONTENT_PHOTO = "photo";
     public static final String TYPE_CONTENT_VOICE = "audio";
     public static final String TYPE_CONTENT_FILE = "file";
+    public static final String TYPE_CONTENT_UNKNOWN = "unknown";
+    public static final String TYPE_CONTENT_RICH_TEXT = "rich_text";
 
     public static final int TYPE_CLIENT = 0;
     public static final int TYPE_AGENT = 1;
@@ -30,8 +32,9 @@ public class BaseMessage {
     public static final int TYPE_NO_AGENT_TIP = 6;
     public static final int TYPE_USELESS_REDIRECT = 7;
     public static final int TYPE_QUEUE_TIP = 8;
+    public static final int TYPE_RICH_TEXT = 9;
 
-    public static final int MAX_TYPE = 9;
+    public static final int MAX_TYPE = 10;
     private long createdOn;
     private String agentNickname;
     private String status;

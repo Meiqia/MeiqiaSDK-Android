@@ -15,6 +15,7 @@ public class RobotMessage extends BaseMessage {
     public static final String SUB_TYPE_MESSAGE = "message";
     public static final String SUB_TYPE_MENU = "menu";
     public static final String SUB_TYPE_QUEUEING = "queueing";
+    public static final String SUB_TYPE_UNKNOWN = "unknown";
 
     private String subType;
     private String contentRobot;

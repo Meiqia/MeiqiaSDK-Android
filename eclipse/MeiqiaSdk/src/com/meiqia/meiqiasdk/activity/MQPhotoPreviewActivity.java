@@ -17,9 +17,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.imageloader.MQImage;
+import com.meiqia.meiqiasdk.imageloader.MQImageLoader;
 import com.meiqia.meiqiasdk.util.MQAsyncTask;
-import com.meiqia.meiqiasdk.util.MQConfig;
-import com.meiqia.meiqiasdk.util.MQImageLoader;
 import com.meiqia.meiqiasdk.util.MQSavePhotoTask;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQHackyViewPager;
@@ -222,7 +222,7 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
         }
 
         mSavePhotoTask = new MQSavePhotoTask(MQPhotoPreviewActivity.this, MQPhotoPreviewActivity.this.getApplication(), file);
-        MQConfig.getImageLoader(MQPhotoPreviewActivity.this).downloadImage(this, url, new MQImageLoader.MQDownloadImageListener() {
+        MQImage.downloadImage(this, url, new MQImageLoader.MQDownloadImageListener() {
             @Override
             public void onSuccess(String url, Bitmap bitmap) {
                 mSavePhotoTask.setBitmapAndPerform(bitmap);
@@ -276,7 +276,7 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
                 }
             });
 
-            MQConfig.getImageLoader(MQPhotoPreviewActivity.this).displayImage(imageView, mPreviewImages.get(position), R.drawable.mq_ic_holder_dark, R.drawable.mq_ic_holder_dark, MQUtils.getScreenWidth(MQPhotoPreviewActivity.this), MQUtils.getScreenHeight(MQPhotoPreviewActivity.this), null);
+            MQImage.displayImage(imageView, mPreviewImages.get(position), R.drawable.mq_ic_holder_dark, R.drawable.mq_ic_holder_dark, MQUtils.getScreenWidth(MQPhotoPreviewActivity.this), MQUtils.getScreenHeight(MQPhotoPreviewActivity.this), null);
 
             return imageView;
         }

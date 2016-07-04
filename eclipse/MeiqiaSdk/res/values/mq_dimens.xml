@@ -15,6 +15,7 @@
     <dimen name="mq_size_level9">36dp</dimen>
     <dimen name="mq_size_level10">40dp</dimen>
 
+    <dimen name="mq_textSize_rich_text">14sp</dimen>
     <dimen name="mq_textSize_level1">12sp</dimen>
     <dimen name="mq_textSize_level2">16sp</dimen>
 

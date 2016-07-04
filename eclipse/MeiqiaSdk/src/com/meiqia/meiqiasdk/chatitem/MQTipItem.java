@@ -1,4 +1,4 @@
-package com.meiqia.meiqiasdk.widget;
+package com.meiqia.meiqiasdk.chatitem;
 
 import android.content.Context;
 import android.text.Spannable;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.model.AgentChangeMessage;
 import com.meiqia.meiqiasdk.model.BaseMessage;
+import com.meiqia.meiqiasdk.widget.MQBaseCustomCompositeView;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com

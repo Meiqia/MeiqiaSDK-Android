@@ -75,8 +75,8 @@ import com.meiqia.meiqiasdk.util.MQSoundPoolManager;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQCustomKeyboardLayout;
-import com.meiqia.meiqiasdk.widget.MQRobotItem;
-import com.meiqia.meiqiasdk.widget.MQUselessRedirectItem;
+import com.meiqia.meiqiasdk.chatitem.MQRobotItem;
+import com.meiqia.meiqiasdk.chatitem.MQUselessRedirectItem;
 
 import java.io.File;
 import java.io.Serializable;
@@ -1078,10 +1078,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 从本地选择图片
      */
     private void chooseFromPhotoPicker() {
-        if (!checkSendable()) {
-            return;
-        }
-
         startActivityForResult(MQPhotoPickerActivity.newIntent(this, null, 6, null, getString(R.string.mq_send)), REQUEST_CODE_PHOTO);
     }
 
@@ -1090,10 +1086,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 打开相机
      */
     private void choosePhotoFromCamera() {
-        if (!checkSendable()) {
-            return;
-        }
-
         MQUtils.closeKeyboard(MQConversationActivity.this);
 
         Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

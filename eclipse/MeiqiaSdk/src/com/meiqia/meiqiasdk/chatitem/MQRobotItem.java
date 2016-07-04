@@ -1,4 +1,4 @@
-package com.meiqia.meiqiasdk.widget;
+package com.meiqia.meiqiasdk.chatitem;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -8,9 +8,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.imageloader.MQImage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
+import com.meiqia.meiqiasdk.widget.MQBaseCustomCompositeView;
+import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -90,7 +93,7 @@ public class MQRobotItem extends MQBaseCustomCompositeView {
         reset();
 
         mRobotMessage = robotMessage;
-        MQConfig.getImageLoader(getContext()).displayImage(mAvatarIv, mRobotMessage.getAvatar(), R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, 100, 100, null);
+        MQImage.displayImage(mAvatarIv, mRobotMessage.getAvatar(), R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, 100, 100, null);
         handleEvaluateStatus();
         fillContentLl();
     }
@@ -118,6 +121,11 @@ public class MQRobotItem extends MQBaseCustomCompositeView {
 
     private void fillContentLl() {
         try {
+            if (RobotMessage.SUB_TYPE_UNKNOWN.equals(mRobotMessage.getSubType())) {
+                addNormalTextView(getResources().getString(R.string.mq_unknown_msg_tip));
+                return;
+            }
+
             JSONArray contentJsonArray = new JSONArray(mRobotMessage.getContentRobot());
             for (int i = 0; i < contentJsonArray.length(); i++) {
                 JSONObject itemJsonObject = contentJsonArray.optJSONObject(i);

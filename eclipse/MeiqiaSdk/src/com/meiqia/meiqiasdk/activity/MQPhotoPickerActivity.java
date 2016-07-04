@@ -19,9 +19,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.imageloader.MQImage;
 import com.meiqia.meiqiasdk.model.ImageFolderModel;
 import com.meiqia.meiqiasdk.pw.MQPhotoFolderPw;
-import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQImageCaptureManager;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQImageView;
@@ -213,19 +213,40 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (mCurrentImageFolderModel.isTakePhotoEnabled() && position == 0) {
-            if (mPicAdapter.getSelectedCount() == mMaxChooseCount) {
-                toastMaxCountTip();
-            } else {
+        if (mMaxChooseCount == 1) {
+            // 单选
+
+            if (mCurrentImageFolderModel.isTakePhotoEnabled() && position == 0) {
                 takePhoto();
+            } else {
+                changeToPreview(position);
             }
         } else {
-            int currentPosition = position;
-            if (mCurrentImageFolderModel.isTakePhotoEnabled()) {
-                currentPosition--;
+            // 多选
+
+            if (mCurrentImageFolderModel.isTakePhotoEnabled() && position == 0) {
+                if (mPicAdapter.getSelectedCount() == mMaxChooseCount) {
+                    toastMaxCountTip();
+                } else {
+                    takePhoto();
+                }
+            } else {
+                changeToPreview(position);
             }
-            startActivityForResult(MQPhotoPickerPreviewActivity.newIntent(this, mMaxChooseCount, mPicAdapter.getSelectedImages(), mPicAdapter.getDatas(), currentPosition, mTopRightBtnText, false), REQUEST_CODE_PREVIEW);
         }
+    }
+
+    /**
+     * 跳转到图片选择预览界面
+     *
+     * @param position 当前点击的item的索引位置
+     */
+    private void changeToPreview(int position) {
+        int currentPosition = position;
+        if (mCurrentImageFolderModel.isTakePhotoEnabled()) {
+            currentPosition--;
+        }
+        startActivityForResult(MQPhotoPickerPreviewActivity.newIntent(this, mMaxChooseCount, mPicAdapter.getSelectedImages(), mPicAdapter.getDatas(), currentPosition, mTopRightBtnText, false), REQUEST_CODE_PREVIEW);
     }
 
     /**
@@ -251,21 +272,25 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_TAKE_PHOTO) {
-                // 更新图库
-                mImageCaptureManager.refreshGallery();
-
-                String photoPath = mImageCaptureManager.getCurrentPhotoPath();
-                mPicAdapter.getSelectedImages().add(photoPath);
-                mPicAdapter.getDatas().add(0, photoPath);
-                renderTopRightBtn();
-
-                startActivityForResult(MQPhotoPickerPreviewActivity.newIntent(this, mMaxChooseCount, mPicAdapter.getSelectedImages(), mPicAdapter.getDatas(), 0, mTopRightBtnText, true), REQUEST_CODE_PREVIEW);
+                ArrayList<String> photos = new ArrayList<>();
+                photos.add(mImageCaptureManager.getCurrentPhotoPath());
+                startActivityForResult(MQPhotoPickerPreviewActivity.newIntent(this, 1, photos, photos, 0, mTopRightBtnText, true), REQUEST_CODE_PREVIEW);
             } else if (requestCode == REQUEST_CODE_PREVIEW) {
+                if (MQPhotoPickerPreviewActivity.getIsFromTakePhoto(data)) {
+                    // 从拍照预览界面返回，刷新图库
+                    mImageCaptureManager.refreshGallery();
+                }
+
                 returnSelectedImages(MQPhotoPickerPreviewActivity.getSelectedImages(data));
             }
         } else if (resultCode == RESULT_CANCELED && requestCode == REQUEST_CODE_PREVIEW) {
-            mPicAdapter.setSelectedImages(MQPhotoPickerPreviewActivity.getSelectedImages(data));
-            renderTopRightBtn();
+            if (MQPhotoPickerPreviewActivity.getIsFromTakePhoto(data)) {
+                // 从拍照预览界面返回，删除之前拍的照片
+                mImageCaptureManager.deletePhotoFile();
+            } else {
+                mPicAdapter.setSelectedImages(MQPhotoPickerPreviewActivity.getSelectedImages(data));
+                renderTopRightBtn();
+            }
         }
     }
 
@@ -424,7 +449,7 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
             } else {
                 picViewHolder.tipTv.setVisibility(View.INVISIBLE);
                 picViewHolder.photoIv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                MQConfig.getImageLoader(MQPhotoPickerActivity.this).displayImage(picViewHolder.photoIv, imagePath, R.drawable.mq_ic_holder_dark, R.drawable.mq_ic_holder_dark, mImageWidth, mImageHeight, null);
+                MQImage.displayImage(picViewHolder.photoIv, imagePath, R.drawable.mq_ic_holder_dark, R.drawable.mq_ic_holder_dark, mImageWidth, mImageHeight, null);
 
                 picViewHolder.flagIv.setVisibility(View.VISIBLE);
 
@@ -446,18 +471,35 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
             flagIv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String image = getItem(position);
-                    if (!mSelectedImages.contains(image) && getSelectedCount() == mMaxChooseCount) {
-                        toastMaxCountTip();
-                    } else {
-                        if (mSelectedImages.contains(image)) {
-                            mSelectedImages.remove(image);
+                    String currentImage = mPicAdapter.getItem(position);
+                    if (mMaxChooseCount == 1) {
+                        // 单选
+
+                        if (mPicAdapter.getSelectedCount() > 0) {
+                            String selectedImage = mPicAdapter.getSelectedImages().remove(0);
+                            if (!TextUtils.equals(selectedImage, currentImage)) {
+                                mPicAdapter.getSelectedImages().add(currentImage);
+                            }
                         } else {
-                            mSelectedImages.add(image);
+                            mPicAdapter.getSelectedImages().add(currentImage);
                         }
                         notifyDataSetChanged();
-
                         renderTopRightBtn();
+                    } else {
+                        // 多选
+
+                        if (!mPicAdapter.getSelectedImages().contains(currentImage) && mPicAdapter.getSelectedCount() == mMaxChooseCount) {
+                            toastMaxCountTip();
+                        } else {
+                            if (mPicAdapter.getSelectedImages().contains(currentImage)) {
+                                mPicAdapter.getSelectedImages().remove(currentImage);
+                            } else {
+                                mPicAdapter.getSelectedImages().add(currentImage);
+                            }
+                            notifyDataSetChanged();
+
+                            renderTopRightBtn();
+                        }
                     }
                 }
             });

@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.SimpleCallback;
 import com.meiqia.meiqiasdk.dialog.MQLoadingDialog;
+import com.meiqia.meiqiasdk.imageloader.MQImage;
 import com.meiqia.meiqiasdk.model.MessageFormInputModel;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
@@ -318,7 +319,7 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
         mDeleteTwoIv.setVisibility(View.INVISIBLE);
         mDeleteThreeIv.setVisibility(View.INVISIBLE);
 
-        MQConfig.getImageLoader(this).displayImage(mPictureOneSiv, mPictures.get(0), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
+        MQImage.displayImage(mPictureOneSiv, mPictures.get(0), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
         mPictureTwoSiv.setImageResource(R.drawable.mq_ic_add_img);
     }
 
@@ -330,8 +331,8 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
         mDeleteTwoIv.setVisibility(View.VISIBLE);
         mDeleteThreeIv.setVisibility(View.INVISIBLE);
 
-        MQConfig.getImageLoader(this).displayImage(mPictureOneSiv, mPictures.get(0), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
-        MQConfig.getImageLoader(this).displayImage(mPictureTwoSiv, mPictures.get(1), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
+        MQImage.displayImage(mPictureOneSiv, mPictures.get(0), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
+        MQImage.displayImage(mPictureTwoSiv, mPictures.get(1), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
         mPictureThreeSiv.setImageResource(R.drawable.mq_ic_add_img);
     }
 
@@ -343,9 +344,9 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
         mDeleteTwoIv.setVisibility(View.VISIBLE);
         mDeleteThreeIv.setVisibility(View.VISIBLE);
 
-        MQConfig.getImageLoader(this).displayImage(mPictureOneSiv, mPictures.get(0), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
-        MQConfig.getImageLoader(this).displayImage(mPictureTwoSiv, mPictures.get(1), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
-        MQConfig.getImageLoader(this).displayImage(mPictureThreeSiv, mPictures.get(2), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
+        MQImage.displayImage(mPictureOneSiv, mPictures.get(0), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
+        MQImage.displayImage(mPictureTwoSiv, mPictures.get(1), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
+        MQImage.displayImage(mPictureThreeSiv, mPictures.get(2), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
     }
 
     private void submit() {

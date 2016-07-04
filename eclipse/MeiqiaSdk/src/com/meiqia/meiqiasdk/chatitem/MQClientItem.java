@@ -1,4 +1,4 @@
-package com.meiqia.meiqiasdk.widget;
+package com.meiqia.meiqiasdk.chatitem;
 
 import android.content.Context;
 import android.view.View;

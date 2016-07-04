@@ -1,10 +1,11 @@
-package com.meiqia.meiqiasdk.widget;
+package com.meiqia.meiqiasdk.chatitem;
 
 import android.content.Context;
 
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.imageloader.MQImage;
 import com.meiqia.meiqiasdk.model.BaseMessage;
-import com.meiqia.meiqiasdk.util.MQConfig;
+import com.meiqia.meiqiasdk.widget.MQImageView;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -44,6 +45,6 @@ public class MQAgentItem extends MQBaseBubbleItem {
     @Override
     public void setMessage(BaseMessage baseMessage, int position) {
         super.setMessage(baseMessage, position);
-        MQConfig.getImageLoader(getContext()).displayImage(usAvatar, baseMessage.getAvatar(), R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, 100, 100, null);
+        MQImage.displayImage(usAvatar, baseMessage.getAvatar(), R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, 100, 100, null);
     }
 }
