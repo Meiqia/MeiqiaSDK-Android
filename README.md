@@ -101,8 +101,6 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
 ### 1.初始化
 ``` java
-
-// MQImageLoader 的实现类目前有 GlideImageloader、PicassoImageLoader、UILImageLoader，根据你自己项目中已使用的图片加载库来选择
 MQConfig.init(this, "Your Appkey", new OnInitCallback() {
     @Override
     public void onSuccess(String clientId) {
