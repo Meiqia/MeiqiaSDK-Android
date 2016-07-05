@@ -1,5 +1,0 @@
-<manifest xmlns:tools="http://schemas.android.com/tools"
-    package="com.meiqia.meiqiasdk.xutilsimageloader">
-
-    <uses-sdk tools:overrideLibrary="org.xutils" />
-</manifest>

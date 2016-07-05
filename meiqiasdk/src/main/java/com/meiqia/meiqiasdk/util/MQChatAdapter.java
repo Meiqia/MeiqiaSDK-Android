@@ -8,22 +8,24 @@ import android.widget.ListView;
 
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
 import com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity;
+import com.meiqia.meiqiasdk.chatitem.MQRichTextItem;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.EvaluateMessage;
 import com.meiqia.meiqiasdk.model.FileMessage;
 import com.meiqia.meiqiasdk.model.RedirectQueueMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
-import com.meiqia.meiqiasdk.widget.MQAgentItem;
-import com.meiqia.meiqiasdk.widget.MQBaseBubbleItem;
-import com.meiqia.meiqiasdk.widget.MQClientItem;
-import com.meiqia.meiqiasdk.widget.MQEvaluateItem;
-import com.meiqia.meiqiasdk.widget.MQNoAgentItem;
 import com.meiqia.meiqiasdk.widget.MQRedirectQueueItem;
-import com.meiqia.meiqiasdk.widget.MQRobotItem;
-import com.meiqia.meiqiasdk.widget.MQTimeItem;
-import com.meiqia.meiqiasdk.widget.MQTipItem;
-import com.meiqia.meiqiasdk.widget.MQUselessRedirectItem;
+import com.meiqia.meiqiasdk.model.RichTextMessage;
+import com.meiqia.meiqiasdk.chatitem.MQAgentItem;
+import com.meiqia.meiqiasdk.chatitem.MQBaseBubbleItem;
+import com.meiqia.meiqiasdk.chatitem.MQClientItem;
+import com.meiqia.meiqiasdk.chatitem.MQEvaluateItem;
+import com.meiqia.meiqiasdk.chatitem.MQNoAgentItem;
+import com.meiqia.meiqiasdk.chatitem.MQRobotItem;
+import com.meiqia.meiqiasdk.chatitem.MQTimeItem;
+import com.meiqia.meiqiasdk.chatitem.MQTipItem;
+import com.meiqia.meiqiasdk.chatitem.MQUselessRedirectItem;
 
 import java.io.File;
 import java.util.List;
@@ -126,6 +128,9 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
                 case BaseMessage.TYPE_QUEUE_TIP:
                     convertView = new MQRedirectQueueItem(mConversationActivity, mConversationActivity);
                     break;
+                case BaseMessage.TYPE_RICH_TEXT:
+                    convertView = new MQRichTextItem(mConversationActivity);
+                    break;
             }
         }
 
@@ -147,6 +152,8 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
             ((MQEvaluateItem) convertView).setMessage((EvaluateMessage) mcMessage);
         } else if (getItemViewType(position) == BaseMessage.TYPE_QUEUE_TIP) {
             ((MQRedirectQueueItem) convertView).setMessage((RedirectQueueMessage) mcMessage);
+        } else if (getItemViewType(position) == BaseMessage.TYPE_RICH_TEXT) {
+            ((MQRichTextItem) convertView).setMessage((RichTextMessage) mcMessage);
         }
 
         return convertView;

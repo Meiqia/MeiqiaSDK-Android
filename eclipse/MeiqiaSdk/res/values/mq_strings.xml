@@ -8,6 +8,7 @@
     <string name="mq_download_error">下载文件失败</string>
     <string name="mq_send">发送</string>
     <string name="mq_title_net_not_work">网络加载失败</string>
+    <string name="mq_title_webview_rich_text">图文消息</string>
     <string name="mq_copy_success">复制成功</string>
     <string name="mq_dialog_select_camera">相机</string>
     <string name="mq_dialog_select_gallery">图库</string>
@@ -95,4 +96,5 @@
     <string name="mq_no_agent_leave_msg_tip">抱歉，当前没有客服在线，你可以给我们</string>
     <string name="mq_useless_redirect_tip">很抱歉您不满意机器人的回答，您可以尝试</string>
     <string name="mq_queue_leave_msg">请稍等，你前面还有 %1$s 个访客，你也可以选择给我们</string>
+    <string name="mq_unknown_msg_tip">当前 App 暂不支持该类型消息，请升级您的 App 到最新版本</string>
 </resources>

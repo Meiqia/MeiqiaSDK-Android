@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
-import com.meiqia.meiqiasdk.util.MQConfig;
+import com.meiqia.meiqiasdk.imageloader.MQImage;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQHackyViewPager;
 import com.meiqia.meiqiasdk.widget.MQImageView;
@@ -94,6 +94,16 @@ public class MQPhotoPickerPreviewActivity extends Activity implements View.OnCli
         return intent.getStringArrayListExtra(EXTRA_SELECTED_IMAGES);
     }
 
+    /**
+     * 是否是拍照预览
+     *
+     * @param intent
+     * @return
+     */
+    public static boolean getIsFromTakePhoto(Intent intent) {
+        return intent.getBooleanExtra(EXTRA_IS_FROM_TAKE_PHOTO, false);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,12 +152,6 @@ public class MQPhotoPickerPreviewActivity extends Activity implements View.OnCli
         // 处理是否是拍完照后跳转过来
         mIsFromTakePhoto = getIntent().getBooleanExtra(EXTRA_IS_FROM_TAKE_PHOTO, false);
         if (mIsFromTakePhoto) {
-            String photoPath = mPreviewImages.get(0);
-            mPreviewImages.clear();
-            mSelectedImages.clear();
-            mPreviewImages.add(photoPath);
-            mSelectedImages.add(photoPath);
-
             // 如果是拍完照后跳转过来，一直隐藏底部选择栏
             mChooseRl.setVisibility(View.INVISIBLE);
         }
@@ -179,6 +183,7 @@ public class MQPhotoPickerPreviewActivity extends Activity implements View.OnCli
         } else if (v.getId() == R.id.submit_tv) {
             Intent intent = new Intent();
             intent.putStringArrayListExtra(EXTRA_SELECTED_IMAGES, mSelectedImages);
+            intent.putExtra(EXTRA_IS_FROM_TAKE_PHOTO, mIsFromTakePhoto);
             setResult(RESULT_OK, intent);
             finish();
         } else if (v.getId() == R.id.choose_tv) {
@@ -188,12 +193,23 @@ public class MQPhotoPickerPreviewActivity extends Activity implements View.OnCli
                 mChooseTv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mq_ic_cb_normal, 0, 0, 0);
                 renderTopRightBtn();
             } else {
-                if (mMaxChooseCount == mSelectedImages.size()) {
-                    MQUtils.show(this, getString(R.string.mq_toast_photo_picker_max, mMaxChooseCount));
-                } else {
+                if (mMaxChooseCount == 1) {
+                    // 单选
+
+                    mSelectedImages.clear();
                     mSelectedImages.add(currentImage);
                     mChooseTv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mq_ic_cb_checked, 0, 0, 0);
                     renderTopRightBtn();
+                } else {
+                    // 多选
+
+                    if (mMaxChooseCount == mSelectedImages.size()) {
+                        MQUtils.show(this, getString(R.string.mq_toast_photo_picker_max, mMaxChooseCount));
+                    } else {
+                        mSelectedImages.add(currentImage);
+                        mChooseTv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mq_ic_cb_checked, 0, 0, 0);
+                        renderTopRightBtn();
+                    }
                 }
             }
         }
@@ -203,6 +219,7 @@ public class MQPhotoPickerPreviewActivity extends Activity implements View.OnCli
     public void onBackPressed() {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(EXTRA_SELECTED_IMAGES, mSelectedImages);
+        intent.putExtra(EXTRA_IS_FROM_TAKE_PHOTO, mIsFromTakePhoto);
         setResult(RESULT_CANCELED, intent);
         finish();
     }
@@ -294,7 +311,7 @@ public class MQPhotoPickerPreviewActivity extends Activity implements View.OnCli
                 }
             });
 
-            MQConfig.getImageLoader(MQPhotoPickerPreviewActivity.this).displayImage(imageView, mPreviewImages.get(position), R.drawable.mq_ic_holder_dark, R.drawable.mq_ic_holder_dark, MQUtils.getScreenWidth(MQPhotoPickerPreviewActivity.this), MQUtils.getScreenHeight(MQPhotoPickerPreviewActivity.this), null);
+            MQImage.displayImage(imageView, mPreviewImages.get(position), R.drawable.mq_ic_holder_dark, R.drawable.mq_ic_holder_dark, MQUtils.getScreenWidth(MQPhotoPickerPreviewActivity.this), MQUtils.getScreenHeight(MQPhotoPickerPreviewActivity.this), null);
 
             return imageView;
         }

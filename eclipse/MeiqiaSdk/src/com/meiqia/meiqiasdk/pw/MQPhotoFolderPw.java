@@ -14,8 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.imageloader.MQImage;
 import com.meiqia.meiqiasdk.model.ImageFolderModel;
-import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQImageView;
 
@@ -160,7 +160,7 @@ public class MQPhotoFolderPw extends MQBasePopupWindow implements AdapterView.On
             ImageFolderModel imageFolderModel = getItem(position);
             folderViewHolder.nameTv.setText(imageFolderModel.name);
             folderViewHolder.countTv.setText(String.valueOf(imageFolderModel.getCount()));
-            MQConfig.getImageLoader(mActivity).displayImage(folderViewHolder.photoIv, imageFolderModel.coverPath, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, null);
+            MQImage.displayImage(folderViewHolder.photoIv, imageFolderModel.coverPath, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, null);
 
             return convertView;
         }

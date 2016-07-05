@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,9 +61,26 @@ public class MQImageCaptureManager {
      * 刷新图库
      */
     public void refreshGallery() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        mediaScanIntent.setData(Uri.fromFile(new File(mCurrentPhotoPath)));
-        mContext.sendBroadcast(mediaScanIntent);
+        if (!TextUtils.isEmpty(mCurrentPhotoPath)) {
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            mediaScanIntent.setData(Uri.fromFile(new File(mCurrentPhotoPath)));
+            mContext.sendBroadcast(mediaScanIntent);
+            mCurrentPhotoPath = null;
+        }
+    }
+
+    /**
+     * 删除拍摄的照片
+     */
+    public void deletePhotoFile() {
+        if (!TextUtils.isEmpty(mCurrentPhotoPath)) {
+            try {
+                File photoFile = new File(mCurrentPhotoPath);
+                photoFile.delete();
+                mCurrentPhotoPath = null;
+            } catch (Exception e) {
+            }
+        }
     }
 
     public String getCurrentPhotoPath() {

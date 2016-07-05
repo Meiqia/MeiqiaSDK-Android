@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginTop="8dp"
+    android:background="@drawable/mq_shape_bg_rich_text">
+
+    <com.meiqia.meiqiasdk.widget.MQImageView
+        android:id="@+id/content_pic_iv"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_alignParentLeft="true"
+        android:focusable="true"
+        android:visibility="visible"
+        app:mq_iv_cornerRadius="3dp"
+        tools:background="@drawable/mq_voice_want_cancel" />
+
+    <TextView
+        android:id="@+id/content_summary_tv"
+        style="@style/MQMatchMatch"
+        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@+id/content_pic_iv"
+        android:ellipsize="end"
+        android:gravity="center_vertical|left"
+        android:lineSpacingExtra="2dp"
+        android:maxLines="4"
+        android:paddingBottom="9dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="34dp"
+        android:paddingTop="9dp"
+        android:textColor="@color/mq_chat_left_textColor"
+        android:textSize="@dimen/mq_textSize_rich_text"
+        tools:text="很长很长的很长很长很长很长的很长很长的很长很长的很长很长的很长很长的的很长很长的很长很长的很长很长的很长很长的很长很长的很长很长的很长很长的很长很长的很长很长的很长很长的" />
+
+    <ImageView
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/mq_arrow_right"
+        android:layout_width="14dp"
+        android:layout_height="14dp" />
+
+</RelativeLayout>

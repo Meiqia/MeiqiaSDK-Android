@@ -1,1 +1,1 @@
-include ':meiqiasdk', ':demo', ':uilimageloader', ':glideimageloader', ':picassoimageloader', ':xutilsimageloader'
+include ':meiqiasdk', ':demo'
