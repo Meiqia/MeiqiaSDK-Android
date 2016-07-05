@@ -11,28 +11,18 @@
 ### AndroidStudio  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.meiqia/meiqiasdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.meiqia/meiqiasdk)
 
 ```
-// required     
-// 「3.2.4」改成 maven central 徽章后面对应的版本号，例如3.2.4
+// -------------------- 以下四个库是必须依赖的 ----------------------------
 compile 'com.meiqia:meiqiasdk:3.2.4@aar'
-
-// 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
 compile 'com.android.support:support-v4:23.1.1'
 compile 'com.squareup.okhttp3:okhttp:3.3.1'
 compile 'com.commit451:PhotoView:1.2.4'
+// -------------------- 以上四个库是必须依赖的 ----------------------------
 
-// 目前支持常见的 4 种图片加载库，选择其中一种作为 MQConfig.init 方法的第三个参数进行初始化
-compile 'com.meiqia:uilimageloader:1.0.0@aar'
+// 目前支持常见的 4 种图片加载库，必须在下面四个图片加载库中选择一个添加依赖
 compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-
-//    compile 'com.meiqia:glideimageloader:1.0.0@aar'
 //    compile 'com.github.bumptech.glide:glide:3.7.0'
-
-//    compile 'com.meiqia:picassoimageloader:1.0.0@aar'
 //    compile 'com.squareup.picasso:picasso:2.5.2'
-
-//    compile 'com.meiqia:xutilsimageloader:1.0.0@aar'
-//    compile 'org.xutils:xutils:3.3.32'
-
+//    compile 'org.xutils:xutils:3.3.36'
 ```
 
 ### Eclipse
@@ -248,6 +238,72 @@ MQConfig.messageFormInputModels.add(nameMfim);
 * [开发者自定义当前顾客的信息][5]
 * [接收即时消息][6]
 * [消息推送][7]
+
+## Proguard
+
+```
+## ----------------------------------
+##      OkHttp相关
+## ----------------------------------
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.squareup.okhttp3.** { *; }
+-keep interface com.squareup.okhttp3.** { *; }
+-dontwarn com.squareup.okhttp3.**
+
+## ----------------------------------
+##      Okio相关
+## ----------------------------------
+-keep class sun.misc.Unsafe { *; }
+-dontwarn java.nio.file.*
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+-dontwarn okio.**
+
+## ----------------------------------
+##      UIL相关
+## ----------------------------------
+-keep class com.nostra13.universalimageloader.** { *; }
+-keepclassmembers class com.nostra13.universalimageloader.** {*;}
+-dontwarn com.nostra13.universalimageloader.**
+
+## ----------------------------------
+##      Glide相关
+## ----------------------------------
+-keep class com.bumptech.glide.Glide { *; }
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+-dontwarn com.bumptech.glide.**
+
+## ----------------------------------
+##      Picasso相关
+## ----------------------------------
+-keep class com.squareup.picasso.Picasso { *; }
+-dontwarn com.squareup.okhttp.**
+-dontwarn com.squareup.picasso.**
+
+## ----------------------------------
+##      xUtils3相关
+## ----------------------------------
+-keepattributes Signature,*Annotation*
+-keep public class org.xutils.** {
+    public protected *;
+}
+-keep public interface org.xutils.** {
+    public protected *;
+}
+-keepclassmembers class * extends org.xutils.** {
+    public protected *;
+}
+-keepclassmembers @org.xutils.db.annotation.* class * {*;}
+-keepclassmembers @org.xutils.http.annotation.* class * {*;}
+-keepclassmembers class * {
+    @org.xutils.view.annotation.Event <methods>;
+}
+-dontwarn org.xutils.**
+```
 
 ## 文档详情
  [文档详情][1]

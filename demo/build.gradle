@@ -22,27 +22,19 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.1.1'
-    compile project(':meiqiasdk')
+//    compile project(':meiqiasdk')
 
-    // required
-//    compile 'com.meiqia:meiqiasdk:3.2.4@aar'
-
-    // 在下面的依赖中，如果你的项目已经依赖过其中的组件，则不需要重复依赖
+    // -------------------- 以下四个库是必须依赖的 ----------------------------
+    compile 'com.meiqia:meiqiasdk:3.2.4@aar'
     compile 'com.android.support:support-v4:23.1.1'
     compile 'com.squareup.okhttp3:okhttp:3.3.1'
     compile 'com.commit451:PhotoView:1.2.4'
+    // -------------------- 以上四个库是必须依赖的 ----------------------------
 
-    // 目前支持常见的 4 种图片加载库，选择其中一种作为 MQConfig.init 方法的第三个参数进行初始化
-    compile 'com.meiqia:uilimageloader:1.0.0@aar'
+    // 目前支持常见的 4 种图片加载库，必须在下面四个图片加载库中选择一个添加依赖
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-
-//    compile 'com.meiqia:glideimageloader:1.0.0@aar'
 //    compile 'com.github.bumptech.glide:glide:3.7.0'
-
-//    compile 'com.meiqia:picassoimageloader:1.0.0@aar'
 //    compile 'com.squareup.picasso:picasso:2.5.2'
-
-//    compile 'com.meiqia:xutilsimageloader:1.0.0@aar'
-//    compile 'org.xutils:xutils:3.3.32'
+//    compile 'org.xutils:xutils:3.3.36'
 
 }
