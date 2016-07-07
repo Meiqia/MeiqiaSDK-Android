@@ -87,6 +87,15 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     android:theme="@style/MQTheme"
     android:windowSoftInputMode="stateHidden|adjustResize" />
 
+<!--WebView 界面-->
+<activity
+    android:name=".activity.MQWebViewActivity"
+    android:configChanges="keyboardHidden|orientation"
+    android:launchMode="singleTop"
+    android:screenOrientation="portrait"
+    android:theme="@style/MQTheme"
+    android:windowSoftInputMode="stateHidden|adjustResize" />
+
 <service android:name="com.meiqia.core.MeiQiaService" />
 ```
 
