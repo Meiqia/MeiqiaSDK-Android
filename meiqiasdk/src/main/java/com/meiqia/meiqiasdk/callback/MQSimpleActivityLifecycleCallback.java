@@ -8,7 +8,7 @@ import com.meiqia.meiqiasdk.activity.MQConversationActivity;
  * OnePiece
  * Created by xukq on 7/13/16.
  */
-public class MQSimpleActivityLifecyleCallback implements MQActivityLifecycleCallback {
+public class MQSimpleActivityLifecycleCallback implements MQActivityLifecycleCallback {
 
     @Override
     public void onActivityCreated(MQConversationActivity activity, Bundle savedInstanceState) {

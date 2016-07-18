@@ -25,86 +25,7 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 ```
 
 ### Eclipse
-
-1.拷贝 **/eclipse/MeiqiaSdk** 到工作空间并导入 Eclipse 中
-
-2.选中你自己的工程的根目录 -> 右键 -> 选择 Properties -> 选中 Android -> 点击 Library 右边的的 Add 按钮 -> 选中 MeiqiaSdk -> 点击 OK
-
-3.在你自己的工程的 AndroidManifest.xml 文件中添加以下权限
-
-```
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.RECORD_AUDIO" />
-```
-
-4.在你自己的工程的 AndroidManifest.xml 文件的 application 结点下加入以下代码
-
-```
-<!--聊天界面-->
-<activity
-    android:name="com.meiqia.meiqiasdk.activity.MQConversationActivity"
-    android:configChanges="keyboardHidden|orientation"
-    android:launchMode="singleTop"
-    android:screenOrientation="portrait"
-    android:theme="@style/MQTheme"
-    android:windowSoftInputMode="stateHidden|adjustResize" />
-
-<!--图片查看界面-->
-<activity
-    android:name="com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity"
-    android:configChanges="keyboardHidden|orientation"
-    android:launchMode="singleTop"
-    android:screenOrientation="portrait"
-    android:theme="@style/MQTheme"
-    android:windowSoftInputMode="stateAlwaysHidden" />
-
-<!--图片选择界面-->
-<activity
-    android:name="com.meiqia.meiqiasdk.activity.MQPhotoPickerActivity"
-    android:configChanges="keyboardHidden|orientation"
-    android:launchMode="singleTop"
-    android:screenOrientation="portrait"
-    android:theme="@style/MQTheme"
-    android:windowSoftInputMode="stateAlwaysHidden" />
-
-<!--图片选择预览界面-->
-<activity
-    android:name="com.meiqia.meiqiasdk.activity.MQPhotoPickerPreviewActivity"
-    android:configChanges="keyboardHidden|orientation"
-    android:launchMode="singleTop"
-    android:screenOrientation="portrait"
-    android:theme="@style/MQTheme"
-    android:windowSoftInputMode="stateAlwaysHidden" />
-
-<!--留言表单界面-->
-<activity
-    android:name="com.meiqia.meiqiasdk.activity.MQMessageFormActivity"
-    android:configChanges="keyboardHidden|orientation"
-    android:launchMode="singleTop"
-    android:screenOrientation="portrait"
-    android:theme="@style/MQTheme"
-    android:windowSoftInputMode="stateHidden|adjustResize" />
-
-<!--WebView 界面-->
-<activity
-    android:name=".activity.MQWebViewActivity"
-    android:configChanges="keyboardHidden|orientation"
-    android:launchMode="singleTop"
-    android:screenOrientation="portrait"
-    android:theme="@style/MQTheme"
-    android:windowSoftInputMode="stateHidden|adjustResize" />
-
-<service android:name="com.meiqia.core.MeiQiaService" />
-```
-
-5.如果你自己的工程中已经添加了 **/eclipse/MeiqiaSdk/libs** 中的 jar 包，拷贝你自己的工程中对应的 jar 包替换 **/eclipse/MeiqiaSdk/libs** 中的 jar 包
-
-**注意：**
-报 Cannot find the class file for java.nio.file.OpenOption 错的解决方法：Project -> Properties -> Java Build Path -> Libraries -> Add Library -> JRE System Library -> Select Workspace Default (jdk 1.7*)
-
-如果编译失败, Project Build Target 必须指定 Android 6.0
+ [查看详情][9]
 
 ## 使用美洽
 
@@ -178,6 +99,15 @@ Intent intent = new MQIntentBuilder(this)
         .setClientInfo(clientInfo)
         .build();
 startActivity(intent);
+
+PS: 这个接口只会生效一次,如果需要更新顾客信息,需要调用更新接口
+```
+> 更新顾客信息
+
+``` java
+HashMap<String, String> updateInfo = new HashMap<>();
+updateInfo.put("name", "update name");
+MQManager.getInstance(this).updateClientInfo(updateInfo, callback);
 ```
 
 > 指定客服分配
@@ -196,6 +126,23 @@ Intent intent = new MQIntentBuilder(this)
         .setScheduledGroup(groupId) // groupId 可以从工作台查询
         .build();
 startActivity(intent);
+```
+
+> 设置预发送消息
+
+``` java
+Intent intent = new MQIntentBuilder(this)
+        .setPreSendTextMessage("我是预发送文字消息")
+        .setPreSendImageMessage(new File("预发送图片的路径"))
+        .build();
+startActivity(intent);
+```
+
+> 设置监听 MQConversationActivity 生命周期的回调接口
+
+``` java
+MQConfig.setActivityLifecycleCallback(new MQSimpleActivityLifecycleCallback() {
+});
 ```
 
 > 自定义留言表单引导文案
@@ -238,13 +185,8 @@ MQConfig.messageFormInputModels.add(emailMfim);
 MQConfig.messageFormInputModels.add(nameMfim);
 ```
 
-### 3.可选设置
-* [绑定自定义 id 并设置上线][2]
-* [绑定美洽 id 并设置上线][3]
-* [指定客服或者分组][4]
-* [开发者自定义当前顾客的信息][5]
-* [接收即时消息][6]
-* [消息推送][7]
+## 文档详情
+ [文档详情][1]
 
 ## Proguard
 
@@ -312,9 +254,6 @@ MQConfig.messageFormInputModels.add(nameMfim);
 -dontwarn org.xutils.**
 ```
 
-## 文档详情
- [文档详情][1]
-
  [1]: http://meiqia.com/docs/meiqia-android-sdk/
  [2]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-3
  [3]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-2
@@ -323,3 +262,4 @@ MQConfig.messageFormInputModels.add(nameMfim);
  [6]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-19
  [7]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-32
  [8]: https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/demo%2Fsrc%2Fmain%2Fjava%2Fcom%2Fmeiqia%2Fmeiqiasdk%2Fdemo%2FMainActivity.java
+ [8]: https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/Eclipse_README.md
