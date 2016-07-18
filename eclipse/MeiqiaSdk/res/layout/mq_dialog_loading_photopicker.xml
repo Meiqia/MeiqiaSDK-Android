@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MQMatchWrap.Vertical"
+    android:background="@drawable/mq_shape_dialog_bg"
+    android:gravity="center"
+    android:paddingBottom="@dimen/mq_size_level1"
+    android:paddingLeft="120dp"
+    android:paddingRight="120dp"
+    android:paddingTop="@dimen/mq_size_level1">
+
+    <ProgressBar
+        style="?android:progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateDrawable="@drawable/mq_rotate_progress_bar_photopicker" />
+
+    <TextView
+        android:id="@+id/content_tv"
+        style="@style/MQWrapWrap"
+        android:layout_marginTop="@dimen/mq_size_level2"
+        android:visibility="gone" />
+
+</LinearLayout>

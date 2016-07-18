@@ -6,6 +6,8 @@ import android.support.annotation.DrawableRes;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.callback.OnInitCallback;
+import com.meiqia.meiqiasdk.callback.MQActivityLifecycleCallback;
+import com.meiqia.meiqiasdk.callback.MQSimpleActivityLifecyleCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
 import com.meiqia.meiqiasdk.imageloader.MQImageLoader;
@@ -49,9 +51,11 @@ public final class MQConfig {
     public static boolean isSoundSwitchOpen = true; // 声音开关
     public static boolean isLoadMessagesFromNativeOpen = false; // 加载本地数据开关
     public static boolean isEvaluateSwitchOpen = true; // 是否开启评价
+    public static boolean isShowClientAvatar = false; // 是否显示客户头像
 
     public static ArrayList<MessageFormInputModel> messageFormInputModels; // 自定义留言表单字段
     public static String leaveMessageIntro; // 自定义留言表单引导文案，配置了该引导文案后将不会读取工作台配置的引导文案
+    private static MQActivityLifecycleCallback sActivityLifecycleCallback;
 
     private static MQController sController;
 
@@ -68,6 +72,17 @@ public final class MQConfig {
 
     public static void registerController(MQController controller) {
         sController = controller;
+    }
+
+    public static void setActivityLifecycleCallback(MQActivityLifecycleCallback lifecycleCallback) {
+        sActivityLifecycleCallback = lifecycleCallback;
+    }
+
+    public static MQActivityLifecycleCallback getActivityLifecycleCallback() {
+        if (sActivityLifecycleCallback == null) {
+            sActivityLifecycleCallback = new MQSimpleActivityLifecyleCallback();
+        }
+        return sActivityLifecycleCallback;
     }
 
     @Deprecated

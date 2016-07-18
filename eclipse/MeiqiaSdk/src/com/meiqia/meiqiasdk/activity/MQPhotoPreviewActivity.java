@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewCompat;
@@ -20,6 +21,7 @@ import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
 import com.meiqia.meiqiasdk.imageloader.MQImageLoader;
 import com.meiqia.meiqiasdk.util.MQAsyncTask;
+import com.meiqia.meiqiasdk.util.MQBrowserPhotoViewAttacher;
 import com.meiqia.meiqiasdk.util.MQSavePhotoTask;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQHackyViewPager;
@@ -28,7 +30,8 @@ import com.meiqia.meiqiasdk.widget.MQImageView;
 import java.io.File;
 import java.util.ArrayList;
 
-import uk.co.senab.photoview.PhotoViewAttacher;
+import com.meiqia.meiqiasdk.third.photoview.PhotoViewAttacher;
+
 
 public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttacher.OnViewTapListener, View.OnClickListener, MQAsyncTask.Callback<Void> {
     private static final String EXTRA_SAVE_IMG_DIR = "EXTRA_SAVE_IMG_DIR";
@@ -217,11 +220,11 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
         // 通过MD5加密url生成文件名，避免多次保存同一张图片
         file = new File(mSaveImgDir, MQUtils.stringToMD5(url) + ".png");
         if (file.exists()) {
-            MQUtils.showSafe(MQPhotoPreviewActivity.this, getString(R.string.mq_save_img_success_folder, mSaveImgDir.getAbsolutePath()));
+            MQUtils.showSafe(this, getString(R.string.mq_save_img_success_folder, mSaveImgDir.getAbsolutePath()));
             return;
         }
 
-        mSavePhotoTask = new MQSavePhotoTask(MQPhotoPreviewActivity.this, MQPhotoPreviewActivity.this.getApplication(), file);
+        mSavePhotoTask = new MQSavePhotoTask(this, this, file);
         MQImage.downloadImage(this, url, new MQImageLoader.MQDownloadImageListener() {
             @Override
             public void onSuccess(String url, Bitmap bitmap) {
@@ -242,7 +245,7 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
     }
 
     @Override
-    public void onCancled() {
+    public void onTaskCancelled() {
         mSavePhotoTask = null;
     }
 
@@ -264,19 +267,24 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
 
         @Override
         public View instantiateItem(ViewGroup container, int position) {
-            MQImageView imageView = new MQImageView(container.getContext());
+            final MQImageView imageView = new MQImageView(container.getContext());
             container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            final PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(imageView);
+            final MQBrowserPhotoViewAttacher photoViewAttacher = new MQBrowserPhotoViewAttacher(imageView);
             photoViewAttacher.setOnViewTapListener(MQPhotoPreviewActivity.this);
 
             imageView.setDrawableChangedCallback(new MQImageView.OnDrawableChangedCallback() {
                 @Override
-                public void onDrawableChanged() {
-                    photoViewAttacher.update();
+                public void onDrawableChanged(Drawable drawable) {
+                    if (drawable != null && drawable.getIntrinsicHeight() > drawable.getIntrinsicWidth() && drawable.getIntrinsicHeight() > MQUtils.getScreenHeight(imageView.getContext())) {
+                        photoViewAttacher.setIsSetTopCrop(true);
+                        photoViewAttacher.setUpdateBaseMatrix();
+                    } else {
+                        photoViewAttacher.update();
+                    }
                 }
             });
 
-            MQImage.displayImage(imageView, mPreviewImages.get(position), R.drawable.mq_ic_holder_dark, R.drawable.mq_ic_holder_dark, MQUtils.getScreenWidth(MQPhotoPreviewActivity.this), MQUtils.getScreenHeight(MQPhotoPreviewActivity.this), null);
+            MQImage.displayImage(MQPhotoPreviewActivity.this, imageView, mPreviewImages.get(position), R.drawable.mq_ic_holder_dark, R.drawable.mq_ic_holder_dark, MQUtils.getScreenWidth(MQPhotoPreviewActivity.this), MQUtils.getScreenHeight(MQPhotoPreviewActivity.this), null);
 
             return imageView;
         }

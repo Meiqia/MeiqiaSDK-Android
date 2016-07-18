@@ -97,15 +97,7 @@ public class MQImageView extends ImageView {
 
     @Override
     public void setImageResource(@DrawableRes int resId) {
-        if (resId != 0 && mCornerRadius > 0) {
-            setImageDrawable(getRoundedDrawable(getContext(), resId, mCornerRadius));
-        } else if (resId != 0 && mIsCircle) {
-            setImageDrawable(getCircleDrawable(getContext(), resId));
-        } else {
-            super.setImageResource(resId);
-
-            notifyDrawableChanged();
-        }
+        setImageDrawable(getResources().getDrawable(resId));
     }
 
     @Override
@@ -128,12 +120,12 @@ public class MQImageView extends ImageView {
             super.setImageDrawable(drawable);
         }
 
-        notifyDrawableChanged();
+        notifyDrawableChanged(drawable);
     }
 
-    private void notifyDrawableChanged() {
+    private void notifyDrawableChanged(Drawable drawable) {
         if (mOnDrawableChangedCallback != null) {
-            mOnDrawableChangedCallback.onDrawableChanged();
+            mOnDrawableChangedCallback.onDrawableChanged(drawable);
         }
     }
 
@@ -169,7 +161,7 @@ public class MQImageView extends ImageView {
     }
 
     public interface OnDrawableChangedCallback {
-        void onDrawableChanged();
+        void onDrawableChanged(Drawable drawable);
     }
 
     public static RoundedBitmapDrawable getCircleDrawable(Context context, Bitmap bitmap) {

@@ -3,9 +3,6 @@ package com.meiqia.meiqiasdk.chatitem;
 import android.content.Context;
 
 import com.meiqia.meiqiasdk.R;
-import com.meiqia.meiqiasdk.imageloader.MQImage;
-import com.meiqia.meiqiasdk.model.BaseMessage;
-import com.meiqia.meiqiasdk.widget.MQImageView;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -13,7 +10,6 @@ import com.meiqia.meiqiasdk.widget.MQImageView;
  * 描述:客服消息item
  */
 public class MQAgentItem extends MQBaseBubbleItem {
-    private MQImageView usAvatar;
 
     public MQAgentItem(Context context, Callback calllback) {
         super(context, calllback);
@@ -28,7 +24,6 @@ public class MQAgentItem extends MQBaseBubbleItem {
     protected void initView() {
         super.initView();
 
-        usAvatar = getViewById(R.id.us_avatar_iv);
         unreadCircle = getViewById(R.id.unread_view);
     }
 
@@ -40,11 +35,5 @@ public class MQAgentItem extends MQBaseBubbleItem {
     protected void processLogic() {
         super.processLogic();
         applyConfig(true);
-    }
-
-    @Override
-    public void setMessage(BaseMessage baseMessage, int position) {
-        super.setMessage(baseMessage, position);
-        MQImage.displayImage(usAvatar, baseMessage.getAvatar(), R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, 100, 100, null);
     }
 }
