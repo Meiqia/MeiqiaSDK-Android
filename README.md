@@ -11,12 +11,11 @@
 ### AndroidStudio  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.meiqia/meiqiasdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.meiqia/meiqiasdk)
 
 ```
-// -------------------- 以下四个库是必须依赖的 ----------------------------
+// -------------------- 以下三个库是必须依赖的 ----------------------------
 compile 'com.meiqia:meiqiasdk:3.2.4@aar'
 compile 'com.android.support:support-v4:23.1.1'
 compile 'com.squareup.okhttp3:okhttp:3.3.1'
-compile 'com.commit451:PhotoView:1.2.4'
-// -------------------- 以上四个库是必须依赖的 ----------------------------
+// -------------------- 以上三个库是必须依赖的 ----------------------------
 
 // 目前支持常见的 4 种图片加载库，必须在下面四个图片加载库中选择一个添加依赖
 compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
@@ -69,6 +68,7 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     android:screenOrientation="portrait"
     android:theme="@style/MQTheme"
     android:windowSoftInputMode="stateAlwaysHidden" />
+
 <!--图片选择预览界面-->
 <activity
     android:name="com.meiqia.meiqiasdk.activity.MQPhotoPickerPreviewActivity"
@@ -81,6 +81,15 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 <!--留言表单界面-->
 <activity
     android:name="com.meiqia.meiqiasdk.activity.MQMessageFormActivity"
+    android:configChanges="keyboardHidden|orientation"
+    android:launchMode="singleTop"
+    android:screenOrientation="portrait"
+    android:theme="@style/MQTheme"
+    android:windowSoftInputMode="stateHidden|adjustResize" />
+
+<!--WebView 界面-->
+<activity
+    android:name=".activity.MQWebViewActivity"
     android:configChanges="keyboardHidden|orientation"
     android:launchMode="singleTop"
     android:screenOrientation="portrait"
