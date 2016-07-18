@@ -181,6 +181,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
                 break;
             // 上传自定义信息
             case R.id.set_client_info:
+                MQConfig.isShowClientAvatar = true;
                 final HashMap<String, String> info = new HashMap<>();
                 info.put("name", "富坚义博");
                 info.put("avatar", "https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/1dee88eabfbd7bd4");

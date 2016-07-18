@@ -135,13 +135,13 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
         }
 
         if (getItemViewType(position) == BaseMessage.TYPE_AGENT) {
-            ((MQAgentItem) convertView).setMessage(mcMessage, position);
+            ((MQAgentItem) convertView).setMessage(mcMessage, position, mConversationActivity);
         } else if (getItemViewType(position) == BaseMessage.TYPE_CLIENT) {
-            ((MQClientItem) convertView).setMessage(mcMessage, position);
+            ((MQClientItem) convertView).setMessage(mcMessage, position, mConversationActivity);
         } else if (getItemViewType(position) == BaseMessage.TYPE_NO_AGENT_TIP) {
             ((MQNoAgentItem) convertView).setCallback(mConversationActivity);
         } else if (getItemViewType(position) == BaseMessage.TYPE_ROBOT) {
-            ((MQRobotItem) convertView).setMessage((RobotMessage) mcMessage);
+            ((MQRobotItem) convertView).setMessage((RobotMessage) mcMessage, mConversationActivity);
         } else if (getItemViewType(position) == BaseMessage.TYPE_USELESS_REDIRECT) {
             ((MQUselessRedirectItem) convertView).setCallback(mConversationActivity);
         } else if (getItemViewType(position) == BaseMessage.TYPE_TIME) {
@@ -153,7 +153,7 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
         } else if (getItemViewType(position) == BaseMessage.TYPE_QUEUE_TIP) {
             ((MQRedirectQueueItem) convertView).setMessage((RedirectQueueMessage) mcMessage);
         } else if (getItemViewType(position) == BaseMessage.TYPE_RICH_TEXT) {
-            ((MQRichTextItem) convertView).setMessage((RichTextMessage) mcMessage);
+            ((MQRichTextItem) convertView).setMessage((RichTextMessage) mcMessage, mConversationActivity);
         }
 
         return convertView;

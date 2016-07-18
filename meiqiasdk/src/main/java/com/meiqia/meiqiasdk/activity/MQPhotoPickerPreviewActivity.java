@@ -3,6 +3,7 @@ package com.meiqia.meiqiasdk.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewCompat;
@@ -17,13 +18,15 @@ import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
+import com.meiqia.meiqiasdk.util.MQBrowserPhotoViewAttacher;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQHackyViewPager;
 import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import java.util.ArrayList;
 
-import uk.co.senab.photoview.PhotoViewAttacher;
+import com.meiqia.meiqiasdk.third.photoview.PhotoViewAttacher;
+
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -299,19 +302,24 @@ public class MQPhotoPickerPreviewActivity extends Activity implements View.OnCli
 
         @Override
         public View instantiateItem(ViewGroup container, int position) {
-            MQImageView imageView = new MQImageView(container.getContext());
+            final MQImageView imageView = new MQImageView(container.getContext());
             container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            final PhotoViewAttacher photoViewAttacher = new PhotoViewAttacher(imageView);
+            final MQBrowserPhotoViewAttacher photoViewAttacher = new MQBrowserPhotoViewAttacher(imageView);
             photoViewAttacher.setOnViewTapListener(MQPhotoPickerPreviewActivity.this);
 
             imageView.setDrawableChangedCallback(new MQImageView.OnDrawableChangedCallback() {
                 @Override
-                public void onDrawableChanged() {
-                    photoViewAttacher.update();
+                public void onDrawableChanged(Drawable drawable) {
+                    if (drawable != null && drawable.getIntrinsicHeight() > drawable.getIntrinsicWidth() && drawable.getIntrinsicHeight() > MQUtils.getScreenHeight(imageView.getContext())) {
+                        photoViewAttacher.setIsSetTopCrop(true);
+                        photoViewAttacher.setUpdateBaseMatrix();
+                    } else {
+                        photoViewAttacher.update();
+                    }
                 }
             });
 
-            MQImage.displayImage(imageView, mPreviewImages.get(position), R.drawable.mq_ic_holder_dark, R.drawable.mq_ic_holder_dark, MQUtils.getScreenWidth(MQPhotoPickerPreviewActivity.this), MQUtils.getScreenHeight(MQPhotoPickerPreviewActivity.this), null);
+            MQImage.displayImage(MQPhotoPickerPreviewActivity.this, imageView, mPreviewImages.get(position), R.drawable.mq_ic_holder_dark, R.drawable.mq_ic_holder_dark, MQUtils.getScreenWidth(MQPhotoPickerPreviewActivity.this), MQUtils.getScreenHeight(MQPhotoPickerPreviewActivity.this), null);
 
             return imageView;
         }

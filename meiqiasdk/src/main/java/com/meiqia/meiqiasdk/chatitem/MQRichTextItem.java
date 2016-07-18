@@ -1,8 +1,11 @@
 package com.meiqia.meiqiasdk.chatitem;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -74,18 +77,26 @@ public class MQRichTextItem extends MQBaseCustomCompositeView {
         }
     }
 
-    public void setMessage(RichTextMessage message) {
+    public void setMessage(RichTextMessage message, Activity activity) {
         try {
             JSONObject jsonObject = new JSONObject(message.getExtra());
             String summary = optString(jsonObject, "summary");
             mContent = optString(jsonObject, "content");
             String thumbnail = optString(jsonObject, "thumbnail");
+
             if (TextUtils.isEmpty(summary)) {
-                mSummaryTv.setText(Html.fromHtml(mContent));
+                // 用透明图片代替,不然显示很难看
+                Spanned htmlContentSpanned = Html.fromHtml(mContent, new Html.ImageGetter() {
+                    @Override
+                    public Drawable getDrawable(String source) {
+                        return getResources().getDrawable(android.R.color.transparent);
+                    }
+                }, null);
+                mSummaryTv.setText(htmlContentSpanned);
             } else {
                 mSummaryTv.setText(summary);
             }
-            MQImage.displayImage(mPicIv, thumbnail, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, new MQImageLoader.MQDisplayImageListener() {
+            MQImage.displayImage(activity, mPicIv, thumbnail, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, new MQImageLoader.MQDisplayImageListener() {
                 @Override
                 public void onSuccess(View view, final String url) {
                 }
