@@ -28,9 +28,12 @@
                 android:layout_marginLeft="@dimen/mq_size_level3"
                 android:layout_marginRight="@dimen/mq_size_level1"
                 android:gravity="center_vertical"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/mq_titlebar_textSize"
-                tools:text="图片" />
+                android:maxEms="7"
+                tools:text="一二三四五六七八九十一二三" />
 
             <ImageView
                 android:id="@+id/arrow_iv"

@@ -1,5 +1,6 @@
 package com.meiqia.meiqiasdk.chatitem;
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -89,11 +90,11 @@ public class MQRobotItem extends MQBaseCustomCompositeView {
         }
     }
 
-    public void setMessage(RobotMessage robotMessage) {
+    public void setMessage(RobotMessage robotMessage, Activity activity) {
         reset();
 
         mRobotMessage = robotMessage;
-        MQImage.displayImage(mAvatarIv, mRobotMessage.getAvatar(), R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, 100, 100, null);
+        MQImage.displayImage(activity, mAvatarIv, mRobotMessage.getAvatar(), R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, 100, 100, null);
         handleEvaluateStatus();
         fillContentLl();
     }

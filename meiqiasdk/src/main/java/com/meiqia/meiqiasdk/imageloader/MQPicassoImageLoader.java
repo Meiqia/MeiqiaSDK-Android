@@ -1,5 +1,6 @@
 package com.meiqia.meiqiasdk.imageloader;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -15,20 +16,12 @@ import com.squareup.picasso.Target;
  * 创建时间:16/6/28 下午6:57
  * 描述:
  */
-public class MQPicassoImageLoader implements MQImageLoader {
+public class MQPicassoImageLoader extends MQImageLoader {
 
     @Override
-    public void displayImage(final ImageView imageView, String path, @DrawableRes int loadingResId, @DrawableRes int failResId, int width, int height, final MQDisplayImageListener listener) {
-        if (path == null) {
-            path = "";
-        }
-
-        if (!path.startsWith("http") && !path.startsWith("file")) {
-            path = "file://" + path;
-        }
-
-        final String finalPath = path;
-        Picasso.with(imageView.getContext()).load(finalPath).placeholder(loadingResId).error(failResId).resize(width, height).centerInside().into(imageView, new Callback.EmptyCallback() {
+    public void displayImage(Activity activity, final ImageView imageView, String path, @DrawableRes int loadingResId, @DrawableRes int failResId, int width, int height, final MQDisplayImageListener listener) {
+        final String finalPath = getPath(path);
+        Picasso.with(activity).load(finalPath).placeholder(loadingResId).error(failResId).resize(width, height).centerInside().into(imageView, new Callback.EmptyCallback() {
             @Override
             public void onSuccess() {
                 if (listener != null) {
@@ -40,12 +33,8 @@ public class MQPicassoImageLoader implements MQImageLoader {
 
     @Override
     public void downloadImage(Context context, String path, final MQDownloadImageListener listener) {
-        if (!path.startsWith("http") && !path.startsWith("file")) {
-            path = "file://" + path;
-        }
-
-        final String finalPath = path;
-        Picasso.with(context).load(finalPath).into(new Target() {
+        final String finalPath = getPath(path);
+        Picasso.with(context.getApplicationContext()).load(finalPath).into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 if (listener != null) {

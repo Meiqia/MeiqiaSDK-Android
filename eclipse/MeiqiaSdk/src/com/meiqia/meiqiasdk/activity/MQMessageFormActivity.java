@@ -319,7 +319,7 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
         mDeleteTwoIv.setVisibility(View.INVISIBLE);
         mDeleteThreeIv.setVisibility(View.INVISIBLE);
 
-        MQImage.displayImage(mPictureOneSiv, mPictures.get(0), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
+        MQImage.displayImage(this, mPictureOneSiv, mPictures.get(0), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
         mPictureTwoSiv.setImageResource(R.drawable.mq_ic_add_img);
     }
 
@@ -331,8 +331,8 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
         mDeleteTwoIv.setVisibility(View.VISIBLE);
         mDeleteThreeIv.setVisibility(View.INVISIBLE);
 
-        MQImage.displayImage(mPictureOneSiv, mPictures.get(0), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
-        MQImage.displayImage(mPictureTwoSiv, mPictures.get(1), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
+        MQImage.displayImage(this, mPictureOneSiv, mPictures.get(0), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
+        MQImage.displayImage(this, mPictureTwoSiv, mPictures.get(1), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
         mPictureThreeSiv.setImageResource(R.drawable.mq_ic_add_img);
     }
 
@@ -344,9 +344,9 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
         mDeleteTwoIv.setVisibility(View.VISIBLE);
         mDeleteThreeIv.setVisibility(View.VISIBLE);
 
-        MQImage.displayImage(mPictureOneSiv, mPictures.get(0), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
-        MQImage.displayImage(mPictureTwoSiv, mPictures.get(1), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
-        MQImage.displayImage(mPictureThreeSiv, mPictures.get(2), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
+        MQImage.displayImage(this, mPictureOneSiv, mPictures.get(0), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
+        MQImage.displayImage(this, mPictureTwoSiv, mPictures.get(1), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
+        MQImage.displayImage(this, mPictureThreeSiv, mPictures.get(2), R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageSize, mImageSize, null);
     }
 
     private void submit() {
@@ -455,7 +455,7 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     choosePicture();
                 } else {
-                    MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_sdcard_no_permission);
+                    MQUtils.show(this, R.string.mq_sdcard_no_permission);
                 }
                 break;
             }

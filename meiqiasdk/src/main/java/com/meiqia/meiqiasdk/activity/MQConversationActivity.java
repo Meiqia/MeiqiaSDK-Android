@@ -49,6 +49,8 @@ import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.callback.SimpleCallback;
+import com.meiqia.meiqiasdk.chatitem.MQRobotItem;
+import com.meiqia.meiqiasdk.chatitem.MQUselessRedirectItem;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
 import com.meiqia.meiqiasdk.dialog.MQEvaluateDialog;
@@ -75,8 +77,6 @@ import com.meiqia.meiqiasdk.util.MQSoundPoolManager;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQCustomKeyboardLayout;
-import com.meiqia.meiqiasdk.chatitem.MQRobotItem;
-import com.meiqia.meiqiasdk.chatitem.MQUselessRedirectItem;
 
 import java.io.File;
 import java.io.Serializable;
@@ -98,6 +98,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     public static final String CLIENT_ID = "clientId";
     public static final String CUSTOMIZED_ID = "customizedId";
     public static final String CLIENT_INFO = "clientInfo";
+    public static final String PRE_SEND_TEXT = "preSendText";
+    public static final String PRE_SEND_IMAGE_PATH = "preSendImagePath";
 
     public static final int REQUEST_CODE_CAMERA = 0;
     public static final int REQUEST_CODE_PHOTO = 1;
@@ -188,15 +190,18 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         String clientId = mController.getCurrentClientId();
         if (!TextUtils.isEmpty(clientId)) {
             String text = MQUtils.getUnSendTextMessage(this, clientId);
-            mInputEt.setText(text == null ? "" : text);
+            mInputEt.setText(text);
             mInputEt.setSelection(mInputEt.getText().length());
         }
+
+        MQConfig.getActivityLifecycleCallback().onActivityCreated(this, savedInstanceState);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("mCameraPicPath", mCameraPicPath);
+        MQConfig.getActivityLifecycleCallback().onActivitySaveInstanceState(this, outState);
     }
 
     /**
@@ -231,6 +236,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
             sendGetClientPositionInQueueMsg();
         }
+        MQConfig.getActivityLifecycleCallback().onActivityStarted(this);
     }
 
     @Override
@@ -239,12 +245,14 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         // 设置顾客上线，请求分配客服
         setClientOnline(false);
         isPause = false;
+        MQConfig.getActivityLifecycleCallback().onActivityResumed(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         isPause = true;
+        MQConfig.getActivityLifecycleCallback().onActivityPaused(this);
     }
 
     @Override
@@ -262,6 +270,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         } else {
             mController.saveConversationOnStopTime(System.currentTimeMillis());
         }
+        MQConfig.getActivityLifecycleCallback().onActivityStopped(this);
     }
 
     @Override
@@ -285,6 +294,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             MQUtils.setUnSendTextMessage(this, clientId, msg);
         }
 
+        MQConfig.getActivityLifecycleCallback().onActivityDestroyed(this);
         super.onDestroy();
     }
 
@@ -761,10 +771,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                         agentChangeMessage.setAgentNickname(agent.getNickname());
                         mChatMessageList.add(conversationMessageList.size() - 1, agentChangeMessage);
                     }
+                    setClientInfo();
 
                     loadData();
 
-                    setClientInfo();
 
                     if (mController.getIsWaitingInQueue()) {
                         getClientPositionInQueue();
@@ -844,6 +854,19 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         });
     }
 
+    private String getClientAvatarUrl() {
+        if (getIntent() != null) {
+            Serializable clientInfoSerializable = getIntent().getSerializableExtra(CLIENT_INFO);
+            if (clientInfoSerializable != null) {
+                HashMap<String, String> clientInfo = (HashMap<String, String>) clientInfoSerializable;
+                if (clientInfo.containsKey("avatar")) {
+                    return clientInfo.get("avatar");
+                }
+            }
+        }
+        return "";
+    }
+
     /**
      * 加载消息到列表中
      */
@@ -853,6 +876,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         // 加载到UI
         mLoadProgressBar.setVisibility(View.GONE);
         Iterator<BaseMessage> messageIterator = mChatMessageList.iterator();
+
+
+        String clientAvatarUrl = getClientAvatarUrl();
+
         while (messageIterator.hasNext()) {
             BaseMessage message = messageIterator.next();
             // 将正在发送显示为已发送
@@ -862,6 +889,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             // 如果是黑名单状态，不显示结束对话的消息
             else if (BaseMessage.TYPE_ENDING.equals(message.getType()) && isBlackState) {
                 messageIterator.remove();
+            }
+
+            // 处理设置客户头像后，第一次进来时没有头像
+            if (MQConfig.isShowClientAvatar && !TextUtils.isEmpty(clientAvatarUrl) && message.getItemViewType() == BaseMessage.TYPE_CLIENT) {
+                message.setAvatar(clientAvatarUrl);
             }
         }
         if (isBlackState) {
@@ -884,7 +916,17 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * @param agent                  当前客服，可能为 null
      */
     protected void onLoadDataComplete(MQConversationActivity mqConversationActivity, Agent agent) {
-
+        if (getIntent() != null) {
+            String preSendTextContent = getIntent().getStringExtra(PRE_SEND_TEXT);
+            String preSendImageFilePath = getIntent().getStringExtra(PRE_SEND_IMAGE_PATH);
+            if (!TextUtils.isEmpty(preSendTextContent)) {
+                createAndSendTextMessage(preSendTextContent);
+            }
+            if (!TextUtils.isEmpty(preSendImageFilePath)) {
+                File imageFile = new File(preSendImageFilePath);
+                createAndSendImageMessage(imageFile);
+            }
+        }
     }
 
     @Override
@@ -912,7 +954,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 return;
             }
 
-            createAndSendTextMessage();
+            String msg = mInputEt.getText().toString();
+            createAndSendTextMessage(msg);
 
         } else if (id == R.id.photo_select_btn) {
             if (!checkSendable()) {
@@ -1105,8 +1148,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     /**
      * 创建并发送TextMessage。如果没有客服在线，发送离线消息
      */
-    private void createAndSendTextMessage() {
-        String msg = mInputEt.getText().toString();
+    private void createAndSendTextMessage(String msg) {
         //内容为空不发送，只有空格时也不发送
         if (TextUtils.isEmpty(msg.trim())) {
             return;
@@ -1120,6 +1162,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * @param imageFile 需要上传的imageFile
      */
     private void createAndSendImageMessage(File imageFile) {
+        if (!imageFile.exists()) {
+            return;
+        }
         PhotoMessage imageMessage = new PhotoMessage();
         imageMessage.setLocalPath(imageFile.getAbsolutePath());
         sendMessage(imageMessage);
@@ -1133,7 +1178,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // nothing
                 } else {
-                    MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_sdcard_no_permission);
+                    MQUtils.show(this, R.string.mq_sdcard_no_permission);
                 }
                 break;
             }

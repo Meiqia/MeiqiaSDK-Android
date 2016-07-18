@@ -160,7 +160,7 @@ public class MQPhotoFolderPw extends MQBasePopupWindow implements AdapterView.On
             ImageFolderModel imageFolderModel = getItem(position);
             folderViewHolder.nameTv.setText(imageFolderModel.name);
             folderViewHolder.countTv.setText(String.valueOf(imageFolderModel.getCount()));
-            MQImage.displayImage(folderViewHolder.photoIv, imageFolderModel.coverPath, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, null);
+            MQImage.displayImage(mActivity, folderViewHolder.photoIv, imageFolderModel.coverPath, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, null);
 
             return convertView;
         }

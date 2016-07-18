@@ -1,11 +1,10 @@
 package com.meiqia.meiqiasdk.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -22,22 +21,21 @@ import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
 import com.meiqia.meiqiasdk.model.ImageFolderModel;
 import com.meiqia.meiqiasdk.pw.MQPhotoFolderPw;
+import com.meiqia.meiqiasdk.util.MQAsyncTask;
 import com.meiqia.meiqiasdk.util.MQImageCaptureManager;
+import com.meiqia.meiqiasdk.util.MQLoadPhotoTask;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:16/2/24 下午5:36
  * 描述:图片选择界面
  */
-public class MQPhotoPickerActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class MQPhotoPickerActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener, MQAsyncTask.Callback<ArrayList<ImageFolderModel>> {
     private static final String EXTRA_IMAGE_DIR = "EXTRA_IMAGE_DIR";
     private static final String EXTRA_SELECTED_IMAGES = "EXTRA_SELECTED_IMAGES";
     private static final String EXTRA_MAX_CHOOSE_COUNT = "EXTRA_MAX_CHOOSE_COUNT";
@@ -86,6 +84,8 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
      * 上一次显示图片目录的时间戳，防止短时间内重复点击图片目录菜单时界面错乱
      */
     private long mLastShowPhotoFolderTime;
+    private MQLoadPhotoTask mLoadPhotoTask;
+    private Dialog mLoadingDialog;
 
     /**
      * @param context         应用程序上下文
@@ -159,12 +159,30 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
         mContentGv.setAdapter(mPicAdapter);
 
         renderTopRightBtn();
+
+        mTitleTv.setText(R.string.mq_all_image);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        loadDatas();
+        showLoadingDialog();
+        mLoadPhotoTask = new MQLoadPhotoTask(this, this, mTakePhotoEnabled).perform();
+    }
+
+    private void showLoadingDialog() {
+        if (mLoadingDialog == null) {
+            mLoadingDialog = new Dialog(this, R.style.MQDialog);
+            mLoadingDialog.setContentView(R.layout.mq_dialog_loading_photopicker);
+            mLoadingDialog.setCancelable(false);
+        }
+        mLoadingDialog.show();
+    }
+
+    private void dismissLoadingDialog() {
+        if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
+            mLoadingDialog.dismiss();
+        }
     }
 
     @Override
@@ -246,7 +264,7 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
         if (mCurrentImageFolderModel.isTakePhotoEnabled()) {
             currentPosition--;
         }
-        startActivityForResult(MQPhotoPickerPreviewActivity.newIntent(this, mMaxChooseCount, mPicAdapter.getSelectedImages(), mPicAdapter.getDatas(), currentPosition, mTopRightBtnText, false), REQUEST_CODE_PREVIEW);
+        startActivityForResult(MQPhotoPickerPreviewActivity.newIntent(this, mMaxChooseCount, mPicAdapter.getSelectedImages(), mPicAdapter.getData(), currentPosition, mTopRightBtnText, false), REQUEST_CODE_PREVIEW);
     }
 
     /**
@@ -323,76 +341,41 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    private void loadDatas() {
-        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Images.Media.DATA}, null, null, MediaStore.Images.Media.DATE_ADDED + " DESC");
-
-        ImageFolderModel allImageFolderModel = new ImageFolderModel(mTakePhotoEnabled);
-
-        HashMap<String, ImageFolderModel> imageFolderModelMap = new HashMap<>();
-        ImageFolderModel otherImageFolderModel = null;
-        if (cursor != null && cursor.getCount() > 0) {
-            boolean firstInto = true;
-            while (cursor.moveToNext()) {
-                String imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-
-                if (!TextUtils.isEmpty(imagePath)) {
-                    if (firstInto) {
-                        allImageFolderModel.name = getString(R.string.mq_all_image);
-                        allImageFolderModel.coverPath = imagePath;
-                        firstInto = false;
-                    }
-                    // 所有图片目录每次都添加
-                    allImageFolderModel.addLastImage(imagePath);
-
-                    String folderPath = null;
-                    // 其他图片目录
-                    File folder = new File(imagePath).getParentFile();
-                    if (folder != null) {
-                        folderPath = folder.getAbsolutePath();
-                    }
-
-                    if (TextUtils.isEmpty(folderPath)) {
-                        int end = imagePath.lastIndexOf(File.separator);
-                        if (end != -1) {
-                            folderPath = imagePath.substring(0, end);
-                        }
-                    }
-
-                    if (!TextUtils.isEmpty(folderPath)) {
-                        if (imageFolderModelMap.containsKey(folderPath)) {
-                            otherImageFolderModel = imageFolderModelMap.get(folderPath);
-                        } else {
-                            String folderName = folderPath.substring(folderPath.lastIndexOf(File.separator) + 1);
-                            if (TextUtils.isEmpty(folderName)) {
-                                folderName = "/";
-                            }
-                            otherImageFolderModel = new ImageFolderModel(folderName, imagePath);
-                            imageFolderModelMap.put(folderPath, otherImageFolderModel);
-                        }
-                        otherImageFolderModel.addLastImage(imagePath);
-                    }
-                }
-            }
-            cursor.close();
+    private void reloadPhotos(int position) {
+        if (position < mImageFolderModels.size()) {
+            mCurrentImageFolderModel = mImageFolderModels.get(position);
+            mTitleTv.setText(mCurrentImageFolderModel.name);
+            mPicAdapter.setData(mCurrentImageFolderModel.getImages());
         }
+    }
 
-        mImageFolderModels = new ArrayList();
-        // 添加所有图片目录
-        mImageFolderModels.add(allImageFolderModel);
-
-        // 添加其他图片目录
-        Iterator<Map.Entry<String, ImageFolderModel>> iterator = imageFolderModelMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            mImageFolderModels.add(iterator.next().getValue());
-        }
-
+    @Override
+    public void onPostExecute(ArrayList<ImageFolderModel> imageFolderModels) {
+        dismissLoadingDialog();
+        mLoadPhotoTask = null;
+        mImageFolderModels = imageFolderModels;
         reloadPhotos(mPhotoFolderPw == null ? 0 : mPhotoFolderPw.getCurrentPosition());
     }
 
-    private void reloadPhotos(int position) {
-        mCurrentImageFolderModel = mImageFolderModels.get(position);
-        mTitleTv.setText(mCurrentImageFolderModel.name);
-        mPicAdapter.setDatas(mCurrentImageFolderModel.getImages());
+    @Override
+    public void onTaskCancelled() {
+        dismissLoadingDialog();
+        mLoadPhotoTask = null;
+    }
+
+    private void cancelLoadPhotoTask() {
+        if (mLoadPhotoTask != null) {
+            mLoadPhotoTask.cancelTask();
+            mLoadPhotoTask = null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        dismissLoadingDialog();
+        cancelLoadPhotoTask();
+
+        super.onDestroy();
     }
 
     private class PicAdapter extends BaseAdapter {
@@ -403,7 +386,7 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
 
         public PicAdapter() {
             mDatas = new ArrayList<>();
-            mImageWidth = MQUtils.getScreenWidth(getApplicationContext()) / 9;
+            mImageWidth = MQUtils.getScreenWidth(getApplicationContext()) / 10;
             mImageHeight = mImageWidth;
         }
 
@@ -449,7 +432,7 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
             } else {
                 picViewHolder.tipTv.setVisibility(View.INVISIBLE);
                 picViewHolder.photoIv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                MQImage.displayImage(picViewHolder.photoIv, imagePath, R.drawable.mq_ic_holder_dark, R.drawable.mq_ic_holder_dark, mImageWidth, mImageHeight, null);
+                MQImage.displayImage(MQPhotoPickerActivity.this, picViewHolder.photoIv, imagePath, R.drawable.mq_ic_holder_dark, R.drawable.mq_ic_holder_dark, mImageWidth, mImageHeight, null);
 
                 picViewHolder.flagIv.setVisibility(View.VISIBLE);
 
@@ -505,7 +488,7 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
             });
         }
 
-        public void setDatas(ArrayList<String> datas) {
+        public void setData(ArrayList<String> datas) {
             if (datas != null) {
                 mDatas = datas;
             } else {
@@ -514,7 +497,7 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
             notifyDataSetChanged();
         }
 
-        public ArrayList<String> getDatas() {
+        public ArrayList<String> getData() {
             return mDatas;
         }
 

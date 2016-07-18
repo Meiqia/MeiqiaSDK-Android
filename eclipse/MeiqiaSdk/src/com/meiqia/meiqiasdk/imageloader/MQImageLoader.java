@@ -1,5 +1,6 @@
 package com.meiqia.meiqiasdk.imageloader;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.DrawableRes;
@@ -11,18 +12,30 @@ import android.widget.ImageView;
  * 创建时间:16/6/28 下午5:58
  * 描述:
  */
-public interface MQImageLoader {
+public abstract class MQImageLoader {
 
-    void displayImage(ImageView imageView, String path, @DrawableRes int loadingResId, @DrawableRes int failResId, int width, int height, MQDisplayImageListener displayImageListener);
+    protected String getPath(String path) {
+        if (path == null) {
+            path = "";
+        }
 
-    void downloadImage(Context context, String path, MQDownloadImageListener downloadImageListener);
+        if (!path.startsWith("http") && !path.startsWith("file")) {
+            path = "file://" + path;
+        }
+        return path;
+    }
 
-    interface MQDisplayImageListener {
+    public abstract void displayImage(Activity activity, ImageView imageView, String path, @DrawableRes int loadingResId, @DrawableRes int failResId, int width, int height, MQDisplayImageListener displayImageListener);
+
+    public abstract void downloadImage(Context context, String path, MQDownloadImageListener downloadImageListener);
+
+    public interface MQDisplayImageListener {
         void onSuccess(View view, String path);
     }
 
-    interface MQDownloadImageListener {
+    public interface MQDownloadImageListener {
         void onSuccess(String path, Bitmap bitmap);
+
         void onFailed(String path);
     }
 }
