@@ -1,5 +1,15 @@
 Change Log
 ==========
+Version 3.2.5 *(2016-07-18)*
+----------------------------
+- 新增 MQManager 新增更新顾客信息接口 updateClientInfo
+- 新增 MQIntentBuilder 新增预发送消息接口 setPreSendTextMessage、setPreSendImageMessage
+- 新增 MQConfig 新增配置是否显示客户头像 isShowClientAvatar
+- 新增 MQConfig 新增 MQConversationActivity 生命周期的回调接口 setActivityLifecycleCallback
+- 新增 取消 gradle 依赖 PhotoView，依赖 PhotoView 源码的方式支持查看长图
+- 修复 修复手机里没有图片时应用崩溃问题
+- 修复 修复把非图片文件的后缀名改成图片文件后缀名时发送图片崩溃
+
 Version 3.2.4 *(2016-07-05)*
 ----------------------------
 - 新增 支持图文消息

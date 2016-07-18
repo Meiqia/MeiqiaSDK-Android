@@ -1,11 +1,13 @@
 package com.meiqia.meiqiasdk.chatitem;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
@@ -38,6 +40,8 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
     protected View voiceContainerRl;
     protected MQChatFileItem chatFileItem;
     protected View unreadCircle;
+    protected MQImageView usAvatar;
+    protected RelativeLayout chatBox;
 
     protected int mMinItemWidth;
     protected int mMaxItemWidth;
@@ -60,6 +64,8 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
         voiceAnimIv = getViewById(R.id.iv_voice_anim);
         voiceContainerRl = getViewById(R.id.rl_voice_container);
         chatFileItem = getViewById(R.id.file_container);
+        usAvatar = getViewById(R.id.us_avatar_iv);
+        chatBox = getViewById(R.id.chat_box);
     }
 
     @Override
@@ -104,9 +110,9 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
         }
     }
 
-    public void setMessage(BaseMessage baseMessage, int position) {
+    public void setMessage(BaseMessage baseMessage, int position, Activity activity) {
         handleVisibilityByContentType(baseMessage);
-        fillContent(baseMessage, position);
+        fillContent(baseMessage, position, activity);
     }
 
     /**
@@ -136,7 +142,9 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
         }
     }
 
-    private void fillContent(BaseMessage baseMessage, final int position) {
+    private void fillContent(BaseMessage baseMessage, final int position, Activity activity) {
+        MQImage.displayImage(activity, usAvatar, baseMessage.getAvatar(), R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, 100, 100, null);
+
         switch (baseMessage.getContentType()) {
             case BaseMessage.TYPE_CONTENT_TEXT:
                 if (!TextUtils.isEmpty(baseMessage.getContent())) {
@@ -155,7 +163,7 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
                     url = ((PhotoMessage) baseMessage).getUrl();
                 }
 
-                MQImage.displayImage(contentImage, url, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, new MQImageLoader.MQDisplayImageListener() {
+                MQImage.displayImage(activity, contentImage, url, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, new MQImageLoader.MQDisplayImageListener() {
                     @Override
                     public void onSuccess(View view, final String url) {
                         postDelayed(new Runnable() {
@@ -217,7 +225,7 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
      * @param position
      */
     private void handleBindVoiceItem(final VoiceMessage voiceMessage, final int position) {
-        voiceContainerRl.setOnClickListener(new View.OnClickListener() {
+        voiceContainerRl.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleClickVoiceBtn(voiceMessage, position);

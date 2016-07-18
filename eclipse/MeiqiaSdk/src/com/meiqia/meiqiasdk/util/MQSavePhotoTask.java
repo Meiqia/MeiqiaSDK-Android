@@ -1,6 +1,6 @@
 package com.meiqia.meiqiasdk.util;
 
-import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -12,6 +12,7 @@ import com.meiqia.meiqiasdk.R;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.SoftReference;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -19,18 +20,18 @@ import java.io.IOException;
  * 描述:
  */
 public class MQSavePhotoTask extends MQAsyncTask<Void, Void> {
-    private Application mApplication;
-    private Bitmap mBitmap;
+    private Context mContext;
+    private SoftReference<Bitmap> mBitmap;
     private File mNewFile;
 
-    public MQSavePhotoTask(Callback<Void> callback, Application application, File newFile) {
+    public MQSavePhotoTask(Callback<Void> callback, Context context, File newFile) {
         super(callback);
-        mApplication = application;
+        mContext = context.getApplicationContext();
         mNewFile = newFile;
     }
 
     public void setBitmapAndPerform(Bitmap bitmap) {
-        mBitmap = bitmap;
+        mBitmap = new SoftReference<>(bitmap);
 
         if (Build.VERSION.SDK_INT >= 11) {
             executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -44,24 +45,38 @@ public class MQSavePhotoTask extends MQAsyncTask<Void, Void> {
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(mNewFile);
-            mBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            mBitmap.get().compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.flush();
 
             // 通知图库更新
-            mApplication.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(mNewFile)));
+            mContext.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(mNewFile)));
 
-            MQUtils.showSafe(mApplication, mApplication.getString(R.string.mq_save_img_success_folder, mNewFile.getParentFile().getAbsolutePath()));
+            MQUtils.showSafe(mContext, mContext.getString(R.string.mq_save_img_success_folder, mNewFile.getParentFile().getAbsolutePath()));
         } catch (Exception e) {
-            MQUtils.showSafe(mApplication, R.string.mq_save_img_failure);
+            MQUtils.showSafe(mContext, R.string.mq_save_img_failure);
         } finally {
             if (fos != null) {
                 try {
                     fos.close();
                 } catch (IOException e) {
-                    MQUtils.showSafe(mApplication, R.string.mq_save_img_failure);
+                    MQUtils.showSafe(mContext, R.string.mq_save_img_failure);
                 }
             }
+            recycleBitmap();
         }
         return null;
+    }
+
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
+        recycleBitmap();
+    }
+
+    private void recycleBitmap() {
+        if (mBitmap != null && mBitmap.get() != null && !mBitmap.get().isRecycled()) {
+            mBitmap.get().recycle();
+            mBitmap = null;
+        }
     }
 }

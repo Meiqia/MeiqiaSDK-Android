@@ -8,6 +8,7 @@ import com.meiqia.core.MQManager;
 import com.meiqia.core.MQScheduleRule;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
 
+import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -59,6 +60,18 @@ public class MQIntentBuilder {
 
     public MQIntentBuilder setScheduleRule(MQScheduleRule scheduleRule) {
         mScheduleRule = scheduleRule;
+        return this;
+    }
+
+    public MQIntentBuilder setPreSendTextMessage(String content) {
+        mIntent.putExtra(MQConversationActivity.PRE_SEND_TEXT, content);
+        return this;
+    }
+
+    public MQIntentBuilder setPreSendImageMessage(File imageFile) {
+        if (imageFile != null && imageFile.exists()) {
+            mIntent.putExtra(MQConversationActivity.PRE_SEND_IMAGE_PATH, imageFile.getAbsolutePath());
+        }
         return this;
     }
 

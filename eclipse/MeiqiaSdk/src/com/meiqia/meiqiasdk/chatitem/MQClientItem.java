@@ -1,12 +1,15 @@
 package com.meiqia.meiqiasdk.chatitem;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.model.BaseMessage;
+import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
 /**
@@ -46,8 +49,15 @@ public class MQClientItem extends MQBaseBubbleItem {
     }
 
     @Override
-    public void setMessage(BaseMessage baseMessage, int position) {
-        super.setMessage(baseMessage, position);
+    public void setMessage(BaseMessage baseMessage, int position, Activity activity) {
+        super.setMessage(baseMessage, position, activity);
+
+        if (!MQConfig.isShowClientAvatar) {
+            usAvatar.setVisibility(GONE);
+            LayoutParams lp = (LayoutParams) chatBox.getLayoutParams();
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            chatBox.setLayoutParams(lp);
+        }
 
         if (sendingProgressBar != null) {
             switch (baseMessage.getStatus()) {

@@ -11,6 +11,7 @@ import com.meiqia.meiqiasdk.R;
  * 描述:
  */
 public class MQLoadingDialog extends Dialog {
+
     public MQLoadingDialog(Activity activity) {
         super(activity, R.style.MQDialog);
         setContentView(R.layout.mq_dialog_loading);

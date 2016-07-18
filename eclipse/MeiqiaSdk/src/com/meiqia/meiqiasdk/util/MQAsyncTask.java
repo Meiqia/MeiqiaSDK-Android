@@ -29,10 +29,10 @@ public abstract class MQAsyncTask<Params, Result> extends AsyncTask<Params, Void
     }
 
     @Override
-    final protected void onCancelled() {
+    protected void onCancelled() {
         super.onCancelled();
         if (mCallback != null) {
-            mCallback.onCancled();
+            mCallback.onTaskCancelled();
         }
         //无法放到 cancelTask()中，因为此方法会在cancelTask()后执行，所以如果放到cancelTask()中，则此字段永远是空，也就不会调用 onCancel()方法了
         mCallback = null;
@@ -49,6 +49,6 @@ public abstract class MQAsyncTask<Params, Result> extends AsyncTask<Params, Void
         /**
          * 当请求被取消的时候执行
          */
-        void onCancled();
+        void onTaskCancelled();
     }
 }

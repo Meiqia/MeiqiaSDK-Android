@@ -5,10 +5,19 @@
     style="@style/MQWrapWrap"
     android:padding="8dp">
 
+    <com.meiqia.meiqiasdk.widget.MQImageView
+        android:id="@+id/us_avatar_iv"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="6dp"
+        app:mq_iv_isCircle="true"
+        tools:background="#f00" />
+
     <RelativeLayout
         android:id="@+id/chat_box"
         style="@style/MQWrapWrap"
-        android:layout_alignParentRight="true">
+        android:layout_toLeftOf="@id/us_avatar_iv">
 
         <ProgressBar
             android:id="@+id/progress_bar"
@@ -70,10 +79,10 @@
 
         <com.meiqia.meiqiasdk.chatitem.MQChatFileItem
             android:id="@+id/file_container"
-            android:layout_toRightOf="@id/progress_bar"
             style="@style/MQWrapWrap"
+            android:layout_toRightOf="@id/progress_bar"
             android:background="@drawable/mq_bg_msg_right"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </RelativeLayout>
 
     <ImageView
