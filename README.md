@@ -25,7 +25,7 @@ compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 ```
 
 ### Eclipse
- [跳转详情][2]
+ [查看详情][9]
 
 ## 使用美洽
 
@@ -262,4 +262,4 @@ MQConfig.messageFormInputModels.add(nameMfim);
  [6]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-19
  [7]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-32
  [8]: https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/demo%2Fsrc%2Fmain%2Fjava%2Fcom%2Fmeiqia%2Fmeiqiasdk%2Fdemo%2FMainActivity.java
- [9]: https://github.com/Meiqia/MeiqiaSDK-Android/Eclipse_README.md
+ [8]: https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/Eclipse_README.md
