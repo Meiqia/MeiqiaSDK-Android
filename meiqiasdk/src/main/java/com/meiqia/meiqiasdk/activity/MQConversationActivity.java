@@ -46,6 +46,7 @@ import com.meiqia.core.callback.OnClientPositionInQueueCallback;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.LeaveMessageCallback;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
+import com.meiqia.meiqiasdk.callback.OnEvaluateRobotAnswerCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.callback.SimpleCallback;
@@ -1594,19 +1595,24 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     @Override
     public void onEvaluateRobotAnswer(final RobotMessage robotMessage, final int useful) {
-        mController.evaluateRobotAnswer(robotMessage.getId(), robotMessage.getQuestionId(), useful, new SimpleCallback() {
+        mController.evaluateRobotAnswer(robotMessage.getId(), robotMessage.getQuestionId(), useful, new OnEvaluateRobotAnswerCallback() {
             @Override
             public void onFailure(int code, String message) {
                 MQUtils.show(MQConversationActivity.this, R.string.mq_evaluate_failure);
             }
 
             @Override
-            public void onSuccess() {
+            public void onSuccess(String message) {
                 robotMessage.setAlreadyFeedback(true);
                 mChatMsgAdapter.notifyDataSetChanged();
 
                 if (RobotMessage.EVALUATE_USELESS == useful) {
                     addUselessRedirectMessage();
+                }
+
+                // 如果评价后返回的message不为空，则模拟一条客服发的文本消息
+                if (!TextUtils.isEmpty(message)) {
+                    mChatMsgAdapter.addMQMessage(new TextMessage(message, mCurrentAgent.getAvatar()));
                 }
             }
         });

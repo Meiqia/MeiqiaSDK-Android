@@ -12,4 +12,18 @@ public class TextMessage extends BaseMessage {
         this();
         setContent(content);
     }
+
+    /**
+     * 模拟一条由客服发的消息
+     *
+     * @param content
+     * @param avatar
+     */
+    public TextMessage(String content, String avatar) {
+        setItemViewType(TYPE_AGENT);
+        setContent(content);
+        setContentType(MQMessage.TYPE_CONTENT_TEXT);
+        setAvatar(avatar);
+        setStatus(STATE_ARRIVE);
+    }
 }

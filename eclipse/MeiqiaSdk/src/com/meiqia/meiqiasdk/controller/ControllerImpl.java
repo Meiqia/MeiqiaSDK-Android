@@ -12,6 +12,7 @@ import com.meiqia.core.callback.OnGetMessageListCallback;
 import com.meiqia.core.callback.OnProgressCallback;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
 import com.meiqia.meiqiasdk.callback.OnDownloadFileCallback;
+import com.meiqia.meiqiasdk.callback.OnEvaluateRobotAnswerCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.callback.SimpleCallback;
@@ -318,19 +319,19 @@ public class ControllerImpl implements MQController {
     }
 
     @Override
-    public void evaluateRobotAnswer(long messageId, long questionId, int useful, final SimpleCallback simpleCallback) {
-        MQManager.getInstance(context).evaluateRobotAnswer(messageId, questionId, useful, new com.meiqia.core.callback.SimpleCallback() {
+    public void evaluateRobotAnswer(long messageId, long questionId, int useful, final OnEvaluateRobotAnswerCallback onEvaluateRobotAnswerCallback) {
+        MQManager.getInstance(context).evaluateRobotAnswer(messageId, questionId, useful, new com.meiqia.core.callback.OnEvaluateRobotAnswerCallback() {
             @Override
             public void onFailure(int code, String message) {
-                if (simpleCallback != null) {
-                    simpleCallback.onFailure(code, message);
+                if (onEvaluateRobotAnswerCallback != null) {
+                    onEvaluateRobotAnswerCallback.onFailure(code, message);
                 }
             }
 
             @Override
-            public void onSuccess() {
-                if (simpleCallback != null) {
-                    simpleCallback.onSuccess();
+            public void onSuccess(String message) {
+                if (onEvaluateRobotAnswerCallback != null) {
+                    onEvaluateRobotAnswerCallback.onSuccess(message);
                 }
             }
         });
