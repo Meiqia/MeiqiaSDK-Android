@@ -4,6 +4,7 @@ package com.meiqia.meiqiasdk.controller;
 import com.meiqia.core.callback.OnClientPositionInQueueCallback;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
 import com.meiqia.meiqiasdk.callback.OnDownloadFileCallback;
+import com.meiqia.meiqiasdk.callback.OnEvaluateRobotAnswerCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.callback.SimpleCallback;
@@ -152,9 +153,9 @@ public interface MQController {
      * @param messageId      消息id
      * @param questionId     问题id
      * @param useful         是否有用
-     * @param simpleCallback 评价的回调接口
+     * @param onEvaluateRobotAnswerCallback 评价的回调接口
      */
-    void evaluateRobotAnswer(long messageId, long questionId, int useful, SimpleCallback simpleCallback);
+    void evaluateRobotAnswer(long messageId, long questionId, int useful, OnEvaluateRobotAnswerCallback onEvaluateRobotAnswerCallback);
 
     /**
      * 设置是否强制分配客服
