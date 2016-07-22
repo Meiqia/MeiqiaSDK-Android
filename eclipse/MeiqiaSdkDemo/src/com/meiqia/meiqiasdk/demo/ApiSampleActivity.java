@@ -173,6 +173,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
 			info.put("技能1", "休刊");
 			info.put("技能2", "外出取材");
 			info.put("技能3", "打麻将");
+			info.put("tags", "test1,test2,test3");
 			AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
 			alertBuilder.setTitle("上传自定义信息");
 			alertBuilder.setMessage("avatar -> https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/1dee88eabfbd7bd4\n" + "name -> 富坚义博\n" + "技能1 -> 休刊\n" + "sex -> 男\n" + "tel -> 111111\n" + "技能2 -> 外出取材\n" + "技能3 -> 打麻将");

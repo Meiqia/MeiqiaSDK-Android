@@ -224,6 +224,7 @@ public class MQUtils {
         agent.setStatus(mqAgent.getStatus());
         agent.setIsOnline(mqAgent.isOnLine());
         agent.setPrivilege(mqAgent.getPrivilege());
+        agent.setAvatar(mqAgent.getAvatar());
         return agent;
     }
 
