@@ -30,7 +30,7 @@ public class BaseMessage {
     public static final int TYPE_EVALUATE = 4;
     public static final int TYPE_ROBOT = 5;
     public static final int TYPE_NO_AGENT_TIP = 6;
-    public static final int TYPE_USELESS_REDIRECT = 7;
+    public static final int TYPE_INITIATIVE_REDIRECT_TIP = 7;
     public static final int TYPE_QUEUE_TIP = 8;
     public static final int TYPE_RICH_TEXT = 9;
 

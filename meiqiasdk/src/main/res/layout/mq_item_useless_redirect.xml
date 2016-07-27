@@ -5,6 +5,7 @@
     android:padding="@dimen/mq_size_level3">
 
     <TextView
+        android:id="@+id/tv_item_redirect_tip"
         style="@style/MQWrapWrap"
         android:text="@string/mq_useless_redirect_tip"
         android:textColor="@color/mq_chat_event_gray"

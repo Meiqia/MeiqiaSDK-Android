@@ -12,7 +12,7 @@
 
 ```
 // -------------------- 以下三个库是必须依赖的 ----------------------------
-compile 'com.meiqia:meiqiasdk:3.2.6@aar'
+compile 'com.meiqia:meiqiasdk:3.2.7@aar'
 compile 'com.android.support:support-v4:23.1.1'
 compile 'com.squareup.okhttp3:okhttp:3.3.1'
 // -------------------- 以上三个库是必须依赖的 ----------------------------
