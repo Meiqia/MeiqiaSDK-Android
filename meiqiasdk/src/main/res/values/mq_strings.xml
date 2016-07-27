@@ -95,6 +95,8 @@
     <string name="mq_redirect_human">转人工</string>
     <string name="mq_no_agent_leave_msg_tip">抱歉，当前没有客服在线，你可以给我们</string>
     <string name="mq_useless_redirect_tip">很抱歉您不满意机器人的回答，您可以尝试</string>
+    <string name="mq_manual_redirect_tip">您的问题如果需要人工支持，可以</string>
+
     <string name="mq_queue_leave_msg">请稍等，你前面还有 %1$s 个访客，你也可以选择给我们</string>
     <string name="mq_unknown_msg_tip">当前 App 暂不支持该类型消息，请升级您的 App 到最新版本</string>
 </resources>
