@@ -2,20 +2,22 @@ package com.meiqia.meiqiasdk.chatitem;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.model.InitiativeRedirectMessage;
 import com.meiqia.meiqiasdk.widget.MQBaseCustomCompositeView;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
  * 创建时间:16/4/22 上午10:23
- * 描述:用户对机器人的回答评价无用时，提示转人工的提示消息item
+ * 描述:提示主动点击转人工的消息item
  */
-public class MQUselessRedirectItem extends MQBaseCustomCompositeView {
-
+public class MQInitiativeRedirectItem extends MQBaseCustomCompositeView {
+    private TextView mTipTv;
     private Callback mCallback;
 
-    public MQUselessRedirectItem(Context context) {
+    public MQInitiativeRedirectItem(Context context) {
         super(context);
     }
 
@@ -26,6 +28,7 @@ public class MQUselessRedirectItem extends MQBaseCustomCompositeView {
 
     @Override
     protected void initView() {
+        mTipTv = getViewById(R.id.tv_item_redirect_tip);
     }
 
     @Override
@@ -44,8 +47,9 @@ public class MQUselessRedirectItem extends MQBaseCustomCompositeView {
         }
     }
 
-    public void setCallback(Callback callback) {
+    public void setMessage(InitiativeRedirectMessage initiativeRedirectMessage, Callback callback) {
         mCallback = callback;
+        mTipTv.setText(initiativeRedirectMessage.getTipResId());
     }
 
     public interface Callback {

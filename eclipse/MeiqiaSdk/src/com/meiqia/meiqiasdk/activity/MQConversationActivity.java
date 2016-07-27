@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -51,7 +52,7 @@ import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.callback.SimpleCallback;
 import com.meiqia.meiqiasdk.chatitem.MQRobotItem;
-import com.meiqia.meiqiasdk.chatitem.MQUselessRedirectItem;
+import com.meiqia.meiqiasdk.chatitem.MQInitiativeRedirectItem;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
 import com.meiqia.meiqiasdk.dialog.MQEvaluateDialog;
@@ -66,7 +67,7 @@ import com.meiqia.meiqiasdk.model.PhotoMessage;
 import com.meiqia.meiqiasdk.model.RedirectQueueMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
-import com.meiqia.meiqiasdk.model.UselessRedirectMessage;
+import com.meiqia.meiqiasdk.model.InitiativeRedirectMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.util.ErrorCode;
 import com.meiqia.meiqiasdk.util.MQAudioPlayerManager;
@@ -87,7 +88,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class MQConversationActivity extends Activity implements View.OnClickListener, MQEvaluateDialog.Callback, MQCustomKeyboardLayout.Callback, View.OnTouchListener, MQRobotItem.Callback, LeaveMessageCallback, MQUselessRedirectItem.Callback {
+public class MQConversationActivity extends Activity implements View.OnClickListener, MQEvaluateDialog.Callback, MQCustomKeyboardLayout.Callback, View.OnTouchListener, MQRobotItem.Callback, LeaveMessageCallback, MQInitiativeRedirectItem.Callback {
     private static final String TAG = MQConversationActivity.class.getSimpleName();
 
     // 权限
@@ -166,7 +167,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private boolean mIsAllocatingAgent;
     private boolean mIsShowRedirectHumanButton;
     private boolean isAddLeaveTip;
-
+    
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -626,7 +627,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 // 新老agent不相等，并且新的agent不是人工时才移除「没有客服的提示留言消息」和「转接人工的排队消息」
                 if (!mCurrentAgent.isRobot()) {
                     removeNoAgentLeaveMsg();
-                    removeUselessRedirectMessage();
+                    removeInitiativeRedirectMessage();
                     removeRedirectQueueLeaveMsg();
                 }
             }
@@ -1607,7 +1608,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 mChatMsgAdapter.notifyDataSetChanged();
 
                 if (RobotMessage.EVALUATE_USELESS == useful) {
-                    addUselessRedirectMessage();
+                    addInitiativeRedirectMessage(R.string.mq_useless_redirect_tip);
                 }
 
                 // 如果评价后返回的message不为空，则模拟一条客服发的文本消息
@@ -1697,30 +1698,30 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     /**
      * 添加【提示转人工】的提示消息到消息流的末尾
      */
-    private void addUselessRedirectMessage() {
+    private void addInitiativeRedirectMessage(@StringRes int tipResId) {
         // 如果当前客服不为空，并且是真人客服时，则不再执行后面的操作
         if (mCurrentAgent != null && !mCurrentAgent.isRobot()) {
             return;
         }
 
         // 如果之前已经添加过【提示转人工】的提示消息，并且是在消息流的末尾，则不再执行后面的操作。否则先移除再添加到消息流的末尾
-        if (mChatMessageList != null && mChatMessageList.size() > 0 && mChatMessageList.get(mChatMessageList.size() - 1) instanceof UselessRedirectMessage) {
+        if (mChatMessageList != null && mChatMessageList.size() > 0 && mChatMessageList.get(mChatMessageList.size() - 1) instanceof InitiativeRedirectMessage) {
             return;
         }
-        removeUselessRedirectMessage();
+        removeInitiativeRedirectMessage();
 
-        mChatMsgAdapter.addMQMessage(new UselessRedirectMessage());
+        mChatMsgAdapter.addMQMessage(new InitiativeRedirectMessage(tipResId));
         MQUtils.scrollListViewToBottom(mConversationListView);
     }
 
     /**
      * 移除【提示转人工】的提示消息到消息流的末尾
      */
-    private void removeUselessRedirectMessage() {
+    private void removeInitiativeRedirectMessage() {
         Iterator<BaseMessage> chatItemViewBaseIterator = mChatMessageList.iterator();
         while (chatItemViewBaseIterator.hasNext()) {
             BaseMessage baseMessage = chatItemViewBaseIterator.next();
-            if (baseMessage instanceof UselessRedirectMessage) {
+            if (baseMessage instanceof InitiativeRedirectMessage) {
                 chatItemViewBaseIterator.remove();
                 mChatMsgAdapter.notifyDataSetChanged();
                 return;
@@ -1879,6 +1880,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     addNoAgentLeaveMsg();
                 } else if (RobotMessage.SUB_TYPE_QUEUEING.equals(robotMessage.getSubType())) {
                     forceRedirectHuman();
+                } else if (RobotMessage.SUB_TYPE_MANUAL_REDIRECT.equals(robotMessage.getSubType())) {
+                    addInitiativeRedirectMessage(R.string.mq_manual_redirect_tip);
                 } else {
                     mChatMsgAdapter.notifyDataSetChanged();
                 }

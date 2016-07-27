@@ -14,6 +14,7 @@ import com.meiqia.meiqiasdk.model.EvaluateMessage;
 import com.meiqia.meiqiasdk.model.FileMessage;
 import com.meiqia.meiqiasdk.model.RedirectQueueMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
+import com.meiqia.meiqiasdk.model.InitiativeRedirectMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.widget.MQRedirectQueueItem;
 import com.meiqia.meiqiasdk.model.RichTextMessage;
@@ -25,7 +26,7 @@ import com.meiqia.meiqiasdk.chatitem.MQNoAgentItem;
 import com.meiqia.meiqiasdk.chatitem.MQRobotItem;
 import com.meiqia.meiqiasdk.chatitem.MQTimeItem;
 import com.meiqia.meiqiasdk.chatitem.MQTipItem;
-import com.meiqia.meiqiasdk.chatitem.MQUselessRedirectItem;
+import com.meiqia.meiqiasdk.chatitem.MQInitiativeRedirectItem;
 
 import java.io.File;
 import java.util.List;
@@ -122,8 +123,8 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
                 case BaseMessage.TYPE_NO_AGENT_TIP:
                     convertView = new MQNoAgentItem(mConversationActivity);
                     break;
-                case BaseMessage.TYPE_USELESS_REDIRECT:
-                    convertView = new MQUselessRedirectItem(mConversationActivity);
+                case BaseMessage.TYPE_INITIATIVE_REDIRECT_TIP:
+                    convertView = new MQInitiativeRedirectItem(mConversationActivity);
                     break;
                 case BaseMessage.TYPE_QUEUE_TIP:
                     convertView = new MQRedirectQueueItem(mConversationActivity, mConversationActivity);
@@ -142,8 +143,8 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
             ((MQNoAgentItem) convertView).setCallback(mConversationActivity);
         } else if (getItemViewType(position) == BaseMessage.TYPE_ROBOT) {
             ((MQRobotItem) convertView).setMessage((RobotMessage) mcMessage, mConversationActivity);
-        } else if (getItemViewType(position) == BaseMessage.TYPE_USELESS_REDIRECT) {
-            ((MQUselessRedirectItem) convertView).setCallback(mConversationActivity);
+        } else if (getItemViewType(position) == BaseMessage.TYPE_INITIATIVE_REDIRECT_TIP) {
+            ((MQInitiativeRedirectItem) convertView).setMessage((InitiativeRedirectMessage) mcMessage, mConversationActivity);
         } else if (getItemViewType(position) == BaseMessage.TYPE_TIME) {
             ((MQTimeItem) convertView).setMessage(mcMessage);
         } else if (getItemViewType(position) == BaseMessage.TYPE_TIP) {
