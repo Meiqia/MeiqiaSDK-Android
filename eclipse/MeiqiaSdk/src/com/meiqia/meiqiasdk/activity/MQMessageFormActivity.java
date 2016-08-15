@@ -167,7 +167,7 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
      * 刷新引导文案
      */
     private void refreshLeaveMessageIntro() {
-        String leaveMessageIntro = MQConfig.getController(this).getLeaveMessageIntro();
+        String leaveMessageIntro = MQConfig.getController(this).getEnterpriseConfig().ticketConfig.intro;
         if (TextUtils.isEmpty(leaveMessageIntro)) {
             mMessageTipTv.setVisibility(View.GONE);
         } else {
@@ -455,7 +455,7 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     choosePicture();
                 } else {
-                    MQUtils.show(this, R.string.mq_sdcard_no_permission);
+                    MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_sdcard_no_permission);
                 }
                 break;
             }

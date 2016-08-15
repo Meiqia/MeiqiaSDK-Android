@@ -1,10 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mq_activity_bg"
-    android:orientation="vertical">
+    android:id="@+id/root"
+    android:background="@color/mq_activity_bg">
+
+    <ScrollView
+        android:id="@+id/content_sv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/mq_title_height"
+        android:background="@color/mq_activity_bg">
+
+        <RelativeLayout
+            android:id="@+id/body_rl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/container_ll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
 
     <RelativeLayout
         android:id="@+id/title_rl"
@@ -45,14 +70,30 @@
             android:gravity="center"
             android:maxWidth="175dp"
             android:singleLine="true"
-            android:text="@string/mq_title_webview_rich_text"
+            android:text="@string/mq_title_service_support"
             android:textColor="@color/mq_activity_title_textColor"
             android:textSize="@dimen/mq_titlebar_textSize" />
 
+        <TextView
+            android:id="@+id/submit_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:text="@string/mq_title_submit_btn"
+            android:textColor="@color/mq_activity_title_textColor"
+            android:textSize="16sp" />
+
     </RelativeLayout>
 
-    <WebView
-        android:id="@+id/webview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/progressbar"
+        style="?android:progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:indeterminateDrawable="@drawable/mq_rotate_progress_bar" />
+
+</RelativeLayout>

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.bean.MQAgent;
+import com.meiqia.core.bean.MQEnterpriseConfig;
 import com.meiqia.core.bean.MQMessage;
 import com.meiqia.core.callback.OnClientInfoCallback;
 import com.meiqia.core.callback.OnClientPositionInQueueCallback;
@@ -314,8 +315,8 @@ public class ControllerImpl implements MQController {
     }
 
     @Override
-    public String getLeaveMessageIntro() {
-        return MQManager.getInstance(context).getLeaveMessageIntro();
+    public MQEnterpriseConfig getEnterpriseConfig() {
+        return MQManager.getInstance(context).getEnterpriseConfig();
     }
 
     @Override
@@ -339,16 +340,6 @@ public class ControllerImpl implements MQController {
 
     public void setForceRedirectHuman(boolean isForceRedirectHuman) {
         MQManager.getInstance(context).setForceRedirectHuman(isForceRedirectHuman);
-    }
-
-    @Override
-    public String getEvaluateHumanTip() {
-        return MQManager.getInstance(context).getEvaluateHumanTip();
-    }
-
-    @Override
-    public boolean getIsShowRedirectHumanButton() {
-        return MQManager.getInstance(context).getIsShowRedirectHumanButton();
     }
 
     @Override
