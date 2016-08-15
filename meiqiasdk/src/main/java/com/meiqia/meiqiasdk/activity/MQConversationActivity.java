@@ -918,7 +918,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * @param agent                  当前客服，可能为 null
      */
     protected void onLoadDataComplete(MQConversationActivity mqConversationActivity, Agent agent) {
-        if (getIntent() != null) {
+        sendPreMessage();
+    }
+
+    private void sendPreMessage() {
+        if (getIntent() != null && !mController.getIsWaitingInQueue()) {
             String preSendTextContent = getIntent().getStringExtra(PRE_SEND_TEXT);
             String preSendImageFilePath = getIntent().getStringExtra(PRE_SEND_IMAGE_PATH);
             if (!TextUtils.isEmpty(preSendTextContent)) {
@@ -928,6 +932,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 File imageFile = new File(preSendImageFilePath);
                 createAndSendImageMessage(imageFile);
             }
+            // 清空 intent 里面的数据,因为排队成功可能还会再发一次,如果为空就不再发了
+            getIntent().putExtra(PRE_SEND_TEXT, "");
+            getIntent().putExtra(PRE_SEND_IMAGE_PATH, "");
         }
     }
 
@@ -1086,7 +1093,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             mCustomKeyboardLayout.closeAllKeyboard();
             if (!TextUtils.isEmpty(mConversationId)) {
                 if (mEvaluateDialog == null) {
-                    mEvaluateDialog = new MQEvaluateDialog(this, mController.getEvaluateHumanTip());
+                    mEvaluateDialog = new MQEvaluateDialog(this, mController.getEnterpriseConfig().serviceEvaluationConfig.prompt_text);
                     mEvaluateDialog.setCallback(this);
                 }
                 mEvaluateDialog.show();
@@ -1180,7 +1187,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // nothing
                 } else {
-                    MQUtils.show(this, R.string.mq_sdcard_no_permission);
+                    MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_sdcard_no_permission);
                 }
                 break;
             }
@@ -1645,7 +1652,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 刷新强转人工按钮
      */
     private void refreshRedirectHumanBtn() {
-        mIsShowRedirectHumanButton = MQConfig.getController(this).getIsShowRedirectHumanButton();
+        mIsShowRedirectHumanButton = MQConfig.getController(this).getEnterpriseConfig().robotSettings.show_switch;
         // mCurrentAgent不为空时才刷新，否则会导致正在分配客服的标题不会显示
         if (mCurrentAgent != null) {
             // 把当前agent传进去，复用之前的逻辑
@@ -1841,6 +1848,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         public void removeQueue() {
             mHandler.removeMessages(WHAT_GET_CLIENT_POSITION_IN_QUEUE);
             removeRedirectQueueLeaveMsg();
+            sendPreMessage();
         }
 
         @Override

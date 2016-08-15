@@ -170,4 +170,10 @@
         <item name="mq_iv_isSquare">true</item>
     </style>
 
+    <style name="MQFormEditText">
+        <item name="android:background">@drawable/mq_selector_input_bg</item>
+        <item name="android:paddingBottom">@dimen/mq_size_level2</item>
+        <item name="android:paddingTop">@dimen/mq_size_level4</item>
+    </style>
+
 </resources>

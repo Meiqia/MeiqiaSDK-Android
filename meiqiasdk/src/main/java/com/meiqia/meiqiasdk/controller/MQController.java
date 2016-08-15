@@ -1,6 +1,7 @@
 package com.meiqia.meiqiasdk.controller;
 
 
+import com.meiqia.core.bean.MQEnterpriseConfig;
 import com.meiqia.core.callback.OnClientPositionInQueueCallback;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
 import com.meiqia.meiqiasdk.callback.OnDownloadFileCallback;
@@ -140,12 +141,7 @@ public interface MQController {
      */
     void refreshEnterpriseConfig(SimpleCallback simpleCallback);
 
-    /**
-     * 获取留言表单引导文案
-     *
-     * @return
-     */
-    String getLeaveMessageIntro();
+    MQEnterpriseConfig getEnterpriseConfig();
 
     /**
      * 评价机器人回答的问题
@@ -163,20 +159,6 @@ public interface MQController {
      * @param isForceRedirectHuman
      */
     void setForceRedirectHuman(boolean isForceRedirectHuman);
-
-    /**
-     * 获取评价客服时，窗口顶部的提示信息
-     *
-     * @return
-     */
-    String getEvaluateHumanTip();
-
-    /**
-     * 是否显示强制转人工按钮
-     *
-     * @return
-     */
-    boolean getIsShowRedirectHumanButton();
 
     /**
      * 对话界面开启时候的回调
