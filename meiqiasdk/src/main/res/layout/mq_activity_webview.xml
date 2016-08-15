@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/mq_activity_bg"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -44,9 +45,9 @@
             android:gravity="center"
             android:maxWidth="175dp"
             android:singleLine="true"
+            android:text="@string/mq_title_webview_rich_text"
             android:textColor="@color/mq_activity_title_textColor"
-            android:textSize="@dimen/mq_titlebar_textSize"
-            android:text="@string/mq_title_webview_rich_text" />
+            android:textSize="@dimen/mq_titlebar_textSize" />
 
     </RelativeLayout>
 

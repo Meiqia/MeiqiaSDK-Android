@@ -9,6 +9,7 @@
 
     <color name="mq_white">@android:color/white</color>
     <color name="mq_gray">#808080</color>
+    <color name="mq_error">#ff5c5e</color>
 
     <color name="mq_item_pressed">#EFEFEF</color>
     <color name="mq_item_normal">@android:color/white</color>
@@ -74,5 +75,6 @@
     <color name="mq_form_et_textColorHint">#ADB2BB</color>
     <color name="mq_form_et_bg_focus">@color/mq_colorPrimary</color>
     <color name="mq_form_et_bg_normal">#C6CBD0</color>
+    <color name="mq_form_shadow">#e6e7eb</color>
     <!--表单相关 END-->
 </resources>

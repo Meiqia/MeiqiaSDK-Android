@@ -7,7 +7,7 @@ import android.support.annotation.DrawableRes;
 import com.meiqia.core.MQManager;
 import com.meiqia.core.callback.OnInitCallback;
 import com.meiqia.meiqiasdk.callback.MQActivityLifecycleCallback;
-import com.meiqia.meiqiasdk.callback.MQSimpleActivityLifecycleCallback;
+import com.meiqia.meiqiasdk.callback.MQSimpleActivityLifecyleCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
 import com.meiqia.meiqiasdk.imageloader.MQImageLoader;
@@ -80,7 +80,7 @@ public final class MQConfig {
 
     public static MQActivityLifecycleCallback getActivityLifecycleCallback() {
         if (sActivityLifecycleCallback == null) {
-            sActivityLifecycleCallback = new MQSimpleActivityLifecycleCallback();
+            sActivityLifecycleCallback = new MQSimpleActivityLifecyleCallback();
         }
         return sActivityLifecycleCallback;
     }

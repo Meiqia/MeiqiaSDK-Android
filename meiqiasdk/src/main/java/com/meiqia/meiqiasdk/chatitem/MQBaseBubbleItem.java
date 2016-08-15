@@ -143,7 +143,9 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
     }
 
     private void fillContent(BaseMessage baseMessage, final int position, Activity activity) {
-        MQImage.displayImage(activity, usAvatar, baseMessage.getAvatar(), R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, 100, 100, null);
+        if (!TextUtils.isEmpty(baseMessage.getAvatar())) {
+            MQImage.displayImage(activity, usAvatar, baseMessage.getAvatar(), R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, 100, 100, null);
+        }
 
         switch (baseMessage.getContentType()) {
             case BaseMessage.TYPE_CONTENT_TEXT:
@@ -225,7 +227,7 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
      * @param position
      */
     private void handleBindVoiceItem(final VoiceMessage voiceMessage, final int position) {
-        voiceContainerRl.setOnClickListener(new OnClickListener() {
+        voiceContainerRl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleClickVoiceBtn(voiceMessage, position);

@@ -64,6 +64,23 @@
             android:theme="@style/MQTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
+        <!--询前表单-->
+        <activity
+            android:name=".activity.MQInquiryFormActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/MQTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+
+        <activity
+            android:name=".activity.MQCollectInfoActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/MQTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+
         <service android:name="com.meiqia.core.MeiQiaService" />
     </application>
 

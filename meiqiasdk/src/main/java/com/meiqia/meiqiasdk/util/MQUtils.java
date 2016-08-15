@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -338,6 +339,14 @@ public class MQUtils {
         imageView.setImageDrawable(getPressedSelectorDrawable(normal, pressed));
     }
 
+    public static void tintCompoundButton(CompoundButton compoundButton, @DrawableRes int normalResId, @DrawableRes int pressedResId) {
+        Drawable normal = compoundButton.getResources().getDrawable(normalResId);
+        normal = MQUtils.tintDrawable(compoundButton.getContext(), normal, R.color.mq_form_et_bg_normal);
+        Drawable pressed = compoundButton.getResources().getDrawable(pressedResId);
+        pressed = MQUtils.tintDrawable(compoundButton.getContext(), pressed, R.color.mq_indicator_selected);
+        compoundButton.setCompoundDrawablesWithIntrinsicBounds(null, null, getCheckedSelectorDrawable(normal, pressed), null);
+    }
+
     /**
      * 得到点击改变状态的Selector,一般给setBackgroundDrawable使用
      *
@@ -348,6 +357,14 @@ public class MQUtils {
     public static StateListDrawable getPressedSelectorDrawable(Drawable normal, Drawable pressed) {
         StateListDrawable bg = new StateListDrawable();
         bg.addState(new int[]{android.R.attr.state_pressed, android.R.attr.state_enabled}, pressed);
+        bg.addState(new int[]{android.R.attr.state_enabled}, normal);
+        bg.addState(new int[]{}, normal);
+        return bg;
+    }
+
+    public static StateListDrawable getCheckedSelectorDrawable(Drawable normal, Drawable pressed) {
+        StateListDrawable bg = new StateListDrawable();
+        bg.addState(new int[]{android.R.attr.state_checked, android.R.attr.state_enabled}, pressed);
         bg.addState(new int[]{android.R.attr.state_enabled}, normal);
         bg.addState(new int[]{}, normal);
         return bg;
