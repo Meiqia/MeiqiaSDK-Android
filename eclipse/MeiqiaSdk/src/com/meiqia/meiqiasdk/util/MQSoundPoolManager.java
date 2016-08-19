@@ -35,7 +35,7 @@ public class MQSoundPoolManager {
     }
 
     public void playSound(@RawRes final int resId) {
-        if (mSoundSourceMap == null) {
+        if (mSoundSourceMap == null || isSilentMode()) {
             return;
         }
         int soundId;
@@ -86,5 +86,10 @@ public class MQSoundPoolManager {
             isPlaying = true;
         }
         return isPlaying;
+    }
+
+    private boolean isSilentMode() {
+        AudioManager mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        return mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL;
     }
 }

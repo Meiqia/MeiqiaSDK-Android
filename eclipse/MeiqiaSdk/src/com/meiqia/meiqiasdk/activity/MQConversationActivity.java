@@ -535,7 +535,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         changeTitleToNoAgentState();
         if (!isAddLeaveTip) {
             LeaveTipMessage leaveTip = new LeaveTipMessage();
-            leaveTip.setContent(getResources().getString(R.string.mq_leave_msg_tips));
+            String leaveContent = getResources().getString(R.string.mq_leave_msg_tips);
+            if (!TextUtils.isEmpty(mController.getEnterpriseConfig().ticketConfig.getIntro())) {
+                leaveContent = mController.getEnterpriseConfig().ticketConfig.getIntro();
+            }
+            leaveTip.setContent(leaveContent);
             //添加到当前消息的上一个位置
             int position = mChatMessageList.size();
             if (position != 0) {
@@ -1093,7 +1097,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             mCustomKeyboardLayout.closeAllKeyboard();
             if (!TextUtils.isEmpty(mConversationId)) {
                 if (mEvaluateDialog == null) {
-                    mEvaluateDialog = new MQEvaluateDialog(this, mController.getEnterpriseConfig().serviceEvaluationConfig.prompt_text);
+                    mEvaluateDialog = new MQEvaluateDialog(this, mController.getEnterpriseConfig().serviceEvaluationConfig.getPrompt_text());
                     mEvaluateDialog.setCallback(this);
                 }
                 mEvaluateDialog.show();
@@ -1652,7 +1656,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 刷新强转人工按钮
      */
     private void refreshRedirectHumanBtn() {
-        mIsShowRedirectHumanButton = MQConfig.getController(this).getEnterpriseConfig().robotSettings.show_switch;
+        mIsShowRedirectHumanButton = MQConfig.getController(this).getEnterpriseConfig().robotSettings.isShow_switch();
         // mCurrentAgent不为空时才刷新，否则会导致正在分配客服的标题不会显示
         if (mCurrentAgent != null) {
             // 把当前agent传进去，复用之前的逻辑
