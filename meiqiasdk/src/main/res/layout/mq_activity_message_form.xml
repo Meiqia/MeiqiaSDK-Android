@@ -84,68 +84,6 @@
             <LinearLayout
                 android:id="@+id/input_container_ll"
                 style="@style/MQMatchWrap.Vertical" />
-
-            <TextView
-                style="@style/MQWrapWrap"
-                android:layout_marginBottom="@dimen/mq_size_level1"
-                android:layout_marginRight="@dimen/mq_size_level1"
-                android:layout_marginTop="@dimen/mq_size_level4"
-                android:text="@string/mq_add_picture"
-                android:textColor="@color/mq_form_tip_textColor"
-                android:textSize="@dimen/mq_textSize_level1" />
-
-            <LinearLayout style="@style/MQMatchWrap.Horizontal">
-
-                <RelativeLayout
-                    android:id="@+id/picture_one_rl"
-                    style="@style/MQAutoWrap">
-
-                    <com.meiqia.meiqiasdk.widget.MQImageView
-                        android:id="@+id/picture_one_siv"
-                        style="@style/MQFormImageSiv"
-                        android:src="@drawable/mq_ic_add_img" />
-
-                    <ImageView
-                        android:id="@+id/delete_one_iv"
-                        style="@style/MQFormDeleteIv"
-                        android:visibility="invisible"
-                        tools:visibility="visible" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/picture_two_rl"
-                    style="@style/MQAutoWrap"
-                    android:layout_marginLeft="@dimen/mq_size_level2"
-                    android:layout_marginRight="@dimen/mq_size_level2"
-                    android:visibility="invisible"
-                    tools:visibility="visible">
-
-                    <com.meiqia.meiqiasdk.widget.MQImageView
-                        android:id="@+id/picture_two_siv"
-                        style="@style/MQFormImageSiv"
-                        android:src="@drawable/mq_ic_add_img" />
-
-                    <ImageView
-                        android:id="@+id/delete_two_iv"
-                        style="@style/MQFormDeleteIv" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/picture_three_rl"
-                    style="@style/MQAutoWrap"
-                    android:visibility="invisible"
-                    tools:visibility="visible">
-
-                    <com.meiqia.meiqiasdk.widget.MQImageView
-                        android:id="@+id/picture_three_siv"
-                        style="@style/MQFormImageSiv"
-                        android:src="@drawable/mq_ic_add_img" />
-
-                    <ImageView
-                        android:id="@+id/delete_three_iv"
-                        style="@style/MQFormDeleteIv" />
-                </RelativeLayout>
-            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

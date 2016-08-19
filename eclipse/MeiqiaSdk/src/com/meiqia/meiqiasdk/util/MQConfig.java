@@ -53,8 +53,6 @@ public final class MQConfig {
     public static boolean isEvaluateSwitchOpen = true; // 是否开启评价
     public static boolean isShowClientAvatar = false; // 是否显示客户头像
 
-    public static ArrayList<MessageFormInputModel> messageFormInputModels; // 自定义留言表单字段
-    public static String leaveMessageIntro; // 自定义留言表单引导文案，配置了该引导文案后将不会读取工作台配置的引导文案
     private static MQActivityLifecycleCallback sActivityLifecycleCallback;
 
     private static MQController sController;

@@ -118,7 +118,7 @@ public class MQIntentBuilder {
         String currentId = MQUtils.getString(mContext, MQInquiryFormActivity.CURRENT_CLIENT, null);
         // 切换了用户,就默认不是回头客
         if (!TextUtils.equals(currentId, id)) {
-            MQManager.getInstance(mContext).getEnterpriseConfig().survey.has_submitted_form = false;
+            MQManager.getInstance(mContext).getEnterpriseConfig().survey.setHas_submitted_form(false);
         }
         MQUtils.putString(mContext, MQInquiryFormActivity.CURRENT_CLIENT, id);
     }
