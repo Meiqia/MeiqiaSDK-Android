@@ -16,6 +16,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="5dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:gravity="center"
         android:text="@string/mq_leave_msg_tips"
         android:textColor="@color/mq_chat_event_gray"

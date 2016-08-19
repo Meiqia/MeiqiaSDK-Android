@@ -1,15 +1,11 @@
 package com.meiqia.meiqiasdk.demo;
 
 import android.app.Application;
-import android.text.InputType;
 import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.callback.OnInitCallback;
-import com.meiqia.meiqiasdk.model.MessageFormInputModel;
 import com.meiqia.meiqiasdk.util.MQConfig;
-
-import java.util.ArrayList;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -61,45 +57,6 @@ public class App extends Application {
 //        MQConfig.ui.robotEvaluateTextColorResId = R.color.test_red;
 //        MQConfig.ui.robotMenuItemTextColorResId = R.color.test_blue;
 //        MQConfig.ui.robotMenuTipTextColorResId = R.color.test_blue;
-
-
-        // 自定义留言表单引导文案，配置了该引导文案后将不会读取工作台配置的引导文案
-        MQConfig.leaveMessageIntro = "自定义留言表单引导文案";
-
-        // 初始化自定义留言表单字段，如果不配置该选项则留言表单界面默认有留言、邮箱、手机三个输入项
-        MQConfig.messageFormInputModels = new ArrayList<>();
-        MessageFormInputModel phoneMfim = new MessageFormInputModel();
-        phoneMfim.tip = "手机";
-        phoneMfim.key = "tel";
-        phoneMfim.required = true;
-        phoneMfim.hint = "请输入你的手机号";
-        phoneMfim.inputType = InputType.TYPE_CLASS_PHONE;
-
-        MessageFormInputModel emailMfim = new MessageFormInputModel();
-        emailMfim.tip = "邮箱";
-        emailMfim.key = "email";
-        emailMfim.required = true;
-        emailMfim.hint = "请输入你的邮箱";
-        emailMfim.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
-
-        MessageFormInputModel nameMfim = new MessageFormInputModel();
-        nameMfim.tip = "姓名";
-        nameMfim.key = "name";
-        nameMfim.hint = "请输入你的姓名";
-        nameMfim.inputType = InputType.TYPE_CLASS_TEXT;
-
-        MessageFormInputModel customMfim = new MessageFormInputModel();
-        customMfim.tip = "自定义";
-        customMfim.key = "自定义";
-        customMfim.hint = "请输入你的自定义信息";
-        customMfim.singleLine = false;
-        customMfim.inputType = InputType.TYPE_CLASS_TEXT;
-
-
-        MQConfig.messageFormInputModels.add(phoneMfim);
-        MQConfig.messageFormInputModels.add(emailMfim);
-        MQConfig.messageFormInputModels.add(nameMfim);
-        MQConfig.messageFormInputModels.add(customMfim);
     }
 
 }

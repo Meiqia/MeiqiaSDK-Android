@@ -80,6 +80,7 @@
     <string name="mq_all_image">所有图片</string>
 
     <string name="mq_param_not_allow_empty">%1$s 不能为空</string>
+    <string name="mq_at_least_one_contact">至少填写一种联系方式</string>
     <string name="mq_take_picture">拍摄照片</string>
     <string name="mq_submit">提交</string>
     <string name="mq_toast_photo_picker_max">最多只能选择 %1$s 张图片</string>
@@ -93,8 +94,17 @@
     <string name="mq_email">邮箱</string>
     <string name="mq_email_hint">请输入你的邮箱</string>
 
+    <string name="mq_wechat">微信</string>
+    <string name="mq_wechat_hint">请输入你的微信</string>
+
+    <string name="mq_qq">QQ</string>
+    <string name="mq_qq_hint">请输入你的QQ</string>
+
     <string name="mq_phone">手机</string>
     <string name="mq_phone_hint">请输入你的手机</string>
+
+    <string name="mq_name">姓名</string>
+    <string name="mq_name_hint">请输入你的姓名</string>
 
     <string name="mq_useless">未解决</string>
     <string name="mq_useful">解决</string>
