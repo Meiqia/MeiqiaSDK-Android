@@ -20,6 +20,7 @@ public class RobotMessage extends BaseMessage {
 
     private String subType;
     private String contentRobot;
+    private String extra;
     private long questionId;
     private boolean isAlreadyFeedback;
 
@@ -57,5 +58,13 @@ public class RobotMessage extends BaseMessage {
 
     public void setAlreadyFeedback(boolean alreadyFeedback) {
         isAlreadyFeedback = alreadyFeedback;
+    }
+
+    public String getExtra() {
+        return extra;
+    }
+
+    public void setExtra(String extra) {
+        this.extra = extra;
     }
 }
