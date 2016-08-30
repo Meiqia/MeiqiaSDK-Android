@@ -29,7 +29,7 @@ public class MQImage {
                     } else if (isClassExists("org.xutils.x")) {
                         sImageLoader = new MQXUtilsImageLoader();
                     } else {
-                        throw new RuntimeException("必须在你的 build.gradle 文件中配置「Glide、Picasso、universal-image-loader、XUtils3」中的某一个图片加载库的依赖");
+                        throw new RuntimeException("必须在你的 build.gradle 文件中配置「Glide、Picasso、universal-image-loader、XUtils3」中的某一个图片加载库的依赖,或者检查是否添加了图库的混淆配置");
                     }
                 }
             }

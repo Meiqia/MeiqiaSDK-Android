@@ -12,7 +12,7 @@
 
 ```
 // -------------------- 以下三个库是必须依赖的 ----------------------------
-compile 'com.meiqia:meiqiasdk:3.2.8@aar'
+compile 'com.meiqia:meiqiasdk:3.3.0@aar'
 compile 'com.android.support:support-v4:23.1.1'
 compile 'com.squareup.okhttp3:okhttp:3.3.1'
 // -------------------- 以上三个库是必须依赖的 ----------------------------
@@ -143,46 +143,6 @@ startActivity(intent);
 ``` java
 MQConfig.setActivityLifecycleCallback(new MQSimpleActivityLifecycleCallback() {
 });
-```
-
-> 自定义留言表单引导文案
-
-配置了该引导文案后将不会读取工作台配置的引导文案。
-最佳实践：劲量不要在 SDK 中配置引导文案，而是通过工作台配置引导文案，方便在节假日的时候统一配置各终端的引导文案，避免重新打包发布 App。
-
-``` java
-MQConfig.leaveMessageIntro = "自定义留言表单引导文案";
-```
-
-> 自定义留言表单输入项
-
-如果不配置该选项则留言表单界面默认有「留言」「邮箱」「手机」这三个输入项
-
-``` java
-MQConfig.messageFormInputModels = new ArrayList<>();
-MessageFormInputModel phoneMfim = new MessageFormInputModel();
-phoneMfim.tip = "手机";
-phoneMfim.key = "tel";
-phoneMfim.required = true;
-phoneMfim.hint = "请输入你的手机号";
-phoneMfim.inputType = InputType.TYPE_CLASS_PHONE;
-
-MessageFormInputModel emailMfim = new MessageFormInputModel();
-emailMfim.tip = "邮箱";
-emailMfim.key = "email";
-emailMfim.required = true;
-emailMfim.hint = "请输入你的邮箱";
-emailMfim.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
-
-MessageFormInputModel nameMfim = new MessageFormInputModel();
-nameMfim.tip = "姓名";
-nameMfim.key = "name";
-nameMfim.hint = "请输入你的姓名";
-nameMfim.inputType = InputType.TYPE_CLASS_TEXT;
-
-MQConfig.messageFormInputModels.add(phoneMfim);
-MQConfig.messageFormInputModels.add(emailMfim);
-MQConfig.messageFormInputModels.add(nameMfim);
 ```
 
 ## 文档详情

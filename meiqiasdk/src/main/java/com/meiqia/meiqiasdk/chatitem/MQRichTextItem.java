@@ -15,6 +15,7 @@ import com.meiqia.meiqiasdk.activity.MQWebViewActivity;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
 import com.meiqia.meiqiasdk.imageloader.MQImageLoader;
 import com.meiqia.meiqiasdk.model.RichTextMessage;
+import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQBaseCustomCompositeView;
@@ -34,6 +35,7 @@ public class MQRichTextItem extends MQBaseCustomCompositeView {
     String mContent;
     private int mImageWidth;
     private int mImageHeight;
+    private RobotMessage mRobotMessage;
 
     public MQRichTextItem(Context context) {
         super(context);
@@ -71,6 +73,7 @@ public class MQRichTextItem extends MQBaseCustomCompositeView {
             if (!TextUtils.isEmpty(mContent)) {
                 Intent it = new Intent(getContext(), MQWebViewActivity.class);
                 it.putExtra(MQWebViewActivity.CONTENT, mContent);
+                MQWebViewActivity.sRobotMessage = mRobotMessage;
                 it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().startActivity(it);
             }
@@ -86,13 +89,15 @@ public class MQRichTextItem extends MQBaseCustomCompositeView {
 
             if (TextUtils.isEmpty(summary)) {
                 // 用透明图片代替,不然显示很难看
-                Spanned htmlContentSpanned = Html.fromHtml(mContent, new Html.ImageGetter() {
-                    @Override
-                    public Drawable getDrawable(String source) {
-                        return getResources().getDrawable(android.R.color.transparent);
-                    }
-                }, null);
-                mSummaryTv.setText(htmlContentSpanned);
+                if (!TextUtils.isEmpty(mContent)) {
+                    Spanned htmlContentSpanned = Html.fromHtml(mContent, new Html.ImageGetter() {
+                        @Override
+                        public Drawable getDrawable(String source) {
+                            return getResources().getDrawable(android.R.color.transparent);
+                        }
+                    }, null);
+                    mSummaryTv.setText(htmlContentSpanned);
+                }
             } else {
                 mSummaryTv.setText(summary);
             }
@@ -104,6 +109,10 @@ public class MQRichTextItem extends MQBaseCustomCompositeView {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void setRobotMessage(RobotMessage robotMessage) {
+        this.mRobotMessage = robotMessage;
     }
 
     /**

@@ -105,7 +105,7 @@ public class MQUtils {
     }
 
     private static int getItemType(MQMessage message) {
-        // 如果不是机器人，也不客户时，默认是客服
+        // 如果不是机器人，也不是客户时，默认是客服
         int itemType = BaseMessage.TYPE_AGENT;
         if (TextUtils.equals(MQMessage.TYPE_FROM_ROBOT, message.getFrom_type())) {
             itemType = BaseMessage.TYPE_ROBOT;
@@ -127,6 +127,7 @@ public class MQUtils {
             robotMessage.setSubType(message.getSub_type());
             robotMessage.setQuestionId(message.getQuestion_id());
             robotMessage.setAlreadyFeedback(message.isAlreadyFeedback());
+            robotMessage.setExtra(message.getExtra());
             baseMessage = robotMessage;
         } else if (MQMessage.TYPE_CONTENT_TEXT.equals(message.getContent_type())) {
             baseMessage = new TextMessage(message.getContent());
