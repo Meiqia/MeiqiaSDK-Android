@@ -66,4 +66,10 @@
                 android:textSize="@dimen/mq_textSize_level1" />
         </LinearLayout>
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/mq_robot_rich_text_container"
+        style="@style/MQWrapWrap.Horizontal">
+
+    </FrameLayout>
 </LinearLayout>

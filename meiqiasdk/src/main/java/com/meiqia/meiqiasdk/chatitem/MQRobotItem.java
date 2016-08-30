@@ -5,11 +5,13 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
+import com.meiqia.meiqiasdk.model.RichTextMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
@@ -17,6 +19,7 @@ import com.meiqia.meiqiasdk.widget.MQBaseCustomCompositeView;
 import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -27,6 +30,7 @@ import org.json.JSONObject;
 public class MQRobotItem extends MQBaseCustomCompositeView {
     private MQImageView mAvatarIv;
     private LinearLayout mContainerLl;
+    private FrameLayout mRobotRichTextFl;
     private LinearLayout mContentLl;
     private TextView mMenuTipTv;
     private LinearLayout mEvaluateLl;
@@ -38,6 +42,7 @@ public class MQRobotItem extends MQBaseCustomCompositeView {
 
     private int mPadding;
     private int mTextSize;
+    private int mTextTipSize;
 
     private RobotMessage mRobotMessage;
 
@@ -55,6 +60,7 @@ public class MQRobotItem extends MQBaseCustomCompositeView {
     protected void initView() {
         mAvatarIv = getViewById(R.id.iv_robot_avatar);
         mContainerLl = getViewById(R.id.ll_robot_container);
+        mRobotRichTextFl = getViewById(R.id.mq_robot_rich_text_container);
         mContentLl = getViewById(R.id.ll_robot_content);
         mEvaluateLl = getViewById(R.id.ll_robot_evaluate);
         mUsefulTv = getViewById(R.id.tv_robot_useful);
@@ -77,6 +83,7 @@ public class MQRobotItem extends MQBaseCustomCompositeView {
 
         mPadding = getResources().getDimensionPixelSize(R.dimen.mq_size_level2);
         mTextSize = getResources().getDimensionPixelSize(R.dimen.mq_textSize_level2);
+        mTextTipSize = getResources().getDimensionPixelSize(R.dimen.mq_textSize_level1);
     }
 
     @Override
@@ -101,8 +108,13 @@ public class MQRobotItem extends MQBaseCustomCompositeView {
 
     private void reset() {
         mContentLl.removeAllViews();
+        mRobotRichTextFl.removeAllViews();
+        mContainerLl.setVisibility(View.GONE);
+        mContentLl.setVisibility(View.GONE);
         mEvaluateLl.setVisibility(View.GONE);
         mMenuTipTv.setVisibility(View.GONE);
+        mRobotRichTextFl.setVisibility(View.GONE);
+        mAvatarIv.setVisibility(GONE);
     }
 
     private void handleEvaluateStatus() {
@@ -128,9 +140,22 @@ public class MQRobotItem extends MQBaseCustomCompositeView {
             }
 
             JSONArray contentJsonArray = new JSONArray(mRobotMessage.getContentRobot());
+            boolean isRelated = isRelated(contentJsonArray);
             for (int i = 0; i < contentJsonArray.length(); i++) {
                 JSONObject itemJsonObject = contentJsonArray.optJSONObject(i);
-                if (TextUtils.equals("text", itemJsonObject.optString("type"))) {
+                String rich_text = itemJsonObject.optString("rich_text");
+                if (isRelated) {
+                    if (TextUtils.equals("text", itemJsonObject.optString("type"))) {
+                        addNormalTextView(itemJsonObject.optString("text"));
+                    } else if (TextUtils.equals("related", itemJsonObject.optString("type"))) {
+                        String text_before = itemJsonObject.optString("text_before");
+                        addMenuList(itemJsonObject.optJSONArray("items"), text_before);
+                    }
+                }
+                // rich_text 放在后面,不然会先解析成 rich_text
+                else if (isRichText(itemJsonObject, rich_text)) {
+                    addRichText(rich_text);
+                } else if (TextUtils.equals("text", itemJsonObject.optString("type"))) {
                     addNormalTextView(itemJsonObject.optString("text"));
                 } else if (TextUtils.equals("menu", itemJsonObject.optString("type"))) {
                     addMenuList(itemJsonObject.optJSONArray("items"));
@@ -141,12 +166,54 @@ public class MQRobotItem extends MQBaseCustomCompositeView {
         }
     }
 
+    private boolean isRichText(JSONObject itemJsonObject, String rich_text) {
+        return TextUtils.equals("text", itemJsonObject.optString("type"))
+                && !TextUtils.isEmpty(rich_text)
+                && TextUtils.equals("evaluate", mRobotMessage.getSubType());
+    }
+
+    private boolean isRelated(JSONArray contentJsonArray) {
+        boolean isRelated = false;
+        try {
+            for (int i = 0; i < contentJsonArray.length(); i++) {
+                JSONObject jsonObject = contentJsonArray.getJSONObject(i);
+                String type = jsonObject.optString("type");
+                if (TextUtils.equals("related", type)) {
+                    isRelated = true;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return isRelated;
+    }
+
+    private void addRichText(String rich_text) {
+        try {
+            mRobotRichTextFl.setVisibility(VISIBLE);
+            MQRichTextItem richTextItem = new MQRichTextItem(getContext());
+            RichTextMessage richTextMessage = new RichTextMessage();
+            JSONObject extra = new JSONObject(mRobotMessage.getExtra());
+            extra.put("content", rich_text);
+            richTextMessage.setExtra(extra.toString());
+            richTextItem.setMessage(richTextMessage, (Activity) getContext());
+            richTextItem.setRobotMessage(mRobotMessage);
+            mRobotRichTextFl.addView(richTextItem);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 添加普通的文本内容
      *
      * @param text
      */
     private void addNormalTextView(String text) {
+        mContainerLl.setVisibility(VISIBLE);
+        mAvatarIv.setVisibility(VISIBLE);
+        mContentLl.setVisibility(VISIBLE);
         if (!TextUtils.isEmpty(text)) {
             TextView textView = new TextView(getContext());
             textView.setText(text);
@@ -164,12 +231,28 @@ public class MQRobotItem extends MQBaseCustomCompositeView {
      * @param jsonArray
      */
     private void addMenuList(JSONArray jsonArray) {
+        mContainerLl.setVisibility(VISIBLE);
+        mAvatarIv.setVisibility(VISIBLE);
+        mContentLl.setVisibility(VISIBLE);
         mMenuTipTv.setVisibility(View.VISIBLE);
         if (jsonArray != null && jsonArray.length() > 0) {
             for (int i = 0; i < jsonArray.length(); i++) {
                 addMenuItem(jsonArray.optJSONObject(i));
             }
         }
+    }
+
+    private void addMenuList(JSONArray items, String text_before) {
+        if (!TextUtils.isEmpty(text_before)) {
+            TextView textView = new TextView(getContext());
+            textView.setText(text_before);
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextTipSize);
+            textView.setTextColor(getResources().getColor(R.color.mq_chat_robot_menu_tip_textColor));
+            textView.setPadding(mPadding, mPadding, mPadding, mPadding);
+            MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_robot_menu_tip_textColor, MQConfig.ui.robotMenuTipTextColorResId, null, textView);
+            mContentLl.addView(textView);
+        }
+        addMenuList(items);
     }
 
     /**
