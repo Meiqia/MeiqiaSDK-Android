@@ -5,21 +5,20 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
-import com.meiqia.meiqiasdk.model.RichTextMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
+import com.meiqia.meiqiasdk.util.RichText;
 import com.meiqia.meiqiasdk.widget.MQBaseCustomCompositeView;
 import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -27,10 +26,10 @@ import org.json.JSONObject;
  * 创建时间:16/4/1 下午3:55
  * 描述:机器人消息item
  */
-public class MQRobotItem extends MQBaseCustomCompositeView {
+public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.OnImageClickListener {
     private MQImageView mAvatarIv;
     private LinearLayout mContainerLl;
-    private FrameLayout mRobotRichTextFl;
+    private TextView mRobotRichTextFl;
     private LinearLayout mContentLl;
     private TextView mMenuTipTv;
     private LinearLayout mEvaluateLl;
@@ -108,13 +107,11 @@ public class MQRobotItem extends MQBaseCustomCompositeView {
 
     private void reset() {
         mContentLl.removeAllViews();
-        mRobotRichTextFl.removeAllViews();
         mContainerLl.setVisibility(View.GONE);
         mContentLl.setVisibility(View.GONE);
         mEvaluateLl.setVisibility(View.GONE);
         mMenuTipTv.setVisibility(View.GONE);
         mRobotRichTextFl.setVisibility(View.GONE);
-        mAvatarIv.setVisibility(GONE);
     }
 
     private void handleEvaluateStatus() {
@@ -190,19 +187,9 @@ public class MQRobotItem extends MQBaseCustomCompositeView {
     }
 
     private void addRichText(String rich_text) {
-        try {
-            mRobotRichTextFl.setVisibility(VISIBLE);
-            MQRichTextItem richTextItem = new MQRichTextItem(getContext());
-            RichTextMessage richTextMessage = new RichTextMessage();
-            JSONObject extra = new JSONObject(mRobotMessage.getExtra());
-            extra.put("content", rich_text);
-            richTextMessage.setExtra(extra.toString());
-            richTextItem.setMessage(richTextMessage, (Activity) getContext());
-            richTextItem.setRobotMessage(mRobotMessage);
-            mRobotRichTextFl.addView(richTextItem);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        mContainerLl.setVisibility(VISIBLE);
+        mRobotRichTextFl.setVisibility(VISIBLE);
+        RichText.fromHtml(rich_text).setOnImageClickListener(this).into(mRobotRichTextFl);
     }
 
     /**
@@ -212,7 +199,6 @@ public class MQRobotItem extends MQBaseCustomCompositeView {
      */
     private void addNormalTextView(String text) {
         mContainerLl.setVisibility(VISIBLE);
-        mAvatarIv.setVisibility(VISIBLE);
         mContentLl.setVisibility(VISIBLE);
         if (!TextUtils.isEmpty(text)) {
             TextView textView = new TextView(getContext());
@@ -232,7 +218,6 @@ public class MQRobotItem extends MQBaseCustomCompositeView {
      */
     private void addMenuList(JSONArray jsonArray) {
         mContainerLl.setVisibility(VISIBLE);
-        mAvatarIv.setVisibility(VISIBLE);
         mContentLl.setVisibility(VISIBLE);
         mMenuTipTv.setVisibility(View.VISIBLE);
         if (jsonArray != null && jsonArray.length() > 0) {
@@ -280,6 +265,11 @@ public class MQRobotItem extends MQBaseCustomCompositeView {
             });
             mContentLl.addView(itemTv);
         }
+    }
+
+    @Override
+    public void onImageClicked(String url) {
+        getContext().startActivity(MQPhotoPreviewActivity.newIntent(getContext(), MQUtils.getImageDir(getContext()), url));
     }
 
     public interface Callback {

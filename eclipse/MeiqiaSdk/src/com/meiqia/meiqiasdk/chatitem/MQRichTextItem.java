@@ -101,11 +101,15 @@ public class MQRichTextItem extends MQBaseCustomCompositeView {
             } else {
                 mSummaryTv.setText(summary);
             }
-            MQImage.displayImage(activity, mPicIv, thumbnail, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, new MQImageLoader.MQDisplayImageListener() {
-                @Override
-                public void onSuccess(View view, final String url) {
-                }
-            });
+            if (!TextUtils.isEmpty(thumbnail)) {
+                MQImage.displayImage(activity, mPicIv, thumbnail, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, new MQImageLoader.MQDisplayImageListener() {
+                    @Override
+                    public void onSuccess(View view, final String url) {
+                    }
+                });
+            } else {
+                mPicIv.setImageResource(R.drawable.mq_ic_holder_light);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

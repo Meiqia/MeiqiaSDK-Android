@@ -8,12 +8,10 @@ import com.meiqia.core.MQManager;
 import com.meiqia.core.callback.OnInitCallback;
 import com.meiqia.meiqiasdk.callback.MQActivityLifecycleCallback;
 import com.meiqia.meiqiasdk.callback.MQSimpleActivityLifecyleCallback;
+import com.meiqia.meiqiasdk.callback.OnLinkClickCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
 import com.meiqia.meiqiasdk.imageloader.MQImageLoader;
-import com.meiqia.meiqiasdk.model.MessageFormInputModel;
-
-import java.util.ArrayList;
 
 
 public final class MQConfig {
@@ -54,6 +52,7 @@ public final class MQConfig {
     public static boolean isShowClientAvatar = false; // 是否显示客户头像
 
     private static MQActivityLifecycleCallback sActivityLifecycleCallback;
+    private static OnLinkClickCallback sOnLinkClickCallback;
 
     private static MQController sController;
 
@@ -81,6 +80,20 @@ public final class MQConfig {
             sActivityLifecycleCallback = new MQSimpleActivityLifecyleCallback();
         }
         return sActivityLifecycleCallback;
+    }
+
+
+    /**
+     * 设置链接点击的回调
+     * 注意:设置监听回调后,将不再跳转网页.如果需要跳转,开发者需要自行处理,例如: ac
+     * @param onLinkClickCallback 回调
+     */
+    public static void setOnLinkClickCallback(OnLinkClickCallback onLinkClickCallback) {
+        MQConfig.sOnLinkClickCallback = onLinkClickCallback;
+    }
+
+    public static OnLinkClickCallback getOnLinkClickCallback() {
+        return MQConfig.sOnLinkClickCallback;
     }
 
     @Deprecated

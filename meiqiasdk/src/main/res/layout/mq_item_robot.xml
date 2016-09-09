@@ -21,6 +21,14 @@
         android:background="@drawable/mq_bg_msg_left"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/mq_robot_rich_text_container"
+            android:autoLink="all"
+            android:textColorLink="@color/mq_chat_left_textColor"
+            style="@style/MQWrapWrap.Horizontal">
+
+        </TextView>
+
         <LinearLayout
             android:id="@+id/ll_robot_content"
             style="@style/MQMatchWrap.Vertical" />
@@ -66,10 +74,4 @@
                 android:textSize="@dimen/mq_textSize_level1" />
         </LinearLayout>
     </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/mq_robot_rich_text_container"
-        style="@style/MQWrapWrap.Horizontal">
-
-    </FrameLayout>
 </LinearLayout>
