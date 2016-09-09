@@ -51,8 +51,8 @@ import com.meiqia.meiqiasdk.callback.OnEvaluateRobotAnswerCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.callback.SimpleCallback;
-import com.meiqia.meiqiasdk.chatitem.MQRobotItem;
 import com.meiqia.meiqiasdk.chatitem.MQInitiativeRedirectItem;
+import com.meiqia.meiqiasdk.chatitem.MQRobotItem;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
 import com.meiqia.meiqiasdk.dialog.MQEvaluateDialog;
@@ -61,13 +61,13 @@ import com.meiqia.meiqiasdk.model.AgentChangeMessage;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.EvaluateMessage;
 import com.meiqia.meiqiasdk.model.FileMessage;
+import com.meiqia.meiqiasdk.model.InitiativeRedirectMessage;
 import com.meiqia.meiqiasdk.model.LeaveTipMessage;
 import com.meiqia.meiqiasdk.model.NoAgentLeaveMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
 import com.meiqia.meiqiasdk.model.RedirectQueueMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
-import com.meiqia.meiqiasdk.model.InitiativeRedirectMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.util.ErrorCode;
 import com.meiqia.meiqiasdk.util.MQAudioPlayerManager;
@@ -167,7 +167,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private boolean mIsAllocatingAgent;
     private boolean mIsShowRedirectHumanButton;
     private boolean isAddLeaveTip;
-    
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1240,6 +1240,24 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 return;
             }
         }
+        if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            String s = intent.getData().getScheme();
+            if (!TextUtils.isEmpty(s) && s.startsWith("http")) {
+                if (MQConfig.getOnLinkClickCallback() != null) {
+                    MQConfig.getOnLinkClickCallback().onClick(this, intent, intent.getDataString());
+                    return;
+                }
+            }
+        }
+        super.startActivity(intent);
+    }
+
+    /**
+     * 调用父类的 startActivity 方法
+     *
+     * @param intent intent
+     */
+    public void superStartActivity(Intent intent) {
         super.startActivity(intent);
     }
 
@@ -1624,7 +1642,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
                 // 如果评价后返回的message不为空，则模拟一条客服发的文本消息
                 if (!TextUtils.isEmpty(message)) {
-                    mChatMsgAdapter.addMQMessage(new TextMessage(message, mCurrentAgent.getAvatar()));
+                    String avatar = null;
+                    if (mCurrentAgent != null) {
+                        avatar = mCurrentAgent.getAvatar();
+                    }
+                    mChatMsgAdapter.addMQMessage(new TextMessage(message, avatar));
                 }
             }
         });

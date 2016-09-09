@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.ConnectivityManager;
@@ -52,6 +53,8 @@ import com.meiqia.meiqiasdk.model.VoiceMessage;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -700,6 +703,49 @@ public class MQUtils {
             MQUtils.showSafe(context, R.string.mq_no_sdcard);
         }
         return imageDir;
+    }
+
+    public static void saveBitmap(Context context, String url, Bitmap bm) {
+        if (!isExternalStorageWritable()) {
+            return;
+        }
+        File cacheDir = context.getExternalCacheDir();
+        if (cacheDir == null) {
+            return;
+        }
+        String md5 = stringToMD5(url);
+        if (TextUtils.isEmpty(md5)) {
+            return;
+        }
+
+        File f = new File(cacheDir, md5);
+        try {
+            FileOutputStream out = new FileOutputStream(f);
+            bm.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Drawable getDrawableFromFile(Context context, String url) {
+        if (!isExternalStorageWritable()) {
+            return null;
+        }
+        File cacheDir = context.getExternalCacheDir();
+        if (cacheDir == null) {
+            return null;
+        }
+        String md5 = stringToMD5(url);
+        if (TextUtils.isEmpty(md5)) {
+            return null;
+        }
+        File file = new File(cacheDir.getAbsolutePath() + "/" + md5);
+        if (!file.exists()) {
+            return null;
+        }
+        return Drawable.createFromPath(file.getAbsolutePath());
     }
 
     /**
