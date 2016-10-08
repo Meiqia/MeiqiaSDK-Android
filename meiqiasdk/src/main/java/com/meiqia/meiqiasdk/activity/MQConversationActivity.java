@@ -1134,7 +1134,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 从本地选择图片
      */
     private void chooseFromPhotoPicker() {
-        startActivityForResult(MQPhotoPickerActivity.newIntent(this, null, 6, null, getString(R.string.mq_send)), REQUEST_CODE_PHOTO);
+        try {
+            startActivityForResult(MQPhotoPickerActivity.newIntent(this, null, 6, null, getString(R.string.mq_send)), REQUEST_CODE_PHOTO);
+        } catch (Exception e) {
+            MQUtils.show(this, R.string.mq_photo_not_support);
+        }
     }
 
 

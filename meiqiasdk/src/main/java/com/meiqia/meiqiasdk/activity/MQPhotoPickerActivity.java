@@ -264,7 +264,11 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
         if (mCurrentImageFolderModel.isTakePhotoEnabled()) {
             currentPosition--;
         }
-        startActivityForResult(MQPhotoPickerPreviewActivity.newIntent(this, mMaxChooseCount, mPicAdapter.getSelectedImages(), mPicAdapter.getData(), currentPosition, mTopRightBtnText, false), REQUEST_CODE_PREVIEW);
+        try {
+            startActivityForResult(MQPhotoPickerPreviewActivity.newIntent(this, mMaxChooseCount, mPicAdapter.getSelectedImages(), mPicAdapter.getData(), currentPosition, mTopRightBtnText, false), REQUEST_CODE_PREVIEW);
+        } catch (Exception e) {
+            MQUtils.show(this, R.string.mq_photo_not_support);
+        }
     }
 
     /**
@@ -292,7 +296,11 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
             if (requestCode == REQUEST_CODE_TAKE_PHOTO) {
                 ArrayList<String> photos = new ArrayList<>();
                 photos.add(mImageCaptureManager.getCurrentPhotoPath());
-                startActivityForResult(MQPhotoPickerPreviewActivity.newIntent(this, 1, photos, photos, 0, mTopRightBtnText, true), REQUEST_CODE_PREVIEW);
+                try {
+                    startActivityForResult(MQPhotoPickerPreviewActivity.newIntent(this, 1, photos, photos, 0, mTopRightBtnText, true), REQUEST_CODE_PREVIEW);
+                } catch (Exception e) {
+                    MQUtils.show(this, R.string.mq_photo_not_support);
+                }
             } else if (requestCode == REQUEST_CODE_PREVIEW) {
                 if (MQPhotoPickerPreviewActivity.getIsFromTakePhoto(data)) {
                     // 从拍照预览界面返回，刷新图库
