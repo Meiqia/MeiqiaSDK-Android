@@ -230,6 +230,7 @@ public class MQUtils {
         agent.setIsOnline(mqAgent.isOnLine());
         agent.setPrivilege(mqAgent.getPrivilege());
         agent.setAvatar(mqAgent.getAvatar());
+        agent.setSignature(mqAgent.getSignature());
         return agent;
     }
 
@@ -555,6 +556,10 @@ public class MQUtils {
      * @param activity
      */
     public static void closeKeyboard(Activity activity) {
+        if (activity == null) {
+            return;
+        }
+
         View view = activity.getWindow().peekDecorView();
         if (view != null) {
             InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);

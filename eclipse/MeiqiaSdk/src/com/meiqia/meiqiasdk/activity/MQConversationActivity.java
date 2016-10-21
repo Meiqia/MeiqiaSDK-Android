@@ -43,6 +43,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.meiqia.core.MQMessageManager;
 import com.meiqia.core.callback.OnClientPositionInQueueCallback;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.LeaveMessageCallback;
@@ -218,7 +219,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         MQUtils.applyCustomUITintDrawable(mTitleRl, android.R.color.white, R.color.mq_activity_title_bg, MQConfig.ui.titleBackgroundResId);
 
         // 处理标题、返回、返回箭头颜色
-        MQUtils.applyCustomUITextAndImageColor(R.color.mq_activity_title_textColor, MQConfig.ui.titleTextColorResId, mBackIv, mBackTv, mTitleTv, mRedirectHumanTv);
+        MQUtils.applyCustomUITextAndImageColor(R.color.mq_activity_title_textColor, MQConfig.ui.titleTextColorResId, null, mBackTv, mTitleTv, mRedirectHumanTv);
 
         // 处理标题文本的对其方式
         MQUtils.applyCustomUITitleGravity(mBackTv, mTitleTv);
@@ -440,6 +441,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         intentFilter.addAction(MQController.ACTION_BLACK_DEL);
         intentFilter.addAction(MQController.ACTION_QUEUEING_REMOVE);
         intentFilter.addAction(MQController.ACTION_QUEUEING_INIT_CONV);
+        intentFilter.addAction(MQMessageManager.ACTION_END_CONV_AGENT);
+        intentFilter.addAction(MQMessageManager.ACTION_END_CONV_TIMEOUT);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, intentFilter);
 
         // 网络监听
@@ -1134,7 +1137,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 从本地选择图片
      */
     private void chooseFromPhotoPicker() {
-        startActivityForResult(MQPhotoPickerActivity.newIntent(this, null, 6, null, getString(R.string.mq_send)), REQUEST_CODE_PHOTO);
+        try {
+            startActivityForResult(MQPhotoPickerActivity.newIntent(this, null, 6, null, getString(R.string.mq_send)), REQUEST_CODE_PHOTO);
+        } catch (Exception e) {
+            MQUtils.show(this, R.string.mq_photo_not_support);
+        }
     }
 
 
