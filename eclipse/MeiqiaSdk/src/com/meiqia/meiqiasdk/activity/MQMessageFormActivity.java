@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -14,16 +15,22 @@ import com.meiqia.core.MQManager;
 import com.meiqia.core.bean.MQEnterpriseConfig;
 import com.meiqia.core.bean.MQMessage;
 import com.meiqia.core.callback.OnMessageSendCallback;
+import com.meiqia.core.callback.OnTicketCategoriesCallback;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.SimpleCallback;
+import com.meiqia.meiqiasdk.dialog.MQListDialog;
 import com.meiqia.meiqiasdk.dialog.MQLoadingDialog;
 import com.meiqia.meiqiasdk.model.MessageFormInputModel;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQMessageFormInputLayout;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,6 +54,11 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
     private ArrayList<MQMessageFormInputLayout> mMessageFormInputLayouts = new ArrayList<>();
 
     private MQLoadingDialog mLoadingDialog;
+
+    private List<Map<String, String>> mDataList = new ArrayList<Map<String, String>>();
+    private MQListDialog mCategoryDialog;
+    private String mCurrentCategoryId;
+    private boolean isPause = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +94,8 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
         handleLeaveMessageIntro();
 
         refreshEnterpriseConfigAndContent();
+
+        popTicketCategoriesChooseDialog();
     }
 
     /**
@@ -101,6 +115,54 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
             public void onSuccess() {
                 handleFormInputLayouts();
                 refreshLeaveMessageIntro();
+            }
+        });
+    }
+
+    /**
+     * 弹出工单分类的对话框
+     */
+    private void popTicketCategoriesChooseDialog() {
+        MQManager.getInstance(this).getTicketCategories(new OnTicketCategoriesCallback() {
+            @Override
+            public void onSuccess(JSONArray ticketCategories) {
+                if (ticketCategories == null || isPause ) {
+                    return;
+                }
+
+                for (int i = 0; i < ticketCategories.length(); i++) {
+                    JSONObject ticketCategory = ticketCategories.optJSONObject(i);
+                    if (ticketCategory != null) {
+                        String categoryId = ticketCategory.optString("id");
+                        String categoryName = ticketCategory.optString("name");
+                        Map<String, String> data = new HashMap<String, String>();
+                        data.put("name", categoryName);
+                        data.put("id", categoryId);
+                        mDataList.add(data);
+                    }
+                }
+
+                if (mDataList.size() == 0) {
+                    return;
+                }
+
+                mCategoryDialog = new MQListDialog(MQMessageFormActivity.this, R.string.mq_choose_ticket_category, mDataList, new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Map<String, String> data = mDataList.get(position);
+                        mCurrentCategoryId = data.get("id");
+                    }
+                });
+                try {
+                    mCategoryDialog.show();
+                } catch (Exception e) {
+
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
             }
         });
     }
@@ -263,7 +325,7 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
         MQMessage message = new MQMessage();
         message.setContent_type(MQMessage.TYPE_CONTENT_TEXT);
         message.setContent(content);
-        MQManager.getInstance(this).submitTickets(message, formInputModelMap, new OnMessageSendCallback() {
+        MQManager.getInstance(this).submitTickets(message, mCurrentCategoryId, formInputModelMap, new OnMessageSendCallback() {
             @Override
             public void onSuccess(MQMessage message, int state) {
                 if (System.currentTimeMillis() - submitTimeMillis < 1500) {
@@ -320,4 +382,17 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isPause = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mCategoryDialog != null && mCategoryDialog.isShowing()) {
+            mCategoryDialog.dismiss();
+        }
+    }
 }
