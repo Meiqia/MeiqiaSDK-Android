@@ -48,6 +48,7 @@
     <string name="mq_runtime_permission_tip">咨询客服需要以下权限:\n\n1.访问设备上的照片\n2.录制音频</string>
     <string name="mq_permission_denied_tip">您拒绝了咨询客服所需要的相关权限!</string>
     <string name="mq_no_app_open_file">当前没有应用打开此文件</string>
+    <string name="mq_choose_ticket_category">选择分类</string>
     <string name="mq_back"></string>
 
 
