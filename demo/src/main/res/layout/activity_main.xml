@@ -46,15 +46,6 @@
             android:onClick="leaveMessageForm"
             android:text="留言表单" />
 
-        <Button
-            style="@style/DemoTv"
-            android:onClick="shanghao"
-            android:text="尚好" />
-
-        <Button
-            style="@style/DemoTv"
-            android:onClick="deyang"
-            android:text="德阳" />
     </LinearLayout>
 
 </LinearLayout>
