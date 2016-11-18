@@ -85,7 +85,7 @@ public final class MQConfig {
 
     /**
      * 设置链接点击的回调
-     * 注意:设置监听回调后,将不再跳转网页.如果需要跳转,开发者需要自行处理,例如: ac
+     * 注意:设置监听回调后,将不再跳转网页.如果需要跳转,开发者需要自行处理
      * @param onLinkClickCallback 回调
      */
     public static void setOnLinkClickCallback(OnLinkClickCallback onLinkClickCallback) {
