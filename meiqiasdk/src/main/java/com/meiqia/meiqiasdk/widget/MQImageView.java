@@ -164,10 +164,19 @@ public class MQImageView extends ImageView {
         void onDrawableChanged(Drawable drawable);
     }
 
-    public static RoundedBitmapDrawable getCircleDrawable(Context context, Bitmap bitmap) {
-        RoundedBitmapDrawable circleDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), bitmap);
+    public static RoundedBitmapDrawable getCircleDrawable(Context context, Bitmap src) {
+        Bitmap dst;
+        //将长方形图片裁剪成正方形图片
+        if (src.getWidth() >= src.getHeight()) {
+            dst = Bitmap.createBitmap(src, src.getWidth() / 2 - src.getHeight() / 2, 0, src.getHeight(), src.getHeight()
+            );
+        } else {
+            dst = Bitmap.createBitmap(src, 0, src.getHeight() / 2 - src.getWidth() / 2, src.getWidth(), src.getWidth()
+            );
+        }
+        RoundedBitmapDrawable circleDrawable = RoundedBitmapDrawableFactory.create(context.getResources(), dst);
         circleDrawable.setAntiAlias(true);
-        circleDrawable.setCornerRadius(Math.min(bitmap.getWidth(), bitmap.getHeight()) / 2.0f);
+        circleDrawable.setCornerRadius(Math.min(dst.getWidth(), dst.getHeight()) / 2.0f);
         return circleDrawable;
     }
 
