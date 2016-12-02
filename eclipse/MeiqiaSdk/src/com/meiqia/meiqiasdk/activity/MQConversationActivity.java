@@ -1939,6 +1939,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             if (!isPause && MQConfig.isSoundSwitchOpen) {
                 mSoundPoolManager.playSound(R.raw.mq_new_message);
             }
+
+            // 保存最后一条消息时间
+            mController.saveConversationLastMessageTime(baseMessage.getCreatedOn());
         }
 
     }

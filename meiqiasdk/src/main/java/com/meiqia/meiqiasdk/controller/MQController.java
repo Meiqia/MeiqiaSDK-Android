@@ -107,7 +107,15 @@ public interface MQController {
      *
      * @param stopTime
      */
+    @Deprecated
     void saveConversationOnStopTime(long stopTime);
+
+    /**
+     * 保存聊天界面收到最后一条消息的时间
+     *
+     * @param lastMessageTime
+     */
+    void saveConversationLastMessageTime(long lastMessageTime);
 
     /**
      * 下载文件
