@@ -218,7 +218,6 @@ public class ControllerImpl implements MQController {
     }
 
     @Override
-    @Deprecated
     public void saveConversationOnStopTime(long stopTime) {
         MQManager.getInstance(context).saveConversationOnStopTime(stopTime);
     }
