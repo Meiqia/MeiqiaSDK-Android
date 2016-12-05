@@ -107,7 +107,6 @@ public interface MQController {
      *
      * @param stopTime
      */
-    @Deprecated
     void saveConversationOnStopTime(long stopTime);
 
     /**
