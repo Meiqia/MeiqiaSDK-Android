@@ -141,18 +141,21 @@ public class MQImageView extends ImageView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        if (mBorderWidth > 0) {
-            if (mIsCircle) {
-                canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - mBorderWidth / 2, mBorderPaint);
-            } else {
-                mRect.left = 0;
-                mRect.top = 0;
-                mRect.right = getWidth();
-                mRect.bottom = getHeight();
-                canvas.drawRoundRect(mRect, mCornerRadius, mCornerRadius, mBorderPaint);
+        try {
+            super.onDraw(canvas);
+            if (mBorderWidth > 0) {
+                if (mIsCircle) {
+                    canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - mBorderWidth / 2, mBorderPaint);
+                } else {
+                    mRect.left = 0;
+                    mRect.top = 0;
+                    mRect.right = getWidth();
+                    mRect.bottom = getHeight();
+                    canvas.drawRoundRect(mRect, mCornerRadius, mCornerRadius, mBorderPaint);
+                }
             }
+        } catch (Exception e) {
+
         }
     }
 
