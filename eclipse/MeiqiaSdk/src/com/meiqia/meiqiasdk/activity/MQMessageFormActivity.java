@@ -247,7 +247,7 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
             if (MQEnterpriseConfig.OPEN.equals(getEnterpriseConfig().ticketConfig.getWechat())) {
                 MessageFormInputModel wechatMfim = new MessageFormInputModel();
                 wechatMfim.tip = getString(R.string.mq_wechat);
-                wechatMfim.key = "wechat";
+                wechatMfim.key = "weixin";
                 wechatMfim.required = false;
                 wechatMfim.hint = getString(R.string.mq_wechat_hint);
                 wechatMfim.inputType = InputType.TYPE_CLASS_TEXT;
