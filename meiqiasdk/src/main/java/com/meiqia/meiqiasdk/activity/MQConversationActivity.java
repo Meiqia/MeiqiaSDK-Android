@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -1156,9 +1157,17 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         file.mkdirs();
         String path = MQUtils.getPicStorePath(this) + "/" + System.currentTimeMillis() + ".jpg";
         File imageFile = new File(path);
-        camera.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageFile));
         mCameraPicPath = path;
+        Uri uri;
         try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                ContentValues contentValues = new ContentValues(1);
+                contentValues.put(MediaStore.Images.Media.DATA, imageFile.getAbsolutePath());
+                uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+            } else {
+                uri = Uri.fromFile(imageFile);
+            }
+            camera.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             startActivityForResult(camera, MQConversationActivity.REQUEST_CODE_CAMERA);
         } catch (Exception e) {
             MQUtils.show(this, R.string.mq_photo_not_support);
