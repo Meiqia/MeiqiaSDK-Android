@@ -1,6 +1,7 @@
 package com.meiqia.meiqiasdk.widget;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.LevelListDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -113,7 +114,11 @@ public class MQRecorderKeyboardLayout extends MQBaseCustomCompositeView implemen
         LevelListDrawable levelListDrawable = new LevelListDrawable();
         for (int i = 0; i < 9; i++) {
             int resId = getContext().getResources().getIdentifier("mq_voice_level" + (i + 1), "drawable", getContext().getPackageName());
-            levelListDrawable.addLevel(i, i + 1, MQUtils.tintDrawable(getContext(), getResources().getDrawable(resId), R.color.mq_chat_audio_recorder_icon));
+            try {
+                levelListDrawable.addLevel(i, i + 1, MQUtils.tintDrawable(getContext(), getResources().getDrawable(resId), R.color.mq_chat_audio_recorder_icon));
+            } catch (Resources.NotFoundException e) {
+
+            }
         }
         levelListDrawable.addLevel(9, 10, getResources().getDrawable(R.drawable.mq_voice_want_cancel));
         mAnimIv.setImageDrawable(levelListDrawable);

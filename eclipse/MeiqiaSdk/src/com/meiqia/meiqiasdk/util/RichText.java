@@ -124,7 +124,19 @@ public class RichText {
     public void into(final TextView textView) {
         this.textView = textView;
         textView.setMovementMethod(LinkMovementMethod.getInstance());
-        RichText.this.textView.setText(Html.fromHtml(richTextStr, imageGetter, tagHandler));
+        Spanned spanned = Html.fromHtml(richTextStr, imageGetter, tagHandler);
+        // 结尾会多出两个换行，在这里去掉
+        CharSequence charSequence = spanned;
+        try {
+            if (spanned.length() >= 2
+                    && spanned.charAt(spanned.length()-1) == '\n'
+                    && spanned.charAt(spanned.length() - 2) == '\n') {
+                charSequence = spanned.subSequence(0, spanned.length() - 2);
+            }
+        } catch (Exception e) {
+            // 有异常，就直接显示
+        }
+        RichText.this.textView.setText(charSequence);
         RichText.this.textView.setVisibility(View.VISIBLE);
         RichText.this.textView.invalidate();
     }
