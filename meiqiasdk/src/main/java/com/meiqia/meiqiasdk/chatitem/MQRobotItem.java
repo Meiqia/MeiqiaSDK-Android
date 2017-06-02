@@ -143,7 +143,9 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
                 String rich_text = itemJsonObject.optString("rich_text");
                 if (isRelated) {
                     if (TextUtils.equals("text", itemJsonObject.optString("type"))) {
-                        addNormalTextView(itemJsonObject.optString("text"));
+                        // rich_text 为空的话，就当作纯文本处理
+                        String text = TextUtils.isEmpty(itemJsonObject.optString("rich_text")) ? itemJsonObject.optString("text") : itemJsonObject.optString("rich_text");
+                        addNormalTextView(text);
                     } else if (TextUtils.equals("related", itemJsonObject.optString("type"))) {
                         String text_before = itemJsonObject.optString("text_before");
                         addMenuList(itemJsonObject.optJSONArray("items"), text_before);
@@ -208,6 +210,7 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
             textView.setPadding(mPadding, mPadding, mPadding, mPadding);
             MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_left_textColor, MQConfig.ui.leftChatTextColorResId, null, textView);
             mContentLl.addView(textView);
+            RichText.fromHtml(text).setOnImageClickListener(this).into(textView);
         }
     }
 
