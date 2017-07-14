@@ -21,6 +21,7 @@
     <string name="mq_title_unknown_error">未知错误</string>
     <string name="mq_error_submit_form">提交表单失败,请稍后再试</string>
     <string name="mq_error_auth_code_wrong">验证码错误或者已过期</string>
+    <string name="mq_title_connect_service">服务连接中，请稍候…</string>
     <string name="mq_title_inputting">正在输入...</string>
     <string name="mq_input_hint">请输入...</string>
     <string name="mq_allocate_agent">正在分配客服...</string>

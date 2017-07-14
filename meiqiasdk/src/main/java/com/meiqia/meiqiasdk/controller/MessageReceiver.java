@@ -80,6 +80,8 @@ public abstract class MessageReceiver extends BroadcastReceiver {
             removeQueue();
         } else if (TextUtils.equals(MQMessageManager.ACTION_QUEUEING_INIT_CONV, action)) {
             queueingInitConv();
+        } else if (TextUtils.equals(MQMessageManager.ACTION_SOCKET_OPEN, action)) {
+            socketOpen();
         }
     }
 
@@ -104,4 +106,6 @@ public abstract class MessageReceiver extends BroadcastReceiver {
     public abstract void removeQueue();
 
     public abstract void queueingInitConv();
+
+    public abstract void socketOpen();
 }
