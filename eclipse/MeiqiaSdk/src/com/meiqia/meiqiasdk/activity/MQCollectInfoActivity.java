@@ -73,11 +73,19 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
     private CodeAuthItem mCodeAuthItem;
     private MQInquireForm mInquireForm;
 
+    private boolean isDestroy = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mHandler = new Handler();
         mBaseItemList = new ArrayList<>();
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onDestroy() {
+        isDestroy = true;
+        super.onDestroy();
     }
 
     @Override
@@ -103,6 +111,13 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
     @Override
     protected void processLogic(Bundle savedInstanceState) {
         setTitle(getInquireForm().getInputs().optString(MQInquireForm.KEY_INPUTS_TITLE));
+
+        // 如果全是回头客，直接跳转到对话界面
+        if (isSubmitAndAllReturnedCustomer()) {
+            goToChatActivity();
+            return;
+        }
+
         try {
             JSONArray fields = getInquireForm().getInputs().optJSONArray(MQInquireForm.KEY_INPUTS_FIELDS);
             for (int i = 0; i < fields.length(); i++) {
@@ -314,6 +329,32 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
             mSubmitTv.setVisibility(View.VISIBLE);
             mScrollView.setVisibility(View.VISIBLE);
         }
+    }
+
+    /**
+     * 已经填写过表单,并且回头客不用填写
+     *
+     * @return
+     */
+    private boolean isSubmitAndAllReturnedCustomer() {
+        if (!getInquireForm().isSubmitForm()) {
+            return false;
+        }
+        boolean isAllReturnedCustomer = true;
+        JSONArray fields = getInquireForm().getInputs().optJSONArray(MQInquireForm.KEY_INPUTS_FIELDS);
+        try {
+            for (int i = 0; i < fields.length(); i++) {
+                JSONObject field = fields.getJSONObject(i);
+                boolean ignore_returned_customer = field.optBoolean(MQInquireForm.KEY_INPUTS_FIELDS_IGNORE_RETURNED_CUSTOMER);
+                if (!ignore_returned_customer) {
+                    isAllReturnedCustomer = false;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+
+        }
+        return isAllReturnedCustomer;
     }
 
     private abstract class BaseItem {
@@ -642,7 +683,7 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
             authCodeIv.setClickable(false);
             authCodeIv.setImageBitmap(null);
             authCodeEt.setText("");
-            new Thread(new Runnable() {
+            Thread refreshAuthCodeThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -652,7 +693,13 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                MQImage.displayImage(MQCollectInfoActivity.this, authCodeIv, captcha_image, R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, authCodeIv.getWidth(), authCodeIv.getHeight(), null);
+                                if (!isDestroy) {
+                                    try {
+                                        MQImage.displayImage(MQCollectInfoActivity.this, authCodeIv, captcha_image, R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, authCodeIv.getWidth(), authCodeIv.getHeight(), null);
+                                    } catch (Exception e) {
+                                        // 如果 Activity 销毁再加载就会抛异常
+                                    }
+                                }
 //                                authCodeIv.setImageBitmap(authCodeBitmap);
                             }
                         });
@@ -662,7 +709,8 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
                         authCodeIv.setClickable(true);
                     }
                 }
-            }).start();
+            });
+            refreshAuthCodeThread.start();
         }
 
     }
