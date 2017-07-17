@@ -44,12 +44,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.meiqia.core.MQManager;
 import com.meiqia.core.MQMessageManager;
 import com.meiqia.core.callback.OnClientPositionInQueueCallback;
+import com.meiqia.core.callback.SuccessCallback;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.LeaveMessageCallback;
 import com.meiqia.meiqiasdk.callback.OnClientOnlineCallback;
 import com.meiqia.meiqiasdk.callback.OnEvaluateRobotAnswerCallback;
+import com.meiqia.meiqiasdk.callback.OnFinishCallback;
 import com.meiqia.meiqiasdk.callback.OnGetMessageListCallBack;
 import com.meiqia.meiqiasdk.callback.OnMessageSendCallback;
 import com.meiqia.meiqiasdk.callback.SimpleCallback;
@@ -170,6 +173,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private boolean mIsShowRedirectHumanButton;
     private boolean isAddLeaveTip;
 
+    private boolean isNeedDelayOnline;
+    private boolean hasSetClientOnline = false; // 设置 online 之后，发消息的时候才检测 socket 状态
+    private List<BaseMessage> delaySendList = new ArrayList<>();
+    private BaseMessage entWelcomeMsg; // 分配成功后要删除
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -246,8 +254,17 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
-        // 设置顾客上线，请求分配客服
-        setClientOnline(false);
+        // 根据开关，是否发送消息才分配客服 已分配过客服就不再受开关影响
+        if (isNeedDelayOnline && mController.getCurrentAgent() == null) {
+            if (!mHasLoadData) {
+                mTitleTv.setText(mController.getEnterpriseConfig().public_nickname);
+                mLoadProgressBar.setVisibility(View.VISIBLE);
+                getMessageFromServiceAndLoad();
+            }
+        } else {
+            // 设置顾客上线，请求分配客服
+            setClientOnline(false);
+        }
         isPause = false;
         MQConfig.getActivityLifecycleCallback().onActivityResumed(this);
     }
@@ -337,6 +354,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
         mCustomKeyboardLayout.init(this, mInputEt, this);
         isDestroy = false;
+        isNeedDelayOnline = mController.getEnterpriseConfig().scheduler_after_client_send_msg;
     }
 
     private void findViews() {
@@ -444,6 +462,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         intentFilter.addAction(MQController.ACTION_QUEUEING_INIT_CONV);
         intentFilter.addAction(MQMessageManager.ACTION_END_CONV_AGENT);
         intentFilter.addAction(MQMessageManager.ACTION_END_CONV_TIMEOUT);
+        intentFilter.addAction(MQMessageManager.ACTION_SOCKET_OPEN);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, intentFilter);
 
         // 网络监听
@@ -517,7 +536,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     protected void addDirectAgentMessageTip(String agentNickName) {
         AgentChangeMessage agentChangeMessage = new AgentChangeMessage();
         agentChangeMessage.setAgentNickname(agentNickName);
-        mChatMsgAdapter.addMQMessage(agentChangeMessage);
+        mChatMessageList.add(mChatMessageList.size(), agentChangeMessage);
+        mChatMsgAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -561,7 +581,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         Iterator<BaseMessage> chatItemViewBaseIterator = mChatMessageList.iterator();
         while (chatItemViewBaseIterator.hasNext()) {
             BaseMessage baseMessage = chatItemViewBaseIterator.next();
-            if (baseMessage.getItemViewType() == BaseMessage.TYPE_TIP) {
+            if (baseMessage instanceof LeaveTipMessage) {
                 chatItemViewBaseIterator.remove();
                 mChatMsgAdapter.notifyDataSetChanged();
                 return;
@@ -744,6 +764,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private void setClientOnline(final boolean isForceRedirectHuman) {
         if (isForceRedirectHuman || (!isForceRedirectHuman && mCurrentAgent == null)) {
             mIsAllocatingAgent = true;
+            isNeedDelayOnline = false;
 
             // Title 显示正在分配客服
             changeTitleToAllocatingAgent();
@@ -794,6 +815,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     } else {
                         removeRedirectQueueLeaveMsg();
                     }
+                    // 发送待发送的消息
+                    sendDelayMessages();
+                    // 必须放在发送待发送消息后
+                    hasSetClientOnline = true;
                 }
 
                 @Override
@@ -822,10 +847,29 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     if (!mHasLoadData) {
                         getMessageDataFromDatabaseAndLoad();
                     }
+                    if (ErrorCode.NO_AGENT_ONLINE == code) {
+                        // 发送待发送的消息
+                        sendDelayMessages();
+                    }
+                    // 必须放在发送待发送消息后
+                    hasSetClientOnline = true;
                 }
             });
         } else {
             setCurrentAgent(mCurrentAgent);
+        }
+    }
+
+    /**
+     * 发送延迟消息
+     */
+    private void sendDelayMessages() {
+        if (delaySendList.size() != 0) {
+            for (BaseMessage delaySendMessage : delaySendList) {
+                delaySendMessage.setCreatedOn(System.currentTimeMillis()); // 更新消息时间
+                sendMessage(delaySendMessage);
+            }
+            delaySendList.clear();
         }
     }
 
@@ -843,6 +887,63 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     /**
+     * 检查是否需要切换当前顾客
+     *
+     * @param onFinishCallback
+     */
+    private void checkIfNeedUpdateClient(final OnFinishCallback onFinishCallback) {
+        // 从 intent 获取 clientId、customizedId 和 clientInfo
+        Intent intent = getIntent();
+        String clientId = null;
+        String customizedId = null;
+        if (intent != null) {
+            clientId = getIntent().getStringExtra(CLIENT_ID);
+            customizedId = getIntent().getStringExtra(CUSTOMIZED_ID);
+        }
+        // 如果有传 id，要切换顾客身份
+        if (!TextUtils.isEmpty(clientId) || !TextUtils.isEmpty(customizedId)) {
+            String clientOrCustomizedId = TextUtils.isEmpty(clientId) ? customizedId : clientId;
+            MQManager.getInstance(this).setCurrentClient(clientOrCustomizedId, new SuccessCallback() {
+                @Override
+                public void onSuccess() {
+                    onFinishCallback.onFinish();
+                }
+
+                @Override
+                public void onFailure(int code, String message) {
+                    onFinishCallback.onFinish();
+                }
+            });
+        } else {
+            onFinishCallback.onFinish();
+        }
+    }
+
+    /**
+     * 拉取最新消息，并从数据库加载显示
+     * PS：注意切换用户
+     */
+    private void getMessageFromServiceAndLoad() {
+        checkIfNeedUpdateClient(new OnFinishCallback() {
+            @Override
+            public void onFinish() {
+                // 先从服务器拉取最新消息, 不用关心结果，有新消息会保存到本地数据库，加载消息的时候会取出来
+                mController.getMessageFromService(System.currentTimeMillis(), MESSAGE_PAGE_COUNT, new OnGetMessageListCallBack() {
+                    @Override
+                    public void onSuccess(List<BaseMessage> messageList) {
+                        getMessageDataFromDatabaseAndLoad();
+                    }
+
+                    @Override
+                    public void onFailure(int code, String message) {
+                        getMessageDataFromDatabaseAndLoad();
+                    }
+                });
+            }
+        });
+    }
+
+    /**
      * 从数据库获取消息并加载
      */
     private void getMessageDataFromDatabaseAndLoad() {
@@ -856,6 +957,22 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
                 mChatMessageList.addAll(messageList);
                 loadData();
+                if (entWelcomeMsg != null) {
+                    mChatMessageList.remove(entWelcomeMsg);
+                }
+                // 添加企业欢迎消息
+                if (mController.getEnterpriseConfig().scheduler_after_client_send_msg
+                        && entWelcomeMsg == null
+                        && !TextUtils.isEmpty(mController.getEnterpriseConfig().ent_welcome_message)) {
+                    entWelcomeMsg = new TextMessage();
+                    entWelcomeMsg.setAvatar(mController.getEnterpriseConfig().avatar);
+                    entWelcomeMsg.setAgentNickname(mController.getEnterpriseConfig().public_nickname);
+                    entWelcomeMsg.setContent(mController.getEnterpriseConfig().ent_welcome_message);
+                    entWelcomeMsg.setItemViewType(BaseMessage.TYPE_AGENT);
+                    entWelcomeMsg.setStatus(BaseMessage.STATE_ARRIVE);
+                    entWelcomeMsg.setId(System.currentTimeMillis());
+                    receiveNewMsg(entWelcomeMsg);
+                }
             }
 
             @Override
@@ -934,7 +1051,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             String preSendTextContent = getIntent().getStringExtra(PRE_SEND_TEXT);
             String preSendImageFilePath = getIntent().getStringExtra(PRE_SEND_IMAGE_PATH);
             if (!TextUtils.isEmpty(preSendTextContent)) {
-                createAndSendTextMessage(preSendTextContent);
+                // 加入到待发送，等分配成功，并且 socket 连上的时候发送
+                TextMessage preSendMsg = new TextMessage(preSendTextContent);
+                delaySendList.add(preSendMsg);
             }
             if (!TextUtils.isEmpty(preSendImageFilePath)) {
                 File imageFile = new File(preSendImageFilePath);
@@ -965,7 +1084,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
             mCustomKeyboardLayout.toggleEmotionOriginKeyboard();
         } else if (id == R.id.send_text_btn) {
-            // 发送按钮
 
             if (!checkSendable()) {
                 return;
@@ -1305,6 +1423,15 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             popTopTip(R.string.mq_allocate_queue_tip);
             return false;
         }
+        if (!MQManager.getInstance(this).isSocketConnect() && hasSetClientOnline) {
+            popTopTip(R.string.mq_title_connect_service);
+            if (!TextUtils.isEmpty(message.getContent())) {
+                // 保存到输入框
+                mInputEt.setText(message.getContent());
+                mInputEt.setSelection(message.getContent().length());
+            }
+            return false;
+        }
 
         // 状态改为「正在发送」，以便在数据列表中展示正在发送消息的状态
         message.setStatus(BaseMessage.STATE_SENDING);
@@ -1355,6 +1482,27 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * @param message 消息
      */
     public void sendMessage(final BaseMessage message) {
+        if (mController.getEnterpriseConfig().scheduler_after_client_send_msg
+                && isNeedDelayOnline) {
+            // 没有分配客服的时候，点了发送，但是延迟上线是打开的，就尝试分配
+            isNeedDelayOnline = false;
+            mHasLoadData = false;
+            mChatMessageList.clear();
+            if (mChatMsgAdapter != null) {
+                mChatMsgAdapter.notifyDataSetChanged();
+            }
+            MQUtils.closeKeyboard(this);
+            mLoadProgressBar.setVisibility(View.VISIBLE);
+            // 保存消息，待上线成功之后发送
+            message.setStatus(BaseMessage.STATE_SENDING);
+            delaySendList.add(message);
+            if (message instanceof TextMessage) {
+                mInputEt.setText("");
+            }
+            setClientOnline(false);
+            return;
+        }
+
         boolean isPreSendSuc = checkAndPreSend(message);
         if (!isPreSendSuc) {
             return;
@@ -1897,6 +2045,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         public void queueingInitConv() {
             removeQueue();
             setCurrentAgent(mController.getCurrentAgent());
+        }
+
+        @Override
+        public void socketOpen() {
+
         }
     }
 
