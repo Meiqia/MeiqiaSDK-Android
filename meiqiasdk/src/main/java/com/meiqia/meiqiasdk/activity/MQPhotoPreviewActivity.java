@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
 import com.meiqia.meiqiasdk.imageloader.MQImageLoader;
+import com.meiqia.meiqiasdk.third.photoview.PhotoViewAttacher;
 import com.meiqia.meiqiasdk.util.MQAsyncTask;
 import com.meiqia.meiqiasdk.util.MQBrowserPhotoViewAttacher;
 import com.meiqia.meiqiasdk.util.MQSavePhotoTask;
@@ -29,8 +30,6 @@ import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import com.meiqia.meiqiasdk.third.photoview.PhotoViewAttacher;
 
 
 public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttacher.OnViewTapListener, View.OnClickListener, MQAsyncTask.Callback<Void> {
@@ -228,7 +227,9 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
         MQImage.downloadImage(this, url, new MQImageLoader.MQDownloadImageListener() {
             @Override
             public void onSuccess(String url, Bitmap bitmap) {
-                mSavePhotoTask.setBitmapAndPerform(bitmap);
+                if (mSavePhotoTask != null) {
+                    mSavePhotoTask.setBitmapAndPerform(bitmap);
+                }
             }
 
             @Override

@@ -41,10 +41,18 @@ public class MQImage {
     }
 
     public static void displayImage(Activity activity, ImageView imageView, String path, @DrawableRes int loadingResId, @DrawableRes int failResId, int width, int height, final MQImageLoader.MQDisplayImageListener delegate) {
-        getImageLoader().displayImage(activity, imageView, path, loadingResId, failResId, width, height, delegate);
+        try {
+            getImageLoader().displayImage(activity, imageView, path, loadingResId, failResId, width, height, delegate);
+        } catch (Exception e) {
+            Log.d("meiqia", "displayImage error");
+        }
     }
 
     public static void downloadImage(Context context, String path, final MQImageLoader.MQDownloadImageListener delegate) {
-        getImageLoader().downloadImage(context, path, delegate);
+        try {
+             getImageLoader().downloadImage(context, path, delegate);
+        } catch (Exception e) {
+           Log.d("meiqia", "displayImage error");
+        }
     }
 }
