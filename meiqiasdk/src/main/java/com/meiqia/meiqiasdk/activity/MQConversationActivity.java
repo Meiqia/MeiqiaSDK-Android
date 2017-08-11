@@ -1069,6 +1069,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.back_rl) {
+            MQUtils.closeKeyboard(this);
             // 返回按钮
             onBackPressed();
         } else if (id == R.id.emoji_select_btn) {
@@ -1257,7 +1258,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      */
     private void chooseFromPhotoPicker() {
         try {
-            startActivityForResult(MQPhotoPickerActivity.newIntent(this, null, 6, null, getString(R.string.mq_send)), REQUEST_CODE_PHOTO);
+            startActivityForResult(MQPhotoPickerActivity.newIntent(this, null, 3, null, getString(R.string.mq_send)), REQUEST_CODE_PHOTO);
         } catch (Exception e) {
             MQUtils.show(this, R.string.mq_photo_not_support);
         }
