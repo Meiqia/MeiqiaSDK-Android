@@ -27,13 +27,14 @@
     <string name="mq_allocate_agent">正在分配客服...</string>
     <string name="mq_allocate_queue_title">排队等待中...</string>
     <string name="mq_allocate_queue_tip">正在排队，请等待客服接入后发送消息</string>
-    <string name="mq_allocate_agent_tip">正在为您分配客服，请稍后重发。</string>
-    <string name="mq_send_robot_msg_time_limit_tip">您发送的太快啦，请休息一下吧~</string>
+    <string name="mq_allocate_agent_tip">正在为您分配客服，请稍后重发</string>
+    <string name="mq_send_robot_msg_time_limit_tip">您发送的太快啦，请休息一下吧</string>
     <string name="mq_leave_msg_tips">抱歉，现在没有客服人员在线\n你可以继续写下你的问题，我们会尽快回复</string>
     <string name="mq_blacklist_tips">对不起，当前客服系统暂时无法使用</string>
     <string name="mq_photo_not_support">当前设备不支持发送图片</string>
     <string name="mq_no_sdcard">SD卡不存在</string>
     <string name="mq_sdcard_no_permission">当前没有媒体访问权限</string>
+    <string name="mq_camera_or_storage_no_permission">当前没有相机权限 或者 媒体访问权限</string>
     <string name="mq_record_not_support">当前设别不支持语音</string>
     <string name="mq_record_up_and_cancel">上滑，取消发送</string>
     <string name="mq_record_cancel">取消发送</string>

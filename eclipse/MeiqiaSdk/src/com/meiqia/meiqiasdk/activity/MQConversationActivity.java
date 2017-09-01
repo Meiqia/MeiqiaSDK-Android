@@ -99,6 +99,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     // 权限
     private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 1;
     private static final int RECORD_AUDIO_REQUEST_CODE = 2;
+    private static final int WRITE_EXTERNAL_STORAGE_AND_CAMERA_REQUEST_CODE = 3;
 
     private static final int WHAT_GET_CLIENT_POSITION_IN_QUEUE = 1;
 
@@ -1109,7 +1110,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 return;
             }
 
-            if (checkStoragePermission()) {
+            if (checkStorageAndCameraPermission()) {
                 // 打开相机
                 hideEmojiSelectIndicator();
                 hideVoiceSelectIndicator();
@@ -1191,6 +1192,23 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             //申请WRITE_EXTERNAL_STORAGE权限
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     WRITE_EXTERNAL_STORAGE_REQUEST_CODE);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * 检查存储权限 和 相机权限
+     *
+     * @return true, 已经获取权限;false,没有权限,尝试获取
+     */
+    private boolean checkStorageAndCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            //申请WRITE_EXTERNAL_STORAGE权限
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,},
+                    WRITE_EXTERNAL_STORAGE_AND_CAMERA_REQUEST_CODE);
             return false;
         } else {
             return true;
@@ -1335,6 +1353,20 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     mVoiceBtn.performClick();
                 } else {
                     MQUtils.show(this, R.string.mq_recorder_no_permission);
+                }
+                break;
+            }
+            case WRITE_EXTERNAL_STORAGE_AND_CAMERA_REQUEST_CODE: {
+                if (grantResults.length > 0) {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED
+                            && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                        mCameraSelectBtn.performClick();
+                        // 有存储权限
+                    } else {
+                        MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_camera_or_storage_no_permission);
+                    }
+                } else {
+                    MQUtils.show(this, R.string.mq_camera_or_storage_no_permission);
                 }
                 break;
             }

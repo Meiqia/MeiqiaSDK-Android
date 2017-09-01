@@ -3,6 +3,8 @@ package com.meiqia.meiqiasdk.chatitem;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+import android.os.StrictMode;
 import android.text.format.Formatter;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -147,6 +149,11 @@ public class MQChatFileItem extends MQBaseCustomCompositeView implements View.On
     }
 
     private void openFile() {
+        // 置入一个不设防的 VmPolicy
+        if (Build.VERSION.SDK_INT >= 24) {
+            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+            StrictMode.setVmPolicy(builder.build());
+        }
         Intent intent = new Intent(Intent.ACTION_VIEW);
         String type = getExtraStringValue("type");
         Uri uri = Uri.fromFile(new File(MQUtils.getFileMessageFilePath(mFileMessage)));
