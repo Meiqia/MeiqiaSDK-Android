@@ -36,7 +36,6 @@ public class RichText {
     private Html.TagHandler tagHandler;
     private OnImageClickListener onImageClickListener;
     private static Map<String, SoftReference<Drawable>> sHtmlDrawableCache = new HashMap<>();
-    private static RichText richText;
 
     public RichText() {
         imageGetter = new Html.ImageGetter() {
@@ -108,17 +107,14 @@ public class RichText {
         drawable.setBounds(0, 0, right, bottom);
     }
 
-    public static RichText fromHtml(String richTextStr) {
-        if (richText == null) {
-            richText = new RichText();
-        }
-        richText.richTextStr = richTextStr;
-        return richText;
+    public RichText fromHtml(String richTextStr) {
+        this.richTextStr = richTextStr;
+        return this;
     }
 
     public RichText setOnImageClickListener(OnImageClickListener onImageClickListener) {
-        richText.onImageClickListener = onImageClickListener;
-        return richText;
+        this.onImageClickListener = onImageClickListener;
+        return this;
     }
 
     public void into(final TextView textView) {
