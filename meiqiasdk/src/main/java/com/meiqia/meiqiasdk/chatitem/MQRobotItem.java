@@ -191,7 +191,8 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
     private void addRichText(String rich_text) {
         mContainerLl.setVisibility(VISIBLE);
         mRobotRichTextFl.setVisibility(VISIBLE);
-        RichText.fromHtml(rich_text).setOnImageClickListener(this).into(mRobotRichTextFl);
+        RichText richText = new RichText();
+        richText.fromHtml(rich_text).setOnImageClickListener(this).into(mRobotRichTextFl);
     }
 
     /**
@@ -210,7 +211,8 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
             textView.setPadding(mPadding, mPadding, mPadding, mPadding);
             MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_left_textColor, MQConfig.ui.leftChatTextColorResId, null, textView);
             mContentLl.addView(textView);
-            RichText.fromHtml(text).setOnImageClickListener(this).into(textView);
+            RichText richText = new RichText();
+            richText.fromHtml(text).setOnImageClickListener(this).into(textView);
         }
     }
 
