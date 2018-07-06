@@ -258,7 +258,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         // 根据开关，是否发送消息才分配客服 已分配过客服就不再受开关影响
         if (isNeedDelayOnline && mController.getCurrentAgent() == null) {
             if (!mHasLoadData) {
-                mTitleTv.setText(mController.getEnterpriseConfig().public_nickname);
+                String displayTitle = mController.getEnterpriseConfig().public_nickname;
+                if (TextUtils.equals("null", displayTitle)) {
+                    displayTitle = getResources().getString(R.string.mq_title_default);
+                }
+                mTitleTv.setText(displayTitle);
                 mLoadProgressBar.setVisibility(View.VISIBLE);
                 getMessageFromServiceAndLoad();
             }
@@ -967,7 +971,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                         && !TextUtils.isEmpty(mController.getEnterpriseConfig().ent_welcome_message)) {
                     entWelcomeMsg = new TextMessage();
                     entWelcomeMsg.setAvatar(mController.getEnterpriseConfig().avatar);
-                    entWelcomeMsg.setAgentNickname(mController.getEnterpriseConfig().public_nickname);
+                    String displayTitle = mController.getEnterpriseConfig().public_nickname;
+                    if (TextUtils.equals("null", displayTitle)) {
+                        displayTitle = getResources().getString(R.string.mq_title_default);
+                    }
+                    entWelcomeMsg.setAgentNickname(displayTitle);
                     entWelcomeMsg.setContent(mController.getEnterpriseConfig().ent_welcome_message);
                     entWelcomeMsg.setItemViewType(BaseMessage.TYPE_AGENT);
                     entWelcomeMsg.setStatus(BaseMessage.STATE_ARRIVE);

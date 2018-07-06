@@ -9,6 +9,7 @@
     <string name="mq_send">发送</string>
     <string name="mq_title_net_not_work">网络加载失败</string>
     <string name="mq_title_webview_rich_text">图文消息</string>
+    <string name="mq_title_default">在线客服</string>
     <string name="mq_title_service_support">客服支持</string>
     <string name="mq_title_collect_info">请填写以下内容</string>
     <string name="mq_title_submit_btn">提交</string>

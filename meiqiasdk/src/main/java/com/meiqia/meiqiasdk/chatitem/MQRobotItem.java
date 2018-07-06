@@ -155,7 +155,12 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
                 else if (isRichText(itemJsonObject, rich_text)) {
                     addRichText(rich_text);
                 } else if (TextUtils.equals("text", itemJsonObject.optString("type"))) {
-                    addNormalTextView(itemJsonObject.optString("text"));
+                    // 如果有 richText，就当做富文本处理
+                    if (TextUtils.isEmpty(rich_text)) {
+                        addNormalTextView(itemJsonObject.optString("text"));
+                    } else {
+                        addRichText(rich_text);
+                    }
                 } else if (TextUtils.equals("menu", itemJsonObject.optString("type"))) {
                     addMenuList(itemJsonObject.optJSONArray("items"));
                 }
@@ -168,7 +173,7 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
     private boolean isRichText(JSONObject itemJsonObject, String rich_text) {
         return TextUtils.equals("text", itemJsonObject.optString("type"))
                 && !TextUtils.isEmpty(rich_text)
-                && TextUtils.equals("evaluate", mRobotMessage.getSubType());
+                && (TextUtils.equals("evaluate", mRobotMessage.getSubType()) || TextUtils.equals("menu", mRobotMessage.getSubType()));
     }
 
     private boolean isRelated(JSONArray contentJsonArray) {
