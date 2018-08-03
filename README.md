@@ -146,8 +146,27 @@ MQConfig.setActivityLifecycleCallback(new MQSimpleActivityLifecycleCallback() {
 });
 ```
 
-## 文档详情
- [文档详情][1]
+## 常见问题列表
+
+- **java.lang.NoClassDefFoundError: com.meiqia.core.xx**
+
+   没有依赖 okhttp3.5.0 或者 以上版本，检查依赖设置
+
+- **code == 400 track_id 错误**
+
+   如果需要绑定用户 id，请使用 setCustomizedId 接口 或者换一个 id 绑定
+
+- **客服名字显示 null**
+
+   更新最新版 SDK
+
+- **java.lang.NoSuchMethodError: No Virtual method displayImage xxxx**
+
+   如果使用的是 glide 4.x ，可以参考 https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/imageloader/MQGlideImageLoader4.java
+
+- **后台改了配置，SDK 不生效**
+
+   SDK 的配置不是立即生效，会至少间隔 15 分钟刷新一次，刷新后下次生效。如果想要立即看到配置改变的效果，可以卸载应用重新安装。
 
 ## Proguard
 
