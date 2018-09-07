@@ -12,7 +12,7 @@
 
 ```
 // -------------------- 以下三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
-compile 'com.meiqia:meiqiasdk:3.4.8@aar'
+compile 'com.meiqia:meiqiasdk:3.5.0@aar'
 compile 'com.android.support:support-v4:23.1.1'
 compile 'com.squareup.okhttp3:okhttp:3.5.0'
 // -------------------- 以上三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
@@ -108,7 +108,11 @@ PS: 这个接口只会生效一次,如果需要更新顾客信息,需要调用�
 ``` java
 HashMap<String, String> updateInfo = new HashMap<>();
 updateInfo.put("name", "update name");
-MQManager.getInstance(this).updateClientInfo(updateInfo, callback);
+Intent intent = new MQIntentBuilder(this)
+        .updateClientInfo(clientInfo)
+        .build();
+startActivity(intent);
+PS: 如果客服在工作台更改了顾客信息，更新接口会覆盖之前的内容
 ```
 
 > 指定客服分配

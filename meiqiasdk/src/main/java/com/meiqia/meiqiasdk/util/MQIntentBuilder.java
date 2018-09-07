@@ -79,6 +79,11 @@ public class MQIntentBuilder {
         return this;
     }
 
+    public MQIntentBuilder updateClientInfo(HashMap<String, String> clientInfo) {
+        mIntent.putExtra(MQConversationActivity.UPDATE_CLIENT_INFO, clientInfo);
+        return this;
+    }
+
     public MQIntentBuilder setScheduledAgent(String agentId) {
         mAgentId = agentId;
         return this;

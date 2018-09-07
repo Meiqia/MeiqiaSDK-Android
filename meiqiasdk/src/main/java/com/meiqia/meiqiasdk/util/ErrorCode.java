@@ -11,4 +11,5 @@ public class ErrorCode {
     public static final int BLACKLIST = 20004;
     public static final int DOWNLOAD_IS_CANCEL = 20006;
     public static final int QUEUEING = 20008;
+    public static final int CANCEL = 20010;
 }
