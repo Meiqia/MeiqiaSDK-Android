@@ -182,6 +182,25 @@ public class ControllerImpl implements MQController {
     }
 
     @Override
+    public void updateClientInfo(Map<String, String> updateClientInfo, final SimpleCallback onClientInfoCallback) {
+        MQManager.getInstance(context).updateClientInfo(updateClientInfo, new OnClientInfoCallback() {
+            @Override
+            public void onSuccess() {
+                if (onClientInfoCallback != null) {
+                    onClientInfoCallback.onSuccess();
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+                if (onClientInfoCallback != null) {
+                    onClientInfoCallback.onFailure(code, message);
+                }
+            }
+        });
+    }
+
+    @Override
     public void sendClientInputtingWithContent(String content) {
         MQManager.getInstance(context).sendClientInputtingWithContent(content);
     }

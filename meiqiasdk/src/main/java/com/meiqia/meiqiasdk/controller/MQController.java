@@ -67,6 +67,14 @@ public interface MQController {
     void setClientInfo(Map<String, String> clientInfo, SimpleCallback onClientInfoCallback);
 
     /**
+     * 更新当前顾客的自定义信息
+     *
+     * @param updateClientInfo     当前顾客的自定义信息
+     * @param onClientInfoCallback 回调
+     */
+    void updateClientInfo(Map<String, String> updateClientInfo, SimpleCallback onClientInfoCallback);
+
+    /**
      * 发送「顾客正在输入」状态
      *
      * @param content 内容
@@ -153,9 +161,9 @@ public interface MQController {
     /**
      * 评价机器人回答的问题
      *
-     * @param messageId      消息id
-     * @param questionId     问题id
-     * @param useful         是否有用
+     * @param messageId                     消息id
+     * @param questionId                    问题id
+     * @param useful                        是否有用
      * @param onEvaluateRobotAnswerCallback 评价的回调接口
      */
     void evaluateRobotAnswer(long messageId, long questionId, int useful, OnEvaluateRobotAnswerCallback onEvaluateRobotAnswerCallback);
