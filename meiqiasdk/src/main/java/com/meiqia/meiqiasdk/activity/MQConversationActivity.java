@@ -106,6 +106,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     public static final String CLIENT_ID = "clientId";
     public static final String CUSTOMIZED_ID = "customizedId";
     public static final String CLIENT_INFO = "clientInfo";
+    public static final String UPDATE_CLIENT_INFO = "updateClientInfo";
     public static final String PRE_SEND_TEXT = "preSendText";
     public static final String PRE_SEND_IMAGE_PATH = "preSendImagePath";
 
@@ -807,7 +808,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                         agentChangeMessage.setAgentNickname(agent.getNickname());
                         mChatMessageList.add(conversationMessageList.size() - 1, agentChangeMessage);
                     }
-                    setClientInfo();
+                    setOrUpdateClientInfo();
 
                     loadData();
 
@@ -839,11 +840,13 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                         } else {
                             setCurrentAgent(null);
                             // 没有分配到客服，也根据设置是否上传顾客信息
-                            setClientInfo();
+                            setOrUpdateClientInfo();
                         }
                     } else if (ErrorCode.BLACKLIST == code) {
                         setCurrentAgent(null);
                         isBlackState = true;
+                    } else if (ErrorCode.CANCEL == code) {
+                        // 请求取消
                     } else {
                         changeTitleToUnknownErrorState();
                         Toast.makeText(MQConversationActivity.this, "code = " + code + "\n" + "message = " + message, Toast.LENGTH_SHORT).show();
@@ -879,14 +882,19 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     /**
-     * 根据设置是否上传顾客信息
+     * 根据设置是否上传或者更新顾客信息
      */
-    private void setClientInfo() {
+    private void setOrUpdateClientInfo() {
         if (getIntent() != null) {
             Serializable clientInfoSerializable = getIntent().getSerializableExtra(CLIENT_INFO);
             if (clientInfoSerializable != null) {
                 HashMap<String, String> clientInfo = (HashMap<String, String>) clientInfoSerializable;
                 mController.setClientInfo(clientInfo, null);
+            }
+            Serializable updateClientInfoSerializable = getIntent().getSerializableExtra(UPDATE_CLIENT_INFO);
+            if (updateClientInfoSerializable != null) {
+                HashMap<String, String> clientInfo = (HashMap<String, String>) updateClientInfoSerializable;
+                mController.updateClientInfo(clientInfo, null);
             }
         }
     }

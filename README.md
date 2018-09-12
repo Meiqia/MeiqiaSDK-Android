@@ -12,7 +12,7 @@
 
 ```
 // -------------------- 以下三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
-compile 'com.meiqia:meiqiasdk:3.4.8@aar'
+compile 'com.meiqia:meiqiasdk:3.5.0@aar'
 compile 'com.android.support:support-v4:23.1.1'
 compile 'com.squareup.okhttp3:okhttp:3.5.0'
 // -------------------- 以上三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
@@ -76,10 +76,11 @@ startActivity(new Intent(this, MQMessageFormActivity.class));
 
 如果你的 App 需要兼容 Android M，需要处理权限问题。 [参考 Demo][8]
 
-## 可选设置
 
-> 绑定开发者用户 id 上线
 
+## 常见使用场景
+
+> 开发者的 App 有自己的账号系统，希望每个账号对应不同的顾客，有不同的聊天记录。那就需要开发者在启动对话的时候，绑定账号：
 ``` java
 Intent intent = new MQIntentBuilder(this)
         .setCustomizedId("开发者的 id") // 相同的 id 会被识别为同一个顾客
@@ -87,7 +88,7 @@ Intent intent = new MQIntentBuilder(this)
 startActivity(intent);
 ```
 
-> 设置顾客信息
+> 开发者希望顾客上线的时候，能够上传（或者更新）一些用户的自定义信息：
 
 ``` java
 HashMap<String, String> clientInfo = new HashMap<>();
@@ -96,19 +97,15 @@ clientInfo.put("avatar", "https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.buc
 clientInfo.put("gender", "男");
 clientInfo.put("tel", "1300000000");
 clientInfo.put("技能1", "休刊");
-Intent intent = new MQIntentBuilder(this)
-        .setClientInfo(clientInfo)
-        .build();
-startActivity(intent);
 
-PS: 这个接口只会生效一次,如果需要更新顾客信息,需要调用更新接口
-```
-> 更新顾客信息
-
-``` java
 HashMap<String, String> updateInfo = new HashMap<>();
 updateInfo.put("name", "update name");
-MQManager.getInstance(this).updateClientInfo(updateInfo, callback);
+
+Intent intent = new MQIntentBuilder(this)
+        .setClientInfo(clientInfo) // 设置顾客信息 PS: 这个接口只会生效一次,如果需要更新顾客信息,需要调用更新接口
+//      .updateClientInfo(updateInfo) // 更新顾客信息 PS: 如果客服在工作台更改了顾客信息，更新接口会覆盖之前的内容
+        .build();
+startActivity(intent);
 ```
 
 > 指定客服分配
@@ -146,8 +143,28 @@ MQConfig.setActivityLifecycleCallback(new MQSimpleActivityLifecycleCallback() {
 });
 ```
 
-## 文档详情
- [文档详情][1]
+
+## 常见问题列表
+
+- **java.lang.NoClassDefFoundError: com.meiqia.core.xx**
+
+   没有依赖 okhttp3.5.0 或者 以上版本，检查依赖设置
+
+- **code == 400 track_id 错误**
+
+   如果需要绑定用户 id，请使用 setCustomizedId 接口；如果还是有问题，就换一个 id 绑定再试试
+
+- **客服名字显示 null**
+
+   更新最新版 SDK
+
+- **java.lang.NoSuchMethodError: No Virtual method displayImage xxxx**
+
+   如果使用的是 glide 4.x ，可以参考 https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/imageloader/MQGlideImageLoader4.java
+
+- **后台改了配置，SDK 不生效**
+
+   SDK 的配置不是立即生效，会至少间隔 15 分钟刷新一次，刷新后下次生效。如果想要立即看到配置改变的效果，可以卸载应用重新安装。
 
 ## Proguard
 
