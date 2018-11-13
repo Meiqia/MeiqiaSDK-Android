@@ -706,7 +706,12 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
-                        authCodeIv.setClickable(true);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                authCodeIv.setClickable(true);
+                            }
+                        });
                     }
                 }
             });
