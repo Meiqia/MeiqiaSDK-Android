@@ -2129,6 +2129,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 if (RobotMessage.SUB_TYPE_REDIRECT.equals(robotMessage.getSubType())) {
                     forceRedirectHuman();
                 } else if (RobotMessage.SUB_TYPE_REPLY.equals(robotMessage.getSubType())) {
+                    mChatMessageList.remove(baseMessage);
                     addNoAgentLeaveMsg();
                 } else if (RobotMessage.SUB_TYPE_QUEUEING.equals(robotMessage.getSubType())) {
                     forceRedirectHuman();

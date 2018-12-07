@@ -46,6 +46,7 @@ import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.FileMessage;
+import com.meiqia.meiqiasdk.model.HybridMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
 import com.meiqia.meiqiasdk.model.RichTextMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
@@ -114,6 +115,9 @@ public class MQUtils {
         int itemType = BaseMessage.TYPE_AGENT;
         if (TextUtils.equals(MQMessage.TYPE_FROM_ROBOT, message.getFrom_type())) {
             itemType = BaseMessage.TYPE_ROBOT;
+            if (TextUtils.equals(BaseMessage.TYPE_CONTENT_HYBRID, message.getContent_type())) {
+                itemType = BaseMessage.TYPE_HYBRID;
+            }
         } else if (MQMessage.TYPE_FROM_CLIENT.equals(message.getFrom_type())) {
             itemType = BaseMessage.TYPE_CLIENT;
         } else if (MQMessage.TYPE_CONTENT_RICH_TEXT.equals(message.getContent_type())) {
@@ -126,14 +130,19 @@ public class MQUtils {
         BaseMessage baseMessage;
 
         if (TextUtils.equals(MQMessage.TYPE_FROM_ROBOT, message.getFrom_type())) {
-            RobotMessage robotMessage = new RobotMessage();
-            robotMessage.setContentRobot(message.getContent_robot());
-            robotMessage.setContent(message.getContent());
-            robotMessage.setSubType(message.getSub_type());
-            robotMessage.setQuestionId(message.getQuestion_id());
-            robotMessage.setAlreadyFeedback(message.isAlreadyFeedback());
-            robotMessage.setExtra(message.getExtra());
-            baseMessage = robotMessage;
+            if (TextUtils.equals(message.getContent_type(), BaseMessage.TYPE_CONTENT_HYBRID)) {
+                baseMessage = new HybridMessage();
+                baseMessage.setContent(message.getContent());
+            } else {
+                RobotMessage robotMessage = new RobotMessage();
+                robotMessage.setContentRobot(message.getContent_robot());
+                robotMessage.setContent(message.getContent());
+                robotMessage.setSubType(message.getSub_type());
+                robotMessage.setQuestionId(message.getQuestion_id());
+                robotMessage.setAlreadyFeedback(message.isAlreadyFeedback());
+                robotMessage.setExtra(message.getExtra());
+                baseMessage = robotMessage;
+            }
         } else if (MQMessage.TYPE_CONTENT_TEXT.equals(message.getContent_type())) {
             baseMessage = new TextMessage(message.getContent());
             baseMessage.setContent(message.getContent());

@@ -22,6 +22,7 @@ public class BaseMessage {
     public static final String TYPE_CONTENT_FILE = "file";
     public static final String TYPE_CONTENT_UNKNOWN = "unknown";
     public static final String TYPE_CONTENT_RICH_TEXT = "rich_text";
+    public static final String TYPE_CONTENT_HYBRID = "hybrid";
 
     public static final int TYPE_CLIENT = 0;
     public static final int TYPE_AGENT = 1;
@@ -33,8 +34,9 @@ public class BaseMessage {
     public static final int TYPE_INITIATIVE_REDIRECT_TIP = 7;
     public static final int TYPE_QUEUE_TIP = 8;
     public static final int TYPE_RICH_TEXT = 9;
+    public static final int TYPE_HYBRID = 10;
 
-    public static final int MAX_TYPE = 10;
+    public static final int MAX_TYPE = 11;
     private long createdOn;
     private String agentNickname;
     private String status;

@@ -8,10 +8,12 @@ import android.widget.ListView;
 
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
 import com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity;
+import com.meiqia.meiqiasdk.chatitem.MQHybridItem;
 import com.meiqia.meiqiasdk.chatitem.MQRichTextItem;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.EvaluateMessage;
 import com.meiqia.meiqiasdk.model.FileMessage;
+import com.meiqia.meiqiasdk.model.HybridMessage;
 import com.meiqia.meiqiasdk.model.RedirectQueueMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.InitiativeRedirectMessage;
@@ -120,6 +122,9 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
                 case BaseMessage.TYPE_ROBOT:
                     convertView = new MQRobotItem(mConversationActivity, mConversationActivity);
                     break;
+                case BaseMessage.TYPE_HYBRID:
+                    convertView = new MQHybridItem(mConversationActivity, mConversationActivity);
+                    break;
                 case BaseMessage.TYPE_NO_AGENT_TIP:
                     convertView = new MQNoAgentItem(mConversationActivity);
                     break;
@@ -143,6 +148,8 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
             ((MQNoAgentItem) convertView).setCallback(mConversationActivity);
         } else if (getItemViewType(position) == BaseMessage.TYPE_ROBOT) {
             ((MQRobotItem) convertView).setMessage((RobotMessage) mcMessage, mConversationActivity);
+        } else if (getItemViewType(position) == BaseMessage.TYPE_HYBRID) {
+            ((MQHybridItem) convertView).setMessage((HybridMessage) mcMessage, mConversationActivity);
         } else if (getItemViewType(position) == BaseMessage.TYPE_INITIATIVE_REDIRECT_TIP) {
             ((MQInitiativeRedirectItem) convertView).setMessage((InitiativeRedirectMessage) mcMessage, mConversationActivity);
         } else if (getItemViewType(position) == BaseMessage.TYPE_TIME) {
