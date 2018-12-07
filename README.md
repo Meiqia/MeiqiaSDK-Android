@@ -12,7 +12,7 @@
 
 ```
 // -------------------- 以下三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
-compile 'com.meiqia:meiqiasdk:3.5.1@aar'
+compile 'com.meiqia:meiqiasdk:3.5.2@aar'
 compile 'com.android.support:support-v4:23.1.1'
 compile 'com.squareup.okhttp3:okhttp:3.5.0'
 // -------------------- 以上三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
@@ -171,6 +171,9 @@ MQConfig.setActivityLifecycleCallback(new MQSimpleActivityLifecycleCallback() {
 - **后台改了配置，SDK 不生效**
 
    SDK 的配置不是立即生效，会至少间隔 15 分钟刷新一次，刷新后下次生效。如果想要立即看到配置改变的效果，可以卸载应用重新安装。
+
+## 全部文档
+[查看详情][1]
 
 ## Proguard
 
