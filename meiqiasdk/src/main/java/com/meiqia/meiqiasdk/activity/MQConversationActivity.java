@@ -161,6 +161,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private MQCustomKeyboardLayout mCustomKeyboardLayout;
     private MQEvaluateDialog mEvaluateDialog;
     private String mCameraPicPath;
+    private boolean isChoosePhotoFromCamera;
 
     private String mConversationId;
 
@@ -1322,6 +1323,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             }
             camera.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             startActivityForResult(camera, MQConversationActivity.REQUEST_CODE_CAMERA);
+            isChoosePhotoFromCamera = true;
         } catch (Exception e) {
             MQUtils.show(this, R.string.mq_photo_not_support);
         }
@@ -1472,7 +1474,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             popTopTip(R.string.mq_allocate_queue_tip);
             return false;
         }
-        if (!MQManager.getInstance(this).isSocketConnect() && hasSetClientOnline) {
+        // 如果是从相机选择图片发送，就例外
+        if (!MQManager.getInstance(this).isSocketConnect() && hasSetClientOnline && !isChoosePhotoFromCamera) {
             popTopTip(R.string.mq_title_connect_service);
             if (!TextUtils.isEmpty(message.getContent())) {
                 // 保存到输入框
@@ -2134,6 +2137,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 } else if (RobotMessage.SUB_TYPE_QUEUEING.equals(robotMessage.getSubType())) {
                     forceRedirectHuman();
                 } else if (RobotMessage.SUB_TYPE_MANUAL_REDIRECT.equals(robotMessage.getSubType())) {
+                    mChatMessageList.remove(baseMessage);
                     addInitiativeRedirectMessage(R.string.mq_manual_redirect_tip);
                 } else {
                     mChatMsgAdapter.notifyDataSetChanged();
