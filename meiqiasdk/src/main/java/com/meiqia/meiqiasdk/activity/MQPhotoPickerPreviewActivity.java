@@ -18,14 +18,13 @@ import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
+import com.meiqia.meiqiasdk.third.photoview.PhotoViewAttacher;
 import com.meiqia.meiqiasdk.util.MQBrowserPhotoViewAttacher;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQHackyViewPager;
 import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import java.util.ArrayList;
-
-import com.meiqia.meiqiasdk.third.photoview.PhotoViewAttacher;
 
 
 /**
@@ -70,16 +69,14 @@ public class MQPhotoPickerPreviewActivity extends Activity implements View.OnCli
      * @param context         应用程序上下文
      * @param maxChooseCount  图片选择张数的最大值
      * @param selectedImages  当前已选中的图片路径集合，可以传null
-     * @param previewImages   当前预览的图片目录里的图片路径集合
      * @param currentPosition 当前预览图片的位置
      * @param topRightBtnText 右上角按钮的文本
      * @param isFromTakePhoto 是否是拍完照后跳转过来
      * @return
      */
-    public static Intent newIntent(Context context, int maxChooseCount, ArrayList<String> selectedImages, ArrayList<String> previewImages, int currentPosition, String topRightBtnText, boolean isFromTakePhoto) {
+    public static Intent newIntent(Context context, int maxChooseCount, ArrayList<String> selectedImages, int currentPosition, String topRightBtnText, boolean isFromTakePhoto) {
         Intent intent = new Intent(context, MQPhotoPickerPreviewActivity.class);
         intent.putStringArrayListExtra(EXTRA_SELECTED_IMAGES, selectedImages);
-        intent.putStringArrayListExtra(EXTRA_PREVIEW_IMAGES, previewImages);
         intent.putExtra(EXTRA_MAX_CHOOSE_COUNT, maxChooseCount);
         intent.putExtra(EXTRA_CURRENT_POSITION, currentPosition);
         intent.putExtra(EXTRA_TOP_RIGHT_BTN_TEXT, topRightBtnText);
@@ -146,7 +143,7 @@ public class MQPhotoPickerPreviewActivity extends Activity implements View.OnCli
         }
 
         mSelectedImages = getIntent().getStringArrayListExtra(EXTRA_SELECTED_IMAGES);
-        mPreviewImages = getIntent().getStringArrayListExtra(EXTRA_PREVIEW_IMAGES);
+        mPreviewImages = MQPhotoPickerActivity.sPreviewImages;
         if (TextUtils.isEmpty(mPreviewImages.get(0))) {
             // 从MQPhotoPickerActivity跳转过来时，如果有开启拍照功能，则第0项为""
             mPreviewImages.remove(0);

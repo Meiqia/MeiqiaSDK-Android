@@ -41,6 +41,8 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
     private static final String EXTRA_MAX_CHOOSE_COUNT = "EXTRA_MAX_CHOOSE_COUNT";
     private static final String EXTRA_TOP_RIGHT_BTN_TEXT = "EXTRA_TOP_RIGHT_BTN_TEXT";
 
+    public static ArrayList<String> sPreviewImages; // 静态保存，避免超过 intent 的最大传输限制
+
     /**
      * 拍照的请求码
      */
@@ -166,8 +168,11 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        showLoadingDialog();
-        mLoadPhotoTask = new MQLoadPhotoTask(this, this, mTakePhotoEnabled).perform();
+        // 不重复加载
+        if (mLoadPhotoTask == null) {
+            showLoadingDialog();
+            mLoadPhotoTask = new MQLoadPhotoTask(this, this, mTakePhotoEnabled).perform();
+        }
     }
 
     private void showLoadingDialog() {
@@ -265,7 +270,8 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
             currentPosition--;
         }
         try {
-            startActivityForResult(MQPhotoPickerPreviewActivity.newIntent(this, mMaxChooseCount, mPicAdapter.getSelectedImages(), mPicAdapter.getData(), currentPosition, mTopRightBtnText, false), REQUEST_CODE_PREVIEW);
+            sPreviewImages = mPicAdapter.getData();
+            startActivityForResult(MQPhotoPickerPreviewActivity.newIntent(this, mMaxChooseCount, mPicAdapter.getSelectedImages(), currentPosition, mTopRightBtnText, false), REQUEST_CODE_PREVIEW);
         } catch (Exception e) {
             MQUtils.show(this, R.string.mq_photo_not_support);
         }
@@ -297,7 +303,8 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
                 ArrayList<String> photos = new ArrayList<>();
                 photos.add(mImageCaptureManager.getCurrentPhotoPath());
                 try {
-                    startActivityForResult(MQPhotoPickerPreviewActivity.newIntent(this, 1, photos, photos, 0, mTopRightBtnText, true), REQUEST_CODE_PREVIEW);
+                    sPreviewImages = photos;
+                    startActivityForResult(MQPhotoPickerPreviewActivity.newIntent(this, 1, photos, 0, mTopRightBtnText, true), REQUEST_CODE_PREVIEW);
                 } catch (Exception e) {
                     MQUtils.show(this, R.string.mq_photo_not_support);
                 }
@@ -360,7 +367,6 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
     @Override
     public void onPostExecute(ArrayList<ImageFolderModel> imageFolderModels) {
         dismissLoadingDialog();
-        mLoadPhotoTask = null;
         mImageFolderModels = imageFolderModels;
         reloadPhotos(mPhotoFolderPw == null ? 0 : mPhotoFolderPw.getCurrentPosition());
     }
@@ -382,6 +388,7 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
     protected void onDestroy() {
         dismissLoadingDialog();
         cancelLoadPhotoTask();
+        sPreviewImages = null;
 
         super.onDestroy();
     }
