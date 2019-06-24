@@ -14,7 +14,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    api fileTree(include: ['*.jar'], dir: 'libs')
 
     compileOnly 'com.android.support:support-v4:23.1.1'
     compileOnly 'com.squareup.okhttp3:okhttp:3.5.0'

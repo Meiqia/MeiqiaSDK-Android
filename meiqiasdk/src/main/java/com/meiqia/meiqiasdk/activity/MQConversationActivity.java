@@ -1250,6 +1250,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     private void showEvaluateDialog() {
+        if (!MQManager.getInstance(this).isSocketConnect()) {
+            popTopTip(R.string.mq_title_connect_service);
+            return;
+        }
         // 如果没有正在录音才弹出评价对话框
         if (!mCustomKeyboardLayout.isRecording()) {
             mCustomKeyboardLayout.closeAllKeyboard();
