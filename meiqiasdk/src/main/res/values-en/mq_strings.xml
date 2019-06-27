@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mq_expire_after">Expires in %1$d hours</string>
+    <string name="mq_expired">Expired</string>
+    <string name="mq_expired_top_tip">File expired, could not download</string>
+    <string name="mq_downloading">Downloading…</string>
+    <string name="mq_download_complete">Download complete</string>
+    <string name="mq_download_error">Failed to download file</string>
+    <string name="mq_send">SEND</string>
+    <string name="mq_title_net_not_work">Network Unavailable</string>
+    <string name="mq_title_webview_rich_text">Graphic message</string>
+    <string name="mq_title_default">Online Service</string>
+    <string name="mq_title_service_support">Support</string>
+    <string name="mq_title_collect_info">Please fill in the blanks</string>
+    <string name="mq_title_submit_btn">SUBMIT</string>
+    <string name="mq_tip_required_before_submit">Red text is required, please complete</string>
+    <string name="mq_copy_success">Copied</string>
+    <string name="mq_dialog_select_camera">CAMERA</string>
+    <string name="mq_dialog_select_gallery">GALLERY</string>
+    <string name="mq_dialog_select_title">Please select a picture source:</string>
+    <string name="mq_title_leave_msg">Leave a message</string>
+    <string name="mq_title_unknown_error">Unknown error occurred</string>
+    <string name="mq_error_submit_form">Submitting the form failed, please try again later</string>
+    <string name="mq_error_auth_code_wrong">Invalid validation code</string>
+    <string name="mq_title_connect_service">Connecting, Please wait...</string>
+    <string name="mq_title_inputting">typing...</string>
+    <string name="mq_input_hint">Please enter...</string>
+    <string name="mq_allocate_agent">Allocating Service...</string>
+    <string name="mq_allocate_queue_title">Waiting in line...</string>
+    <string name="mq_allocate_queue_tip">Waiting in line, please wait for the customer service to send a message</string>
+    <string name="mq_allocate_agent_tip">Customer is assigned to you, please resend later</string>
+    <string name="mq_send_robot_msg_time_limit_tip">You send too fast, please take a break</string>
+    <string name="mq_leave_msg_tips">Sorry, there are no customer service staff online now. You can continue to write down your questions and we will respond as soon as possible.</string>
+    <string name="mq_blacklist_tips">Sorry, the current customer service system is temporarily unavailable</string>
+    <string name="mq_photo_not_support">Photo not supported in this device.</string>
+    <string name="mq_no_sdcard">SD card does not exist</string>
+    <string name="mq_sdcard_no_permission">Does not have permission to access files.</string>
+    <string name="mq_camera_or_storage_no_permission">Does not have permission to access photos and media.</string>
+    <string name="mq_timeline_today">Today</string>
+    <string name="mq_timeline_yesterday">Yesterday</string>
+    <string name="mq_data_is_loading">Loading data...</string>
+    <string name="mq_direct_content">%1$s will provide services for you</string>
+    <string name="mq_confirm">OK</string>
+    <string name="mq_cancel">CANCEL</string>
+    <string name="mq_runtime_permission_tip">We need the following permissions to offer your service</string>
+    <string name="mq_permission_denied_tip">You have denied this permission</string>
+    <string name="mq_no_app_open_file">No application found to open file</string>
+    <string name="mq_choose_ticket_category">Select categories</string>
+    <string name="mq_back"></string>
+
+
+    <string name="mq_evaluate_title">Are you satisfied with our services？</string>
+    <string name="mq_evaluate_good">POSITIVE</string>
+    <string name="mq_evaluate_medium">NEUTRAL</string>
+    <string name="mq_evaluate_bad">NEGATIVE</string>
+    <string name="mq_evaluate_hint">Please leave a comment (Optional)</string>
+    <string name="mq_evaluate_result_prefix">You send &#160;&#160;</string>
+    <string name="mq_evaluate_failure">Evaluation failed</string>
+
+    <string name="mq_audio_status_normal">Hold to speak</string>
+    <string name="mq_audio_status_recording">Slide up to cancel sending</string>
+    <string name="mq_audio_status_want_cancel">Release to cancel send</string>
+    <string name="mq_record_record_time_is_short">The recording time is too short</string>
+
+    <string name="mq_download_audio_failure">Download of recording has failed</string>
+    <string name="mq_recorder_no_permission">Failed to record voice, Please make sure you have voice permission.</string>
+    <string name="mq_recorder_remaining_time">End in %1$d seconds</string>
+
+    <string name="mq_view_photo">View Image</string>
+    <string name="mq_save_img_failure">Failed to save a photo.</string>
+    <string name="mq_save_img_success_folder">The picture has been saved to the %s folder</string>
+
+    <string name="mq_send_msg">Send message</string>
+
+    <string name="mq_leave_msg_hint">Enter a comment</string>
+    <string name="mq_all_image">All photos</string>
+
+    <string name="mq_param_not_allow_empty">%1$s cannot be empty</string>
+    <string name="mq_at_least_one_contact">at least one contact method</string>
+    <string name="mq_take_picture">Take photo</string>
+    <string name="mq_submit">Submit</string>
+    <string name="mq_toast_photo_picker_max">Up to %1$s photo(s)</string>
+    <string name="mq_choose">Choose</string>
+    <string name="mq_hint_input">Input</string>
+    <string name="mq_auth_code">CAPTCHA</string>
+
+    <string name="mq_leave_msg">Message</string>
+    <string name="mq_submit_leave_msg_success">Feedback Submitted Successfully</string>
+
+    <string name="mq_email">Email</string>
+    <string name="mq_email_hint">Please enter your email</string>
+
+    <string name="mq_wechat">Wechat</string>
+    <string name="mq_wechat_hint">Please enter your Wechat</string>
+
+    <string name="mq_qq">QQ</string>
+    <string name="mq_qq_hint">Please enter your QQ</string>
+
+    <string name="mq_phone">Phone</string>
+    <string name="mq_phone_hint">Please enter your phone number</string>
+
+    <string name="mq_name">Name</string>
+    <string name="mq_name_hint">Please enter your name</string>
+
+    <string name="mq_useless">Unresolved</string>
+    <string name="mq_useful">Resolved</string>
+    <string name="mq_already_feedback">Responded</string>
+    <string name="mq_robot_menu_tip">Click the question or reply the number to view answer</string>
+    <string name="mq_redirect_human">Human service</string>
+    <string name="mq_no_agent_leave_msg_tip">Sorry，no service online，you can contact us by </string>
+    <string name="mq_useless_redirect_tip">Sorry, you are not satisfied with the robot answer, you can try </string>
+    <string name="mq_manual_redirect_tip">If your problem requires manual support, you can </string>
+
+    <string name="mq_queue_leave_msg">Please wait，there are %1$s customer in front of you, you can try </string>
+    <string name="mq_unknown_msg_tip">The current app does not support this type of message, please upgrade your app to the latest version.</string>
+    <string name="mq_inquire_gender_choice">["Male","Female"]</string>
+</resources>
