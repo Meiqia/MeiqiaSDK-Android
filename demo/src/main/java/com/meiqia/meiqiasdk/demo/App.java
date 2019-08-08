@@ -47,7 +47,7 @@ public class App extends Application {
     private void customMeiqiaSDK() {
         // 配置自定义信息
         MQConfig.ui.titleGravity = MQConfig.ui.MQTitleGravity.LEFT;
-        MQConfig.ui.backArrowIconResId = android.support.v7.appcompat.R.drawable.abc_ic_ab_back_mtrl_am_alpha;
+        MQConfig.ui.backArrowIconResId = R.drawable.ic_arrow_back_white_24dp;
 //        MQConfig.ui.titleBackgroundResId = R.color.test_red;
 //        MQConfig.ui.titleTextColorResId = R.color.test_blue;
 //        MQConfig.ui.leftChatBubbleColorResId = R.color.test_green;

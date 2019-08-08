@@ -13,10 +13,16 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 
+
 /**
- * 作者:王浩 邮件:bingoogolapple@gmail.com
- * 创建时间:16/6/28 下午6:51
- * 描述:
+ * OnePiece
+ * Created by xukq on 8/08/19.
+ *
+ * 针对 glide3.0 的 ImageLoader
+ *
+ * 用法：启动对话前，通过
+ * MQImage.setImageLoader(new MQGlideImageLoader());
+ * 设置自定义 ImageLoader
  */
 public class MQGlideImageLoader extends MQImageLoader {
 

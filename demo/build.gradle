@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "com.meiqia.meiqiasdk.demo"
-        minSdkVersion 10
-        targetSdkVersion 23
-        versionCode 1
+        minSdkVersion 14
+        targetSdkVersion 28
+        versionCode
         versionName "1.0"
     }
     buildTypes {
@@ -16,24 +16,31 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:23.1.1'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
 
 //    api project(':meiqiasdk')
 
     // -------------------- 以下三个库是必须依赖的 ----------------------------
-    implementation 'com.meiqia:meiqiasdk:3.5.4'
-    implementation 'com.android.support:support-v4:23.1.1'
+    implementation 'com.meiqia:meiqiasdk:3.5.6'
+    implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.squareup.okhttp3:okhttp:3.5.0'
     // -------------------- 以上三个库是必须依赖的 ----------------------------
 
     // 目前支持常见的 4 种图片加载库，必须在下面四个图片加载库中选择一个添加依赖
-    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-//    implementation 'com.github.bumptech.glide:glide:3.7.0'
+//    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 //    implementation 'com.squareup.picasso:picasso:2.5.2'
 //    implementation 'org.xutils:xutils:3.3.36'
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 
 }
