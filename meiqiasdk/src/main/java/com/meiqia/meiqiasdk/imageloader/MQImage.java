@@ -21,8 +21,8 @@ public class MQImage {
         if (sImageLoader == null) {
             synchronized (MQImage.class) {
                 if (sImageLoader == null) {
-                    if (isClassExists("com.bumptech.glide.Glide")) {
-                        sImageLoader = new MQGlideImageLoader();
+                    if (isClassExists("com.bumptech.glide.GeneratedAppGlideModule")) {
+                        sImageLoader = new MQGlideImageLoader4();
                     } else if (isClassExists("com.squareup.picasso.Picasso")) {
                         sImageLoader = new MQPicassoImageLoader();
                     } else if (isClassExists("com.nostra13.universalimageloader.core.ImageLoader")) {

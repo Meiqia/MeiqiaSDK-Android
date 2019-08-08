@@ -19,11 +19,12 @@ compile 'com.squareup.okhttp3:okhttp:3.5.0'
 
 // 目前支持常见的 4 种图片加载库，必须在下面四个图片加载库中选择一个添加依赖
 compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-//    compile 'com.github.bumptech.glide:glide:3.7.0'
 //    compile 'com.squareup.picasso:picasso:2.5.2'
 //    compile 'org.xutils:xutils:3.3.36'
+//    implementation 'com.github.bumptech.glide:glide:4.9.0'
+//    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 ```
-> 如果使用的是 glide 4.x ，可以参考 [自定义 ImageLoader][10]
+> 如果使用的是 glide 3.x ，可以参考 [自定义 ImageLoader][10]
 
 ### Eclipse
  [查看详情][9]
@@ -250,4 +251,4 @@ MQConfig.setActivityLifecycleCallback(new MQSimpleActivityLifecycleCallback() {
  [7]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-32
  [8]: https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/demo%2Fsrc%2Fmain%2Fjava%2Fcom%2Fmeiqia%2Fmeiqiasdk%2Fdemo%2FMainActivity.java
  [9]: https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/Eclipse_README.md
- [10]: https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/imageloader/MQGlideImageLoader4.java
+ [10]: https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/imageloader/MQGlideImageLoader.java
