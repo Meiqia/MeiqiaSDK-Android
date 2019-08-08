@@ -14,11 +14,11 @@ android {
 }
 
 dependencies {
-    api fileTree(include: ['*.jar'], dir: 'libs')
+    api fileTree(include: ['*.jar','*.aar'], dir: 'libs')
 
     compileOnly 'com.android.support:support-v4:23.1.1'
     compileOnly 'com.squareup.okhttp3:okhttp:3.5.0'
-    compileOnly 'com.github.bumptech.glide:glide:3.7.0'
+    compileOnly 'com.github.bumptech.glide:glide:4.9.0'
     compileOnly 'com.squareup.picasso:picasso:2.5.2'
     compileOnly 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compileOnly 'org.xutils:xutils:3.3.36'
