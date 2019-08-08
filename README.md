@@ -12,15 +12,15 @@
 
 ```
 // -------------------- 以下三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
-compile 'com.meiqia:meiqiasdk:+'
-compile 'com.android.support:support-v4:23.1.1'
-compile 'com.squareup.okhttp3:okhttp:3.5.0'
+implementation 'com.meiqia:meiqiasdk:+'
+implementation 'com.android.support:support-v4:23.1.1'
+implementation 'com.squareup.okhttp3:okhttp:3.5.0'
 // -------------------- 以上三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
 
 // 目前支持常见的 4 种图片加载库，必须在下面四个图片加载库中选择一个添加依赖
-compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-//    compile 'com.squareup.picasso:picasso:2.5.2'
-//    compile 'org.xutils:xutils:3.3.36'
+implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+//    implementation 'com.squareup.picasso:picasso:2.5.2'
+//    implementation 'org.xutils:xutils:3.3.36'
 //    implementation 'com.github.bumptech.glide:glide:4.9.0'
 //    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 ```
