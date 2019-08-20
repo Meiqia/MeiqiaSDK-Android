@@ -118,6 +118,8 @@ public class MQUtils {
             if (TextUtils.equals(BaseMessage.TYPE_CONTENT_HYBRID, message.getContent_type())) {
                 itemType = BaseMessage.TYPE_HYBRID;
             }
+        } else if (TextUtils.equals(BaseMessage.TYPE_CONTENT_HYBRID, message.getContent_type())) {
+            itemType = BaseMessage.TYPE_HYBRID;
         } else if (MQMessage.TYPE_FROM_CLIENT.equals(message.getFrom_type())) {
             itemType = BaseMessage.TYPE_CLIENT;
         } else if (MQMessage.TYPE_CONTENT_RICH_TEXT.equals(message.getContent_type())) {
@@ -143,6 +145,9 @@ public class MQUtils {
                 robotMessage.setExtra(message.getExtra());
                 baseMessage = robotMessage;
             }
+        } else if (TextUtils.equals(message.getContent_type(), BaseMessage.TYPE_CONTENT_HYBRID)) {
+            baseMessage = new HybridMessage();
+            baseMessage.setContent(message.getContent());
         } else if (MQMessage.TYPE_CONTENT_TEXT.equals(message.getContent_type())) {
             baseMessage = new TextMessage(message.getContent());
             baseMessage.setContent(message.getContent());
