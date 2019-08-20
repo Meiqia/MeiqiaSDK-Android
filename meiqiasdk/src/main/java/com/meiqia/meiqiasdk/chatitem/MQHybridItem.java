@@ -2,15 +2,20 @@ package com.meiqia.meiqiasdk.chatitem;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
+import com.meiqia.meiqiasdk.imageloader.MQImageLoader;
 import com.meiqia.meiqiasdk.model.HybridMessage;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
@@ -30,18 +35,11 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
 
     private MQImageView mAvatarIv;
     private LinearLayout mContainerLl;
-    private TextView mRobotRichTextFl;
-    private TextView mMenuTipTv;
-    private LinearLayout mEvaluateLl;
-    private TextView mUsefulTv;
-    private TextView mUselessTv;
-    private TextView mAlreadyFeedbackTv;
 
     private MQRobotItem.Callback mCallback;
 
     private int mPadding;
     private int mTextSize;
-    private int mTextTipSize;
 
     private HybridMessage mHybridMessage;
 
@@ -77,7 +75,6 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
 
         mPadding = getResources().getDimensionPixelSize(R.dimen.mq_size_level2);
         mTextSize = getResources().getDimensionPixelSize(R.dimen.mq_textSize_level2);
-        mTextTipSize = getResources().getDimensionPixelSize(R.dimen.mq_textSize_level1);
     }
 
     public void setMessage(HybridMessage hybridMessage, Activity activity) {
@@ -105,8 +102,11 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
                         break;
                     case "wait":
                         break;
+                    case "photo_card":
+                        addPhotoCardView(item.optJSONObject("body"));
+                        break;
                     default:
-                        addNormalOrRichTextView(item.getString("body"));
+                        addNormalOrRichTextView(getContext().getString(R.string.mq_unknown_msg_tip));
                         break;
                 }
             }
@@ -157,6 +157,77 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
                 });
                 mContainerLl.addView(itemTv);
             }
+        }
+    }
+
+    private void addPhotoCardView(JSONObject contentObj) {
+        int screenWidth = MQUtils.getScreenWidth(getContext());
+        int mImageWidth = (screenWidth / 3 * 2) - MQUtils.dip2px(getContext(), 16);
+        int mImageHeight = mImageWidth;
+        int margin = MQUtils.dip2px(getContext(), 12);
+
+        ViewGroup.LayoutParams layoutParams = mContainerLl.getLayoutParams();
+        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        layoutParams.width = mImageWidth;
+        mContainerLl.setLayoutParams(layoutParams);
+        mContainerLl.setBackgroundResource(R.drawable.mq_bg_card);
+
+        String title = contentObj.optString("title");
+        String description = contentObj.optString("description");
+        final String target_url = contentObj.optString("target_url");
+        String pic_url = contentObj.optString("pic_url");
+
+        // 添加图片
+        ImageView iv = new ImageView(getContext());
+        iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        iv.setAdjustViewBounds(true);
+        MQImage.displayImage((Activity) getContext(), iv, pic_url, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, new MQImageLoader.MQDisplayImageListener() {
+            @Override
+            public void onSuccess(View view, final String url) {
+
+            }
+        });
+        LinearLayout.LayoutParams ivParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        ivParams.leftMargin = margin;
+        ivParams.rightMargin = margin;
+        mContainerLl.addView(iv, ivParams);
+        // 设置点击跳转
+        mContainerLl.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                try {
+                    Uri uri = Uri.parse(target_url);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    getContext().startActivity(intent);
+                } catch (Exception e) {
+                    MQUtils.show(getContext(), R.string.mq_title_unknown_error);
+                }
+            }
+        });
+        // 添加标题
+        if (!TextUtils.isEmpty(title)) {
+            TextView titleTv = new TextView(getContext());
+            titleTv.setText(title);
+            titleTv.setMaxLines(1);
+            titleTv.setEllipsize(TextUtils.TruncateAt.END);
+            titleTv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.mq_textSize_level3));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.topMargin = MQUtils.dip2px(getContext(), 2);
+            params.bottomMargin = MQUtils.dip2px(getContext(), 2);
+            params.leftMargin = margin;
+            params.rightMargin = margin;
+            mContainerLl.addView(titleTv, params);
+        }
+        // 添加内容
+        if (!TextUtils.isEmpty(description)) {
+            TextView descriptionTv = new TextView(getContext());
+            descriptionTv.setText(description);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.topMargin = MQUtils.dip2px(getContext(), 2);
+            params.bottomMargin = MQUtils.dip2px(getContext(), 2);
+            params.leftMargin = margin;
+            params.rightMargin = margin;
+            mContainerLl.addView(descriptionTv, params);
         }
     }
 

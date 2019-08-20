@@ -6,6 +6,7 @@
     <color name="mq_activity_bg">#F6F7F9</color>
     <color name="mq_activity_title_textColor">@android:color/black</color>
     <color name="mq_activity_title_bg">@android:color/white</color>
+    <color name="mq_card_border">#DFDFDF</color>
 
     <color name="mq_white">@android:color/white</color>
     <color name="mq_gray">#808080</color>
