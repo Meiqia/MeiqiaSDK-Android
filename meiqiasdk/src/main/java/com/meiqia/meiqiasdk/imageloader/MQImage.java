@@ -60,7 +60,9 @@ public class MQImage {
         try {
             getImageLoader().displayImage(activity, imageView, path, loadingResId, failResId, width, height, delegate);
         } catch (Exception e) {
-            Log.d("meiqia", "displayImage error " + e.toString());
+            Log.d("meiqia", "displayImage exception " + e.toString());
+        } catch (Error error) {
+            Log.d("meiqia", "displayImage error " + error.toString());
         }
     }
 
@@ -68,7 +70,9 @@ public class MQImage {
         try {
             getImageLoader().downloadImage(context, path, delegate);
         } catch (Exception e) {
-            Log.d("meiqia", "downloadImage error");
+            Log.d("meiqia", "downloadImage exception");
+        } catch (Error error) {
+            Log.d("meiqia", "displayImage error " + error.toString());
         }
     }
 }
