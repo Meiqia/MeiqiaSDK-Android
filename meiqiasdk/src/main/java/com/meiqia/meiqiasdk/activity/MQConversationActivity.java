@@ -161,7 +161,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private MQCustomKeyboardLayout mCustomKeyboardLayout;
     private MQEvaluateDialog mEvaluateDialog;
     private String mCameraPicPath;
-    private boolean isChoosePhotoFromCamera;
 
     private String mConversationId;
 
@@ -1250,10 +1249,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     private void showEvaluateDialog() {
-        if (!MQManager.getInstance(this).isSocketConnect()) {
-            popTopTip(R.string.mq_title_connect_service);
-            return;
-        }
         // 如果没有正在录音才弹出评价对话框
         if (!mCustomKeyboardLayout.isRecording()) {
             mCustomKeyboardLayout.closeAllKeyboard();
@@ -1327,7 +1322,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             }
             camera.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             startActivityForResult(camera, MQConversationActivity.REQUEST_CODE_CAMERA);
-            isChoosePhotoFromCamera = true;
         } catch (Exception e) {
             MQUtils.show(this, R.string.mq_photo_not_support);
         }
@@ -1478,17 +1472,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             popTopTip(R.string.mq_allocate_queue_tip);
             return false;
         }
-        // 如果是从相机选择图片发送，就例外
-        if (!MQManager.getInstance(this).isSocketConnect() && hasSetClientOnline && !isChoosePhotoFromCamera) {
-            popTopTip(R.string.mq_title_connect_service);
-            if (!TextUtils.isEmpty(message.getContent())) {
-                // 保存到输入框
-                mInputEt.setText(message.getContent());
-                mInputEt.setSelection(message.getContent().length());
-            }
-            return false;
-        }
-
         // 状态改为「正在发送」，以便在数据列表中展示正在发送消息的状态
         message.setStatus(BaseMessage.STATE_SENDING);
         // 添加到对话列表
