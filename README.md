@@ -150,6 +150,15 @@ MQConfig.setActivityLifecycleCallback(new MQSimpleActivityLifecycleCallback() {
 });
 ```
 
+> 设置用户事件
+
+``` java
+MQClientEvent clientEvent = new MQClientEvent();
+// 用户添加新产品
+clientEvent.setEvent("add_product", "id_xxx"); // 事件字段需要先在后台创建
+MQManager.getInstance().setClientEvent(clientEvent);
+```
+
 
 ## 常见问题列表
 
