@@ -42,5 +42,6 @@ dependencies {
 //    implementation 'org.xutils:xutils:3.3.36'
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+//    implementation 'com.github.bumptech.glide:glide:3.7.0'
 
 }
