@@ -47,6 +47,7 @@
     <string name="mq_no_app_open_file">当前没有应用打开此文件</string>
     <string name="mq_choose_ticket_category">选择分类</string>
     <string name="mq_back"></string>
+    <string name="mq_contains_sensitive_words">！消息包含不规范用语</string>
 
 
     <string name="mq_evaluate_title">你对本次服务满意吗？</string>

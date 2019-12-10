@@ -83,6 +83,17 @@
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <service android:name="com.meiqia.core.MeiQiaService" />
+
+        <provider
+            android:name=".util.MQFileProvider"
+            android:authorities="${applicationId}.fileProvider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/mq_file_paths" />
+        </provider>
+
     </application>
 
 </manifest>

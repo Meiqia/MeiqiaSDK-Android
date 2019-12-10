@@ -2,7 +2,7 @@ package com.meiqia.meiqiasdk.util;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -32,15 +32,6 @@ public class MQLoadPhotoTask extends MQAsyncTask<Void, ArrayList<ImageFolderMode
         mTakePhotoEnabled = takePhotoEnabled;
     }
 
-    private static boolean isImageFile(String path) {
-        // 获取图片的宽和高，但不把图片加载到内存中
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, options);
-//        return options.outWidth > 0 && options.outHeight > 0;
-        return options.outMimeType != null;
-    }
-
     @Override
     protected ArrayList<ImageFolderModel> doInBackground(Void... voids) {
         ArrayList<ImageFolderModel> imageFolderModels = new ArrayList();
@@ -49,14 +40,18 @@ public class MQLoadPhotoTask extends MQAsyncTask<Void, ArrayList<ImageFolderMode
 
         Cursor cursor = null;
         try {
-            cursor = mContext.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Images.Media.DATA}, null, null, MediaStore.Images.Media.DATE_ADDED + " DESC");
+            cursor = mContext.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID, MediaStore.Images.Media.WIDTH, MediaStore.Images.Media.HEIGHT, MediaStore.Images.Media.MIME_TYPE},
+                    MediaStore.Images.Media.WIDTH + ">? and " + MediaStore.Images.Media.HEIGHT + ">?",
+                    new String[]{String.valueOf(0), String.valueOf(0)},
+                    MediaStore.Images.Media.DATE_ADDED + " DESC");
             ImageFolderModel otherImageFolderModel;
             if (cursor != null && cursor.getCount() > 0) {
                 boolean firstInto = true;
                 while (cursor.moveToNext()) {
                     String imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-
-                    if (!TextUtils.isEmpty(imagePath) && isImageFile(imagePath)) {
+                    String mimeType = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));
+                    int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
+                    if (!TextUtils.isEmpty(imagePath) && !TextUtils.isEmpty(mimeType)) {
                         if (firstInto) {
                             allImageFolderModel.name = mContext.getString(R.string.mq_all_image);
                             allImageFolderModel.coverPath = imagePath;
@@ -64,7 +59,10 @@ public class MQLoadPhotoTask extends MQAsyncTask<Void, ArrayList<ImageFolderMode
                         }
                         // 所有图片目录每次都添加
                         allImageFolderModel.addLastImage(imagePath);
-
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            Uri baseUri = Uri.parse("content://media/external/images/media");
+                            allImageFolderModel.addLastImageUri(Uri.withAppendedPath(baseUri, "" + id));
+                        }
                         String folderPath = null;
                         // 其他图片目录
                         File folder = new File(imagePath).getParentFile();
