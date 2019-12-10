@@ -77,13 +77,6 @@ startActivity(new Intent(this, MQMessageFormActivity.class));
 
 如果你的 App 需要兼容 Android M，需要处理权限问题。 [参考 Demo][8]
 
-### 5.Android O 权限处理
-
-如果你的 App 需要兼容 Android O，需要在 App 后台的时候确保关闭美洽服务。
-``` java
-MQManager.getInstance(context).closeMeiqiaService();
-```
-
 
 ## 常见使用场景
 
