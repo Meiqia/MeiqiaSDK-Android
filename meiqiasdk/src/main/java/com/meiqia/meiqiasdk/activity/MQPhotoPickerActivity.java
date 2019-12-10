@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
@@ -270,6 +272,14 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
             currentPosition--;
         }
         try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ArrayList<Uri> dataUri = mPicAdapter.getDataUri();
+                ArrayList<String> dataList = new ArrayList<>();
+                for (Uri uri : dataUri) {
+                    dataList.add(MQUtils.getRealFilePath(MQPhotoPickerActivity.this, uri));
+                }
+                mPicAdapter.setData(dataList);
+            }
             sPreviewImages = mPicAdapter.getData();
             startActivityForResult(MQPhotoPickerPreviewActivity.newIntent(this, mMaxChooseCount, mPicAdapter.getSelectedImages(), currentPosition, mTopRightBtnText, false), REQUEST_CODE_PREVIEW);
         } catch (Exception e) {
@@ -360,7 +370,11 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
         if (position < mImageFolderModels.size()) {
             mCurrentImageFolderModel = mImageFolderModels.get(position);
             mTitleTv.setText(mCurrentImageFolderModel.name);
-            mPicAdapter.setData(mCurrentImageFolderModel.getImages());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                mPicAdapter.setDataUri(mCurrentImageFolderModel.getImageUri());
+            } else {
+                mPicAdapter.setData(mCurrentImageFolderModel.getImages());
+            }
         }
     }
 
@@ -395,24 +409,32 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
 
     private class PicAdapter extends BaseAdapter {
         private ArrayList<String> mSelectedImages = new ArrayList<>();
-        private ArrayList<String> mDatas;
+        private ArrayList<String> mData;
+        private ArrayList<Uri> mDataUri;
         private int mImageWidth;
         private int mImageHeight;
 
         public PicAdapter() {
-            mDatas = new ArrayList<>();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                mDataUri = new ArrayList<>();
+            } else {
+                mData = new ArrayList<>();
+            }
             mImageWidth = MQUtils.getScreenWidth(getApplicationContext()) / 10;
             mImageHeight = mImageWidth;
         }
 
         @Override
         public int getCount() {
-            return mDatas.size();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                return mDataUri.size();
+            }
+            return mData.size();
         }
 
         @Override
         public String getItem(int position) {
-            return mDatas.get(position);
+            return mData.get(position);
         }
 
         @Override
@@ -435,7 +457,14 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
                 picViewHolder = (PicViewHolder) convertView.getTag();
             }
 
-            String imagePath = getItem(position);
+            String imagePath;
+            Uri imageUri;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                imageUri = getDataUri().get(position);
+                imagePath = MQUtils.getRealFilePath(MQPhotoPickerActivity.this, imageUri);
+            } else {
+                imagePath = getItem(position);
+            }
             if (mCurrentImageFolderModel.isTakePhotoEnabled() && position == 0) {
                 picViewHolder.tipTv.setVisibility(View.VISIBLE);
                 picViewHolder.photoIv.setScaleType(ImageView.ScaleType.CENTER);
@@ -469,7 +498,12 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
             flagIv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String currentImage = mPicAdapter.getItem(position);
+                    String currentImage;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        currentImage = MQUtils.getRealFilePath(MQPhotoPickerActivity.this, mDataUri.get(position));
+                    } else {
+                        currentImage = mPicAdapter.getItem(position);
+                    }
                     if (mMaxChooseCount == 1) {
                         // 单选
 
@@ -503,17 +537,30 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
             });
         }
 
-        public void setData(ArrayList<String> datas) {
-            if (datas != null) {
-                mDatas = datas;
+        public void setData(ArrayList<String> data) {
+            if (data != null) {
+                mData = data;
             } else {
-                mDatas.clear();
+                mData.clear();
+            }
+            notifyDataSetChanged();
+        }
+
+        public void setDataUri(ArrayList<Uri> data) {
+            if (data != null) {
+                mDataUri = data;
+            } else {
+                mDataUri.clear();
             }
             notifyDataSetChanged();
         }
 
         public ArrayList<String> getData() {
-            return mDatas;
+            return mData;
+        }
+
+        public ArrayList<Uri> getDataUri() {
+            return mDataUri;
         }
 
         public void setSelectedImages(ArrayList<String> selectedImages) {

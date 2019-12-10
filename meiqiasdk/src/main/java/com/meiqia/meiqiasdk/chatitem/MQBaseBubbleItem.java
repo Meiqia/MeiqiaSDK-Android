@@ -158,7 +158,7 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
                 String path = ((PhotoMessage) baseMessage).getLocalPath();
                 boolean isLocalImageExist = MQUtils.isFileExist(path);
 
-                String url;
+                final String url;
                 if (isLocalImageExist) {
                     url = ((PhotoMessage) baseMessage).getLocalPath();
                 } else {
@@ -167,7 +167,7 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
 
                 MQImage.displayImage(activity, contentImage, url, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, new MQImageLoader.MQDisplayImageListener() {
                     @Override
-                    public void onSuccess(View view, final String url) {
+                    public void onSuccess(View view, final String sucUrl) {
                         postDelayed(new Runnable() {
                             @Override
                             public void run() {

@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.widget.ImageView;
 
+import com.meiqia.meiqiasdk.util.MQUtils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -20,12 +23,30 @@ public class MQPicassoImageLoader extends MQImageLoader {
 
     @Override
     public void displayImage(Activity activity, final ImageView imageView, String path, @DrawableRes int loadingResId, @DrawableRes int failResId, int width, int height, final MQDisplayImageListener listener) {
-        final String finalPath = getPath(path);
-        Picasso.with(activity).load(finalPath).placeholder(loadingResId).error(failResId).resize(width, height).centerInside().into(imageView, new Callback.EmptyCallback() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Uri uri = MQUtils.getImageContentUri(activity, path);
+            displayImage(activity, imageView, uri, loadingResId, failResId, width, height, listener);
+        } else {
+            final String finalPath = getPath(path);
+            Picasso.with(activity).load(finalPath).placeholder(loadingResId).error(failResId).resize(width, height).centerInside().into(imageView, new Callback.EmptyCallback() {
+                @Override
+                public void onSuccess() {
+                    if (listener != null) {
+                        listener.onSuccess(imageView, finalPath);
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    protected void displayImage(final Activity activity, final ImageView imageView, final Uri uri, int loadingResId, int failResId, int width, int height, final MQDisplayImageListener displayImageListener) {
+        Picasso.with(activity).load(uri).placeholder(loadingResId).error(failResId).resize(width, height).centerInside().into(imageView, new Callback.EmptyCallback() {
             @Override
             public void onSuccess() {
-                if (listener != null) {
-                    listener.onSuccess(imageView, finalPath);
+                if (displayImageListener != null) {
+                    String finalPath = MQUtils.getRealPathByUri(activity, uri);
+                    displayImageListener.onSuccess(imageView, finalPath);
                 }
             }
         });

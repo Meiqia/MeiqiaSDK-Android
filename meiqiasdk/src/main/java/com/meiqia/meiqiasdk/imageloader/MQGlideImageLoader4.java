@@ -4,9 +4,12 @@ package com.meiqia.meiqiasdk.imageloader;
  * OnePiece
  * Created by xukq on 8/7/19.
  */
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
@@ -24,15 +27,16 @@ import com.meiqia.meiqiasdk.util.MQUtils;
 /**
  * OnePiece
  * Created by xukq on 8/21/17.
- *
+ * <p>
  * 针对 glide4.0 的 ImageLoader
- *
+ * <p>
  * 用法：启动对话前，通过
  * MQImage.setImageLoader(new MQGlideImageLoader4());
  * 设置自定义 ImageLoader
  */
 
 public class MQGlideImageLoader4 extends MQImageLoader {
+
     private MQGlideImageLoader3 mGlideImageLoader3;
 
     public MQGlideImageLoader4() {
@@ -43,8 +47,43 @@ public class MQGlideImageLoader4 extends MQImageLoader {
     public void displayImage(Activity activity, final ImageView imageView, String path, @DrawableRes int loadingResId, @DrawableRes int failResId, int width, int height, final MQDisplayImageListener displayImageListener) {
         final String finalPath = getPath(path);
         try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                Uri uri = MQUtils.getImageContentUri(activity, path);
+                displayImage(activity, imageView, uri, loadingResId, failResId, width, height, displayImageListener);
+            } else {
+                Glide.with(activity)
+                        .load(finalPath)
+                        .apply(new RequestOptions().placeholder(loadingResId).error(failResId).override(width, height))
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                if (displayImageListener != null) {
+                                    displayImageListener.onSuccess(imageView, finalPath);
+                                }
+                                return false;
+                            }
+                        })
+                        .into(imageView);
+            }
+        } catch (Error noSuchMethodError) {
+            // 自启启用 Glide3
+            if (mGlideImageLoader3 == null) {
+                mGlideImageLoader3 = new MQGlideImageLoader3();
+            }
+            mGlideImageLoader3.displayImage(activity, imageView, path, loadingResId, failResId, width, height, displayImageListener);
+        }
+    }
+
+    @Override
+    protected void displayImage(final Activity activity, final ImageView imageView, final Uri uri, int loadingResId, int failResId, int width, int height, final MQDisplayImageListener displayImageListener) {
+        try {
             Glide.with(activity)
-                    .load(finalPath)
+                    .load(uri)
                     .apply(new RequestOptions().placeholder(loadingResId).error(failResId).override(width, height))
                     .listener(new RequestListener<Drawable>() {
                         @Override
@@ -55,7 +94,7 @@ public class MQGlideImageLoader4 extends MQImageLoader {
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                             if (displayImageListener != null) {
-                                displayImageListener.onSuccess(imageView, finalPath);
+                                displayImageListener.onSuccess(imageView, getRealFilePath(activity, uri));
                             }
                             return false;
                         }
@@ -66,7 +105,7 @@ public class MQGlideImageLoader4 extends MQImageLoader {
             if (mGlideImageLoader3 == null) {
                 mGlideImageLoader3 = new MQGlideImageLoader3();
             }
-            mGlideImageLoader3.displayImage(activity, imageView, path, loadingResId, failResId, width, height, displayImageListener);
+            mGlideImageLoader3.displayImage(activity, imageView, uri, loadingResId, failResId, width, height, displayImageListener);
         }
     }
 

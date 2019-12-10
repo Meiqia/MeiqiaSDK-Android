@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewCompat;
@@ -217,10 +218,24 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
         }
 
         // 通过MD5加密url生成文件名，避免多次保存同一张图片
-        file = new File(mSaveImgDir, MQUtils.stringToMD5(url) + ".png");
+        final String fileName = MQUtils.stringToMD5(url) + ".png";
+        file = new File(mSaveImgDir, fileName);
         if (file.exists()) {
             MQUtils.showSafe(this, getString(R.string.mq_save_img_success_folder, mSaveImgDir.getAbsolutePath()));
             return;
+        }
+
+        // 如果私有路径已经存在，就表示已保存
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            File externalFilesDir = getExternalFilesDir("mq");
+            if (!externalFilesDir.exists()) {
+                externalFilesDir.mkdirs();
+            }
+            file = new File(externalFilesDir, fileName);
+            if (file.exists()) {
+                MQUtils.showSafe(this, getString(R.string.mq_save_img_success_folder, externalFilesDir.getAbsolutePath()));
+                return;
+            }
         }
 
         mSavePhotoTask = new MQSavePhotoTask(this, this, file);
