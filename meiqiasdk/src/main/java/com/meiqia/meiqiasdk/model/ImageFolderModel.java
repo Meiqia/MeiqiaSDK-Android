@@ -1,5 +1,9 @@
 package com.meiqia.meiqiasdk.model;
 
+import android.annotation.TargetApi;
+import android.net.Uri;
+import android.os.Build;
+
 import java.util.ArrayList;
 
 /**
@@ -11,6 +15,7 @@ public class ImageFolderModel {
     public String name;
     public String coverPath;
     private ArrayList<String> mImages = new ArrayList<>();
+    private ArrayList<Uri> mImageUri = new ArrayList<>();
     private boolean mTakePhotoEnabled;
 
     public ImageFolderModel(boolean takePhotoEnabled) {
@@ -34,11 +39,23 @@ public class ImageFolderModel {
         mImages.add(imagePath);
     }
 
+    public void addLastImageUri(Uri uri) {
+        mImageUri.add(uri);
+    }
+
     public ArrayList<String> getImages() {
         return mImages;
     }
 
+    @TargetApi(Build.VERSION_CODES.Q)
+    public ArrayList<Uri> getImageUri() {
+        return mImageUri;
+    }
+
     public int getCount() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return mImageUri.size();
+        }
         return mImages.size();
     }
 }

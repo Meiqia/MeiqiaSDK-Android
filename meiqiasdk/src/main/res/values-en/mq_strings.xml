@@ -47,6 +47,7 @@
     <string name="mq_no_app_open_file">No application found to open file</string>
     <string name="mq_choose_ticket_category">Select categories</string>
     <string name="mq_back"></string>
+    <string name="mq_contains_sensitive_words">!Contains sensitive words</string>
 
 
     <string name="mq_evaluate_title">Are you satisfied with our services？</string>

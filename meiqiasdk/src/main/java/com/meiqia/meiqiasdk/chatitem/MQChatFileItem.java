@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.StrictMode;
+import android.support.v4.content.FileProvider;
 import android.text.format.Formatter;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -150,14 +151,20 @@ public class MQChatFileItem extends MQBaseCustomCompositeView implements View.On
 
     private void openFile() {
         // 置入一个不设防的 VmPolicy
+        Uri uri;
+        File file = new File(MQUtils.getFileMessageFilePath(mFileMessage));
         if (Build.VERSION.SDK_INT >= 24) {
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
             StrictMode.setVmPolicy(builder.build());
         }
+        // Android Q 使用 FileProvider 的方式
+        if (Build.VERSION.SDK_INT >= 29) {
+            uri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".fileProvider", file);
+        } else {
+            uri = Uri.fromFile(new File(MQUtils.getFileMessageFilePath(mFileMessage)));
+        }
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        String type = getExtraStringValue("type");
-        Uri uri = Uri.fromFile(new File(MQUtils.getFileMessageFilePath(mFileMessage)));
-        intent.setDataAndType(uri, type);
+        intent.setDataAndType(uri, "*/*");
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
             getContext().startActivity(intent);

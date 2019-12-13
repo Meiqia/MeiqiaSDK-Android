@@ -1,10 +1,12 @@
 package com.meiqia.meiqiasdk.util;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -24,10 +26,12 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.RequiresApi;
 import android.support.annotation.StringRes;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -55,9 +59,13 @@ import com.meiqia.meiqiasdk.model.VoiceMessage;
 
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -69,6 +77,8 @@ public class MQUtils {
      * 键盘切换延时时间
      */
     public static final int KEYBOARD_CHANGE_DELAY = 300;
+    // Android Q 的文件下载路径
+    public static String DOWNLOAD_DIR;
 
     private static Handler sHandler = new Handler(Looper.getMainLooper());
 
@@ -106,6 +116,19 @@ public class MQUtils {
             fileMessage.setUrl(message.getMedia_url());
             fileMessage.setExtra(message.getExtra());
             updateFileState(fileMessage);
+        } else if (MQMessage.TYPE_CONTENT_TEXT.endsWith(message.getContent_type())) {
+            try {
+                if (!TextUtils.isEmpty(message.getExtra())) {
+                    JSONObject extraObj = new JSONObject(message.getExtra());
+                    boolean isContainsSensitiveWords = extraObj.optBoolean("contains_sensitive_words", false);
+                    String replacedContent = extraObj.optString("replaced_content");
+                    TextMessage textMessage = (TextMessage) baseMessage;
+                    textMessage.setContainsSensitiveWords(isContainsSensitiveWords);
+                    textMessage.setReplaceContent(replacedContent);
+                }
+            } catch (Exception e) {
+                Log.e("meiqia_log", e.toString());
+            }
         }
         return baseMessage;
     }
@@ -151,6 +174,18 @@ public class MQUtils {
         } else if (MQMessage.TYPE_CONTENT_TEXT.equals(message.getContent_type())) {
             baseMessage = new TextMessage(message.getContent());
             baseMessage.setContent(message.getContent());
+            try {
+                if (!TextUtils.isEmpty(message.getExtra())) {
+                    JSONObject extraObj = new JSONObject(message.getExtra());
+                    boolean isContainsSensitiveWords = extraObj.optBoolean("contains_sensitive_words", false);
+                    String replacedContent = extraObj.optString("replaced_content");
+                    TextMessage textMessage = (TextMessage) baseMessage;
+                    textMessage.setContainsSensitiveWords(isContainsSensitiveWords);
+                    textMessage.setReplaceContent(replacedContent);
+                }
+            } catch (Exception e) {
+                Log.e("meiqia_log", e.toString());
+            }
         } else if (MQMessage.TYPE_CONTENT_PHOTO.equals(message.getContent_type())) {
             // message.getMedia_url() 可能是本地路径
             baseMessage = new PhotoMessage();
@@ -468,7 +503,12 @@ public class MQUtils {
             String prefix = destFileName.substring(0, lastIndexOf);
             String suffix = destFileName.substring(lastIndexOf, destFileName.length());
             destFileName = prefix + fileMessage.getId() + suffix;
-            String destFileDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+            String destFileDir;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                destFileDir = DOWNLOAD_DIR;
+            } else {
+                destFileDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+            }
             path = destFileDir + "/" + destFileName;
         } catch (Exception e) {
             e.printStackTrace();
@@ -839,4 +879,208 @@ public class MQUtils {
     public static String getString(Context context, String key, String def) {
         return context.getSharedPreferences("MeiqiaSDK", Context.MODE_PRIVATE).getString(key, def);
     }
+
+    public static String getRealFilePath(Context context, final Uri uri) {
+        if (null == uri) return null;
+        final String scheme = uri.getScheme();
+        String data = null;
+        if (scheme == null)
+            data = uri.getPath();
+        else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+            data = uri.getPath();
+        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+            Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+            if (null != cursor) {
+                if (cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                    if (index > -1) {
+                        data = cursor.getString(index);
+                    }
+                }
+                cursor.close();
+            }
+        }
+        return data;
+    }
+
+    public static Uri getImageContentUri(Context context, String filePath) {
+        if (!TextUtils.isEmpty(filePath) && filePath.startsWith("http")) {
+            return Uri.parse(filePath);
+        }
+        Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Images.Media._ID}, MediaStore.Images.Media.DATA + "=? ",
+                new String[]{filePath}, null);
+        try {
+            if (cursor != null && cursor.moveToFirst()) {
+                int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
+                Uri baseUri = Uri.parse("content://media/external/images/media");
+                return Uri.withAppendedPath(baseUri, "" + id);
+            } else {
+                File imageFile = new File(filePath);
+                if (imageFile.exists()) {
+                    ContentValues values = new ContentValues();
+                    values.put(MediaStore.Images.Media.DATA, filePath);
+                    return context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                } else {
+                    return null;
+                }
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.Q)
+    public static void copyToDownloadAndroidQ(Context context, String sourcePath, String fileName) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
+        values.put(MediaStore.Downloads.MIME_TYPE, "*/*");
+        values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+
+        Uri external = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
+        ContentResolver resolver = context.getContentResolver();
+
+        Uri insertUri = resolver.insert(external, values);
+        if (insertUri == null) {
+            return;
+        }
+
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            os = resolver.openOutputStream(insertUri);
+            if (os == null) {
+                return;
+            }
+            int read;
+            File sourceFile = new File(sourcePath);
+            if (sourceFile.exists()) { // 文件存在时
+                is = new FileInputStream(sourceFile); // 读入原文件
+                byte[] buffer = new byte[4096];
+                while ((read = is.read(buffer)) != -1) {
+                    os.write(buffer, 0, read);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (is != null) {
+                    is.close();
+                }
+                if (os != null) {
+                    os.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public static void copyToPictureAndroidQ(Context context, String sourcePath, String fileName) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
+        values.put(MediaStore.Downloads.MIME_TYPE, "image/png");
+        values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
+
+        Uri external = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
+        ContentResolver resolver = context.getContentResolver();
+
+        Uri insertUri = resolver.insert(external, values);
+        if (insertUri == null) {
+            return;
+        }
+
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            os = resolver.openOutputStream(insertUri);
+            if (os == null) {
+                return;
+            }
+            int read;
+            File sourceFile = new File(sourcePath);
+            if (sourceFile.exists()) { // 文件存在时
+                is = new FileInputStream(sourceFile); // 读入原文件
+                byte[] buffer = new byte[1444];
+                while ((read = is.read(buffer)) != -1) {
+                    os.write(buffer, 0, read);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (is != null) {
+                    is.close();
+                }
+                if (os != null) {
+                    os.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    /**
+     * 通过MediaStore保存，兼容AndroidQ，保存成功自动添加到相册数据库，无需再发送广播告诉系统插入相册
+     *
+     * @param context      context
+     * @param sourceFile   源文件
+     * @param saveFileName 保存的文件名
+     * @return 成功或者失败
+     */
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public static boolean saveImageWithAndroidQ(Context context, File sourceFile, String saveFileName) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DESCRIPTION, "This is an image");
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, saveFileName);
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/*");
+        values.put(MediaStore.Images.Media.TITLE, "image");
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures");
+
+        Uri external = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        ContentResolver resolver = context.getContentResolver();
+
+        Uri insertUri = resolver.insert(external, values);
+        BufferedInputStream inputStream = null;
+        OutputStream os = null;
+        boolean result = false;
+        try {
+            inputStream = new BufferedInputStream(new FileInputStream(sourceFile));
+            if (insertUri != null) {
+                os = resolver.openOutputStream(insertUri);
+            }
+            if (os != null) {
+                byte[] buffer = new byte[1024 * 4];
+                int len;
+                while ((len = inputStream.read(buffer)) != -1) {
+                    os.write(buffer, 0, len);
+                }
+                os.flush();
+            }
+            result = true;
+        } catch (IOException e) {
+            result = false;
+        } finally {
+            try {
+                if (os != null) {
+                    os.close();
+                }
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
 }

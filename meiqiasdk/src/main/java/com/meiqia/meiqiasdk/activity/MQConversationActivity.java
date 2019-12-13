@@ -161,6 +161,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private MQCustomKeyboardLayout mCustomKeyboardLayout;
     private MQEvaluateDialog mEvaluateDialog;
     private String mCameraPicPath;
+    private Uri mCameraPicUri;
 
     private String mConversationId;
 
@@ -340,6 +341,13 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             mController = new ControllerImpl(this);
         }
         MQTimeUtils.init(this);
+        // 初始化路径
+        if (TextUtils.isEmpty(MQUtils.DOWNLOAD_DIR)) {
+            File externalFilesDir = getExternalFilesDir("download");
+            if (externalFilesDir != null) {
+                MQUtils.DOWNLOAD_DIR = externalFilesDir.getAbsolutePath();
+            }
+        }
 
         // handler
         mHandler = new Handler() {
@@ -1320,6 +1328,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             } else {
                 uri = Uri.fromFile(imageFile);
             }
+            mCameraPicUri = uri;
             camera.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             startActivityForResult(camera, MQConversationActivity.REQUEST_CODE_CAMERA);
         } catch (Exception e) {
@@ -1344,7 +1353,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * @param imageFile 需要上传的imageFile
      */
     private void createAndSendImageMessage(File imageFile) {
-        if (!imageFile.exists()) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && !imageFile.exists()) {
             return;
         }
         PhotoMessage imageMessage = new PhotoMessage();
@@ -1450,6 +1459,15 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             return null;
         }
         File imageFile = new File(mCameraPicPath);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && mCameraPicUri != null) {
+            // 从 uri 获取 path，SDK 内部会通过 path 拿到 uri
+            String realFilePath = MQUtils.getRealFilePath(this, mCameraPicUri);
+            // 如果 targetapi 不是 Android 10，realFilePath 将会是空
+            if (!TextUtils.isEmpty(realFilePath)) {
+                // 这里的 file 无法直接读取
+                return new File(realFilePath);
+            }
+        }
         if (imageFile.exists()) {
             return imageFile;
         } else {
