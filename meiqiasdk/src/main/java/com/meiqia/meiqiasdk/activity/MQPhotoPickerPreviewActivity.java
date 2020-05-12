@@ -18,13 +18,14 @@ import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
-import com.meiqia.meiqiasdk.third.photoview.PhotoViewAttacher;
 import com.meiqia.meiqiasdk.util.MQBrowserPhotoViewAttacher;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQHackyViewPager;
 import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import java.util.ArrayList;
+
+import com.meiqia.meiqiasdk.third.photoview.PhotoViewAttacher;
 
 
 /**

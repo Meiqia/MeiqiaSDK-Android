@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/mq_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/mq_size_level1"
+        android:textColor="@color/mq_chat_event_gray"
+        android:textSize="@dimen/mq_textSize_level1"
+        tools:text="请输入 姓名" />
+
+    <RadioGroup
+        android:id="@+id/radio_group"
+        style="@style/MQMatchWrap.Vertical">
+
+    </RadioGroup>
+
+</LinearLayout>

@@ -1,12 +1,14 @@
 package com.meiqia.meiqiasdk.activity;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
@@ -31,6 +33,8 @@ import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import okhttp3.internal.Util;
 
 
 public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttacher.OnViewTapListener, View.OnClickListener, MQAsyncTask.Callback<Void> {

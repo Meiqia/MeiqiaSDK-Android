@@ -102,6 +102,12 @@
 
     <string name="mq_name">Name</string>
     <string name="mq_name_hint">Please enter your name</string>
+    <string name="mq_contact">Contact</string>
+    <string name="mq_gender">Gender</string>
+    <string name="mq_age">Age</string>
+    <string name="mq_address">Address</string>
+    <string name="mq_weibo">Weibo</string>
+    <string name="mq_comment">Comment</string>
 
     <string name="mq_useless">Unresolved</string>
     <string name="mq_useful">Resolved</string>
@@ -112,7 +118,12 @@
     <string name="mq_useless_redirect_tip">Sorry, you are not satisfied with the robot answer, you can try </string>
     <string name="mq_manual_redirect_tip">If your problem requires manual support, you can </string>
 
-    <string name="mq_queue_leave_msg">Please wait，there are %1$s customer in front of you, you can try </string>
+    <string name="mq_queue_leave_msg">there are %1$s customer in front of you</string>
     <string name="mq_unknown_msg_tip">The current app does not support this type of message, please upgrade your app to the latest version.</string>
     <string name="mq_inquire_gender_choice">["Male","Female"]</string>
+
+    <string name="mq_item_clue_card_input">Please enter %s</string>
+    <string name="mq_item_clue_card_select">Please select %s</string>
+    <string name="mq_recall_msg">service recall a message</string>
+    <string name="mq_submit_success">submitted</string>
 </resources>

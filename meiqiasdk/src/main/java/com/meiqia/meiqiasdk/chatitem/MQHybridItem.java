@@ -92,6 +92,7 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
                 String type = item.getString("type");
                 switch (type) {
                     case "rich_text":
+                    case "text":
                         addNormalOrRichTextView(item.getString("body"));
                         break;
                     case "choices":

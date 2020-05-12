@@ -6,9 +6,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.meiqia.core.bean.MQEnterpriseConfig;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.LeaveMessageCallback;
 import com.meiqia.meiqiasdk.model.RedirectQueueMessage;
+import com.meiqia.meiqiasdk.util.MQConfig;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -18,6 +20,7 @@ import com.meiqia.meiqiasdk.model.RedirectQueueMessage;
 public class MQRedirectQueueItem extends MQBaseCustomCompositeView {
     private ImageView mQueueAnimIv;
     private TextView mTipTv;
+    private TextView mInfoTv;
 
     private LeaveMessageCallback mCallback;
 
@@ -35,6 +38,7 @@ public class MQRedirectQueueItem extends MQBaseCustomCompositeView {
     protected void initView() {
         mQueueAnimIv = getViewById(R.id.iv_redirect_queue_anim);
         mTipTv = getViewById(R.id.tv_redirect_queue_tip);
+        mInfoTv = getViewById(R.id.tv_queue_info_tv);
     }
 
     @Override
@@ -44,6 +48,8 @@ public class MQRedirectQueueItem extends MQBaseCustomCompositeView {
 
     @Override
     protected void processLogic() {
+        MQEnterpriseConfig enterpriseConfig = MQConfig.getController(getContext()).getEnterpriseConfig();
+        mInfoTv.setText(enterpriseConfig.queueingSetting.getIntro());
     }
 
     @Override
