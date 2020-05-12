@@ -106,7 +106,7 @@ public class MQTimeUtils {
         if (null == time) return System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.CHINA);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        java.util.Date d;
+        Date d;
         try {
             d = sdf.parse(time);
             return d.getTime();
@@ -115,4 +115,11 @@ public class MQTimeUtils {
         }
         return System.currentTimeMillis();
     }
+
+    public static String partLongToTime(long time) {
+        Date curDates = new Date(time);
+        SimpleDateFormat formatters = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+        return formatters.format(curDates);
+    }
+
 }

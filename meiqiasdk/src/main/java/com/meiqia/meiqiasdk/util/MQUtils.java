@@ -49,14 +49,15 @@ import com.meiqia.core.bean.MQMessage;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.BaseMessage;
+import com.meiqia.meiqiasdk.model.ClueCardMessage;
 import com.meiqia.meiqiasdk.model.FileMessage;
 import com.meiqia.meiqiasdk.model.HybridMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
-import com.meiqia.meiqiasdk.model.RichTextMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -71,6 +72,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MQUtils {
     /**
@@ -216,9 +219,19 @@ public class MQUtils {
             baseMessage.setId(message.getId());
             updateFileState(((FileMessage) baseMessage));
         } else if (MQMessage.TYPE_CONTENT_RICH_TEXT.equals(message.getContent_type())) {
-            baseMessage = new RichTextMessage();
-            baseMessage.setContent(message.getContent());
-            ((RichTextMessage) baseMessage).setExtra(message.getExtra());
+            // 渲染成富文本的的 hybrid 消息
+            JSONArray contentArray = new JSONArray();
+            JSONObject contentObj = new JSONObject();
+            try {
+                JSONObject extra = new JSONObject(message.getExtra());
+                contentObj.put("type", "rich_text");
+                contentObj.put("body", extra.opt("content"));
+                contentArray.put(contentObj);
+            } catch (Exception ignore) {
+
+            }
+            baseMessage = new HybridMessage();
+            baseMessage.setContent(contentArray.toString());
         } else {
             // TYPE 设置 unknown,在 adapter 渲染内容
             baseMessage = new TextMessage(message.getContent());
@@ -256,6 +269,21 @@ public class MQUtils {
             message.setMedia_url(((FileMessage) baseMessage).getUrl());
         }
         return message;
+    }
+
+    public static BaseMessage parseMQMessageToClueCardMessage(MQMessage message) {
+        BaseMessage baseMessage = new ClueCardMessage();
+        baseMessage.setStatus(message.getStatus());
+        baseMessage.setContent(message.getContent());
+        baseMessage.setContentType(message.getContent_type());
+        baseMessage.setStatus(message.getStatus());
+        baseMessage.setId(message.getId());
+        baseMessage.setType(message.getType());
+        baseMessage.setConversationId(message.getConversation_id());
+        baseMessage.setAgentNickname(message.getAgent_nickname());
+        baseMessage.setCreatedOn(message.getCreated_on());
+        baseMessage.setAvatar(message.getAvatar());
+        return baseMessage;
     }
 
     /**
@@ -449,6 +477,64 @@ public class MQUtils {
      */
     public static boolean isSdcardAvailable() {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+    }
+
+    public static boolean isQQ(String qq) {
+        if (TextUtils.isEmpty(qq)) {
+            return false;
+        }
+
+        if (qq.length() < 5 || qq.length() > 11) {
+            return false;
+        }
+
+        if (qq.startsWith("0")) {
+            return false;
+        }
+
+        for (char c : qq.toCharArray()) {
+            if (!Character.isDigit(c))
+                return false;
+        }
+        return true;
+    }
+
+    public static boolean isPhone(String phone) {
+        if (TextUtils.isEmpty(phone)) {
+            return false;
+        }
+
+        if (phone.length() < 10 || phone.length() > 18) {
+            return false;
+        }
+
+        String expression = "[-0-9]";
+        CharSequence inputStr = phone;
+
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(inputStr);
+        String result = matcher.replaceAll("");
+        return TextUtils.isEmpty(result);
+    }
+
+    /**
+     * method is used for checking valid email id format.
+     *
+     * @param email
+     * @return boolean true for valid false for invalid
+     */
+    public static boolean isEmailValid(String email) {
+        boolean isValid = false;
+
+        String expression = "[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?";
+        CharSequence inputStr = email;
+
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(inputStr);
+        if (matcher.matches()) {
+            isValid = true;
+        }
+        return isValid;
     }
 
     /**

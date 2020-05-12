@@ -6,20 +6,22 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
+import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
 import com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity;
+import com.meiqia.meiqiasdk.chatitem.MQClueCardItem;
 import com.meiqia.meiqiasdk.chatitem.MQHybridItem;
-import com.meiqia.meiqiasdk.chatitem.MQRichTextItem;
 import com.meiqia.meiqiasdk.model.BaseMessage;
+import com.meiqia.meiqiasdk.model.ClueCardMessage;
 import com.meiqia.meiqiasdk.model.EvaluateMessage;
 import com.meiqia.meiqiasdk.model.FileMessage;
 import com.meiqia.meiqiasdk.model.HybridMessage;
 import com.meiqia.meiqiasdk.model.RedirectQueueMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.InitiativeRedirectMessage;
+import com.meiqia.meiqiasdk.model.TipMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.widget.MQRedirectQueueItem;
-import com.meiqia.meiqiasdk.model.RichTextMessage;
 import com.meiqia.meiqiasdk.chatitem.MQAgentItem;
 import com.meiqia.meiqiasdk.chatitem.MQBaseBubbleItem;
 import com.meiqia.meiqiasdk.chatitem.MQClientItem;
@@ -135,7 +137,10 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
                     convertView = new MQRedirectQueueItem(mConversationActivity, mConversationActivity);
                     break;
                 case BaseMessage.TYPE_RICH_TEXT:
-                    convertView = new MQRichTextItem(mConversationActivity);
+                    convertView = new MQHybridItem(mConversationActivity, null);
+                    break;
+                case BaseMessage.TYPE_CLUE_CARD:
+                    convertView = new MQClueCardItem(mConversationActivity, this);
                     break;
             }
         }
@@ -161,7 +166,9 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
         } else if (getItemViewType(position) == BaseMessage.TYPE_QUEUE_TIP) {
             ((MQRedirectQueueItem) convertView).setMessage((RedirectQueueMessage) mcMessage);
         } else if (getItemViewType(position) == BaseMessage.TYPE_RICH_TEXT) {
-            ((MQRichTextItem) convertView).setMessage((RichTextMessage) mcMessage, mConversationActivity);
+            ((MQHybridItem) convertView).setMessage((HybridMessage) mcMessage, mConversationActivity);
+        } else if (getItemViewType(position) == BaseMessage.TYPE_CLUE_CARD) {
+            ((MQClueCardItem) convertView).setMessage((ClueCardMessage) mcMessage, mConversationActivity);
         }
 
         return convertView;
@@ -287,5 +294,14 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
     @Override
     public void onFileMessageExpired(FileMessage fileMessage) {
         mConversationActivity.onFileMessageExpired(fileMessage);
+    }
+
+    @Override
+    public void onClueCardMessageSendSuccess(BaseMessage message) {
+        mMessageList.remove(message);
+        TipMessage clueCardSendTipMessage = new TipMessage();
+        clueCardSendTipMessage.setContent(mConversationActivity.getString(R.string.mq_submit_success));
+        mMessageList.add(clueCardSendTipMessage);
+        notifyDataSetChanged();
     }
 }

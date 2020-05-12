@@ -70,6 +70,7 @@ import com.meiqia.meiqiasdk.model.InitiativeRedirectMessage;
 import com.meiqia.meiqiasdk.model.LeaveTipMessage;
 import com.meiqia.meiqiasdk.model.NoAgentLeaveMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
+import com.meiqia.meiqiasdk.model.TipMessage;
 import com.meiqia.meiqiasdk.model.RedirectQueueMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
@@ -343,7 +344,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         MQTimeUtils.init(this);
         // 初始化路径
         if (TextUtils.isEmpty(MQUtils.DOWNLOAD_DIR)) {
-            File externalFilesDir = getExternalFilesDir("download");
+            File externalFilesDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
             if (externalFilesDir != null) {
                 MQUtils.DOWNLOAD_DIR = externalFilesDir.getAbsolutePath();
             }
@@ -467,6 +468,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(MQController.ACTION_AGENT_INPUTTING);
         intentFilter.addAction(MQController.ACTION_NEW_MESSAGE_RECEIVED);
+        intentFilter.addAction(MQController.ACTION_AGENT_SEND_CLUE_CARD);
         intentFilter.addAction(MQController.ACTION_CLIENT_IS_REDIRECTED_EVENT);
         intentFilter.addAction(MQController.ACTION_INVITE_EVALUATION);
         intentFilter.addAction(MQController.ACTION_AGENT_STATUS_UPDATE_EVENT);
@@ -477,6 +479,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         intentFilter.addAction(MQMessageManager.ACTION_END_CONV_AGENT);
         intentFilter.addAction(MQMessageManager.ACTION_END_CONV_TIMEOUT);
         intentFilter.addAction(MQMessageManager.ACTION_SOCKET_OPEN);
+        intentFilter.addAction(MQMessageManager.ACTION_RECALL_MESSAGE);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, intentFilter);
 
         // 网络监听
@@ -1369,7 +1372,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // nothing
                 } else {
-                    MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_sdcard_no_permission);
+                    MQUtils.show(this, R.string.mq_sdcard_no_permission);
                 }
                 break;
             }
@@ -1388,7 +1391,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                         mCameraSelectBtn.performClick();
                         // 有存储权限
                     } else {
-                        MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_camera_or_storage_no_permission);
+                        MQUtils.show(this, R.string.mq_camera_or_storage_no_permission);
                     }
                 } else {
                     MQUtils.show(this, R.string.mq_camera_or_storage_no_permission);
@@ -2037,6 +2040,17 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         @Override
         public void receiveNewMsg(BaseMessage message) {
             MQConversationActivity.this.receiveNewMsg(message);
+        }
+
+        @Override
+        public void recallMessage(long id, String nickname) {
+            BaseMessage recallMessage = new BaseMessage();
+            recallMessage.setId(id);
+            mChatMessageList.remove(recallMessage);
+            TipMessage recallTipMessage = new TipMessage();
+            recallTipMessage.setContent(getResources().getString(R.string.mq_recall_msg));
+            mChatMessageList.add(recallTipMessage);
+            mChatMsgAdapter.notifyDataSetChanged();
         }
 
         @Override

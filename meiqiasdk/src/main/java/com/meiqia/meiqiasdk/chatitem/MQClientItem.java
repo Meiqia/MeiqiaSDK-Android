@@ -2,13 +2,16 @@ package com.meiqia.meiqiasdk.chatitem;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.model.BaseMessage;
+import com.meiqia.meiqiasdk.model.TextMessage;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
@@ -20,6 +23,7 @@ import com.meiqia.meiqiasdk.util.MQUtils;
 public class MQClientItem extends MQBaseBubbleItem {
     private ProgressBar sendingProgressBar;
     private ImageView sendState;
+    private TextView sensitiveWordTipTv;
 
     public MQClientItem(Context context, Callback callback) {
         super(context, callback);
@@ -36,6 +40,7 @@ public class MQClientItem extends MQBaseBubbleItem {
 
         sendingProgressBar = getViewById(R.id.progress_bar);
         sendState = getViewById(R.id.send_state);
+        sensitiveWordTipTv = getViewById(R.id.sensitive_words_tip_tv);
     }
 
     @Override
@@ -59,6 +64,7 @@ public class MQClientItem extends MQBaseBubbleItem {
             chatBox.setLayoutParams(lp);
         }
 
+        sensitiveWordTipTv.setVisibility(GONE);
         if (sendingProgressBar != null) {
             switch (baseMessage.getStatus()) {
                 case BaseMessage.STATE_SENDING:
@@ -68,6 +74,16 @@ public class MQClientItem extends MQBaseBubbleItem {
                 case BaseMessage.STATE_ARRIVE:
                     sendingProgressBar.setVisibility(View.GONE);
                     sendState.setVisibility(View.GONE);
+                    // 如果包含敏感词，就进行敏感词提示
+                    if (baseMessage instanceof TextMessage && ((TextMessage) baseMessage).isContainsSensitiveWords()) {
+                        sendingProgressBar.setVisibility(View.GONE);
+                        sendState.setVisibility(View.GONE);
+                        sensitiveWordTipTv.setVisibility(VISIBLE);
+                        TextMessage textMessage = (TextMessage) baseMessage;
+                        if (!TextUtils.isEmpty(textMessage.getReplaceContent())) {
+                            contentText.setText(textMessage.getReplaceContent());
+                        }
+                    }
                     break;
                 case BaseMessage.STATE_FAILED:
                     sendingProgressBar.setVisibility(View.GONE);
