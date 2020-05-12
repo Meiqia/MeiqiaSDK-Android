@@ -35,8 +35,9 @@ public class BaseMessage {
     public static final int TYPE_QUEUE_TIP = 8;
     public static final int TYPE_RICH_TEXT = 9;
     public static final int TYPE_HYBRID = 10;
+    public static final int TYPE_CLUE_CARD = 11;
 
-    public static final int MAX_TYPE = 11;
+    public static final int MAX_TYPE = 12; // 增加了类型，要同步改 MAX
     private long createdOn;
     private String agentNickname;
     private String status;

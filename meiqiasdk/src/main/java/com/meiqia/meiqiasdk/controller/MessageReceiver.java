@@ -40,6 +40,20 @@ public abstract class MessageReceiver extends BroadcastReceiver {
                 }
             }
         }
+        // 撤回消息
+        else if (MQMessageManager.ACTION_RECALL_MESSAGE.equals(action)) {
+            String nickname = intent.getStringExtra("nickname");
+            long id = intent.getLongExtra("id", -1);
+            recallMessage(id, nickname);
+        }
+
+        // 客服发送线索卡片
+        else if (MQMessageManager.ACTION_AGENT_SEND_CLUE_CARD.equals(action)) {
+            String clueCardMessageId = intent.getStringExtra("clueCardMessageId");
+            MQMessage message = messageManager.getAgentClueCardMessage(clueCardMessageId);
+            baseMessage = MQUtils.parseMQMessageToClueCardMessage(message);
+            receiveNewMsg(baseMessage);
+        }
 
         // 客服正在输入
         else if (MQMessageManager.ACTION_AGENT_INPUTTING.equals(action)) {
@@ -86,6 +100,8 @@ public abstract class MessageReceiver extends BroadcastReceiver {
     }
 
     public abstract void receiveNewMsg(BaseMessage message);
+
+    public abstract void recallMessage(long id, String nickname);
 
     public abstract void changeTitleToInputting();
 

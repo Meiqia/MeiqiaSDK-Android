@@ -227,7 +227,7 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
      * @param position
      */
     private void handleBindVoiceItem(final VoiceMessage voiceMessage, final int position) {
-        voiceContainerRl.setOnClickListener(new View.OnClickListener() {
+        voiceContainerRl.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleClickVoiceBtn(voiceMessage, position);
@@ -421,5 +421,7 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
         void onFileMessageDownloadFailure(FileMessage fileMessage, int code, String message);
 
         void onFileMessageExpired(FileMessage fileMessage);
+
+        void onClueCardMessageSendSuccess(BaseMessage message);
     }
 }
