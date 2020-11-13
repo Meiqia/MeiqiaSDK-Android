@@ -1,5 +1,7 @@
 package com.meiqia.meiqiasdk.activity;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +27,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
@@ -33,6 +37,7 @@ import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
 import com.meiqia.meiqiasdk.util.ErrorCode;
 import com.meiqia.meiqiasdk.util.HttpUtils;
+import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
 import org.json.JSONArray;
@@ -40,6 +45,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +62,8 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
     private static final String TYPE_TEXT = "text";
     private static final String TYPE_SINGLE_CHOICE = "single_choice";
     private static final String TYPE_MULTIPLE_CHOICE = "multiple_choice";
+    private static final String TYPE_NUMBER = "number";
+    private static final String TYPE_DATETIME = "datetime";
 
     private static final long AUTO_DISMISS_TOP_TIP_TIME = 2000; // TopTip 自动隐藏时间
 
@@ -140,6 +148,12 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
                         break;
                     case TYPE_MULTIPLE_CHOICE:
                         item = new MultipleChoiceItem(display_name, field_name, type, choices, optional, ignore_returned_customer);
+                        break;
+                    case TYPE_NUMBER:
+                        item = new NumberItem(display_name, field_name, type, optional, ignore_returned_customer);
+                        break;
+                    case TYPE_DATETIME:
+                        item = new DateItem(display_name, field_name, type, optional, ignore_returned_customer);
                         break;
                 }
                 if (item != null && item.getView() != null) {
@@ -632,6 +646,109 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             checkValid();
+        }
+    }
+
+    private class NumberItem extends BaseItem {
+
+        EditText contentEt;
+
+        NumberItem(String displayName, String fieldName, String type, boolean optional, boolean ignoreReturnCustomer) {
+            super(displayName, fieldName, type, optional, ignoreReturnCustomer);
+        }
+
+        @Override
+        void findViews() {
+            rootView = getLayoutInflater().inflate(R.layout.mq_item_form_type_text, null);
+            titleTv = (TextView) rootView.findViewById(R.id.title_tv);
+            contentEt = (EditText) rootView.findViewById(R.id.content_et);
+            contentEt.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+            contentEt.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    checkValid();
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+        }
+
+        @Override
+        public boolean isValid() {
+            return !(TextUtils.isEmpty(contentEt.getText().toString()));
+        }
+
+        @Override
+        public Object getValue() {
+            return contentEt.getText().toString();
+        }
+    }
+
+    private class DateItem extends BaseItem {
+
+        TextView contentTv;
+        String value;
+
+        DateItem(String displayName, String fieldName, String type, boolean optional, boolean ignoreReturnCustomer) {
+            super(displayName, fieldName, type, optional, ignoreReturnCustomer);
+        }
+
+        @Override
+        void findViews() {
+            rootView = getLayoutInflater().inflate(R.layout.mq_item_form_type_date, null);
+            titleTv = (TextView) rootView.findViewById(R.id.title_tv);
+            contentTv = (TextView) rootView.findViewById(R.id.content_tv);
+            contentTv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Calendar cal = Calendar.getInstance();
+                    new DatePickerDialog(MQCollectInfoActivity.this, new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, final int year, final int month, final int dayOfMonth) {
+                            Calendar cal = Calendar.getInstance();
+                            cal.set(Calendar.YEAR, year);
+                            cal.set(Calendar.MONTH, month);
+                            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                            String time = MQTimeUtils.partLongToTime(cal.getTimeInMillis());
+                            contentTv.setText(time);
+                            checkValid();
+                            new TimePickerDialog(MQCollectInfoActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                                @Override
+                                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.set(Calendar.YEAR, year);
+                                    cal.set(Calendar.MONTH, month);
+                                    cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                                    cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                    cal.set(Calendar.MINUTE, minute);
+                                    value = MQTimeUtils.partLongToServiceTime(cal.getTimeInMillis());
+                                    contentTv.setText(MQTimeUtils.partLongToTime(cal.getTimeInMillis()));
+                                    checkValid();
+                                }
+                            }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show();
+                        }
+                    }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
+                }
+            });
+        }
+
+        @Override
+        public boolean isValid() {
+            return !(TextUtils.isEmpty(value));
+        }
+
+        @Override
+        public Object getValue() {
+            return value;
         }
     }
 

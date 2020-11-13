@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.meiqia.core.MQManager;
 import com.meiqia.core.callback.SuccessCallback;
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.dialog.MQInputDialog;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
 import com.meiqia.meiqiasdk.model.ClueCardMessage;
 import com.meiqia.meiqiasdk.util.MQConfig;
@@ -167,20 +168,26 @@ public class MQClueCardItem extends MQBaseBubbleItem {
         }
     }
 
-    private void addInputEdit(final JSONObject item, int inputType) {
+    private void addInputEdit(final JSONObject item, final int inputType) {
         if (item != null) {
             View customView = LayoutInflater.from(getContext()).inflate(R.layout.mq_item_clue_card_input_edit, null);
             final TextView titleTv = customView.findViewById(R.id.mq_title_tv);
             final EditText editText = customView.findViewById(R.id.mq_input_et);
 
             final String name = item.optString("name");
-            String displayName = getName(name);
+            final String displayName = getName(name);
             String title = String.format(getResources().getString(R.string.mq_item_clue_card_input), displayName);
             titleTv.setText(title);
             editText.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getContext(), "suc", Toast.LENGTH_SHORT).show();
+                    new MQInputDialog(getContext(), displayName, editText.getText().toString(), "", inputType, new MQInputDialog.OnContentChangeListener() {
+                        @Override
+                        public void onContentChange(String content) {
+                            editText.setText(content);
+                            notifyDataSetChanged();
+                        }
+                    }).show();
                 }
             });
             editText.setInputType(inputType);
@@ -205,6 +212,7 @@ public class MQClueCardItem extends MQBaseBubbleItem {
                     }
                 }
             });
+            editText.setFocusable(false);
         }
     }
 

@@ -20,6 +20,7 @@ public class BaseMessage {
     public static final String TYPE_CONTENT_PHOTO = "photo";
     public static final String TYPE_CONTENT_VOICE = "audio";
     public static final String TYPE_CONTENT_FILE = "file";
+    public static final String TYPE_CONTENT_VIDEO = "video";
     public static final String TYPE_CONTENT_UNKNOWN = "unknown";
     public static final String TYPE_CONTENT_RICH_TEXT = "rich_text";
     public static final String TYPE_CONTENT_HYBRID = "hybrid";
@@ -36,8 +37,9 @@ public class BaseMessage {
     public static final int TYPE_RICH_TEXT = 9;
     public static final int TYPE_HYBRID = 10;
     public static final int TYPE_CLUE_CARD = 11;
+    public static final int TYPE_CONV_DIVIDER = 12;
 
-    public static final int MAX_TYPE = 12; // 增加了类型，要同步改 MAX
+    public static final int MAX_TYPE = 13; // 增加了类型，要同步改 MAX
     private long createdOn;
     private String agentNickname;
     private String status;

@@ -18,6 +18,8 @@
     <string name="mq_dialog_select_camera">CAMERA</string>
     <string name="mq_dialog_select_gallery">GALLERY</string>
     <string name="mq_dialog_select_title">Please select a picture source:</string>
+    <string name="mq_dialog_select_camera_video">RECORD</string>
+    <string name="mq_dialog_select_video_title">Please select a video source：</string>
     <string name="mq_title_leave_msg">Leave a message</string>
     <string name="mq_title_unknown_error">Unknown error occurred</string>
     <string name="mq_error_submit_form">Submitting the form failed, please try again later</string>
@@ -48,7 +50,7 @@
     <string name="mq_choose_ticket_category">Select categories</string>
     <string name="mq_back"></string>
     <string name="mq_contains_sensitive_words">!Contains sensitive words</string>
-
+    <string name="mq_error_video_size">Video file are not allowed to exceed 50MB</string>
 
     <string name="mq_evaluate_title">Are you satisfied with our services？</string>
     <string name="mq_evaluate_good">POSITIVE</string>

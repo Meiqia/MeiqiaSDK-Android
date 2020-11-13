@@ -55,9 +55,11 @@ import com.meiqia.meiqiasdk.model.HybridMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
+import com.meiqia.meiqiasdk.model.VideoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -114,6 +116,16 @@ public class MQUtils {
             ((PhotoMessage) baseMessage).setUrl(message.getMedia_url());
         } else if (MQMessage.TYPE_CONTENT_VOICE.equals(message.getContent_type())) {
             ((VoiceMessage) baseMessage).setUrl(message.getMedia_url());
+        } else if (MQMessage.TYPE_CONTENT_VIDEO.equals(message.getContent_type())) {
+            if (!TextUtils.isEmpty(message.getExtra())) {
+                try {
+                    JSONObject extraObj = new JSONObject(message.getExtra());
+                    ((VideoMessage) baseMessage).setThumbUrl(extraObj.optString("thumb_url"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            ((VideoMessage) baseMessage).setUrl(message.getMedia_url());
         } else if (MQMessage.TYPE_CONTENT_FILE.equals(message.getContent_type())) {
             FileMessage fileMessage = ((FileMessage) baseMessage);
             fileMessage.setUrl(message.getMedia_url());
@@ -207,6 +219,23 @@ public class MQUtils {
                 ((VoiceMessage) baseMessage).setUrl(message.getMedia_url());
             }
             baseMessage.setContent("[voice]");
+        } else if (MQMessage.TYPE_CONTENT_VIDEO.equals(message.getContent_type())) {
+            baseMessage = new VideoMessage(message.getMedia_url());
+            if (!TextUtils.isEmpty(message.getExtra())) {
+                try {
+                    JSONObject extraObj = new JSONObject(message.getExtra());
+                    ((VideoMessage) baseMessage).setThumbUrl(extraObj.optString("thumb_url"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            // message.getMedia_url() 可能是本地路径
+            if (isLocalPath(message.getMedia_url())) {
+                ((VideoMessage) baseMessage).setLocalPath(message.getMedia_url());
+            } else {
+                ((VideoMessage) baseMessage).setUrl(message.getMedia_url());
+            }
+            baseMessage.setContent("[video]");
         } else if (MQMessage.TYPE_CONTENT_FILE.equals(message.getContent_type())) {
             baseMessage = new FileMessage(message.getMedia_url());
             if (isLocalPath(message.getMedia_url())) {
@@ -223,9 +252,14 @@ public class MQUtils {
             JSONArray contentArray = new JSONArray();
             JSONObject contentObj = new JSONObject();
             try {
-                JSONObject extra = new JSONObject(message.getExtra());
                 contentObj.put("type", "rich_text");
-                contentObj.put("body", extra.opt("content"));
+                // 工单消息，富文本内容在 content
+                if (TextUtils.equals(message.getType(), MQMessage.TYPE_SDK)) {
+                    contentObj.put("body", message.getContent());
+                } else {
+                    JSONObject extra = new JSONObject(message.getExtra());
+                    contentObj.put("body", extra.opt("content"));
+                }
                 contentArray.put(contentObj);
             } catch (Exception ignore) {
 

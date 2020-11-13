@@ -16,6 +16,7 @@ import com.meiqia.meiqiasdk.imageloader.MQImageLoader;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.FileMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
+import com.meiqia.meiqiasdk.model.VideoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.util.MQAudioPlayerManager;
 import com.meiqia.meiqiasdk.util.MQConfig;
@@ -39,6 +40,7 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
     protected ImageView voiceAnimIv;
     protected View voiceContainerRl;
     protected MQChatFileItem chatFileItem;
+    protected MQChatVideoItem chatVideoItem;
     protected View unreadCircle;
     protected MQImageView usAvatar;
     protected RelativeLayout chatBox;
@@ -64,6 +66,7 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
         voiceAnimIv = getViewById(R.id.iv_voice_anim);
         voiceContainerRl = getViewById(R.id.rl_voice_container);
         chatFileItem = getViewById(R.id.file_container);
+        chatVideoItem = getViewById(R.id.video_container);
         usAvatar = getViewById(R.id.us_avatar_iv);
         chatBox = getViewById(R.id.chat_box);
     }
@@ -123,6 +126,7 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
         contentImage.setVisibility(View.GONE);
         voiceContainerRl.setVisibility(View.GONE);
         chatFileItem.setVisibility(View.GONE);
+        chatVideoItem.setVisibility(View.GONE);
         switch (baseMessage.getContentType()) {
             case BaseMessage.TYPE_CONTENT_TEXT:
                 contentText.setVisibility(View.VISIBLE);
@@ -135,6 +139,9 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
                 break;
             case BaseMessage.TYPE_CONTENT_FILE:
                 chatFileItem.setVisibility(View.VISIBLE);
+                break;
+            case BaseMessage.TYPE_CONTENT_VIDEO:
+                chatVideoItem.setVisibility(VISIBLE);
                 break;
             default:
                 contentText.setVisibility(View.VISIBLE);
@@ -194,6 +201,10 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
             case BaseMessage.TYPE_CONTENT_FILE:
                 handleBindFileItem((FileMessage) baseMessage);
                 break;
+            // 视频
+            case BaseMessage.TYPE_CONTENT_VIDEO:
+                handleBindVideoItem((VideoMessage) baseMessage);
+                break;
             // 默认文字消息处理
             default:
                 contentText.setText(getResources().getString(R.string.mq_unknown_msg_tip));
@@ -220,6 +231,10 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
         }
     }
 
+    private void handleBindVideoItem(VideoMessage videoMessage) {
+        chatVideoItem.setVideoMessage(videoMessage);
+    }
+
     /**
      * 处理绑定声音类型的数据item
      *
@@ -227,7 +242,7 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
      * @param position
      */
     private void handleBindVoiceItem(final VoiceMessage voiceMessage, final int position) {
-        voiceContainerRl.setOnClickListener(new OnClickListener() {
+        voiceContainerRl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleClickVoiceBtn(voiceMessage, position);
