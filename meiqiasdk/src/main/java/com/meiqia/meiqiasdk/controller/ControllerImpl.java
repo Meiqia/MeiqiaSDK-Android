@@ -20,6 +20,7 @@ import com.meiqia.meiqiasdk.callback.SimpleCallback;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
+import com.meiqia.meiqiasdk.model.VideoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
@@ -65,6 +66,9 @@ public class ControllerImpl implements MQController {
         } else if (BaseMessage.TYPE_CONTENT_VOICE.equals(message.getContentType())) {
             VoiceMessage voiceMessage = (VoiceMessage) message;
             MQManager.getInstance(context).sendMQVoiceMessage(voiceMessage.getLocalPath(), onMQMessageSendCallback);
+        } else if (BaseMessage.TYPE_CONTENT_VIDEO.equals(message.getContentType())) {
+            VideoMessage voiceMessage = (VideoMessage) message;
+            MQManager.getInstance(context).sendMQVideoMessage(voiceMessage.getLocalPath(), onMQMessageSendCallback);
         }
     }
 

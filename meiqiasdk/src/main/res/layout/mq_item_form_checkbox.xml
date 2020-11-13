@@ -7,5 +7,7 @@
     android:layout_alignParentRight="true"
     android:layout_centerVertical="true"
     android:button="@null"
+    android:textColor="@color/mq_chat_event_gray"
+    android:textSize="@dimen/mq_textSize_level1"
     android:drawableRight="@drawable/mq_selector_checkbox"
     tools:text="Mexico" />

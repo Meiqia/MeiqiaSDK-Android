@@ -186,6 +186,20 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/video_select_btn"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/video_select_iv"
+                        android:layout_width="@dimen/mq_size_level6"
+                        android:layout_height="@dimen/mq_size_level6"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/mq_selector_ic_video" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:id="@+id/mic_select_btn"
                     android:layout_width="48dp"
                     android:layout_height="match_parent">

@@ -2,6 +2,7 @@ package com.meiqia.meiqiasdk.chatitem;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.LeaveMessageCallback;
@@ -15,6 +16,7 @@ import com.meiqia.meiqiasdk.widget.MQBaseCustomCompositeView;
 public class MQNoAgentItem extends MQBaseCustomCompositeView {
 
     private LeaveMessageCallback mCallback;
+    private TextView contentTv;
 
     public MQNoAgentItem(Context context) {
         super(context);
@@ -27,6 +29,7 @@ public class MQNoAgentItem extends MQBaseCustomCompositeView {
 
     @Override
     protected void initView() {
+        contentTv = findViewById(R.id.content_tv);
     }
 
     @Override
@@ -36,6 +39,10 @@ public class MQNoAgentItem extends MQBaseCustomCompositeView {
 
     @Override
     protected void processLogic() {
+    }
+
+    public void setContent(String content) {
+        contentTv.setText(content);
     }
 
     @Override

@@ -50,7 +50,7 @@ public class MQTimeUtils {
                 long previousMsgTime = mcMessageList.get(i - 1).getCreatedOn();
                 long difTime = currentMsgTime - previousMsgTime;
                 // 如果时间前面是 BaseMessage.TYPE_TIME，不添加时间
-                if (difTime > TIME_INTERNAL_LIMIT && mcMessageList.get(i).getItemViewType() != BaseMessage.TYPE_TIME) {
+                if (difTime > TIME_INTERNAL_LIMIT && mcMessageList.get(i).getItemViewType() != BaseMessage.TYPE_TIME && mcMessageList.get(i).getItemViewType() != BaseMessage.TYPE_CONV_DIVIDER) {
                     // 添加TimeItem
                     BaseMessage timeItem = new BaseMessage();
                     timeItem.setItemViewType(BaseMessage.TYPE_TIME);
@@ -106,7 +106,7 @@ public class MQTimeUtils {
         if (null == time) return System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.CHINA);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date d;
+        java.util.Date d;
         try {
             d = sdf.parse(time);
             return d.getTime();
@@ -119,6 +119,19 @@ public class MQTimeUtils {
     public static String partLongToTime(long time) {
         Date curDates = new Date(time);
         SimpleDateFormat formatters = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+        return formatters.format(curDates);
+    }
+
+    public static String partLongToConvTime(long time) {
+        Date curDates = new Date(time);
+        SimpleDateFormat formatters = new SimpleDateFormat("MM/dd HH:mm:ss", Locale.getDefault());
+        return formatters.format(curDates);
+    }
+
+    public static String partLongToServiceTime(long time) {
+        Date curDates = new Date(time);
+        SimpleDateFormat formatters = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'.'SSSSSS", Locale.CHINA);
+        formatters.setTimeZone(TimeZone.getTimeZone("GMT"));
         return formatters.format(curDates);
     }
 
