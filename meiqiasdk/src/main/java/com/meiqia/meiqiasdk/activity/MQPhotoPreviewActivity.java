@@ -231,12 +231,13 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
 
         // 如果私有路径已经存在，就表示已保存
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            File externalFilesDir = getExternalFilesDir("mq");
+            File externalFilesDir = MQUtils.getImageDir(this);
             if (!externalFilesDir.exists()) {
                 externalFilesDir.mkdirs();
             }
             file = new File(externalFilesDir, fileName);
             if (file.exists()) {
+                MQUtils.copyToPictureAndroidQ(this, externalFilesDir.getAbsolutePath(), fileName);
                 MQUtils.showSafe(this, getString(R.string.mq_save_img_success_folder, externalFilesDir.getAbsolutePath()));
                 return;
             }
