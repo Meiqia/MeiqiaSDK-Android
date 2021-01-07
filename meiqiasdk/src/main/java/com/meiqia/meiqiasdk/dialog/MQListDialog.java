@@ -20,18 +20,18 @@ public class MQListDialog extends Dialog {
     private ListView mListview;
 
     public MQListDialog(Activity activity, @StringRes int titleResId, List<Map<String, String>> dataList, AdapterView.OnItemClickListener onItemClickListener) {
-        this(activity, activity.getString(titleResId), dataList, onItemClickListener);
+        this(activity, activity.getString(titleResId), dataList, onItemClickListener, true);
     }
 
-    public MQListDialog(Activity activity, String title, List<Map<String, String>> dataList, final AdapterView.OnItemClickListener onItemClickListener) {
+    public MQListDialog(Activity activity, String title, List<Map<String, String>> dataList, final AdapterView.OnItemClickListener onItemClickListener, boolean isCancelable) {
         super(activity, R.style.MQDialog);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         setContentView(R.layout.mq_dialog_ticket_categry);
         mTitleTv = (TextView) findViewById(R.id.tv_comfirm_title);
         mListview = (ListView) findViewById(R.id.list_lv);
 
-        setCanceledOnTouchOutside(true);
-        setCancelable(true);
+        setCanceledOnTouchOutside(isCancelable);
+        setCancelable(isCancelable);
 
         mTitleTv.setText(title);
 

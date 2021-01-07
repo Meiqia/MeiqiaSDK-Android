@@ -348,8 +348,8 @@ public class ControllerImpl implements MQController {
     }
 
     @Override
-    public void evaluateRobotAnswer(long messageId, long questionId, int useful, final OnEvaluateRobotAnswerCallback onEvaluateRobotAnswerCallback) {
-        MQManager.getInstance(context).evaluateRobotAnswer(messageId, questionId, useful, new com.meiqia.core.callback.OnEvaluateRobotAnswerCallback() {
+    public void evaluateRobotAnswer(long messageId, String content, long questionId, int useful, final OnEvaluateRobotAnswerCallback onEvaluateRobotAnswerCallback) {
+        MQManager.getInstance(context).evaluateRobotAnswer(messageId, content, questionId, useful, new com.meiqia.core.callback.OnEvaluateRobotAnswerCallback() {
             @Override
             public void onFailure(int code, String message) {
                 if (onEvaluateRobotAnswerCallback != null) {
