@@ -110,6 +110,7 @@
     <string name="mq_address">Address</string>
     <string name="mq_weibo">Weibo</string>
     <string name="mq_comment">Comment</string>
+    <string name="mq_invalid_content">Please enter the correct format</string>
 
     <string name="mq_useless">Unresolved</string>
     <string name="mq_useful">Resolved</string>

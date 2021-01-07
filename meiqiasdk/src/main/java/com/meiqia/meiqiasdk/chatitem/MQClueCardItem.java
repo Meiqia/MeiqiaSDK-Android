@@ -217,44 +217,7 @@ public class MQClueCardItem extends MQBaseBubbleItem {
     }
 
     private String getName(String name) {
-        switch (name) {
-            case "name":
-                name = getContext().getResources().getString(R.string.mq_name);
-                break;
-            case "contact":
-                name = getContext().getResources().getString(R.string.mq_contact);
-                break;
-            case "gender":
-                name = getContext().getResources().getString(R.string.mq_gender);
-                break;
-            case "age":
-                name = getContext().getResources().getString(R.string.mq_age);
-                break;
-            case "tel":
-                name = getContext().getResources().getString(R.string.mq_phone);
-                break;
-            case "qq":
-                name = getContext().getResources().getString(R.string.mq_qq);
-                break;
-            case "weixin":
-                name = getContext().getResources().getString(R.string.mq_wechat);
-                break;
-            case "weibo":
-                name = getContext().getResources().getString(R.string.mq_weibo);
-                break;
-            case "address":
-                name = getContext().getResources().getString(R.string.mq_address);
-                break;
-            case "email":
-                name = getContext().getResources().getString(R.string.mq_email);
-                break;
-            case "comment":
-                name = getContext().getResources().getString(R.string.mq_comment);
-                break;
-            default:
-                break;
-        }
-        return name;
+        return MQUtils.keyToName(name, getContext());
     }
 
     private void addRadioGroup(final JSONObject item) {

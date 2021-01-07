@@ -478,7 +478,7 @@ public class MQUtils {
         normal = MQUtils.tintDrawable(compoundButton.getContext(), normal, R.color.mq_form_et_bg_normal);
         Drawable pressed = compoundButton.getResources().getDrawable(pressedResId);
         pressed = MQUtils.tintDrawable(compoundButton.getContext(), pressed, R.color.mq_indicator_selected);
-        compoundButton.setCompoundDrawablesWithIntrinsicBounds(null, null, getCheckedSelectorDrawable(normal, pressed), null);
+        compoundButton.setCompoundDrawablesWithIntrinsicBounds(getCheckedSelectorDrawable(normal, pressed), null, null, null);
     }
 
     /**
@@ -1294,4 +1294,44 @@ public class MQUtils {
             {"", "*/*"}
     };
 
+    public static String keyToName(String name, Context context) {
+        switch (name) {
+            case "name":
+                name = context.getResources().getString(R.string.mq_name);
+                break;
+            case "contact":
+                name = context.getResources().getString(R.string.mq_contact);
+                break;
+            case "gender":
+                name = context.getResources().getString(R.string.mq_gender);
+                break;
+            case "age":
+                name = context.getResources().getString(R.string.mq_age);
+                break;
+            case "tel":
+                name = context.getResources().getString(R.string.mq_phone);
+                break;
+            case "qq":
+                name = context.getResources().getString(R.string.mq_qq);
+                break;
+            case "weixin":
+                name = context.getResources().getString(R.string.mq_wechat);
+                break;
+            case "weibo":
+                name = context.getResources().getString(R.string.mq_weibo);
+                break;
+            case "address":
+                name = context.getResources().getString(R.string.mq_address);
+                break;
+            case "email":
+                name = context.getResources().getString(R.string.mq_email);
+                break;
+            case "comment":
+                name = context.getResources().getString(R.string.mq_comment);
+                break;
+            default:
+                break;
+        }
+        return name;
+    }
 }

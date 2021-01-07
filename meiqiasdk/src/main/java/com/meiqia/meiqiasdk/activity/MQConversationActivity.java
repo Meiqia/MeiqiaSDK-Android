@@ -47,7 +47,9 @@ import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.MQMessageManager;
+import com.meiqia.core.bean.MQMessage;
 import com.meiqia.core.callback.OnClientPositionInQueueCallback;
+import com.meiqia.core.callback.OnGetMessageListCallback;
 import com.meiqia.core.callback.SuccessCallback;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.LeaveMessageCallback;
@@ -112,6 +114,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 1;
     private static final int RECORD_AUDIO_REQUEST_CODE = 2;
     private static final int WRITE_EXTERNAL_STORAGE_AND_CAMERA_REQUEST_CODE = 3;
+    private static final int WRITE_EXTERNAL_STORAGE_AND_VIDEO_REQUEST_CODE = 4;
 
     private static final int WHAT_GET_CLIENT_POSITION_IN_QUEUE = 1;
 
@@ -1002,10 +1005,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         checkIfNeedUpdateClient(new OnFinishCallback() {
             @Override
             public void onFinish() {
-                // 先从服务器拉取最新消息, 不用关心结果，有新消息会保存到本地数据库，加载消息的时候会取出来
-                mController.getMessageFromService(System.currentTimeMillis(), MESSAGE_PAGE_COUNT, new OnGetMessageListCallBack() {
+                // 先通过获取未读接口，从服务器拉取最新消息, 不用关心结果，有新消息会保存到本地数据库，加载消息的时候会取出来
+                MQManager.getInstance(MQConversationActivity.this).getUnreadMessages(new OnGetMessageListCallback() {
                     @Override
-                    public void onSuccess(List<BaseMessage> messageList) {
+                    public void onSuccess(List<MQMessage> messageList) {
                         getMessageDataFromDatabaseAndLoad();
                     }
 
@@ -1202,7 +1205,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 return;
             }
 
-            if (checkStorageAndCameraPermission()) {
+            if (checkStorageAndCameraPermission(WRITE_EXTERNAL_STORAGE_AND_CAMERA_REQUEST_CODE)) {
                 // 打开相机
                 hideEmojiSelectIndicator();
                 hideVoiceSelectIndicator();
@@ -1212,10 +1215,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             if (!checkSendable()) {
                 return;
             }
-
-            hideEmojiSelectIndicator();
-            hideVoiceSelectIndicator();
-            popVideoSelectDialog();
+            if (checkStorageAndCameraPermission(WRITE_EXTERNAL_STORAGE_AND_VIDEO_REQUEST_CODE)) {
+                hideEmojiSelectIndicator();
+                hideVoiceSelectIndicator();
+                popVideoSelectDialog();
+            }
         } else if (id == R.id.mic_select_btn) {
             if (!checkSendable()) {
                 return;
@@ -1303,12 +1307,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      *
      * @return true, 已经获取权限;false,没有权限,尝试获取
      */
-    private boolean checkStorageAndCameraPermission() {
+    private boolean checkStorageAndCameraPermission(int requestCode) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             //申请WRITE_EXTERNAL_STORAGE权限
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,},
-                    WRITE_EXTERNAL_STORAGE_AND_CAMERA_REQUEST_CODE);
+                    requestCode);
             return false;
         } else {
             return true;
@@ -1530,11 +1534,16 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 }
                 break;
             }
+            case WRITE_EXTERNAL_STORAGE_AND_VIDEO_REQUEST_CODE:
             case WRITE_EXTERNAL_STORAGE_AND_CAMERA_REQUEST_CODE: {
                 if (grantResults.length > 0) {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED
                             && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                        mCameraSelectBtn.performClick();
+                        if (requestCode == WRITE_EXTERNAL_STORAGE_AND_CAMERA_REQUEST_CODE) {
+                            mCameraSelectBtn.performClick();
+                        } else if (requestCode == WRITE_EXTERNAL_STORAGE_AND_VIDEO_REQUEST_CODE) {
+                            mVideoSelectBtn.performClick();
+                        }
                         // 有存储权限
                     } else {
                         MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_camera_or_storage_no_permission);
@@ -2047,7 +2056,14 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     @Override
     public void onEvaluateRobotAnswer(final RobotMessage robotMessage, final int useful) {
-        mController.evaluateRobotAnswer(robotMessage.getId(), robotMessage.getQuestionId(), useful, new OnEvaluateRobotAnswerCallback() {
+        String clientMsg = "";
+        try {
+            JSONObject extraObj = new JSONObject(robotMessage.getExtra());
+            clientMsg = extraObj.optString("client_msg");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mController.evaluateRobotAnswer(robotMessage.getId(), clientMsg, robotMessage.getQuestionId(), useful, new OnEvaluateRobotAnswerCallback() {
             @Override
             public void onFailure(int code, String message) {
                 MQUtils.show(MQConversationActivity.this, R.string.mq_evaluate_failure);

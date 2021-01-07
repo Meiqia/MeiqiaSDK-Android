@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.bean.MQEnterpriseConfig;
@@ -29,9 +30,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -123,10 +127,13 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
      * 弹出工单分类的对话框
      */
     private void popTicketCategoriesChooseDialog() {
+        if (!getEnterpriseConfig().ticketConfig.isCategory()) {
+            return;
+        }
         MQManager.getInstance(this).getTicketCategories(new OnTicketCategoriesCallback() {
             @Override
             public void onSuccess(JSONArray ticketCategories) {
-                if (ticketCategories == null || isPause ) {
+                if (ticketCategories == null || isPause) {
                     return;
                 }
 
@@ -146,13 +153,13 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
                     return;
                 }
 
-                mCategoryDialog = new MQListDialog(MQMessageFormActivity.this, R.string.mq_choose_ticket_category, mDataList, new AdapterView.OnItemClickListener() {
+                mCategoryDialog = new MQListDialog(MQMessageFormActivity.this, getResources().getString(R.string.mq_choose_ticket_category), mDataList, new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         Map<String, String> data = mDataList.get(position);
                         mCurrentCategoryId = data.get("id");
                     }
-                });
+                }, false);
                 try {
                     mCategoryDialog.show();
                 } catch (Exception e) {
@@ -204,65 +211,33 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
         mMessageFormInputLayouts.clear();
 
         MessageFormInputModel messageMfim = new MessageFormInputModel();
-        messageMfim.tip = getString(R.string.mq_leave_msg);
+        messageMfim.name = TextUtils.isEmpty(getEnterpriseConfig().ticketConfig.getContent_title()) ? getString(R.string.mq_leave_msg) : getEnterpriseConfig().ticketConfig.getContent_title();
         messageMfim.key = "content";
         messageMfim.required = true;
-        messageMfim.hint = getString(R.string.mq_leave_msg_hint);
+        if (TextUtils.equals(getEnterpriseConfig().ticketConfig.getContent_fill_type(), "placeholder")) {
+            messageMfim.placeholder = getEnterpriseConfig().ticketConfig.getContent_placeholder();
+        } else {
+            messageMfim.preFill = getEnterpriseConfig().ticketConfig.getDefaultTemplateContent();
+        }
         messageMfim.inputType = InputType.TYPE_CLASS_TEXT;
         messageMfim.singleLine = false;
         mMessageFormInputModels.add(messageMfim);
 
-        // 不为空表示已经获取到了配置,根据配置来显示
-        if (!TextUtils.isEmpty(getEnterpriseConfig().ticketConfig.getQq())) {
-            if (MQEnterpriseConfig.OPEN.equals(getEnterpriseConfig().ticketConfig.getName())) {
-                MessageFormInputModel nameMfim = new MessageFormInputModel();
-                nameMfim.tip = getString(R.string.mq_name);
-                nameMfim.key = "name";
-                nameMfim.required = false;
-                nameMfim.hint = getString(R.string.mq_name_hint);
-                nameMfim.inputType = InputType.TYPE_CLASS_TEXT;
-                mMessageFormInputModels.add(nameMfim);
+        try {
+            JSONArray fields = getEnterpriseConfig().ticketConfig.getCustom_fields();
+            for (int i = 0; i < fields.length(); i++) {
+                JSONObject field = fields.getJSONObject(i);
+                MessageFormInputModel inputModel = new MessageFormInputModel();
+                inputModel.name = field.optString("name");
+                inputModel.key = field.optString("name");
+                inputModel.required = field.optBoolean("required");
+                inputModel.placeholder = field.optString("placeholder");
+                inputModel.type = field.optString("type");
+                inputModel.metainfo = field.optJSONArray("metainfo");
+                mMessageFormInputModels.add(inputModel);
             }
-
-            if (MQEnterpriseConfig.OPEN.equals(getEnterpriseConfig().ticketConfig.getTel())) {
-                MessageFormInputModel phoneMfim = new MessageFormInputModel();
-                phoneMfim.tip = getString(R.string.mq_phone);
-                phoneMfim.key = "tel";
-                phoneMfim.required = false;
-                phoneMfim.hint = getString(R.string.mq_phone_hint);
-                phoneMfim.inputType = InputType.TYPE_CLASS_PHONE;
-                mMessageFormInputModels.add(phoneMfim);
-            }
-
-            if (MQEnterpriseConfig.OPEN.equals(getEnterpriseConfig().ticketConfig.getEmail())) {
-                MessageFormInputModel emailMfim = new MessageFormInputModel();
-                emailMfim.tip = getString(R.string.mq_email);
-                emailMfim.key = "email";
-                emailMfim.required = false;
-                emailMfim.hint = getString(R.string.mq_email_hint);
-                emailMfim.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
-                mMessageFormInputModels.add(emailMfim);
-            }
-
-            if (MQEnterpriseConfig.OPEN.equals(getEnterpriseConfig().ticketConfig.getWechat())) {
-                MessageFormInputModel wechatMfim = new MessageFormInputModel();
-                wechatMfim.tip = getString(R.string.mq_wechat);
-                wechatMfim.key = "weixin";
-                wechatMfim.required = false;
-                wechatMfim.hint = getString(R.string.mq_wechat_hint);
-                wechatMfim.inputType = InputType.TYPE_CLASS_TEXT;
-                mMessageFormInputModels.add(wechatMfim);
-            }
-
-            if (MQEnterpriseConfig.OPEN.equals(getEnterpriseConfig().ticketConfig.getQq())) {
-                MessageFormInputModel qqMfim = new MessageFormInputModel();
-                qqMfim.tip = getString(R.string.mq_qq);
-                qqMfim.key = "qq";
-                qqMfim.required = false;
-                qqMfim.hint = getString(R.string.mq_qq_hint);
-                qqMfim.inputType = InputType.TYPE_CLASS_NUMBER;
-                mMessageFormInputModels.add(qqMfim);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         for (MessageFormInputModel messageFormInputModel : mMessageFormInputModels) {
@@ -286,36 +261,47 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
     }
 
     private void submit() {
-        String content = mMessageFormInputLayouts.get(0).getText();
+        String content = mMessageFormInputLayouts.get(0).getValue(); // 第一个位置是留言内容
         if (TextUtils.isEmpty(content)) {
             MQUtils.show(this, getString(R.string.mq_param_not_allow_empty, getString(R.string.mq_leave_msg)));
             return;
         }
 
-        // isNeedAllFilled : false,需要至少有一个或者多个填写; true,需要全部填写
-        boolean isNeedAllFilled = !MQEnterpriseConfig.SINGLE.equals(getEnterpriseConfig().ticketConfig.getContactRule());
-        Map<String, String> formInputModelMap = new HashMap();
+        Map<String, String> formInputModelMap = new HashMap<>();
+        Set<String> objKeySet = new HashSet<>(); // 保存 value 是 obj 的所有 key
         int len = mMessageFormInputModels.size();
         MessageFormInputModel messageFormInputModel;
-        boolean isAllTemp = true; // 是否都被填写
         for (int i = 1; i < len; i++) {
             messageFormInputModel = mMessageFormInputModels.get(i);
-            String value = mMessageFormInputLayouts.get(i).getText();
-            if (!TextUtils.isEmpty(value)) {
-                isAllTemp = false;
-            }
-            if (TextUtils.isEmpty(value) && isNeedAllFilled) {
-                MQUtils.show(this, getString(R.string.mq_param_not_allow_empty, messageFormInputModel.tip));
+            String value = mMessageFormInputLayouts.get(i).getValue();
+            String key = mMessageFormInputLayouts.get(i).getKey();
+            String type = mMessageFormInputLayouts.get(i).getType();
+            if (messageFormInputModel.required && TextUtils.isEmpty(value)) {
+                MQUtils.show(this, getString(R.string.mq_param_not_allow_empty, messageFormInputModel.name));
                 return;
             }
-            if (TextUtils.isEmpty(value)) {
-                continue;
+
+            // 校验格式
+            if (TextUtils.equals(key, "qq") && !MQUtils.isQQ(value) && messageFormInputModel.required) {
+                Toast.makeText(this, mMessageFormInputLayouts.get(i).getName() + " " + getResources().getString(R.string.mq_invalid_content), Toast.LENGTH_SHORT).show();
+                return;
+            } else if (TextUtils.equals(key, "tel") && !MQUtils.isPhone(value) && messageFormInputModel.required) {
+                Toast.makeText(this, mMessageFormInputLayouts.get(i).getName() + " " + getResources().getString(R.string.mq_invalid_content), Toast.LENGTH_SHORT).show();
+                return;
+            } else if (TextUtils.equals(key, "email") && !MQUtils.isEmailValid(value) && messageFormInputModel.required) {
+                Toast.makeText(this, mMessageFormInputLayouts.get(i).getName() + " " + getResources().getString(R.string.mq_invalid_content), Toast.LENGTH_SHORT).show();
+                return;
             }
-            formInputModelMap.put(messageFormInputModel.key, value);
+
+            if (!TextUtils.isEmpty(value)) {
+                formInputModelMap.put(key, value);
+                if (TextUtils.equals(type, "check") || TextUtils.equals(type, "checkbox")) {
+                    objKeySet.add(key);
+                }
+            }
         }
-        if (!isNeedAllFilled && isAllTemp) {
-            MQUtils.show(this, getString(R.string.mq_at_least_one_contact));
-            return;
+        if (objKeySet.size() != 0) {
+            formInputModelMap.put("obj_key_array", Arrays.toString(objKeySet.toArray())); // 标记哪些 key 是 Object
         }
 
         final long submitTimeMillis = System.currentTimeMillis();
