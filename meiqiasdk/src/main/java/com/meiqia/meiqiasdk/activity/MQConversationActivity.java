@@ -893,38 +893,43 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 }
 
                 @Override
-                public void onFailure(int code, String message) {
-                    mIsAllocatingAgent = false;
+                public void onFailure(final int code, final String message) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mIsAllocatingAgent = false;
 
-                    if (ErrorCode.NET_NOT_WORK == code) {
-                        changeTitleToNetErrorState();
-                    } else if (ErrorCode.NO_AGENT_ONLINE == code) {
-                        if (isForceRedirectHuman) {
-                            setCurrentAgent(mCurrentAgent);
-                            addNoAgentLeaveMsg(getResources().getString(R.string.mq_no_agent_leave_msg_tip));
-                        } else {
-                            setCurrentAgent(null);
-                            // 没有分配到客服，也根据设置是否上传顾客信息
-                            setOrUpdateClientInfo();
+                            if (ErrorCode.NET_NOT_WORK == code) {
+                                changeTitleToNetErrorState();
+                            } else if (ErrorCode.NO_AGENT_ONLINE == code) {
+                                if (isForceRedirectHuman) {
+                                    setCurrentAgent(mCurrentAgent);
+                                    addNoAgentLeaveMsg(getResources().getString(R.string.mq_no_agent_leave_msg_tip));
+                                } else {
+                                    setCurrentAgent(null);
+                                    // 没有分配到客服，也根据设置是否上传顾客信息
+                                    setOrUpdateClientInfo();
+                                }
+                            } else if (ErrorCode.BLACKLIST == code) {
+                                setCurrentAgent(null);
+                                isBlackState = true;
+                            } else if (ErrorCode.CANCEL == code) {
+                                // 请求取消
+                            } else {
+                                changeTitleToUnknownErrorState();
+                                Toast.makeText(MQConversationActivity.this, "code = " + code + "\n" + "message = " + message, Toast.LENGTH_SHORT).show();
+                            }
+                            // 如果没有加载数据，则加载数据
+                            if (!mHasLoadData) {
+                                getMessageDataFromDatabaseAndLoad();
+                            }
+                            if (ErrorCode.NO_AGENT_ONLINE == code) {
+                                // 发送待发送的消息
+                                sendDelayMessages();
+                            }
+                            isRequestOnlineLoading = false;
                         }
-                    } else if (ErrorCode.BLACKLIST == code) {
-                        setCurrentAgent(null);
-                        isBlackState = true;
-                    } else if (ErrorCode.CANCEL == code) {
-                        // 请求取消
-                    } else {
-                        changeTitleToUnknownErrorState();
-                        Toast.makeText(MQConversationActivity.this, "code = " + code + "\n" + "message = " + message, Toast.LENGTH_SHORT).show();
-                    }
-                    // 如果没有加载数据，则加载数据
-                    if (!mHasLoadData) {
-                        getMessageDataFromDatabaseAndLoad();
-                    }
-                    if (ErrorCode.NO_AGENT_ONLINE == code) {
-                        // 发送待发送的消息
-                        sendDelayMessages();
-                    }
-                    isRequestOnlineLoading = false;
+                    });
                 }
             });
         } else {
@@ -2391,6 +2396,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
             // 保存最后一条消息时间
             mController.saveConversationLastMessageTime(baseMessage.getCreatedOn());
+            // 客服的消息标记已读
+            if (baseMessage.getItemViewType() == BaseMessage.TYPE_AGENT) {
+                mController.markMessageRead(baseMessage.getId());
+            }
         }
 
     }

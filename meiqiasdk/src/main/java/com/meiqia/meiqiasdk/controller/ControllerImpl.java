@@ -241,6 +241,11 @@ public class ControllerImpl implements MQController {
     }
 
     @Override
+    public void markMessageRead(long messageId) {
+        MQManager.getInstance(context).markMessageRead(messageId);
+    }
+
+    @Override
     public void saveConversationOnStopTime(long stopTime) {
         MQManager.getInstance(context).saveConversationOnStopTime(stopTime);
     }
