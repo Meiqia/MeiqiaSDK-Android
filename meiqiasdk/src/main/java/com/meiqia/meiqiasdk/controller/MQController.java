@@ -111,6 +111,8 @@ public interface MQController {
 
     void updateMessage(long messageId, boolean isRead);
 
+    void markMessageRead(long messageId);
+
     /**
      * 保存聊天界面不可见时的最后一条消息的时间
      *
