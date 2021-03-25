@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="4dp">
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:alpha="0.7"
+        android:layout_weight="1"
+        android:background="@color/mq_chat_event_gray" />
+
+    <View
+        android:layout_width="4dp"
+        android:layout_height="4dp"
+        android:layout_margin="4dp"
+        android:alpha="0.7"
+        android:background="@drawable/mq_shape_gray_dot" />
+
+    <View
+        android:layout_width="4dp"
+        android:layout_height="4dp"
+        android:layout_margin="4dp"
+        android:alpha="0.7"
+        android:background="@drawable/mq_shape_gray_dot" />
+
+    <View
+        android:layout_width="4dp"
+        android:layout_height="4dp"
+        android:layout_margin="4dp"
+        android:alpha="0.7"
+        android:background="@drawable/mq_shape_gray_dot" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_weight="1"
+        android:alpha="0.7"
+        android:background="@color/mq_chat_event_gray" />
+
+</LinearLayout>
+

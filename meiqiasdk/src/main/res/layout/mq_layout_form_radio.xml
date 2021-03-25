@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tip_tv"
+        style="@style/MQWrapWrap"
+        android:layout_marginBottom="@dimen/mq_size_level1"
+        android:layout_marginRight="@dimen/mq_size_level1"
+        android:layout_marginTop="@dimen/mq_size_level4"
+        android:textColor="@color/mq_form_tip_textColor"
+        android:textSize="@dimen/mq_textSize_level1"
+        tools:text="@string/mq_leave_msg" />
+
+    <RadioGroup
+        android:id="@+id/radio_group"
+        style="@style/MQMatchWrap.Vertical">
+
+    </RadioGroup>
+
+</LinearLayout>

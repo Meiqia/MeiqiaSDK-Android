@@ -16,6 +16,8 @@ import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
+import org.json.JSONObject;
+
 /**
  * OnePiece
  * Created by xukq on 6/24/16.
@@ -127,7 +129,14 @@ public class MQWebViewActivity extends Activity implements View.OnClickListener 
     }
 
     private void evaluate(int useful) {
-        MQConfig.getController(this).evaluateRobotAnswer(sRobotMessage.getId(), sRobotMessage.getQuestionId(), useful, new OnEvaluateRobotAnswerCallback() {
+        String clientMsg = "";
+        try {
+            JSONObject extraObj = new JSONObject(sRobotMessage.getExtra());
+            clientMsg = extraObj.optString("client_msg");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        MQConfig.getController(this).evaluateRobotAnswer(sRobotMessage.getId(), clientMsg, sRobotMessage.getQuestionId(), useful, new OnEvaluateRobotAnswerCallback() {
             @Override
             public void onFailure(int code, String message) {
                 MQUtils.show(MQWebViewActivity.this, R.string.mq_evaluate_failure);

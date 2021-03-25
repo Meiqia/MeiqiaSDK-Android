@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -46,7 +47,9 @@ import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.MQMessageManager;
+import com.meiqia.core.bean.MQMessage;
 import com.meiqia.core.callback.OnClientPositionInQueueCallback;
+import com.meiqia.core.callback.OnGetMessageListCallback;
 import com.meiqia.core.callback.SuccessCallback;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.LeaveMessageCallback;
@@ -61,11 +64,13 @@ import com.meiqia.meiqiasdk.chatitem.MQRobotItem;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
 import com.meiqia.meiqiasdk.dialog.MQEvaluateDialog;
+import com.meiqia.meiqiasdk.dialog.MQListDialog;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.AgentChangeMessage;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.EvaluateMessage;
 import com.meiqia.meiqiasdk.model.FileMessage;
+import com.meiqia.meiqiasdk.model.HybridMessage;
 import com.meiqia.meiqiasdk.model.InitiativeRedirectMessage;
 import com.meiqia.meiqiasdk.model.LeaveTipMessage;
 import com.meiqia.meiqiasdk.model.NoAgentLeaveMessage;
@@ -74,6 +79,7 @@ import com.meiqia.meiqiasdk.model.TipMessage;
 import com.meiqia.meiqiasdk.model.RedirectQueueMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
+import com.meiqia.meiqiasdk.model.VideoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.util.ErrorCode;
 import com.meiqia.meiqiasdk.util.MQAudioPlayerManager;
@@ -86,13 +92,20 @@ import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQCustomKeyboardLayout;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class MQConversationActivity extends Activity implements View.OnClickListener, MQEvaluateDialog.Callback, MQCustomKeyboardLayout.Callback, View.OnTouchListener, MQRobotItem.Callback, LeaveMessageCallback, MQInitiativeRedirectItem.Callback {
     private static final String TAG = MQConversationActivity.class.getSimpleName();
@@ -101,6 +114,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 1;
     private static final int RECORD_AUDIO_REQUEST_CODE = 2;
     private static final int WRITE_EXTERNAL_STORAGE_AND_CAMERA_REQUEST_CODE = 3;
+    private static final int WRITE_EXTERNAL_STORAGE_AND_VIDEO_REQUEST_CODE = 4;
 
     private static final int WHAT_GET_CLIENT_POSITION_IN_QUEUE = 1;
 
@@ -113,6 +127,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     public static final int REQUEST_CODE_CAMERA = 0;
     public static final int REQUEST_CODE_PHOTO = 1;
+    public static final int REQUEST_CODE_VIDEO = 2;
+    public static final int REQUEST_CODE_CHOOSE_VIDEO = 3;
     private static int MESSAGE_PAGE_COUNT = 30; //消息每页加载数量
     private static final long AUTO_DISMISS_TOP_TIP_TIME = 2000; // TopTip 自动隐藏时间
 
@@ -132,6 +148,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private View mEmojiSelectBtn;
     private View mPhotoSelectBtn;
     private View mCameraSelectBtn;
+    private View mVideoSelectBtn;
     private View mVoiceBtn;
     private View mEvaluateBtn;
     private ProgressBar mLoadProgressBar;
@@ -163,6 +180,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private MQEvaluateDialog mEvaluateDialog;
     private String mCameraPicPath;
     private Uri mCameraPicUri;
+    private String mVideoPath;
+    private Uri mVideoUri;
 
     private String mConversationId;
 
@@ -178,7 +197,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private boolean isAddLeaveTip;
 
     private boolean isNeedDelayOnline;
-    private boolean hasSetClientOnline = false; // 设置 online 之后，发消息的时候才检测 socket 状态
+    private boolean isRequestOnlineLoading = false;
     private List<BaseMessage> delaySendList = new ArrayList<>();
     private BaseMessage entWelcomeMsg; // 分配成功后要删除
 
@@ -365,7 +384,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mConversationListView.setAdapter(mChatMsgAdapter);
 
         mVoiceBtn.setVisibility(MQConfig.isVoiceSwitchOpen ? View.VISIBLE : View.GONE);
-        mEvaluateBtn.setVisibility(MQConfig.isEvaluateSwitchOpen ? View.VISIBLE : View.GONE);
+        mEvaluateBtn.setVisibility(View.GONE); // 无论是否配置是否显示，这里都隐藏，然后在分配对话成功后，再根据配置是否显示
+        mVideoSelectBtn.setVisibility(mController.getEnterpriseConfig().isVideoMsgOpen ? View.VISIBLE : View.GONE);
 
         mCustomKeyboardLayout.init(this, mInputEt, this);
         isDestroy = false;
@@ -386,6 +406,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mSendTextBtn = (ImageButton) findViewById(R.id.send_text_btn);
         mPhotoSelectBtn = findViewById(R.id.photo_select_btn);
         mCameraSelectBtn = findViewById(R.id.camera_select_btn);
+        mVideoSelectBtn = findViewById(R.id.video_select_btn);
         mVoiceBtn = findViewById(R.id.mic_select_btn);
         mEvaluateBtn = findViewById(R.id.evaluate_select_btn);
         mLoadProgressBar = (ProgressBar) findViewById(R.id.progressbar);
@@ -403,6 +424,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mSendTextBtn.setOnClickListener(this);
         mPhotoSelectBtn.setOnClickListener(this);
         mCameraSelectBtn.setOnClickListener(this);
+        mVideoSelectBtn.setOnClickListener(this);
         mVoiceBtn.setOnClickListener(this);
         mEvaluateBtn.setOnClickListener(this);
         // 绑定 EditText 的监听器
@@ -680,6 +702,32 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     /**
+     * 给列表添加不同对话的分隔线
+     *
+     * @param mChatMessageList
+     */
+    private void refreshConversationDivider(List<BaseMessage> mChatMessageList) {
+        if (mChatMessageList.size() > 1) {
+            Iterator<BaseMessage> messageIterator = mChatMessageList.iterator();
+            while (messageIterator.hasNext()) {
+                BaseMessage baseMessage = messageIterator.next();
+                if (baseMessage.getItemViewType() == BaseMessage.TYPE_CONV_DIVIDER) {
+                    messageIterator.remove();
+                }
+            }
+            for (int i = mChatMessageList.size() - 1; i > 0; i--) {
+                BaseMessage preMessage = mChatMessageList.get(i);
+                BaseMessage message = mChatMessageList.get(i - 1);
+                if (preMessage.getConversationId() != message.getConversationId() && preMessage.getConversationId() != 0 && message.getConversationId() != 0) {
+                    BaseMessage convDividerMessage = new BaseMessage();
+                    convDividerMessage.setItemViewType(BaseMessage.TYPE_CONV_DIVIDER);
+                    mChatMessageList.add(i, convDividerMessage);
+                }
+            }
+        }
+    }
+
+    /**
      * 从服务器获取更多消息并加载
      */
     private void loadMoreDataFromService() {
@@ -779,6 +827,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * @param isForceRedirectHuman 是否强制转人工
      */
     private void setClientOnline(final boolean isForceRedirectHuman) {
+        if (isRequestOnlineLoading) {
+            return;
+        }
+
+        isRequestOnlineLoading = true;
         if (isForceRedirectHuman || (!isForceRedirectHuman && mCurrentAgent == null)) {
             mIsAllocatingAgent = true;
             isNeedDelayOnline = false;
@@ -831,51 +884,57 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                         changeTitleToQueue();
                     } else {
                         removeRedirectQueueLeaveMsg();
+                        // 分配成功后，根据配置，判断是否显示评价按钮
+                        mEvaluateBtn.setVisibility(MQConfig.isEvaluateSwitchOpen ? View.VISIBLE : View.GONE);
                     }
                     // 发送待发送的消息
                     sendDelayMessages();
-                    // 必须放在发送待发送消息后
-                    hasSetClientOnline = true;
+                    isRequestOnlineLoading = false;
                 }
 
                 @Override
-                public void onFailure(int code, String message) {
-                    mIsAllocatingAgent = false;
+                public void onFailure(final int code, final String message) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mIsAllocatingAgent = false;
 
-                    if (ErrorCode.NET_NOT_WORK == code) {
-                        changeTitleToNetErrorState();
-                    } else if (ErrorCode.NO_AGENT_ONLINE == code) {
-                        if (isForceRedirectHuman) {
-                            setCurrentAgent(mCurrentAgent);
-                            addNoAgentLeaveMsg();
-                        } else {
-                            setCurrentAgent(null);
-                            // 没有分配到客服，也根据设置是否上传顾客信息
-                            setOrUpdateClientInfo();
+                            if (ErrorCode.NET_NOT_WORK == code) {
+                                changeTitleToNetErrorState();
+                            } else if (ErrorCode.NO_AGENT_ONLINE == code) {
+                                if (isForceRedirectHuman) {
+                                    setCurrentAgent(mCurrentAgent);
+                                    addNoAgentLeaveMsg(getResources().getString(R.string.mq_no_agent_leave_msg_tip));
+                                } else {
+                                    setCurrentAgent(null);
+                                    // 没有分配到客服，也根据设置是否上传顾客信息
+                                    setOrUpdateClientInfo();
+                                }
+                            } else if (ErrorCode.BLACKLIST == code) {
+                                setCurrentAgent(null);
+                                isBlackState = true;
+                            } else if (ErrorCode.CANCEL == code) {
+                                // 请求取消
+                            } else {
+                                changeTitleToUnknownErrorState();
+                                Toast.makeText(MQConversationActivity.this, "code = " + code + "\n" + "message = " + message, Toast.LENGTH_SHORT).show();
+                            }
+                            // 如果没有加载数据，则加载数据
+                            if (!mHasLoadData) {
+                                getMessageDataFromDatabaseAndLoad();
+                            }
+                            if (ErrorCode.NO_AGENT_ONLINE == code) {
+                                // 发送待发送的消息
+                                sendDelayMessages();
+                            }
+                            isRequestOnlineLoading = false;
                         }
-                    } else if (ErrorCode.BLACKLIST == code) {
-                        setCurrentAgent(null);
-                        isBlackState = true;
-                    } else if (ErrorCode.CANCEL == code) {
-                        // 请求取消
-                    } else {
-                        changeTitleToUnknownErrorState();
-                        Toast.makeText(MQConversationActivity.this, "code = " + code + "\n" + "message = " + message, Toast.LENGTH_SHORT).show();
-                    }
-                    // 如果没有加载数据，则加载数据
-                    if (!mHasLoadData) {
-                        getMessageDataFromDatabaseAndLoad();
-                    }
-                    if (ErrorCode.NO_AGENT_ONLINE == code) {
-                        // 发送待发送的消息
-                        sendDelayMessages();
-                    }
-                    // 必须放在发送待发送消息后
-                    hasSetClientOnline = true;
+                    });
                 }
             });
         } else {
             setCurrentAgent(mCurrentAgent);
+            isRequestOnlineLoading = false;
         }
     }
 
@@ -951,10 +1010,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         checkIfNeedUpdateClient(new OnFinishCallback() {
             @Override
             public void onFinish() {
-                // 先从服务器拉取最新消息, 不用关心结果，有新消息会保存到本地数据库，加载消息的时候会取出来
-                mController.getMessageFromService(System.currentTimeMillis(), MESSAGE_PAGE_COUNT, new OnGetMessageListCallBack() {
+                // 先通过获取未读接口，从服务器拉取最新消息, 不用关心结果，有新消息会保存到本地数据库，加载消息的时候会取出来
+                MQManager.getInstance(MQConversationActivity.this).getUnreadMessages(new OnGetMessageListCallback() {
                     @Override
-                    public void onSuccess(List<BaseMessage> messageList) {
+                    public void onSuccess(List<MQMessage> messageList) {
                         getMessageDataFromDatabaseAndLoad();
                     }
 
@@ -988,16 +1047,27 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 if (mController.getEnterpriseConfig().scheduler_after_client_send_msg
                         && entWelcomeMsg == null
                         && !TextUtils.isEmpty(mController.getEnterpriseConfig().ent_welcome_message)) {
-                    entWelcomeMsg = new TextMessage();
+                    // 当成富文本消息处理
+                    entWelcomeMsg = new HybridMessage();
                     entWelcomeMsg.setAvatar(mController.getEnterpriseConfig().avatar);
                     String displayTitle = mController.getEnterpriseConfig().public_nickname;
                     if (TextUtils.equals("null", displayTitle)) {
                         displayTitle = getResources().getString(R.string.mq_title_default);
                     }
                     entWelcomeMsg.setAgentNickname(displayTitle);
-                    entWelcomeMsg.setContent(mController.getEnterpriseConfig().ent_welcome_message);
-                    entWelcomeMsg.setItemViewType(BaseMessage.TYPE_AGENT);
+                    JSONArray contentArray = new JSONArray();
+                    JSONObject item = new JSONObject();
+                    try {
+                        item.put("type", "rich_text");
+                        item.put("body", mController.getEnterpriseConfig().ent_welcome_message);
+                        contentArray.put(item);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    entWelcomeMsg.setContent(contentArray.toString());
+                    entWelcomeMsg.setItemViewType(BaseMessage.TYPE_HYBRID);
                     entWelcomeMsg.setStatus(BaseMessage.STATE_ARRIVE);
+                    entWelcomeMsg.setContentType(BaseMessage.TYPE_CONTENT_HYBRID);
                     entWelcomeMsg.setId(System.currentTimeMillis());
                     receiveNewMsg(entWelcomeMsg);
                 }
@@ -1026,6 +1096,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 加载消息到列表中
      */
     private void loadData() {
+        // 添加 ConDivider
+        refreshConversationDivider(mChatMessageList);
         // 添加TimeItem
         MQTimeUtils.refreshMQTimeItem(mChatMessageList);
         // 加载到UI
@@ -1054,6 +1126,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         if (isBlackState) {
             addBlacklistTip(R.string.mq_blacklist_tips);
         }
+
         MQUtils.scrollListViewToBottom(mConversationListView);
         mChatMsgAdapter.downloadAndNotifyDataSetChanged(mChatMessageList);
         mChatMsgAdapter.notifyDataSetChanged();
@@ -1137,11 +1210,20 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 return;
             }
 
-            if (checkStorageAndCameraPermission()) {
+            if (checkStorageAndCameraPermission(WRITE_EXTERNAL_STORAGE_AND_CAMERA_REQUEST_CODE)) {
                 // 打开相机
                 hideEmojiSelectIndicator();
                 hideVoiceSelectIndicator();
                 choosePhotoFromCamera();
+            }
+        } else if (id == R.id.video_select_btn) {
+            if (!checkSendable()) {
+                return;
+            }
+            if (checkStorageAndCameraPermission(WRITE_EXTERNAL_STORAGE_AND_VIDEO_REQUEST_CODE)) {
+                hideEmojiSelectIndicator();
+                hideVoiceSelectIndicator();
+                popVideoSelectDialog();
             }
         } else if (id == R.id.mic_select_btn) {
             if (!checkSendable()) {
@@ -1230,12 +1312,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      *
      * @return true, 已经获取权限;false,没有权限,尝试获取
      */
-    private boolean checkStorageAndCameraPermission() {
+    private boolean checkStorageAndCameraPermission(int requestCode) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             //申请WRITE_EXTERNAL_STORAGE权限
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,},
-                    WRITE_EXTERNAL_STORAGE_AND_CAMERA_REQUEST_CODE);
+                    requestCode);
             return false;
         } else {
             return true;
@@ -1309,6 +1391,42 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         }
     }
 
+    private void popVideoSelectDialog() {
+        List<Map<String, String>> list = new ArrayList<>();
+        Map<String, String> videoCamera = new HashMap<String, String>();
+        videoCamera.put("name", getResources().getString(R.string.mq_dialog_select_camera_video));
+        videoCamera.put("value", getResources().getString(R.string.mq_dialog_select_camera_video));
+        list.add(videoCamera);
+        Map<String, String> videoPhoto = new HashMap<String, String>();
+        videoPhoto.put("name", getResources().getString(R.string.mq_dialog_select_gallery));
+        videoPhoto.put("value", getResources().getString(R.string.mq_dialog_select_gallery));
+        list.add(videoPhoto);
+        new MQListDialog(this, R.string.mq_dialog_select_video_title, list, new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        recordVideoFromCamera();
+                        break;
+                    case 1:
+                        chooseVideoFromPicker();
+                        break;
+                }
+            }
+        }).show();
+    }
+
+    private void chooseVideoFromPicker() {
+        try {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("video/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_CODE_CHOOSE_VIDEO);
+        } catch (Exception e) {
+            Toast.makeText(this, getResources().getString(R.string.mq_title_unknown_error), Toast.LENGTH_SHORT).show();
+        }
+    }
 
     /**
      * 打开相机
@@ -1340,6 +1458,37 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     /**
+     * 打开相机
+     */
+    private void recordVideoFromCamera() {
+        MQUtils.closeKeyboard(MQConversationActivity.this);
+
+        Intent camera = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        File file = new File(MQUtils.getPicStorePath(this));
+        file.mkdirs();
+        String path = MQUtils.getPicStorePath(this) + "/" + System.currentTimeMillis() + ".mp4";
+        File videoFile = new File(path);
+        mVideoPath = path;
+        Uri uri;
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                ContentValues contentValues = new ContentValues(1);
+                contentValues.put(MediaStore.Images.Media.DATA, videoFile.getAbsolutePath());
+                uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+            } else {
+                uri = Uri.fromFile(videoFile);
+            }
+            mCameraPicUri = uri;
+            camera.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);    // MediaStore.EXTRA_VIDEO_QUALITY 表示录制视频的质量，从 0-1，越大表示质量越好，同时视频也越大
+            camera.putExtra(MediaStore.EXTRA_OUTPUT, uri);    // 表示录制完后保存的录制，如果不写，则会保存到默认的路径，在onActivityResult()的回调，通过intent.getData中返回保存的路径
+            camera.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 60);   // 设置视频录制的最长时间
+            startActivityForResult(camera, MQConversationActivity.REQUEST_CODE_VIDEO);
+        } catch (Exception e) {
+            MQUtils.show(this, R.string.mq_photo_not_support);
+        }
+    }
+
+    /**
      * 创建并发送TextMessage。如果没有客服在线，发送离线消息
      */
     private void createAndSendTextMessage(String msg) {
@@ -1364,6 +1513,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         sendMessage(imageMessage);
     }
 
+    private void createAndSendVideoMessage(File videoFile) {
+        VideoMessage videoMessage = new VideoMessage();
+        videoMessage.setLocalPath(videoFile.getAbsolutePath());
+        sendMessage(videoMessage);
+    }
+
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -1372,7 +1527,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // nothing
                 } else {
-                    MQUtils.show(this, R.string.mq_sdcard_no_permission);
+                    MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_sdcard_no_permission);
                 }
                 break;
             }
@@ -1384,14 +1539,19 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 }
                 break;
             }
+            case WRITE_EXTERNAL_STORAGE_AND_VIDEO_REQUEST_CODE:
             case WRITE_EXTERNAL_STORAGE_AND_CAMERA_REQUEST_CODE: {
                 if (grantResults.length > 0) {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED
                             && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                        mCameraSelectBtn.performClick();
+                        if (requestCode == WRITE_EXTERNAL_STORAGE_AND_CAMERA_REQUEST_CODE) {
+                            mCameraSelectBtn.performClick();
+                        } else if (requestCode == WRITE_EXTERNAL_STORAGE_AND_VIDEO_REQUEST_CODE) {
+                            mVideoSelectBtn.performClick();
+                        }
                         // 有存储权限
                     } else {
-                        MQUtils.show(this, R.string.mq_camera_or_storage_no_permission);
+                        MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_camera_or_storage_no_permission);
                     }
                 } else {
                     MQUtils.show(this, R.string.mq_camera_or_storage_no_permission);
@@ -1418,6 +1578,35 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 ArrayList<String> selectedPhotos = MQPhotoPickerActivity.getSelectedImages(data);
                 for (String photoPath : selectedPhotos) {
                     createAndSendImageMessage(new File(photoPath));
+                }
+            } else if (requestCode == REQUEST_CODE_VIDEO) {
+                File videoFile = getVideoFile();
+                if (videoFile != null) {
+                    createAndSendVideoMessage(videoFile);
+                }
+            } else if (requestCode == REQUEST_CODE_CHOOSE_VIDEO) {
+                try {
+                    ParcelFileDescriptor pfd = this.getContentResolver().openFileDescriptor(data.getData(), "r");
+                    FileInputStream fileInputStream = new FileInputStream(pfd.getFileDescriptor());
+                    String path = MQUtils.getPicStorePath(this) + "/" + System.currentTimeMillis() + ".mp4";
+                    File videoFile = new File(path);
+                    FileOutputStream fileOutputStream = new FileOutputStream(videoFile);
+                    int len = 0;
+                    byte[] buffer = new byte[8192];
+                    while ((len = fileInputStream.read(buffer)) != -1) {
+                        fileOutputStream.write(buffer, 0, len);
+                    }
+                    pfd.close();
+                    fileInputStream.close();
+                    fileOutputStream.close();
+                    // 不允许超过 100MB
+                    if (videoFile.length() >= 1024 * 1024 * 50) {
+                        Toast.makeText(this, R.string.mq_error_video_size, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    createAndSendVideoMessage(videoFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -1473,6 +1662,28 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         }
         if (imageFile.exists()) {
             return imageFile;
+        } else {
+            return null;
+        }
+    }
+
+    public File getVideoFile() {
+        String sdState = Environment.getExternalStorageState();
+        if (!sdState.equals(Environment.MEDIA_MOUNTED)) {
+            return null;
+        }
+        File videoFile = new File(mVideoPath);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && mVideoUri != null) {
+            // 从 uri 获取 path，SDK 内部会通过 path 拿到 uri
+            String realFilePath = MQUtils.getRealFilePath(this, mVideoUri);
+            // 如果 targetapi 不是 Android 10，realFilePath 将会是空
+            if (!TextUtils.isEmpty(realFilePath)) {
+                // 这里的 file 无法直接读取
+                return new File(realFilePath);
+            }
+        }
+        if (videoFile.exists()) {
+            return videoFile;
         } else {
             return null;
         }
@@ -1574,6 +1785,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             public void onSuccess(BaseMessage message, int state) {
                 renameVoiceFilename(message);
 
+                refreshConversationDivider(mChatMessageList);
                 // 刷新界面
                 mChatMsgAdapter.notifyDataSetChanged();
 
@@ -1849,7 +2061,14 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     @Override
     public void onEvaluateRobotAnswer(final RobotMessage robotMessage, final int useful) {
-        mController.evaluateRobotAnswer(robotMessage.getId(), robotMessage.getQuestionId(), useful, new OnEvaluateRobotAnswerCallback() {
+        String clientMsg = "";
+        try {
+            JSONObject extraObj = new JSONObject(robotMessage.getExtra());
+            clientMsg = extraObj.optString("client_msg");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mController.evaluateRobotAnswer(robotMessage.getId(), clientMsg, robotMessage.getQuestionId(), useful, new OnEvaluateRobotAnswerCallback() {
             @Override
             public void onFailure(int code, String message) {
                 MQUtils.show(MQConversationActivity.this, R.string.mq_evaluate_failure);
@@ -1913,7 +2132,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     /**
      * 添加【没有客服请留言】的提示消息到消息流的末尾
      */
-    private void addNoAgentLeaveMsg() {
+    private void addNoAgentLeaveMsg(String content) {
         // 处理机器人客服转人工排队时发消息的情况
         if (mRedirectQueueMessage != null && mCurrentAgent != null) {
             addRedirectQueueLeaveMsg(mRedirectQueueMessage.getQueueSize());
@@ -1933,7 +2152,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             changeTitleToNoAgentState();
         }
 
-        mChatMsgAdapter.addMQMessage(new NoAgentLeaveMessage());
+        mChatMsgAdapter.addMQMessage(new NoAgentLeaveMessage(content));
         MQUtils.scrollListViewToBottom(mConversationListView);
     }
 
@@ -2152,7 +2371,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     forceRedirectHuman();
                 } else if (RobotMessage.SUB_TYPE_REPLY.equals(robotMessage.getSubType())) {
                     mChatMessageList.remove(baseMessage);
-                    addNoAgentLeaveMsg();
+                    addNoAgentLeaveMsg(baseMessage.getContent());
                 } else if (RobotMessage.SUB_TYPE_QUEUEING.equals(robotMessage.getSubType())) {
                     forceRedirectHuman();
                 } else if (RobotMessage.SUB_TYPE_MANUAL_REDIRECT.equals(robotMessage.getSubType())) {
@@ -2177,6 +2396,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
             // 保存最后一条消息时间
             mController.saveConversationLastMessageTime(baseMessage.getCreatedOn());
+            // 客服的消息标记已读
+            if (baseMessage.getItemViewType() == BaseMessage.TYPE_AGENT) {
+                mController.markMessageRead(baseMessage.getId());
+            }
         }
 
     }

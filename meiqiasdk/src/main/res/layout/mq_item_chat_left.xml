@@ -71,6 +71,11 @@
             android:background="@drawable/mq_bg_msg_left"
             android:visibility="gone"/>
 
+        <com.meiqia.meiqiasdk.chatitem.MQChatVideoItem
+            android:id="@+id/video_container"
+            style="@style/MQWrapWrap"
+            android:visibility="gone" />
+
     </RelativeLayout>
 
     <ImageView

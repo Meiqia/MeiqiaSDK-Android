@@ -111,6 +111,8 @@ public interface MQController {
 
     void updateMessage(long messageId, boolean isRead);
 
+    void markMessageRead(long messageId);
+
     /**
      * 保存聊天界面不可见时的最后一条消息的时间
      *
@@ -163,11 +165,12 @@ public interface MQController {
      * 评价机器人回答的问题
      *
      * @param messageId                     消息id
+     * @param content                       顾客问题
      * @param questionId                    问题id
      * @param useful                        是否有用
      * @param onEvaluateRobotAnswerCallback 评价的回调接口
      */
-    void evaluateRobotAnswer(long messageId, long questionId, int useful, OnEvaluateRobotAnswerCallback onEvaluateRobotAnswerCallback);
+    void evaluateRobotAnswer(long messageId, String content, long questionId, int useful, OnEvaluateRobotAnswerCallback onEvaluateRobotAnswerCallback);
 
     /**
      * 设置是否强制分配客服

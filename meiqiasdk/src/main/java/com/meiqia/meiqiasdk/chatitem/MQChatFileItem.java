@@ -163,10 +163,11 @@ public class MQChatFileItem extends MQBaseCustomCompositeView implements View.On
         } else {
             uri = Uri.fromFile(new File(MQUtils.getFileMessageFilePath(mFileMessage)));
         }
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(uri, "*/*");
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, MQUtils.getMIMEType(file));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             getContext().startActivity(intent);
         } catch (Exception e) {
             Toast.makeText(getContext(), R.string.mq_no_app_open_file, Toast.LENGTH_SHORT).show();

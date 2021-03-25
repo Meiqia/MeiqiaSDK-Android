@@ -20,6 +20,7 @@ import com.meiqia.meiqiasdk.callback.SimpleCallback;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
+import com.meiqia.meiqiasdk.model.VideoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
@@ -65,6 +66,9 @@ public class ControllerImpl implements MQController {
         } else if (BaseMessage.TYPE_CONTENT_VOICE.equals(message.getContentType())) {
             VoiceMessage voiceMessage = (VoiceMessage) message;
             MQManager.getInstance(context).sendMQVoiceMessage(voiceMessage.getLocalPath(), onMQMessageSendCallback);
+        } else if (BaseMessage.TYPE_CONTENT_VIDEO.equals(message.getContentType())) {
+            VideoMessage voiceMessage = (VideoMessage) message;
+            MQManager.getInstance(context).sendMQVideoMessage(voiceMessage.getLocalPath(), onMQMessageSendCallback);
         }
     }
 
@@ -237,6 +241,11 @@ public class ControllerImpl implements MQController {
     }
 
     @Override
+    public void markMessageRead(long messageId) {
+        MQManager.getInstance(context).markMessageRead(messageId);
+    }
+
+    @Override
     public void saveConversationOnStopTime(long stopTime) {
         MQManager.getInstance(context).saveConversationOnStopTime(stopTime);
     }
@@ -344,8 +353,8 @@ public class ControllerImpl implements MQController {
     }
 
     @Override
-    public void evaluateRobotAnswer(long messageId, long questionId, int useful, final OnEvaluateRobotAnswerCallback onEvaluateRobotAnswerCallback) {
-        MQManager.getInstance(context).evaluateRobotAnswer(messageId, questionId, useful, new com.meiqia.core.callback.OnEvaluateRobotAnswerCallback() {
+    public void evaluateRobotAnswer(long messageId, String content, long questionId, int useful, final OnEvaluateRobotAnswerCallback onEvaluateRobotAnswerCallback) {
+        MQManager.getInstance(context).evaluateRobotAnswer(messageId, content, questionId, useful, new com.meiqia.core.callback.OnEvaluateRobotAnswerCallback() {
             @Override
             public void onFailure(int code, String message) {
                 if (onEvaluateRobotAnswerCallback != null) {

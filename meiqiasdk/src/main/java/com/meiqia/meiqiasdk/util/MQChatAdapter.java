@@ -10,6 +10,7 @@ import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
 import com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity;
 import com.meiqia.meiqiasdk.chatitem.MQClueCardItem;
+import com.meiqia.meiqiasdk.chatitem.MQConvDividerItem;
 import com.meiqia.meiqiasdk.chatitem.MQHybridItem;
 import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.ClueCardMessage;
@@ -142,6 +143,9 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
                 case BaseMessage.TYPE_CLUE_CARD:
                     convertView = new MQClueCardItem(mConversationActivity, this);
                     break;
+                case BaseMessage.TYPE_CONV_DIVIDER:
+                    convertView = new MQConvDividerItem(mConversationActivity);
+                    break;
             }
         }
 
@@ -151,6 +155,7 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
             ((MQClientItem) convertView).setMessage(mcMessage, position, mConversationActivity);
         } else if (getItemViewType(position) == BaseMessage.TYPE_NO_AGENT_TIP) {
             ((MQNoAgentItem) convertView).setCallback(mConversationActivity);
+            ((MQNoAgentItem) convertView).setContent(mcMessage.getContent());
         } else if (getItemViewType(position) == BaseMessage.TYPE_ROBOT) {
             ((MQRobotItem) convertView).setMessage((RobotMessage) mcMessage, mConversationActivity);
         } else if (getItemViewType(position) == BaseMessage.TYPE_HYBRID) {
