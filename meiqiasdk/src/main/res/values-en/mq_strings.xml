@@ -129,4 +129,9 @@
     <string name="mq_item_clue_card_select">Please select %s</string>
     <string name="mq_recall_msg">service recall a message</string>
     <string name="mq_submit_success">submitted</string>
+
+    <string name="mq_request_permission">Request permission</string>
+    <string name="mq_content_request_storage_permission">We need storage permission to save image</string>
+    <string name="mq_content_request_camera_and_storage_permission">We need storage and camera permissions to send image/video message</string>
+    <string name="mq_content_request_record_permission">We need record permission to send voice message</string>
 </resources>

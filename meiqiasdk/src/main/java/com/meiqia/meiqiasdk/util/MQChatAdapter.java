@@ -144,7 +144,7 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
                     convertView = new MQClueCardItem(mConversationActivity, this);
                     break;
                 case BaseMessage.TYPE_CONV_DIVIDER:
-                    convertView = new MQConvDividerItem(mConversationActivity);
+                    convertView = new MQConvDividerItem(mConversationActivity, mcMessage.getCreatedOn());
                     break;
             }
         }

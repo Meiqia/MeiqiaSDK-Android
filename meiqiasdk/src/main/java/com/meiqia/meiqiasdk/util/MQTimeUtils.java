@@ -84,6 +84,11 @@ public class MQTimeUtils {
         return timeStr;
     }
 
+    public static String partLongToMonthDay(long time) {
+        SimpleDateFormat formatters2 = new SimpleDateFormat(MONTH_DAY + " " + HOURS_MINUTE, Locale.getDefault());
+        return formatters2.format(time);
+    }
+
     private static long getTodayZeroTime() {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);

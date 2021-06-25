@@ -137,6 +137,11 @@ public class MQPhotoPickerPreviewActivity extends Activity implements View.OnCli
     }
 
     private void processLogic(Bundle savedInstanceState) {
+        // 被回收，就直接退出
+        if (getIntent() == null) {
+            finish();
+        }
+
         // 获取图片选择的最大张数
         mMaxChooseCount = getIntent().getIntExtra(EXTRA_MAX_CHOOSE_COUNT, 1);
         if (mMaxChooseCount < 1) {

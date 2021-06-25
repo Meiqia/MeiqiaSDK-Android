@@ -4,14 +4,16 @@ import android.content.Context;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.widget.MQBaseCustomCompositeView;
 
 public class MQConvDividerItem extends MQBaseCustomCompositeView {
 
     private TextView contentTv;
 
-    public MQConvDividerItem(Context context) {
+    public MQConvDividerItem(Context context, long createTime) {
         super(context);
+        contentTv.setText(MQTimeUtils.partLongToMonthDay(createTime));
     }
 
     @Override
@@ -30,6 +32,7 @@ public class MQConvDividerItem extends MQBaseCustomCompositeView {
 
     @Override
     protected void processLogic() {
+
     }
 
 }

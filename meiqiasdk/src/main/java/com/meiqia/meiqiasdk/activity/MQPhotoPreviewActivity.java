@@ -127,12 +127,20 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
     }
 
     private void processLogic(Bundle savedInstanceState) {
+        // 被回收，就直接退出
+        if (getIntent() == null) {
+            finish();
+        }
+
         mSaveImgDir = (File) getIntent().getSerializableExtra(EXTRA_SAVE_IMG_DIR);
         if (mSaveImgDir == null) {
             mDownloadIv.setVisibility(View.INVISIBLE);
         }
 
         mPreviewImages = getIntent().getStringArrayListExtra(EXTRA_PREVIEW_IMAGES);
+        if (mPreviewImages == null) {
+            mPreviewImages = new ArrayList<>();
+        }
 
         mIsSinglePreview = getIntent().getBooleanExtra(EXTRA_IS_SINGLE_PREVIEW, false);
         if (mIsSinglePreview) {
