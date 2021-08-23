@@ -18,9 +18,9 @@ import com.meiqia.meiqiasdk.util.MQConfig;
  * 描述:
  */
 public class MQRedirectQueueItem extends MQBaseCustomCompositeView {
-    private ImageView mQueueAnimIv;
-    private TextView mTipTv;
+    private TextView mWaitNumTv;
     private TextView mInfoTv;
+    private TextView mTicketIntroTv;
 
     private LeaveMessageCallback mCallback;
 
@@ -36,9 +36,9 @@ public class MQRedirectQueueItem extends MQBaseCustomCompositeView {
 
     @Override
     protected void initView() {
-        mQueueAnimIv = getViewById(R.id.iv_redirect_queue_anim);
-        mTipTv = getViewById(R.id.tv_redirect_queue_tip);
+        mWaitNumTv = getViewById(R.id.tv_wait_number);
         mInfoTv = getViewById(R.id.tv_queue_info_tv);
+        mTicketIntroTv = getViewById(R.id.tv_ticket_intro);
     }
 
     @Override
@@ -50,6 +50,7 @@ public class MQRedirectQueueItem extends MQBaseCustomCompositeView {
     protected void processLogic() {
         MQEnterpriseConfig enterpriseConfig = MQConfig.getController(getContext()).getEnterpriseConfig();
         mInfoTv.setText(enterpriseConfig.queueingSetting.getIntro());
+        mTicketIntroTv.setText(enterpriseConfig.queueingSetting.getTicket_intro());
     }
 
     @Override
@@ -60,7 +61,6 @@ public class MQRedirectQueueItem extends MQBaseCustomCompositeView {
     }
 
     public void setMessage(RedirectQueueMessage redirectQueueMessage) {
-        mTipTv.setText(getResources().getString(R.string.mq_queue_leave_msg, redirectQueueMessage.getQueueSize()));
-        ((AnimationDrawable) mQueueAnimIv.getDrawable()).start();
+        mWaitNumTv.setText(String.valueOf(redirectQueueMessage.getQueueSize()));
     }
 }

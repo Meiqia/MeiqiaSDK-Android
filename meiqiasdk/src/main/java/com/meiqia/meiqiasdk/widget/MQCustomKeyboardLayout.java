@@ -87,7 +87,7 @@ public class MQCustomKeyboardLayout extends MQBaseCustomCompositeView {
                 int cursorPosition = mContentEt.getSelectionStart();
                 StringBuilder sb = new StringBuilder(mContentEt.getText());
                 sb.insert(cursorPosition, text);
-                mContentEt.setText(MQEmotionUtil.getEmotionText(getContext(), sb.toString(), 20));
+                mContentEt.setText(sb.toString());
                 mContentEt.setSelection(cursorPosition + text.length());
             }
         });

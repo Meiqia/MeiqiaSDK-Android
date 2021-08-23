@@ -121,7 +121,9 @@
     <string name="mq_useless_redirect_tip">很抱歉您不满意机器人的回答，您可以尝试</string>
     <string name="mq_manual_redirect_tip">您的问题如果需要人工支持，可以</string>
 
-    <string name="mq_queue_leave_msg">你前面还有 %1$s 个访客</string>
+    <string name="mq_leave_us_msg">给我们留言</string>
+    <string name="mq_number_waiting">当前等待人数</string>
+    <string name="mq_not_wait_and_choose">如果等不及，可以选择</string>
     <string name="mq_unknown_msg_tip">当前 App 暂不支持该类型消息，请升级您的 App 到最新版本</string>
     <string name="mq_inquire_gender_choice">["男","女"]</string>
 

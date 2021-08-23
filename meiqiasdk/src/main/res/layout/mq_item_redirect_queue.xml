@@ -2,40 +2,55 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/MQMatchWrap.Vertical"
     android:gravity="center_horizontal"
-    android:padding="@dimen/mq_size_level2">
-
-    <ImageView
-        android:id="@+id/iv_redirect_queue_anim"
-        style="@style/MQWrapWrap"
-        android:layout_marginTop="@dimen/mq_size_level2"
-        android:layout_marginBottom="@dimen/mq_size_level2"
-        android:src="@drawable/mq_anim_redirect_queue" />
+    android:padding="@dimen/mq_size_level4">
 
     <TextView
-        android:paddingLeft="@dimen/mq_size_level4"
-        android:paddingRight="@dimen/mq_size_level4"
         android:id="@+id/tv_queue_info_tv"
         style="@style/MQWrapWrap"
-        android:layout_marginBottom="@dimen/mq_size_level2"
+        android:layout_marginBottom="@dimen/mq_size_level3"
+        android:paddingLeft="@dimen/mq_size_level4"
+        android:paddingRight="@dimen/mq_size_level4"
+        android:gravity="center"
         android:textColor="@color/mq_chat_event_gray"
         android:textSize="@dimen/mq_textSize_level1" />
 
     <TextView
-        android:id="@+id/tv_redirect_queue_tip"
         style="@style/MQWrapWrap"
         android:layout_marginBottom="@dimen/mq_size_level2"
-        android:text="@string/mq_queue_leave_msg"
+        android:text="@string/mq_number_waiting"
+        android:textColor="@color/mq_chat_left_textColor"
+        android:textSize="@dimen/mq_textSize_level1" />
+
+    <TextView
+        android:id="@+id/tv_wait_number"
+        style="@style/MQWrapWrap"
+        android:layout_marginBottom="@dimen/mq_size_level2"
+        android:text="3"
+        android:textColor="@color/mq_colorPrimary"
+        android:textSize="32sp" />
+
+    <TextView
+        android:id="@+id/tv_ticket_intro"
+        style="@style/MQWrapWrap"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="@dimen/mq_size_level2"
+        android:paddingLeft="@dimen/mq_size_level4"
+        android:paddingRight="@dimen/mq_size_level4"
         android:textColor="@color/mq_chat_event_gray"
+        android:text="@string/mq_not_wait_and_choose"
         android:textSize="@dimen/mq_textSize_level1" />
 
     <TextView
         android:id="@+id/tv_redirect_queue_leave_msg"
-        style="@style/MQWrapWrap"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:background="@drawable/mq_bg_card_primary"
         android:clickable="true"
         android:paddingLeft="@dimen/mq_size_level1"
         android:paddingRight="@dimen/mq_size_level1"
-        android:text="@string/mq_leave_msg"
-        android:textColor="@color/mq_colorPrimary"
-        android:textSize="@dimen/mq_textSize_level1" />
+        android:text="@string/mq_leave_us_msg"
+        android:textColor="@color/mq_white"
+        android:textSize="14sp" />
 
 </LinearLayout>

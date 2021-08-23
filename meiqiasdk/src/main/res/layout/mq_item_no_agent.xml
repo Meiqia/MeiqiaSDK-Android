@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/MQMatchWrap.Horizontal"
+    style="@style/MQMatchWrap.Vertical"
     android:gravity="center"
     android:padding="@dimen/mq_size_level3">
 
@@ -16,6 +16,7 @@
         style="@style/MQWrapWrap"
         android:clickable="true"
         android:paddingLeft="@dimen/mq_size_level1"
+        android:paddingTop="@dimen/mq_size_level1"
         android:paddingRight="@dimen/mq_size_level1"
         android:text="@string/mq_leave_msg"
         android:textColor="@color/mq_colorPrimary"
