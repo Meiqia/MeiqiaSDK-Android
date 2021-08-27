@@ -34,7 +34,7 @@ public class MQNoAgentItem extends MQBaseCustomCompositeView {
 
     @Override
     protected void setListener() {
-        getViewById(R.id.tv_no_agent_leave_msg).setOnClickListener(this);
+        setOnClickListener(this);
     }
 
     @Override

@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/iv_item_emotion_keyboard_icon"
-    style="@style/MQWrapWrap"
+    android:layout_width="32dp"
+    android:layout_height="32dp"
     android:background="@drawable/mq_selector_item_center"
-    android:paddingBottom="@dimen/mq_size_level3"
-    android:paddingTop="@dimen/mq_size_level3"
-    android:src="@drawable/mq_emoji_delete"
-    tools:background="#f00" />
+    android:paddingTop="@dimen/mq_size_level2"
+    android:paddingBottom="@dimen/mq_size_level2"
+    tools:background="#f00">
+
+    <ImageView
+        android:id="@+id/iv_item_emotion_keyboard_icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center"
+        android:src="@drawable/mq_emoji_delete"
+        tools:src="@drawable/mq_emoji_delete" />
+
+    <TextView
+        android:id="@+id/iv_item_emotion_keyboard_tv"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="20dp" />
+</FrameLayout>

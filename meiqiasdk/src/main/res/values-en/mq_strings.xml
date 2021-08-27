@@ -121,7 +121,9 @@
     <string name="mq_useless_redirect_tip">Sorry, you are not satisfied with the robot answer, you can try </string>
     <string name="mq_manual_redirect_tip">If your problem requires manual support, you can </string>
 
-    <string name="mq_queue_leave_msg">there are %1$s customer in front of you</string>
+    <string name="mq_leave_us_msg">Leave us a message</string>
+    <string name="mq_number_waiting">Number of people currently waiting</string>
+    <string name="mq_not_wait_and_choose">If you can’t wait, you can choose</string>
     <string name="mq_unknown_msg_tip">The current app does not support this type of message, please upgrade your app to the latest version.</string>
     <string name="mq_inquire_gender_choice">["Male","Female"]</string>
 

@@ -750,6 +750,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 cleanVoiceMessage(messageList);
                 //添加时间戳
                 MQTimeUtils.refreshMQTimeItem(messageList);
+                // 添加 ConDivider
+                refreshConversationDivider(messageList);
                 mChatMsgAdapter.loadMoreMessage(cleanDupMessages(mChatMessageList, messageList));
                 mConversationListView.setSelection(messageList.size());
                 mSwipeRefreshLayout.setRefreshing(false);
@@ -1536,7 +1538,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 ContentValues contentValues = new ContentValues(1);
                 contentValues.put(MediaStore.Images.Media.DATA, videoFile.getAbsolutePath());
-                uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+                uri = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues);
             } else {
                 uri = Uri.fromFile(videoFile);
             }
@@ -1846,6 +1848,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mController.sendMessage(message, new OnMessageSendCallback() {
             @Override
             public void onSuccess(BaseMessage message, int state) {
+                // 去除可能从 socket 收到的重复消息
+                removeDupMessageFromSocket(message);
+
                 renameVoiceFilename(message);
 
                 refreshConversationDivider(mChatMessageList);
@@ -2398,6 +2403,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         public void queueingInitConv() {
             removeQueue();
             setCurrentAgent(mController.getCurrentAgent());
+            sendDelayMessages();
         }
 
         @Override
@@ -2480,6 +2486,17 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             }
         }
         return false;
+    }
+
+    private void removeDupMessageFromSocket(BaseMessage successMessage) {
+        Iterator<BaseMessage> iterator = mChatMessageList.iterator();
+        while (iterator.hasNext()) {
+            BaseMessage message = iterator.next();
+            if (successMessage != message && successMessage.getId() == message.getId()) {
+                iterator.remove();
+                break;
+            }
+        }
     }
 
     /**

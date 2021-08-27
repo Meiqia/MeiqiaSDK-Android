@@ -22,6 +22,7 @@ public class MQEmotionUtil {
     }
 
     public static final Map<String, Integer> sEmotionMap;
+    public static final Map<String, Integer> sEmojiMap;
 
     public static final String[] sEmotionKeyArr = new String[]{
             ":smile:",
@@ -101,16 +102,101 @@ public class MQEmotionUtil {
             R.drawable.mq_emoji_36
     };
 
+    public static final String[] sEmojiKeyArr = new String[]{
+            "\uD83D\uDE04",
+            "\uD83D\uDE03",
+            "\uD83D\uDE00",
+            "\uD83D\uDE0A",
+            "\uD83D\uDE0C",
+            "\uD83D\uDE09",
+            "\uD83D\uDE0D",
+            "\uD83D\uDE18",
+            "\uD83D\uDE1A",
+            "\uD83D\uDE17",
+            "\uD83D\uDE19",
+            "\uD83D\uDE1C",
+            "\uD83D\uDE1D",
+            "\uD83D\uDE1B",
+            "\uD83D\uDE33",
+            "\uD83D\uDE14",
+            "\uD83D\uDE12",
+            "\uD83D\uDE1E",
+            "\uD83D\uDE23",
+            "\uD83D\uDE22",
+            "\uD83D\uDE02",
+            "\uD83D\uDE2D",
+            "\uD83D\uDE2A",
+            "\uD83D\uDE25",
+            "\uD83D\uDE30",
+            "\uD83D\uDE05",
+            "\uD83D\uDE13",
+            "\uD83D\uDE29",
+            "\uD83D\uDE2B",
+            "\uD83D\uDE28",
+            "\uD83D\uDE31",
+            "\uD83D\uDE20",
+            "\uD83D\uDE21",
+            "\uD83D\uDC36",
+    };
+
+    public static final int[] sEmojiValueArr = new int[]{
+            R.drawable.mq_emoji_1,
+            R.drawable.mq_emoji_2,
+            R.drawable.mq_emoji_3,
+            R.drawable.mq_emoji_4,
+            R.drawable.mq_emoji_5,
+            R.drawable.mq_emoji_6,
+            R.drawable.mq_emoji_7,
+            R.drawable.mq_emoji_8,
+            R.drawable.mq_emoji_9,
+            R.drawable.mq_emoji_10,
+            R.drawable.mq_emoji_11,
+            R.drawable.mq_emoji_12,
+            R.drawable.mq_emoji_13,
+            R.drawable.mq_emoji_14,
+            R.drawable.mq_emoji_15,
+            R.drawable.mq_emoji_17,
+            R.drawable.mq_emoji_19,
+            R.drawable.mq_emoji_20,
+            R.drawable.mq_emoji_21,
+            R.drawable.mq_emoji_22,
+            R.drawable.mq_emoji_23,
+            R.drawable.mq_emoji_24,
+            R.drawable.mq_emoji_25,
+            R.drawable.mq_emoji_26,
+            R.drawable.mq_emoji_27,
+            R.drawable.mq_emoji_28,
+            R.drawable.mq_emoji_29,
+            R.drawable.mq_emoji_30,
+            R.drawable.mq_emoji_31,
+            R.drawable.mq_emoji_32,
+            R.drawable.mq_emoji_33,
+            R.drawable.mq_emoji_34,
+            R.drawable.mq_emoji_35,
+            R.drawable.mq_emoji_36
+    };
+
     static {
         sEmotionMap = new HashMap<>();
         int count = sEmotionKeyArr.length;
         for (int i = 0; i < count; i++) {
             sEmotionMap.put(sEmotionKeyArr[i], sEmotionValueArr[i]);
         }
+
+        sEmojiMap = new HashMap<>();
+        int emojiCount = sEmojiKeyArr.length;
+        for (int i = 0; i < emojiCount; i++) {
+            sEmojiMap.put(sEmojiKeyArr[i], sEmojiValueArr[i]);
+        }
     }
 
     public static int getImgByName(String imgName) {
         Integer integer = sEmotionMap.get(imgName);
+        return integer == null ? -1 : integer;
+    }
+
+    public static int getEmojiByName(String imgName) {
+        Integer integer = sEmojiMap.get(imgName);
         return integer == null ? -1 : integer;
     }
 
