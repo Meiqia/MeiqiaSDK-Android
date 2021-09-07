@@ -13,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.util.MQEmotionUtil;
@@ -143,7 +144,7 @@ public class MQEmotionKeyboardLayout extends MQBaseCustomCompositeView {
         });
 
         int start = position * EMOTION_PAGE_SIZE;
-        List<String> tempEmotionList = Arrays.asList(Arrays.copyOfRange(MQEmotionUtil.sEmotionKeyArr, start, start + EMOTION_PAGE_SIZE));
+        List<String> tempEmotionList = Arrays.asList(Arrays.copyOfRange(MQEmotionUtil.sEmojiKeyArr, start, start + EMOTION_PAGE_SIZE));
         List<String> emotionList = new ArrayList<>();
         emotionList.addAll(tempEmotionList);
         emotionList.add("");
@@ -208,17 +209,20 @@ public class MQEmotionKeyboardLayout extends MQBaseCustomCompositeView {
                 convertView = View.inflate(getContext(), R.layout.mq_item_emotion_keyboard, null);
             }
 
-            ImageView iconIv = (ImageView) convertView;
+            ImageView iconIv = (ImageView) convertView.findViewById(R.id.iv_item_emotion_keyboard_icon);
+            TextView iconTv = (TextView) convertView.findViewById(R.id.iv_item_emotion_keyboard_tv);
             if (position == getCount() - 1) {
-                iconIv.setImageResource(R.drawable.mq_emoji_delete);
                 iconIv.setVisibility(VISIBLE);
+                iconTv.setVisibility(GONE);
             } else {
                 String key = mDatas.get(position);
                 if (TextUtils.isEmpty(key)) {
-                    iconIv.setVisibility(INVISIBLE);
+                    iconIv.setVisibility(GONE);
+                    iconTv.setVisibility(GONE);
                 } else {
-                    iconIv.setImageResource(MQEmotionUtil.getImgByName(key));
-                    iconIv.setVisibility(VISIBLE);
+                    iconTv.setText(key);
+                    iconTv.setVisibility(VISIBLE);
+                    iconIv.setVisibility(GONE);
                 }
             }
 

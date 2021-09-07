@@ -11,22 +11,17 @@
     <string name="mq_title_webview_rich_text">Graphic message</string>
     <string name="mq_title_default">Online Service</string>
     <string name="mq_title_service_support">Support</string>
-    <string name="mq_title_collect_info">Please fill in the blanks</string>
     <string name="mq_title_submit_btn">SUBMIT</string>
     <string name="mq_tip_required_before_submit">Red text is required, please complete</string>
     <string name="mq_copy_success">Copied</string>
-    <string name="mq_dialog_select_camera">CAMERA</string>
     <string name="mq_dialog_select_gallery">GALLERY</string>
-    <string name="mq_dialog_select_title">Please select a picture source:</string>
     <string name="mq_dialog_select_camera_video">RECORD</string>
     <string name="mq_dialog_select_video_title">Please select a video source：</string>
     <string name="mq_title_leave_msg">Leave a message</string>
     <string name="mq_title_unknown_error">Unknown error occurred</string>
     <string name="mq_error_submit_form">Submitting the form failed, please try again later</string>
     <string name="mq_error_auth_code_wrong">Invalid validation code</string>
-    <string name="mq_title_connect_service">Connecting, Please wait...</string>
     <string name="mq_title_inputting">typing...</string>
-    <string name="mq_input_hint">Please enter...</string>
     <string name="mq_allocate_agent">Allocating Service...</string>
     <string name="mq_allocate_queue_title">Waiting in line...</string>
     <string name="mq_allocate_queue_tip">Waiting in line, please wait for the customer service to send a message</string>
@@ -44,8 +39,6 @@
     <string name="mq_direct_content">%1$s will provide services for you</string>
     <string name="mq_confirm">OK</string>
     <string name="mq_cancel">CANCEL</string>
-    <string name="mq_runtime_permission_tip">We need the following permissions to offer your service</string>
-    <string name="mq_permission_denied_tip">You have denied this permission</string>
     <string name="mq_no_app_open_file">No application found to open file</string>
     <string name="mq_choose_ticket_category">Select categories</string>
     <string name="mq_back"></string>
@@ -57,7 +50,6 @@
     <string name="mq_evaluate_medium">NEUTRAL</string>
     <string name="mq_evaluate_bad">NEGATIVE</string>
     <string name="mq_evaluate_hint">Please leave a comment (Optional)</string>
-    <string name="mq_evaluate_result_prefix">You send &#160;&#160;</string>
     <string name="mq_evaluate_failure">Evaluation failed</string>
 
     <string name="mq_audio_status_normal">Hold to speak</string>
@@ -79,7 +71,6 @@
     <string name="mq_all_image">All photos</string>
 
     <string name="mq_param_not_allow_empty">%1$s cannot be empty</string>
-    <string name="mq_at_least_one_contact">at least one contact method</string>
     <string name="mq_take_picture">Take photo</string>
     <string name="mq_submit">Submit</string>
     <string name="mq_toast_photo_picker_max">Up to %1$s photo(s)</string>
@@ -91,19 +82,14 @@
     <string name="mq_submit_leave_msg_success">Feedback Submitted Successfully</string>
 
     <string name="mq_email">Email</string>
-    <string name="mq_email_hint">Please enter your email</string>
 
     <string name="mq_wechat">Wechat</string>
-    <string name="mq_wechat_hint">Please enter your Wechat</string>
 
     <string name="mq_qq">QQ</string>
-    <string name="mq_qq_hint">Please enter your QQ</string>
 
     <string name="mq_phone">Phone</string>
-    <string name="mq_phone_hint">Please enter your phone number</string>
 
     <string name="mq_name">Name</string>
-    <string name="mq_name_hint">Please enter your name</string>
     <string name="mq_contact">Contact</string>
     <string name="mq_gender">Gender</string>
     <string name="mq_age">Age</string>
@@ -136,4 +122,10 @@
     <string name="mq_content_request_storage_permission">We need storage permission to save image</string>
     <string name="mq_content_request_camera_and_storage_permission">We need storage and camera permissions to send image/video message</string>
     <string name="mq_content_request_record_permission">We need record permission to send voice message</string>
+
+    <string name="mq_net_status_reconnect">The network is connecting</string>
+    <string name="mq_net_status_reconnect_title">Receiving</string>
+    <string name="mq_net_status_not_work_title">Not connected</string>
+    <string name="mq_sale_count">Sales</string>
+    <string name="mq_view_details">View details</string>
 </resources>

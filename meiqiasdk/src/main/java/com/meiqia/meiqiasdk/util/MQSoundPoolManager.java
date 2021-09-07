@@ -44,7 +44,7 @@ public class MQSoundPoolManager {
                 @Override
                 public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
                     // 状态成功
-                    if (status == 0) {
+                    if (status == 0 && mSoundSourceMap != null) {
                         mSoundSourceMap.put(resId, sampleId);
                         play(sampleId);
                     }

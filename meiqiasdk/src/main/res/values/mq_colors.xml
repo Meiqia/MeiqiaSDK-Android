@@ -80,4 +80,8 @@
     <!--表单相关 END-->
     
     <color name="mq_btn_slit_line_bg">#eaebed</color>
+    <color name="mq_warning_primary">#FF8806</color>
+    <color name="mq_warning_light">#FFF5E6</color>
+    <color name="mq_error_primary">#FF4236</color>
+    <color name="mq_error_light">#FFECEA</color>
 </resources>

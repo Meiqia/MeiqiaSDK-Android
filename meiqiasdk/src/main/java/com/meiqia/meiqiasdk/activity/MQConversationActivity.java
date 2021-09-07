@@ -190,6 +190,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     private TextView mTopTipViewTv;
     private Runnable mAutoDismissTopTipRunnable;
+    private View mNetStatusTopView;
+    private String currentNetStatus = "connect";
 
     // 上一次发送机器人消息的时间戳
     private long mLastSendRobotMessageTime;
@@ -507,6 +509,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         intentFilter.addAction(MQMessageManager.ACTION_END_CONV_AGENT);
         intentFilter.addAction(MQMessageManager.ACTION_END_CONV_TIMEOUT);
         intentFilter.addAction(MQMessageManager.ACTION_SOCKET_OPEN);
+        intentFilter.addAction(MQController.ACTION_SOCKET_RECONNECT);
         intentFilter.addAction(MQMessageManager.ACTION_RECALL_MESSAGE);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, intentFilter);
 
@@ -557,7 +560,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 将 title 改为没有网络状态
      */
     protected void changeTitleToNetErrorState() {
-        mTitleTv.setText(getResources().getString(R.string.mq_title_net_not_work));
+        mTitleTv.setText(getResources().getString(R.string.mq_net_status_not_work_title));
 
         mHandler.removeMessages(WHAT_GET_CLIENT_POSITION_IN_QUEUE);
 
@@ -640,7 +643,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      *
      * @param contentRes tip 文本内容的资源 id
      */
-    public void popTopTip(final int contentRes) {
+    private void popTopTip(final int contentRes) {
         if (mTopTipViewTv == null) {
             mTopTipViewTv = (TextView) getLayoutInflater().inflate(R.layout.mq_top_pop_tip, null);
             mTopTipViewTv.setText(contentRes);
@@ -666,6 +669,62 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     mTopTipViewTv = null;
                 }
             }).setDuration(300).start();
+        }
+    }
+
+    // net_not_work、socket_reconnect
+    private void addNetStatusTopTip(String status) {
+        try {
+            // 如果没有网络，都处理成没网状态
+            if (!MQUtils.isNetworkAvailable(this)) {
+                status = "net_not_work";
+            }
+            // 状态没变化，不处理
+            if (TextUtils.equals(status, currentNetStatus)) {
+                return;
+            }
+            this.currentNetStatus = status;
+            if (mNetStatusTopView == null) {
+                mNetStatusTopView = getLayoutInflater().inflate(R.layout.mq_net_status_top_pop_tip, null);
+                int height = getResources().getDimensionPixelOffset(R.dimen.mq_top_tip_height);
+                mChatBodyRl.addView(mNetStatusTopView, ViewGroup.LayoutParams.MATCH_PARENT, height);
+                ViewCompat.setTranslationY(mNetStatusTopView, -height); // 初始化位置
+                ViewCompat.animate(mNetStatusTopView).translationY(0).setDuration(300).start();
+            }
+            ImageView iconIv = mNetStatusTopView.findViewById(R.id.icon_iv);
+            TextView contentTv = mNetStatusTopView.findViewById(R.id.content_tv);
+            iconIv.clearColorFilter();
+            // 没有网络
+            if (TextUtils.equals(status, "net_not_work")) {
+                contentTv.setText(R.string.mq_title_net_not_work);
+                iconIv.setColorFilter(getResources().getColor(R.color.mq_error_primary));
+                mNetStatusTopView.setBackgroundResource(R.color.mq_error_light);
+            }
+            // 正在重连
+            else if (TextUtils.equals(status, MQController.ACTION_SOCKET_RECONNECT)) {
+                // 更改标题
+                mTitleTv.setText(getResources().getString(R.string.mq_net_status_reconnect_title));
+                contentTv.setText(R.string.mq_net_status_reconnect);
+                iconIv.setColorFilter(getResources().getColor(R.color.mq_warning_primary));
+                mNetStatusTopView.setBackgroundResource(R.color.mq_warning_light);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeNetStatusTopTip() {
+        if (mNetStatusTopView != null) {
+            try {
+                mChatBodyRl.removeView(mNetStatusTopView);
+                mNetStatusTopView = null;
+
+                // 断网后，返回重新进入， 又有网了刷新 Agent
+                setCurrentAgent(mController.getCurrentAgent());
+                getClientPositionInQueue();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1591,7 +1650,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // nothing
                 } else {
-                    MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_sdcard_no_permission);
+                    MQUtils.show(this, R.string.mq_sdcard_no_permission);
                 }
                 break;
             }
@@ -1615,7 +1674,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                         }
                         // 有存储权限
                     } else {
-                        MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_camera_or_storage_no_permission);
+                        MQUtils.show(this, R.string.mq_camera_or_storage_no_permission);
                     }
                 } else {
                     MQUtils.show(this, R.string.mq_camera_or_storage_no_permission);
@@ -1697,7 +1756,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 }
             }
         }
-        super.startActivity(intent);
+        try {
+            super.startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, R.string.mq_title_unknown_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -2408,7 +2471,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
         @Override
         public void socketOpen() {
+            removeNetStatusTopTip();
+        }
 
+        @Override
+        public void socketReconnect() {
+            addNetStatusTopTip(MQController.ACTION_SOCKET_RECONNECT);
         }
     }
 
@@ -2521,7 +2589,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     // 没有网络
                     else {
                         changeTitleToNetErrorState();
-
+                        addNetStatusTopTip("net_not_work");
                         mHandler.removeMessages(WHAT_GET_CLIENT_POSITION_IN_QUEUE);
                     }
                 } else {

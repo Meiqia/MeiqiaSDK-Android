@@ -27,6 +27,7 @@ public interface MQController {
     String ACTION_QUEUEING_REMOVE = "action_queueing_remove";
     String ACTION_QUEUEING_INIT_CONV = "action_queueing_init_conv";
     String ACTION_AGENT_SEND_CLUE_CARD = "agent_send_card";
+    String ACTION_SOCKET_RECONNECT = "socket_reconnect";
 
     void sendMessage(BaseMessage baseMessage, OnMessageSendCallback onMessageSendCallback);
 

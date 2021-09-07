@@ -96,6 +96,8 @@ public abstract class MessageReceiver extends BroadcastReceiver {
             queueingInitConv();
         } else if (TextUtils.equals(MQMessageManager.ACTION_SOCKET_OPEN, action)) {
             socketOpen();
+        } else if (TextUtils.equals(MQController.ACTION_SOCKET_RECONNECT, action)) {
+            socketReconnect();
         }
     }
 
@@ -124,4 +126,6 @@ public abstract class MessageReceiver extends BroadcastReceiver {
     public abstract void queueingInitConv();
 
     public abstract void socketOpen();
+
+    public abstract void socketReconnect();
 }

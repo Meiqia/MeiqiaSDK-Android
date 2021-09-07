@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -105,6 +106,9 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
                         break;
                     case "photo_card":
                         addPhotoCardView(item.optJSONObject("body"));
+                        break;
+                    case "product_card":
+                        addProductCardView(item.optJSONObject("body"));
                         break;
                     default:
                         addNormalOrRichTextView(getContext().getString(R.string.mq_unknown_msg_tip));
@@ -229,6 +233,66 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
             params.leftMargin = margin;
             params.rightMargin = margin;
             mContainerLl.addView(descriptionTv, params);
+        }
+    }
+
+    private void addProductCardView(JSONObject contentObj) {
+        int screenWidth = MQUtils.getScreenWidth(getContext());
+        int mImageWidth = (screenWidth / 3 * 2) - MQUtils.dip2px(getContext(), 16);
+        int mImageHeight = mImageWidth;
+
+        ViewGroup.LayoutParams layoutParams = mContainerLl.getLayoutParams();
+        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        layoutParams.width = mImageWidth;
+        mContainerLl.setLayoutParams(layoutParams);
+        mContainerLl.setBackgroundResource(R.drawable.mq_bg_card);
+
+        View productCardContent = LayoutInflater.from(getContext()).inflate(R.layout.mq_item_product_card, null);
+        mContainerLl.addView(productCardContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        String title = contentObj.optString("title");
+        String description = contentObj.optString("description");
+        final String product_url = contentObj.optString("product_url");
+        String pic_url = contentObj.optString("pic_url");
+        long sales_count = contentObj.optLong("sales_count");
+
+        // 添加图片
+        ImageView iv = productCardContent.findViewById(R.id.mq_pic_iv);
+        MQImage.displayImage((Activity) getContext(), iv, pic_url, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, mImageWidth, mImageHeight, new MQImageLoader.MQDisplayImageListener() {
+            @Override
+            public void onSuccess(View view, final String url) {
+
+            }
+        });
+
+        // 查看详情
+        TextView detailTv = productCardContent.findViewById(R.id.mq_detail_tv);
+        detailTv.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Uri uri = Uri.parse(product_url);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    getContext().startActivity(intent);
+                } catch (Exception e) {
+                    MQUtils.show(getContext(), R.string.mq_title_unknown_error);
+                }
+            }
+        });
+
+        // 添加标题
+        if (!TextUtils.isEmpty(title)) {
+            TextView titleTv = productCardContent.findViewById(R.id.mq_title_tv);
+            titleTv.setText(title);
+        }
+        // 添加内容
+        if (!TextUtils.isEmpty(description)) {
+            TextView descriptionTv = productCardContent.findViewById(R.id.mq_desc_tv);
+            descriptionTv.setText(description);
+        }
+        // 销量
+        if (sales_count != 0) {
+            TextView countTv = productCardContent.findViewById(R.id.count_tv);
+            countTv.setText(getResources().getString(R.string.mq_sale_count) + "：" + sales_count);
         }
     }
 
