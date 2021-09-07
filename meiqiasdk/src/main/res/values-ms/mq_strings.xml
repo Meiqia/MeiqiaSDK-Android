@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mq_expire_after">Akan tamat tempoh selepas %1$s jam</string>
+    <string name="mq_expired">Telah tamat tempoh</string>
+    <string name="mq_expired_top_tip">Dokumen telah tamat tempoh, tidak dapat dimuat turun</string>
+    <string name="mq_downloading">Sedang muat turun...</string>
+    <string name="mq_download_complete">Muat turun selesai</string>
+    <string name="mq_download_error">Dokumen gagal dimuat turun</string>
+    <string name="mq_send">Hantar</string>
+    <string name="mq_title_net_not_work">Gagal dimuatkan</string>
+    <string name="mq_title_webview_rich_text">Mesej teks dan gambar</string>
+    <string name="mq_title_default">Khidmat pelanggan dalam talian</string>
+    <string name="mq_title_service_support">Sokongan khidmat pelanggan</string>
+    <string name="mq_title_submit_btn">Hantar</string>
+    <string name="mq_tip_required_before_submit">Maklumat dalam teks merah wajib diisi, sila lengkapkan</string>
+    <string name="mq_copy_success">Berjaya salin</string>
+    <string name="mq_dialog_select_gallery">Galeri</string>
+    <string name="mq_dialog_select_camera_video">Rakam video</string>
+    <string name="mq_dialog_select_video_title">Sila pilih sumber video:</string>
+    <string name="mq_title_leave_msg">Mesej</string>
+    <string name="mq_title_unknown_error">Ralat yang tidak diketahui</string>
+    <string name="mq_error_submit_form">Gagal menghantar borang, sila cuba sebentar nanti</string>
+    <string name="mq_error_auth_code_wrong">Kod pengesahan salah atau tamat tempoh</string>
+    <string name="mq_title_inputting">Sedang menaip...</string>
+    <string name="mq_allocate_agent">Sedang menugaskan ejen...</string>
+    <string name="mq_allocate_queue_title">Sedang menunggu giliran...</string>
+    <string name="mq_allocate_queue_tip">Sedang menunggu giliran, sila hantar mesej selepas pegawai khidmat pelanggan masuk</string>
+    <string name="mq_allocate_agent_tip">Sedang menugaskan ejen untuk anda, sila hantar semula kemudian</string>
+    <string name="mq_send_robot_msg_time_limit_tip">Penghantaran anda terlalu pantas, sila rehat sebentar</string>
+    <string name="mq_leave_msg_tips">Maaf, tiada pegawai khidmat pelanggan dalam talian. Anda boleh tinggalkan maklumat anda, kami akan menghubungi anda secepat mungkin</string>
+    <string name="mq_blacklist_tips">Maaf, sistem khidmat pelanggan tidak dapat digunakan buat sementara ini</string>
+    <string name="mq_photo_not_support">Peranti tidak menyokong fungsi penghantaran gambar</string>
+    <string name="mq_no_sdcard">Kad SD tidak wujud</string>
+    <string name="mq_sdcard_no_permission">Tidak dapat mengakses media buat masa ini</string>
+    <string name="mq_camera_or_storage_no_permission"> Tidak dapat mengakses kamera atau media buat masa ini</string>
+    <string name="mq_timeline_today">Hari ini</string>
+    <string name="mq_timeline_yesterday">Semalam</string>
+    <string name="mq_data_is_loading">Sedang memuatkan data...</string>
+    <string name="mq_direct_content">%1$s akan berkhidmat untuk anda seterusnya</string>
+    <string name="mq_confirm">Pasti</string>
+    <string name="mq_cancel">Batal</string>
+    <string name="mq_no_app_open_file">Tiada aplikasi untuk membuka dokumen ini</string>
+    <string name="mq_choose_ticket_category">Pilih kategori</string>
+    <string name="mq_back"></string>
+    <string name="mq_contains_sensitive_words">!Terdapat istilah sensitif dalam mesej</string>
+    <string name="mq_error_video_size">Video tidak dibenarkan melebihi 50MB</string>
+
+    <string name="mq_evaluate_title">Adakah anda berpuas hati dengan perkhidmatan ini?</string>
+    <string name="mq_evaluate_good">Cemerlang</string>
+    <string name="mq_evaluate_medium">Memuaskan</string>
+    <string name="mq_evaluate_bad">Kurang memuaskan</string>
+    <string name="mq_evaluate_hint">Masukkan penilaian terperinci (tidak wajib)</string>
+    <string name="mq_evaluate_failure">Penilaian gagal</string>
+
+    <string name="mq_audio_status_normal">Tahan untuk rakam</string>
+    <string name="mq_audio_status_recording">Leret ke atas untuk batal</string>
+    <string name="mq_audio_status_want_cancel">Lepas untuk batal</string>
+    <string name="mq_record_record_time_is_short">Jangka masa rakaman terlalu pendek</string>
+
+    <string name="mq_download_audio_failure">Gagal memuat turun rakaman!</string>
+    <string name="mq_recorder_no_permission">Tidak dapat mengakses mikrofon!</string>
+    <string name="mq_recorder_remaining_time">Masih boleh rakam selama %1$s saat</string>
+
+    <string name="mq_view_photo">Lihat gambar</string>
+    <string name="mq_save_img_failure">Gagal menyimpan gambar, cuba sekali lagi?</string>
+    <string name="mq_save_img_success_folder">Gambar telah disimpan ke dalam fail %s </string>
+
+    <string name="mq_send_msg">Hantar mesej</string>
+
+    <string name="mq_leave_msg_hint">Sila masukkan mesej anda</string>
+    <string name="mq_all_image">Semua gambar</string>
+
+    <string name="mq_param_not_allow_empty">%1$s mesti diisi</string>
+    <string name="mq_take_picture">Ambil gambar</string>
+    <string name="mq_submit">Hantar</string>
+    <string name="mq_toast_photo_picker_max">Hanya boleh pilih %1$s keping gambar</string>
+    <string name="mq_choose">Pilih</string>
+    <string name="mq_hint_input">Masukkan</string>
+    <string name="mq_auth_code">Kod pengesahan</string>
+
+    <string name="mq_leave_msg">Mesej</string>
+    <string name="mq_submit_leave_msg_success">Mesej berjaya dihantar</string>
+
+    <string name="mq_email">E-mel</string>
+
+    <string name="mq_wechat">WeChat</string>
+
+    <string name="mq_qq">QQ</string>
+
+    <string name="mq_phone">Telefon</string>
+
+    <string name="mq_name">Nama</string>
+    <string name="mq_contact">Kenalan</string>
+    <string name="mq_gender">Jantina</string>
+    <string name="mq_age">Umur</string>
+    <string name="mq_address">Alamat</string>
+    <string name="mq_weibo">Weibo</string>
+    <string name="mq_comment">Catatan</string>
+    <string name="mq_invalid_content">Sila isi dengan format yang betul</string>
+
+    <string name="mq_useless">Belum selesai</string>
+    <string name="mq_useful">Selesai</string>
+    <string name="mq_already_feedback">Telah maklum balas</string>
+    <string name="mq_robot_menu_tip">Klik pada soalan atau hantarkan nombor untuk semak jawapan</string>
+    <string name="mq_redirect_human">Beralih kepada bantuan ejen</string>
+    <string name="mq_no_agent_leave_msg_tip">Maaf, tiada pegawai khidmat pelanggan dalam talian. Anda boleh tinggalkan mesej kepada kami</string>
+    <string name="mq_useless_redirect_tip">Kami amat kesal atas ketidakpuasan anda terhadap jawapan robot, anda boleh cuba beralih kepada</string>
+    <string name="mq_manual_redirect_tip">Sekiranya anda memerlukan bantuan ejen, anda boleh</string>
+
+    <string name="mq_leave_us_msg">Hantar mesej kepada kami</string>
+    <string name="mq_number_waiting">Bilangan orang yang sedang menunggu</string>
+    <string name="mq_not_wait_and_choose">Sekiranya tidak boleh tunggu, boleh pilih</string>
+    <string name="mq_unknown_msg_tip">Aplikasi anda tidak dapat menyokong jenis mesej ini, sila mengemaskinikan aplikasi anda kepada versi terkini</string>
+    <string name="mq_inquire_gender_choice">["Lelaki","Perempuan"]</string>
+
+    <string name="mq_item_clue_card_input">Sila masukkan %s</string>
+    <string name="mq_item_clue_card_select">Sila pilih %s</string>
+    <string name="mq_recall_msg">Pegawai khidmat pelanggan telah menarik balik satu mesej</string>
+    <string name="mq_submit_success">Berjaya menghantar</string>
+    <string name="mq_request_permission">Permintaan akses</string>
+    <string name="mq_content_request_storage_permission">Kebenaran akses penyimpanan diperlukan untuk menyimpan gambar</string>
+    <string name="mq_content_request_camera_and_storage_permission">Kebenaran akses kamera dan penyimpanan diperlukan untuk menghantar gambar dan video</string>
+    <string name="mq_content_request_record_permission">Kebenaran akses diperlukan untuk menghantar rakaman</string>
+
+    <string name="mq_net_status_reconnect">Sedang menyambung Internet, maklumat yang diterima mungkin tidak lengkap</string>
+    <string name="mq_net_status_reconnect_title">Sedang menyambung</string>
+    <string name="mq_net_status_not_work_title">Belum disambung</string>
+    <string name="mq_sale_count">Jualan</string>
+    <string name="mq_view_details">Lihat butiran</string>
+</resources>

@@ -111,7 +111,7 @@ public class MQTimeUtils {
         if (null == time) return System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.CHINA);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        java.util.Date d;
+        Date d;
         try {
             d = sdf.parse(time);
             return d.getTime();

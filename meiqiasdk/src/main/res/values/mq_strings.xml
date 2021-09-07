@@ -11,22 +11,17 @@
     <string name="mq_title_webview_rich_text">图文消息</string>
     <string name="mq_title_default">在线客服</string>
     <string name="mq_title_service_support">客服支持</string>
-    <string name="mq_title_collect_info">请填写以下内容</string>
     <string name="mq_title_submit_btn">提交</string>
     <string name="mq_tip_required_before_submit">红色文字的地方为必填项,请填写完整</string>
     <string name="mq_copy_success">复制成功</string>
-    <string name="mq_dialog_select_camera">相机</string>
     <string name="mq_dialog_select_gallery">图库</string>
-    <string name="mq_dialog_select_title">请选择图片来源：</string>
     <string name="mq_dialog_select_camera_video">录像</string>
     <string name="mq_dialog_select_video_title">请选择视频来源：</string>
     <string name="mq_title_leave_msg">留言</string>
     <string name="mq_title_unknown_error">未知错误</string>
     <string name="mq_error_submit_form">提交表单失败,请稍后再试</string>
     <string name="mq_error_auth_code_wrong">验证码错误或者已过期</string>
-    <string name="mq_title_connect_service">服务连接中，请稍候…</string>
     <string name="mq_title_inputting">正在输入...</string>
-    <string name="mq_input_hint">请输入...</string>
     <string name="mq_allocate_agent">正在分配客服...</string>
     <string name="mq_allocate_queue_title">排队等待中...</string>
     <string name="mq_allocate_queue_tip">正在排队，请等待客服接入后发送消息</string>
@@ -44,8 +39,6 @@
     <string name="mq_direct_content">接下来由 %1$s 为你服务</string>
     <string name="mq_confirm">确定</string>
     <string name="mq_cancel">取消</string>
-    <string name="mq_runtime_permission_tip">咨询客服需要以下权限:\n\n1.访问设备上的照片\n2.录制音频</string>
-    <string name="mq_permission_denied_tip">您拒绝了咨询客服所需要的相关权限!</string>
     <string name="mq_no_app_open_file">当前没有应用打开此文件</string>
     <string name="mq_choose_ticket_category">选择分类</string>
     <string name="mq_back"></string>
@@ -57,7 +50,6 @@
     <string name="mq_evaluate_medium">中评</string>
     <string name="mq_evaluate_bad">差评</string>
     <string name="mq_evaluate_hint">填写评价内容 (选填)</string>
-    <string name="mq_evaluate_result_prefix">你给出了&#160;&#160;</string>
     <string name="mq_evaluate_failure">评价失败</string>
 
     <string name="mq_audio_status_normal">按住说话</string>
@@ -79,7 +71,6 @@
     <string name="mq_all_image">所有图片</string>
 
     <string name="mq_param_not_allow_empty">%1$s 不能为空</string>
-    <string name="mq_at_least_one_contact">至少填写一种联系方式</string>
     <string name="mq_take_picture">拍摄照片</string>
     <string name="mq_submit">提交</string>
     <string name="mq_toast_photo_picker_max">最多只能选择 %1$s 张图片</string>
@@ -91,19 +82,14 @@
     <string name="mq_submit_leave_msg_success">留言提交成功</string>
 
     <string name="mq_email">邮箱</string>
-    <string name="mq_email_hint">请输入你的邮箱</string>
 
     <string name="mq_wechat">微信</string>
-    <string name="mq_wechat_hint">请输入你的微信</string>
 
     <string name="mq_qq">QQ</string>
-    <string name="mq_qq_hint">请输入你的QQ</string>
 
     <string name="mq_phone">手机</string>
-    <string name="mq_phone_hint">请输入你的手机</string>
 
     <string name="mq_name">姓名</string>
-    <string name="mq_name_hint">请输入你的姓名</string>
     <string name="mq_contact">联系人</string>
     <string name="mq_gender">性别</string>
     <string name="mq_age">年龄</string>
@@ -135,5 +121,11 @@
     <string name="mq_content_request_storage_permission">保存图片需要申请存储空间权限</string>
     <string name="mq_content_request_camera_and_storage_permission">发送图片和发送视频功能需要申请存储空间权限和相机权限</string>
     <string name="mq_content_request_record_permission">发送语音功能需要申请录音权限</string>
+
+    <string name="mq_net_status_reconnect">网络连接中，接收消息可能会有遗漏</string>
+    <string name="mq_net_status_reconnect_title">收取中</string>
+    <string name="mq_net_status_not_work_title">未连接</string>
+    <string name="mq_sale_count">销量</string>
+    <string name="mq_view_details">查看详情</string>
 
 </resources>
