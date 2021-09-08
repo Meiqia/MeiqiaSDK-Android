@@ -12,7 +12,7 @@
 
 ```
 // -------------------- 以下三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
-implementation 'com.meiqia:meiqiasdk:3.6.9'
+implementation 'com.meiqia:meiqiasdk:3.7.0'
 implementation 'com.android.support:support-v4:23.1.1'
 implementation 'com.squareup.okhttp3:okhttp:3.5.0'
 // -------------------- 以上三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
@@ -132,8 +132,17 @@ startActivity(intent);
 Intent intent = new MQIntentBuilder(this)
         .setPreSendTextMessage("我是预发送文字消息")
         .setPreSendImageMessage(new File("预发送图片的路径"))
+        .setPreSendProductCardMessage(productCardBundle) // 预发送商品卡片
         .build();
 startActivity(intent);
+
+// productCardBundle 构造
+Bundle productCardBundle = new Bundle();
+productCardBundle.putString("title", "我是标题");
+productCardBundle.putString("description", "我是描述文字");
+productCardBundle.putString("pic_url", "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fi04.c.aliimg.com%2Fimg%2Fibank%2F2013%2F211%2F016%2F791610112_758613609.jpg&refer=http%3A%2F%2Fi04.c.aliimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1633076260&t=a46d823f8bb9fd773e93e2a7ab3f481e");
+productCardBundle.putString("product_url", "https://www.baidu.com");
+productCardBundle.putLong("sales_count", 1000);
 ```
 
 > 设置监听 MQConversationActivity 生命周期的回调接口

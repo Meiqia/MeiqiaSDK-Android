@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mq_expire_after"> Akan expired setelah %1$ jam </string>
+    <string name="mq_expired">Sudah expired</string>
+    <string name="mq_expired_top_tip">Dokumen sudah expired, tidak dapat diunduh</string>
+    <string name="mq_downloading">Sedang mengunduh...</string>
+    <string name="mq_download_complete">Selesai mengunduh</string>
+    <string name="mq_download_error">Dokumen gagal diunduh</string>
+    <string name="mq_send">Kirim</string>
+    <string name="mq_title_net_not_work">Gagal memuat jaringan</string>
+    <string name="mq_title_webview_rich_text">Pesan gambar dan tulisan</string>
+    <string name="mq_title_default">Online CS</string>
+    <string name="mq_title_service_support">Bantuan CS</string>
+    <string name="mq_title_submit_btn">Kirim</string>
+    <string name="mq_tip_required_before_submit">Tempat bertulisan merah wajib diisi, silakan isi yang lengkap</string>
+    <string name="mq_copy_success">Berhasil copy</string>
+    <string name="mq_dialog_select_gallery">Galeri</string>
+    <string name="mq_dialog_select_camera_video">Rekam Video</string>
+    <string name="mq_dialog_select_video_title">Silakan pilih sumber video:</string>
+    <string name="mq_title_leave_msg">Tinggalkan pesan</string>
+    <string name="mq_title_unknown_error">Eror yang tidak diketahui</string>
+    <string name="mq_error_submit_form">Formulir gagal dikirim, silakan coba setelah beberapa saat</string>
+    <string name="mq_error_auth_code_wrong">Kode verifikasi salah atau sudah expired</string>
+    <string name="mq_title_inputting">Sedang mengisi...</string>
+    <string name="mq_allocate_agent">Sedang menugaskan CS...</string>
+    <string name="mq_allocate_queue_title">Dalam antrian...</string>
+    <string name="mq_allocate_queue_tip">Sedang mengantri, silakan mengirim pesan setelah CS masuk</string>
+    <string name="mq_allocate_agent_tip">Sedang menugaskan CS untuk Anda, silakan kirim ulang setelah beberapa saat </string>
+    <string name="mq_send_robot_msg_time_limit_tip">Anda terlalu cepat mengirimnya, istirahatlah sebentar </string>
+    <string name="mq_leave_msg_tips">Maaf, sekarang tidak ada CS yang online\n Anda bisa lanjut menliskan pesannya kami akan balas secepatnya</string>
+    <string name="mq_blacklist_tips">Maaf, sistem customer service sementara tidak dapat digunakan</string>
+    <string name="mq_photo_not_support">Fasilitas saat ini tidak mendukung pengiriman foto</string>
+    <string name="mq_no_sdcard">Tidak ada kartu SD</string>
+    <string name="mq_sdcard_no_permission">Sekarang belum ada otorisasi media</string>
+    <string name="mq_camera_or_storage_no_permission">Sekarang belum ada otorisasi kamera atau media </string>
+    <string name="mq_timeline_today">Hari ini</string>
+    <string name="mq_timeline_yesterday">Kemarin</string>
+    <string name="mq_data_is_loading">Data sedang dimuat...</string>
+    <string name="mq_direct_content">Selanjutnya %1$s akan melayani Anda</string>
+    <string name="mq_confirm">Konfirmasi</string>
+    <string name="mq_cancel">Batal</string>
+    <string name="mq_no_app_open_file">Saat ini tidak ada aplikasi untuk membuka dokumen ini</string>
+    <string name="mq_choose_ticket_category">Pilih kategori</string>
+    <string name="mq_back"></string>
+    <string name="mq_contains_sensitive_words">! Pesan mengandung konten yang tidak sesuai aturan</string>
+    <string name="mq_error_video_size">Video is a idak boleh lebih besar dari 50mb</string>
+
+    <string name="mq_evaluate_title">Apakah Anda puas dengan pelayanan kali ini?</string>
+    <string name="mq_evaluate_good">Bagus</string>
+    <string name="mq_evaluate_medium">Biasa</string>
+    <string name="mq_evaluate_bad">Buruk</string>
+    <string name="mq_evaluate_hint">Isi penilaian (bebas isi)</string>
+    <string name="mq_evaluate_failure">Penilaian gagal</string>
+
+    <string name="mq_audio_status_normal">Tekan untuk bicara</string>
+    <string name="mq_audio_status_recording">Geser ke atas untuk batalkan pengiriman</string>
+    <string name="mq_audio_status_want_cancel">Lepaskan jari untuk batalkan pengiriman</string>
+    <string name="mq_record_record_time_is_short">Rekaman terlalu panjang</string>
+
+    <string name="mq_download_audio_failure">Rekaman gagal diunduh!</string>
+    <string name="mq_recorder_no_permission">Tidak ada otorisasi untuk rekam suara!</string>
+    <string name="mq_recorder_remaining_time">Masih bisa bicara selama %1$s detik</string>
+
+    <string name="mq_view_photo">Cek foto</string>
+    <string name="mq_save_img_failure">Foto gagal disimpan, coba lagi?</string>
+    <string name="mq_save_img_success_folder">Foto sudah disimpan ke folder %s </string>
+
+    <string name="mq_send_msg">Kirim pesan</string>
+
+    <string name="mq_leave_msg_hint">Silakan isi pesan Anda</string>
+    <string name="mq_all_image">Semua foto</string>
+
+    <string name="mq_param_not_allow_empty">%1$s tidak boleh kosong</string>
+    <string name="mq_take_picture">Ambil foto</string>
+    <string name="mq_submit">Kirim</string>
+    <string name="mq_toast_photo_picker_max">Maksimal hanya bisa pilih %1$s foto</string>
+    <string name="mq_choose">Pilih</string>
+    <string name="mq_hint_input">Isi</string>
+    <string name="mq_auth_code">Kode verifikaso</string>
+
+    <string name="mq_leave_msg">Tinggalkan pesan</string>
+    <string name="mq_submit_leave_msg_success">Pesan berhasil ditinggalkan</string>
+
+    <string name="mq_email">Email</string>
+
+    <string name="mq_wechat">WeChat</string>
+
+    <string name="mq_qq">QQ</string>
+
+    <string name="mq_phone">No. HP</string>
+
+    <string name="mq_name">Nama</string>
+    <string name="mq_contact">Kontak</string>
+    <string name="mq_gender">Jenis kelamin</string>
+    <string name="mq_age">Umur</string>
+    <string name="mq_address">Alamat</string>
+    <string name="mq_weibo">Weibo</string>
+    <string name="mq_comment">Catatan</string>
+    <string name="mq_invalid_content">Silakan isi dengan format yang tepat</string>
+
+    <string name="mq_useless">Belum terselesaikan</string>
+    <string name="mq_useful">Terselesaikan</string>
+    <string name="mq_already_feedback">Sudah diumpan balik</string>
+    <string name="mq_robot_menu_tip">Klik pertanyaan atau balas angka yang sesuai untuk cek jawaban</string>
+    <string name="mq_redirect_human">Pindah ke bantuan langsung</string>
+    <string name="mq_no_agent_leave_msg_tip">Maaf, saat ini tidak ada CS yang online, Anda bisa</string>
+    <string name="mq_useless_redirect_tip">Mohon maaf atas ketidakpuasannya dengan jawaban robot, bisa coba</string>
+    <string name="mq_manual_redirect_tip">Jika pertanyaan Anda perlu bantuan langsung, bisa</string>
+
+    <string name="mq_leave_us_msg">Tinggalkan kami pesan</string>
+    <string name="mq_number_waiting">Jumlah orang yang sedang menunggu</string>
+    <string name="mq_not_wait_and_choose">Jika tidak dapat menunggu, bisa pilih</string>
+    <string name="mq_unknown_msg_tip">Aplikasi yang sekarang tidak mendukung jenis pesan Anda, silakan perbarui aplikasi ke versi terbaru</string>
+    <string name="mq_inquire_gender_choice">["Pria","Wanita"]</string>
+
+    <string name="mq_item_clue_card_input">Silakan isi %s</string>
+    <string name="mq_item_clue_card_select">Silakan pilih %s</string>
+    <string name="mq_recall_msg">Customer service menarik kembali satu pesan</string>
+    <string name="mq_submit_success">Berhasil kirim</string>
+    <string name="mq_request_permission">Permintaan otorisasi</string>
+    <string name="mq_content_request_storage_permission"> Fitur penyimpanan foto dan video perlu otorisasi untuk memori</string>
+    <string name="mq_content_request_camera_and_storage_permission">Fitur pengiriman foto dan video perlu otorisasi untuk memori dan kamera</string>
+    <string name="mq_content_request_record_permission">Fitur pengiriman pesan suara perlu otorisasi untuk merekam suara </string>
+
+    <string name="mq_net_status_reconnect">Jaringan sedang dihubungkan, penerimaan pesan mungkin akan terganggu</string>
+    <string name="mq_net_status_reconnect_title">Sedang menerima</string>
+    <string name="mq_net_status_not_work_title">Belum terhubung</string>
+    <string name="mq_sale_count">Jumlah penjualan</string>
+    <string name="mq_view_details">Cek rincian</string>
+
+</resources>
