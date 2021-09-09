@@ -50,6 +50,7 @@ public class BaseMessage {
     private String avatar;
     private boolean isRead;
     private long conversationId;
+    private String fromType = TYPE_FROM_AGENT;
 
     public BaseMessage() {
         this.createdOn = System.currentTimeMillis();
@@ -143,6 +144,14 @@ public class BaseMessage {
 
     public void setConversationId(long conversationId) {
         this.conversationId = conversationId;
+    }
+
+    public String getFromType() {
+        return fromType;
+    }
+
+    public void setFromType(String fromType) {
+        this.fromType = fromType;
     }
 
     @Override

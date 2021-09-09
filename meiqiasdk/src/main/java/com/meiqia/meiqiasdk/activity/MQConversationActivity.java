@@ -125,6 +125,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     public static final String UPDATE_CLIENT_INFO = "updateClientInfo";
     public static final String PRE_SEND_TEXT = "preSendText";
     public static final String PRE_SEND_IMAGE_PATH = "preSendImagePath";
+    public static final String PRE_SEND_PRODUCT_CARD = "preSendProductCard";
 
     public static final int REQUEST_CODE_CAMERA = 0;
     public static final int REQUEST_CODE_PHOTO = 1;
@@ -1219,6 +1220,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         if (getIntent() != null && !mController.getIsWaitingInQueue()) {
             String preSendTextContent = getIntent().getStringExtra(PRE_SEND_TEXT);
             String preSendImageFilePath = getIntent().getStringExtra(PRE_SEND_IMAGE_PATH);
+            Bundle preSendProductCardBundle = getIntent().getBundleExtra(PRE_SEND_PRODUCT_CARD);
             if (!TextUtils.isEmpty(preSendTextContent)) {
                 // 加入到待发送，等分配成功，并且 socket 连上的时候发送
                 TextMessage preSendMsg = new TextMessage(preSendTextContent);
@@ -1226,11 +1228,42 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             }
             if (!TextUtils.isEmpty(preSendImageFilePath)) {
                 File imageFile = new File(preSendImageFilePath);
-                createAndSendImageMessage(imageFile);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && !imageFile.exists()) {
+                    return;
+                }
+                PhotoMessage imageMessage = new PhotoMessage();
+                imageMessage.setLocalPath(imageFile.getAbsolutePath());
+                delaySendList.add(imageMessage);
+            }
+            if (preSendProductCardBundle != null) {
+                HybridMessage productMessage = new HybridMessage();
+                productMessage.setAvatar(getClientAvatarUrl());
+                productMessage.setFromType(BaseMessage.TYPE_FROM_CLIENT);
+                productMessage.setContentType(BaseMessage.TYPE_CONTENT_HYBRID);
+                Map<String, Object> contentMap = new HashMap<>();
+                Map<String, Object> bodyMap = new HashMap<>();
+                bodyMap.put("pic_url", preSendProductCardBundle.getString("pic_url"));
+                bodyMap.put("title", preSendProductCardBundle.getString("title"));
+                bodyMap.put("description", preSendProductCardBundle.getString("description"));
+                bodyMap.put("product_url", preSendProductCardBundle.getString("product_url"));
+                bodyMap.put("sales_count", preSendProductCardBundle.getLong("sales_count"));
+                contentMap.put("type", "product_card");
+                String content = null;
+                try {
+                    contentMap.put("body", MQUtils.mapToJson(bodyMap));
+                    JSONArray contentArray = new JSONArray();
+                    contentArray.put(MQUtils.mapToJson(contentMap));
+                    content = contentArray.toString();
+                } catch (Exception e) {
+                    e.toString();
+                }
+                productMessage.setContent(content);
+                delaySendList.add(productMessage);
             }
             // 清空 intent 里面的数据,因为排队成功可能还会再发一次,如果为空就不再发了
-            getIntent().putExtra(PRE_SEND_TEXT, "");
-            getIntent().putExtra(PRE_SEND_IMAGE_PATH, "");
+            getIntent().removeExtra(PRE_SEND_TEXT);
+            getIntent().removeExtra(PRE_SEND_IMAGE_PATH);
+            getIntent().removeExtra(PRE_SEND_PRODUCT_CARD);
         }
     }
 
@@ -1703,9 +1736,24 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     createAndSendImageMessage(new File(photoPath));
                 }
             } else if (requestCode == REQUEST_CODE_VIDEO) {
-                File videoFile = getVideoFile(data);
-                if (videoFile != null) {
+                // 复制到私有目录
+                try {
+                    ParcelFileDescriptor pfd = this.getContentResolver().openFileDescriptor(data.getData(), "r");
+                    FileInputStream fileInputStream = new FileInputStream(pfd.getFileDescriptor());
+                    String path = MQUtils.getPicStorePath(this) + "/" + System.currentTimeMillis() + ".mp4";
+                    File videoFile = new File(path);
+                    FileOutputStream fileOutputStream = new FileOutputStream(videoFile);
+                    int len = 0;
+                    byte[] buffer = new byte[8192];
+                    while ((len = fileInputStream.read(buffer)) != -1) {
+                        fileOutputStream.write(buffer, 0, len);
+                    }
+                    pfd.close();
+                    fileInputStream.close();
+                    fileOutputStream.close();
                     createAndSendVideoMessage(videoFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             } else if (requestCode == REQUEST_CODE_CHOOSE_VIDEO) {
                 try {

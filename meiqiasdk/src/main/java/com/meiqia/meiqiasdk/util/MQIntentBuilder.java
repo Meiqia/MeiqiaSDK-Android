@@ -3,6 +3,7 @@ package com.meiqia.meiqiasdk.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.meiqia.core.MQManager;
@@ -108,6 +109,11 @@ public class MQIntentBuilder {
         if (imageFile != null && imageFile.exists()) {
             mIntent.putExtra(MQConversationActivity.PRE_SEND_IMAGE_PATH, imageFile.getAbsolutePath());
         }
+        return this;
+    }
+
+    public MQIntentBuilder setPreSendProductCardMessage(Bundle productCardMessageBundle) {
+        mIntent.putExtra(MQConversationActivity.PRE_SEND_PRODUCT_CARD, productCardMessageBundle);
         return this;
     }
 

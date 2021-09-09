@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
 import com.meiqia.meiqiasdk.imageloader.MQImageLoader;
+import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.HybridMessage;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
@@ -36,6 +38,7 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
 
     private MQImageView mAvatarIv;
     private LinearLayout mContainerLl;
+    private LinearLayout mRootLl;
 
     private MQRobotItem.Callback mCallback;
 
@@ -63,6 +66,7 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
     protected void initView() {
         mAvatarIv = getViewById(R.id.iv_robot_avatar);
         mContainerLl = getViewById(R.id.ll_robot_container);
+        mRootLl = getViewById(R.id.root_ll);
     }
 
     @Override
@@ -81,8 +85,46 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
     public void setMessage(HybridMessage hybridMessage, Activity activity) {
         mContainerLl.removeAllViews();
         mHybridMessage = hybridMessage;
-        MQImage.displayImage(activity, mAvatarIv, mHybridMessage.getAvatar(), R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, 100, 100, null);
+        if (!TextUtils.isEmpty(mHybridMessage.getAvatar())) {
+            MQImage.displayImage(activity, mAvatarIv, mHybridMessage.getAvatar(), R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, 100, 100, null);
+        }
         fillContentLl(mHybridMessage.getContent());
+        // 根据来源，调整展示
+        View firstView = mRootLl.getChildAt(0);
+        View secondVIew = mRootLl.getChildAt(1);
+        // 先移除，然后根据来源，重新调整布局
+        mRootLl.removeAllViews();
+        int avatarWidthAndHeight = MQUtils.dip2px(activity, 35);
+        int avatarMargin = MQUtils.dip2px(activity, 6);
+        if (TextUtils.equals(hybridMessage.getFromType(), BaseMessage.TYPE_FROM_CLIENT)) {
+            if (!MQConfig.isShowClientAvatar) {
+                mAvatarIv.setVisibility(GONE);
+            }
+            mRootLl.setGravity(Gravity.RIGHT);
+            // 头像需要调整到右边
+            if (firstView instanceof MQImageView) {
+                mRootLl.addView(secondVIew);
+                LinearLayout.LayoutParams avatarParams = new LinearLayout.LayoutParams(avatarWidthAndHeight, avatarWidthAndHeight);
+                avatarParams.leftMargin = avatarMargin;
+                mRootLl.addView(firstView, avatarParams);
+            } else {
+                mRootLl.addView(firstView);
+                mRootLl.addView(secondVIew);
+            }
+        } else {
+            mAvatarIv.setVisibility(VISIBLE);
+            mRootLl.setGravity(Gravity.LEFT);
+            // 头像需要调整到左边
+            if (firstView instanceof LinearLayout) {
+                mRootLl.addView(secondVIew);
+                LinearLayout.LayoutParams avatarParams = new LinearLayout.LayoutParams(avatarWidthAndHeight, avatarWidthAndHeight);
+                avatarParams.rightMargin = avatarMargin;
+                mRootLl.addView(firstView, avatarParams);
+            } else {
+                mRootLl.addView(firstView);
+                mRootLl.addView(secondVIew);
+            }
+        }
     }
 
     private void fillContentLl(String content) {

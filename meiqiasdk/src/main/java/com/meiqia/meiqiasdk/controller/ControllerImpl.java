@@ -24,6 +24,10 @@ import com.meiqia.meiqiasdk.model.VideoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.Map;
 
@@ -69,6 +73,21 @@ public class ControllerImpl implements MQController {
         } else if (BaseMessage.TYPE_CONTENT_VIDEO.equals(message.getContentType())) {
             VideoMessage voiceMessage = (VideoMessage) message;
             MQManager.getInstance(context).sendMQVideoMessage(voiceMessage.getLocalPath(), onMQMessageSendCallback);
+        } else if (BaseMessage.TYPE_CONTENT_HYBRID.equals(message.getContentType())) {
+            try {
+                JSONArray contentObj = new JSONArray(message.getContent());
+                JSONObject body = contentObj.getJSONObject(0).optJSONObject("body");
+                String title = body.optString("title");
+                String desc = body.optString("description");
+                String productUrl = body.optString("product_url");
+                String picUrl = body.optString("pic_url");
+                long saleCount = body.optLong("sales_count");
+                MQManager.getInstance(context).sendMQProductCardMessage(title, desc, picUrl, productUrl, saleCount, onMQMessageSendCallback);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                message.setStatus(BaseMessage.STATE_FAILED);
+                onMessageSendCallback.onFailure(message,0,"");
+            }
         }
     }
 
