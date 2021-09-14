@@ -281,6 +281,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             sendGetClientPositionInQueueMsg();
         }
         MQConfig.getActivityLifecycleCallback().onActivityStarted(this);
+        mController.onConversationStart();
     }
 
     @Override
@@ -328,6 +329,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             mController.saveConversationOnStopTime(System.currentTimeMillis());
         }
         MQConfig.getActivityLifecycleCallback().onActivityStopped(this);
+        mController.onConversationStop();
     }
 
     @Override
@@ -2581,10 +2583,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
             // 保存最后一条消息时间
             mController.saveConversationLastMessageTime(baseMessage.getCreatedOn());
-            // 客服的消息标记已读
-            if (baseMessage.getItemViewType() == BaseMessage.TYPE_AGENT) {
-                mController.markMessageRead(baseMessage.getId());
-            }
         }
 
     }

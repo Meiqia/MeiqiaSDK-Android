@@ -112,8 +112,6 @@ public interface MQController {
 
     void updateMessage(long messageId, boolean isRead);
 
-    void markMessageRead(long messageId);
-
     /**
      * 保存聊天界面不可见时的最后一条消息的时间
      *
@@ -189,6 +187,10 @@ public interface MQController {
      * 对话界面关闭时候的回调
      */
     void onConversationOpen();
+
+    void onConversationStart();
+
+    void onConversationStop();
 
     /**
      * 获取当前顾客在排队队列中的位置
