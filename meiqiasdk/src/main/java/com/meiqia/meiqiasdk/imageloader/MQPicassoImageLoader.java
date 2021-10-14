@@ -23,20 +23,15 @@ public class MQPicassoImageLoader extends MQImageLoader {
 
     @Override
     public void displayImage(Activity activity, final ImageView imageView, String path, @DrawableRes int loadingResId, @DrawableRes int failResId, int width, int height, final MQDisplayImageListener listener) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            Uri uri = MQUtils.getImageContentUri(activity, path);
-            displayImage(activity, imageView, uri, loadingResId, failResId, width, height, listener);
-        } else {
-            final String finalPath = getPath(path);
-            Picasso.with(activity).load(finalPath).placeholder(loadingResId).error(failResId).resize(width, height).centerInside().into(imageView, new Callback.EmptyCallback() {
-                @Override
-                public void onSuccess() {
-                    if (listener != null) {
-                        listener.onSuccess(imageView, finalPath);
-                    }
+        final String finalPath = getPath(path);
+        Picasso.with(activity).load(finalPath).placeholder(loadingResId).error(failResId).resize(width, height).centerInside().into(imageView, new Callback.EmptyCallback() {
+            @Override
+            public void onSuccess() {
+                if (listener != null) {
+                    listener.onSuccess(imageView, finalPath);
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override

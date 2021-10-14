@@ -14,7 +14,6 @@
     <TextView
         android:id="@+id/tv_no_agent_leave_msg"
         style="@style/MQWrapWrap"
-        android:clickable="true"
         android:paddingLeft="@dimen/mq_size_level1"
         android:paddingTop="@dimen/mq_size_level1"
         android:paddingRight="@dimen/mq_size_level1"

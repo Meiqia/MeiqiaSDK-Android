@@ -24,9 +24,6 @@ public class MQIntentBuilder {
 
     private Context mContext;
     private Intent mIntent;
-    private String mAgentId;
-    private String mGroupId;
-    private MQScheduleRule mScheduleRule = MQScheduleRule.REDIRECT_ENTERPRISE; // 默认指定分配失败后全企业分配
 
     public MQIntentBuilder(Context context) {
         mContext = context;
@@ -39,27 +36,12 @@ public class MQIntentBuilder {
     }
 
     /**
-     * 根据后台设置,判断是直接跳转到聊天界面,还是询前表单
-     *
      * @param context
      * @param clazz
      * @return
      */
     private Intent getIntent(Context context, Class<? extends MQConversationActivity> clazz) {
-        MQAgent agent = MQManager.getInstance(context).getCurrentAgent();
-        if (agent != null) {
-            mIntent = new Intent(context, clazz);
-            return mIntent;
-        }
-        boolean isMenusOpen = MQManager.getInstance(context).getMQInquireForm().isMenusOpen();
-        boolean isInputsOpen = MQManager.getInstance(context).getMQInquireForm().isInputsOpen();
-        if (isMenusOpen) {
-            mIntent = new Intent(context, MQInquiryFormActivity.class);
-        } else if (isInputsOpen) {
-            mIntent = new Intent(context, MQCollectInfoActivity.class);
-        } else {
-            mIntent = new Intent(context, clazz);
-        }
+        mIntent = new Intent(context, clazz);
         return mIntent;
     }
 
@@ -86,17 +68,17 @@ public class MQIntentBuilder {
     }
 
     public MQIntentBuilder setScheduledAgent(String agentId) {
-        mAgentId = agentId;
+        mIntent.putExtra(MQConversationActivity.SCHEDULED_AGENT, agentId);
         return this;
     }
 
     public MQIntentBuilder setScheduledGroup(String groupId) {
-        mGroupId = groupId;
+        mIntent.putExtra(MQConversationActivity.SCHEDULED_GROUP, groupId);
         return this;
     }
 
     public MQIntentBuilder setScheduleRule(MQScheduleRule scheduleRule) {
-        mScheduleRule = scheduleRule;
+        MQManager.getInstance(mContext).setScheduleRule(scheduleRule); // 和以前逻辑保持一致，SDK 设置的分配规则，同样影响询前表单的分配
         return this;
     }
 
@@ -118,7 +100,6 @@ public class MQIntentBuilder {
     }
 
     public Intent build() {
-        MQManager.getInstance(mContext).setScheduledAgentOrGroupWithId(mAgentId, mGroupId, mScheduleRule);
         if (!(mContext instanceof Activity)) {
             mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }

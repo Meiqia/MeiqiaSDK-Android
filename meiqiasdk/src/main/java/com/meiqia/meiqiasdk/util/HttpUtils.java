@@ -34,7 +34,7 @@ public class HttpUtils {
     }
 
     public JSONObject getAuthCode() throws IOException, JSONException {
-        String baseUrl = "https://eco-api.meiqia.com/";
+        String baseUrl = "https://new-api.meiqia.com";
         RequestBody body = RequestBody.create(JSON, new byte[]{});
         Request request = new Request.Builder()
                 .url(baseUrl + "/captchas")
@@ -46,6 +46,7 @@ public class HttpUtils {
         JSONObject result = new JSONObject(responseStr);
         String url = result.optString("captcha_image_url");
         result.put("captcha_image_url", baseUrl + url);
+        result.put("captcha_token", result.optString("captcha_token"));
         return result;
     }
 

@@ -36,27 +36,22 @@ public class MQUILImageLoader extends MQImageLoader {
     @Override
     public void displayImage(Activity activity, ImageView imageView, String path, @DrawableRes int loadingResId, @DrawableRes int failResId, int width, int height, final MQDisplayImageListener listener) {
         initImageLoader(activity);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            Uri uri = MQUtils.getImageContentUri(activity, path);
-            displayImage(activity, imageView, uri, loadingResId, failResId, width, height, listener);
-        } else {
-            DisplayImageOptions options = new DisplayImageOptions.Builder()
-                    .showImageOnLoading(loadingResId)
-                    .showImageOnFail(failResId)
-                    .cacheInMemory(true)
-                    .build();
-            ImageSize imageSize = new ImageSize(width, height);
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .showImageOnLoading(loadingResId)
+                .showImageOnFail(failResId)
+                .cacheInMemory(true)
+                .build();
+        ImageSize imageSize = new ImageSize(width, height);
 
-            final String finalPath = getPath(path);
-            ImageLoader.getInstance().displayImage(finalPath, new ImageViewAware(imageView), options, imageSize, new SimpleImageLoadingListener() {
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    if (listener != null) {
-                        listener.onSuccess(view, imageUri);
-                    }
+        final String finalPath = getPath(path);
+        ImageLoader.getInstance().displayImage(finalPath, new ImageViewAware(imageView), options, imageSize, new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                if (listener != null) {
+                    listener.onSuccess(view, imageUri);
                 }
-            }, null);
-        }
+            }
+        }, null);
     }
 
     @Override

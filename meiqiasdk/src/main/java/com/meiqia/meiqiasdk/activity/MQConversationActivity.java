@@ -47,6 +47,8 @@ import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.MQMessageManager;
+import com.meiqia.core.MQScheduleRule;
+import com.meiqia.core.bean.MQAgent;
 import com.meiqia.core.bean.MQMessage;
 import com.meiqia.core.callback.OnClientPositionInQueueCallback;
 import com.meiqia.core.callback.OnGetMessageListCallback;
@@ -126,6 +128,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     public static final String PRE_SEND_TEXT = "preSendText";
     public static final String PRE_SEND_IMAGE_PATH = "preSendImagePath";
     public static final String PRE_SEND_PRODUCT_CARD = "preSendProductCard";
+    public static final String BOOL_IGNORE_CHECK_OTHER_ACTIVITY = "boolIgnoreCheckOtherActivity";
+    public static final String SCHEDULED_GROUP = "SCHEDULED_GROUP";
+    public static final String SCHEDULED_AGENT = "SCHEDULED_AGENT";
+    public static final String SCHEDULED_RULE = "SCHEDULED_RULE";
 
     public static final int REQUEST_CODE_CAMERA = 0;
     public static final int REQUEST_CODE_PHOTO = 1;
@@ -225,10 +231,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         findViews();
         init();
         setListeners();
-        applyCustomUIConfig();
         registerReceiver();
-        refreshEnterpriseConfig();
-
 
         // 恢复之前未发送的文本消息
         String clientId = mController.getCurrentClientId();
@@ -239,6 +242,82 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         }
 
         MQConfig.getActivityLifecycleCallback().onActivityCreated(this, savedInstanceState);
+
+        // 刷新配置，然后决定是否跳转到询前表单或者其它界面
+        mController.refreshEnterpriseConfig(new SimpleCallback() {
+            @Override
+            public void onSuccess() {
+                MQManager mqManager = MQManager.getInstance(getApplicationContext());
+                // 已分配客服了，就继续初始化聊天界面
+                MQAgent agent = mqManager.getCurrentAgent();
+                if (agent != null) {
+                    applyAfterRefreshConfig();
+                    return;
+                }
+                // 从询前表单、信息收集界面来的，就直接加载聊天消息
+                if (getIntent() != null && getIntent().getBooleanExtra(BOOL_IGNORE_CHECK_OTHER_ACTIVITY, false)) {
+                    applyAfterRefreshConfig();
+                    return;
+                }
+
+                boolean isMenusOpen = mqManager.getMQInquireForm().isMenusOpen();
+                boolean isInputsOpen = mqManager.getMQInquireForm().isInputsOpen();
+                Intent intent;
+                if (isMenusOpen) {
+                    intent = new Intent(MQConversationActivity.this, MQInquiryFormActivity.class);
+                    MQUtils.copyIntentExtra(getIntent(), intent);
+                    startActivity(intent);
+                    finish();
+                } else if (isInputsOpen) {
+                    intent = new Intent(MQConversationActivity.this, MQCollectInfoActivity.class);
+                    MQUtils.copyIntentExtra(getIntent(), intent);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    String scheduleAgentId = getIntent().getStringExtra(SCHEDULED_AGENT);
+                    String scheduleGroupId = getIntent().getStringExtra(SCHEDULED_GROUP);
+                    String scheduleRule = getIntent().getStringExtra(SCHEDULED_RULE);
+                    MQScheduleRule rule = null;
+                    if (TextUtils.isEmpty(scheduleRule)) {
+                        try {
+                            rule = MQScheduleRule.valueOf(scheduleRule);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    MQManager.getInstance(MQConversationActivity.this).setScheduledAgentOrGroupWithId(scheduleAgentId, scheduleGroupId, rule);
+                    // 都不是，就继续初始化聊天界面
+                    applyAfterRefreshConfig();
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+                applyAfterRefreshConfig();
+            }
+        });
+    }
+
+    private void applyAfterRefreshConfig() {
+        applyCustomUIConfig();
+        refreshRedirectHumanBtn();
+        isNeedDelayOnline = mController.getEnterpriseConfig().scheduler_after_client_send_msg;
+
+        // 根据开关，是否发送消息才分配客服 已分配过客服就不再受开关影响
+        if (isNeedDelayOnline && mController.getCurrentAgent() == null) {
+            if (!mHasLoadData) {
+                String displayTitle = mController.getEnterpriseConfig().public_nickname;
+                if (TextUtils.equals("null", displayTitle)) {
+                    displayTitle = getResources().getString(R.string.mq_title_default);
+                }
+                mTitleTv.setText(displayTitle);
+                mLoadProgressBar.setVisibility(View.VISIBLE);
+                getMessageFromServiceAndLoad();
+            }
+        } else {
+            // 设置顾客上线，请求分配客服
+            setClientOnline(false);
+        }
     }
 
     @Override
@@ -287,21 +366,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
-        // 根据开关，是否发送消息才分配客服 已分配过客服就不再受开关影响
-        if (isNeedDelayOnline && mController.getCurrentAgent() == null) {
-            if (!mHasLoadData) {
-                String displayTitle = mController.getEnterpriseConfig().public_nickname;
-                if (TextUtils.equals("null", displayTitle)) {
-                    displayTitle = getResources().getString(R.string.mq_title_default);
-                }
-                mTitleTv.setText(displayTitle);
-                mLoadProgressBar.setVisibility(View.VISIBLE);
-                getMessageFromServiceAndLoad();
-            }
-        } else {
-            // 设置顾客上线，请求分配客服
-            setClientOnline(false);
-        }
         isPause = false;
         MQConfig.getActivityLifecycleCallback().onActivityResumed(this);
     }
@@ -400,7 +464,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
         mCustomKeyboardLayout.init(this, mInputEt, this);
         isDestroy = false;
-        isNeedDelayOnline = mController.getEnterpriseConfig().scheduler_after_client_send_msg;
     }
 
     private void findViews() {
@@ -1542,10 +1605,19 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 从本地选择图片
      */
     private void chooseFromPhotoPicker() {
-        try {
-            startActivityForResult(MQPhotoPickerActivity.newIntent(this, null, 3, null, getString(R.string.mq_send)), REQUEST_CODE_PHOTO);
-        } catch (Exception e) {
-            MQUtils.show(this, R.string.mq_photo_not_support);
+        // Android 10 直接跳转系统组件
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Intent intent = new Intent();
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(intent, REQUEST_CODE_PHOTO);
+        } else {
+            try {
+                startActivityForResult(MQPhotoPickerActivity.newIntent(this, null, 3, null, getString(R.string.mq_send)), REQUEST_CODE_PHOTO);
+            } catch (Exception e) {
+                MQUtils.show(this, R.string.mq_photo_not_support);
+            }
         }
     }
 
@@ -1732,10 +1804,30 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 }
             } else if (requestCode == REQUEST_CODE_PHOTO) {
                 // 从 相册 获取的图片
-
-                ArrayList<String> selectedPhotos = MQPhotoPickerActivity.getSelectedImages(data);
-                for (String photoPath : selectedPhotos) {
-                    createAndSendImageMessage(new File(photoPath));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    try {
+                        ParcelFileDescriptor pfd = this.getContentResolver().openFileDescriptor(data.getData(), "r");
+                        FileInputStream fileInputStream = new FileInputStream(pfd.getFileDescriptor());
+                        String path = MQUtils.getPicStorePath(this) + "/" + System.currentTimeMillis();
+                        File imageFile = new File(path);
+                        FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
+                        int len;
+                        byte[] buffer = new byte[8192];
+                        while ((len = fileInputStream.read(buffer)) != -1) {
+                            fileOutputStream.write(buffer, 0, len);
+                        }
+                        pfd.close();
+                        fileInputStream.close();
+                        fileOutputStream.close();
+                        createAndSendImageMessage(imageFile);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    ArrayList<String> selectedPhotos = MQPhotoPickerActivity.getSelectedImages(data);
+                    for (String photoPath : selectedPhotos) {
+                        createAndSendImageMessage(new File(photoPath));
+                    }
                 }
             } else if (requestCode == REQUEST_CODE_VIDEO) {
                 // 复制到私有目录
@@ -2279,23 +2371,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     @Override
     public void onClickRobotMenuItem(String text) {
         sendMessage(new TextMessage(text));
-    }
-
-    /**
-     * 刷新企业配置信息
-     */
-    private void refreshEnterpriseConfig() {
-        refreshRedirectHumanBtn();
-        MQConfig.getController(this).refreshEnterpriseConfig(new SimpleCallback() {
-            @Override
-            public void onFailure(int code, String message) {
-            }
-
-            @Override
-            public void onSuccess() {
-                refreshRedirectHumanBtn();
-            }
-        });
     }
 
     /**

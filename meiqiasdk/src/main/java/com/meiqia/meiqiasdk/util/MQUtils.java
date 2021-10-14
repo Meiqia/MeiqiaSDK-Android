@@ -8,6 +8,7 @@ import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -1419,6 +1420,12 @@ public class MQUtils {
             }
         }
         return jsonArray;
+    }
+
+    public static void copyIntentExtra(Intent preIntent, Intent toIntent) {
+        if (preIntent != null) {
+            toIntent.putExtras(preIntent);
+        }
     }
 
 }
