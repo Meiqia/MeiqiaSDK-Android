@@ -324,7 +324,8 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
             groupId = getIntent().getStringExtra(GROUP_ID);
             intent.putExtras(getIntent());
         }
-        intent.putExtra(MQConversationActivity.PRE_SEND_TEXT, getIntent().getStringExtra(MQConversationActivity.PRE_SEND_TEXT));
+        MQUtils.copyIntentExtra(getIntent(), intent);
+        intent.putExtra(MQConversationActivity.BOOL_IGNORE_CHECK_OTHER_ACTIVITY, true);
         // 不为空才设置,不设置表示用开发者之前定义的
         if (!TextUtils.isEmpty(agentId) || !TextUtils.isEmpty(groupId)) {
             MQManager.getInstance(this).setScheduledAgentOrGroupWithId(agentId, groupId);

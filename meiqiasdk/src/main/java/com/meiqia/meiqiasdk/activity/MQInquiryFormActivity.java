@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.meiqia.core.MQManager;
 import com.meiqia.core.bean.MQInquireForm;
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.util.MQUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -139,7 +140,9 @@ public class MQInquiryFormActivity extends MQBaseActivity {
                 if (!TextUtils.isEmpty(agentId)) {
                     collectionIntent.putExtra(MQCollectInfoActivity.AGENT_ID, agentId);
                 }
+                MQUtils.copyIntentExtra(getIntent(), collectionIntent);
                 collectionIntent.putExtra(MQConversationActivity.PRE_SEND_TEXT, getContent());
+                collectionIntent.putExtra(MQConversationActivity.BOOL_IGNORE_CHECK_OTHER_ACTIVITY, true);
                 startActivity(collectionIntent);
             }
             // 跳转聊天界面
@@ -148,7 +151,9 @@ public class MQInquiryFormActivity extends MQBaseActivity {
                 if (getIntent() != null) {
                     chatIntent.putExtras(getIntent());
                 }
+                MQUtils.copyIntentExtra(getIntent(), chatIntent);
                 chatIntent.putExtra(MQConversationActivity.PRE_SEND_TEXT, getContent());
+                chatIntent.putExtra(MQConversationActivity.BOOL_IGNORE_CHECK_OTHER_ACTIVITY, true);
                 // 不为空才设置,不设置表示用开发者之前定义的
                 if (!TextUtils.isEmpty(agentId) || !TextUtils.isEmpty(groupId)) {
                     MQManager.getInstance(MQInquiryFormActivity.this).setScheduledAgentOrGroupWithId(agentId, groupId);

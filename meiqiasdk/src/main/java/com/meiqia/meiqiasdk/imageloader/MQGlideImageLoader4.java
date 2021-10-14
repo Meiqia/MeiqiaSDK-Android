@@ -47,29 +47,24 @@ public class MQGlideImageLoader4 extends MQImageLoader {
     public void displayImage(Activity activity, final ImageView imageView, String path, @DrawableRes int loadingResId, @DrawableRes int failResId, int width, int height, final MQDisplayImageListener displayImageListener) {
         final String finalPath = getPath(path);
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                Uri uri = MQUtils.getImageContentUri(activity, path);
-                displayImage(activity, imageView, uri, loadingResId, failResId, width, height, displayImageListener);
-            } else {
-                Glide.with(activity)
-                        .load(finalPath)
-                        .apply(new RequestOptions().placeholder(loadingResId).error(failResId).override(width, height))
-                        .listener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                return false;
-                            }
+            Glide.with(activity)
+                    .load(finalPath)
+                    .apply(new RequestOptions().placeholder(loadingResId).error(failResId).override(width, height))
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            return false;
+                        }
 
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                if (displayImageListener != null) {
-                                    displayImageListener.onSuccess(imageView, finalPath);
-                                }
-                                return false;
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            if (displayImageListener != null) {
+                                displayImageListener.onSuccess(imageView, finalPath);
                             }
-                        })
-                        .into(imageView);
-            }
+                            return false;
+                        }
+                    })
+                    .into(imageView);
         } catch (Error noSuchMethodError) {
             // 自启启用 Glide3
             if (mGlideImageLoader3 == null) {
