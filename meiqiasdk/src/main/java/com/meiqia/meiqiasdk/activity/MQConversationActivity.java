@@ -278,7 +278,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     String scheduleGroupId = getIntent().getStringExtra(SCHEDULED_GROUP);
                     String scheduleRule = getIntent().getStringExtra(SCHEDULED_RULE);
                     MQScheduleRule rule = null;
-                    if (TextUtils.isEmpty(scheduleRule)) {
+                    if (!TextUtils.isEmpty(scheduleRule)) {
                         try {
                             rule = MQScheduleRule.valueOf(scheduleRule);
                         } catch (Exception e) {
