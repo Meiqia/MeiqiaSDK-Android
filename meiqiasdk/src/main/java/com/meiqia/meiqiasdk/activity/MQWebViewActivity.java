@@ -1,6 +1,7 @@
 package com.meiqia.meiqiasdk.activity;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -83,6 +84,18 @@ public class MQWebViewActivity extends Activity implements View.OnClickListener 
         // 处理标题、返回、返回箭头颜色
         MQUtils.applyCustomUITextAndImageColor(R.color.mq_activity_title_textColor, MQConfig.ui.titleTextColorResId, mBackIv, mBackTv, mTitleTv);
 
+        // 通过 #FFFFFF 方式设置颜色：处理标题栏背景色、处理标题、返回、返回箭头颜色
+        if (!TextUtils.isEmpty(MQConfig.ui.titleBackgroundColor)) {
+            mTitleRl.setBackgroundColor(Color.parseColor(MQConfig.ui.titleBackgroundColor));
+        }
+        if (!TextUtils.isEmpty(MQConfig.ui.titleTextColor)) {
+            int color = Color.parseColor(MQConfig.ui.titleTextColor);
+            mBackIv.clearColorFilter();
+            mBackIv.setColorFilter(color);
+            mBackTv.setTextColor(color);
+            mTitleTv.setTextColor(color);
+        }
+        
         // 处理标题文本的对其方式
         MQUtils.applyCustomUITitleGravity(mBackTv, mTitleTv);
     }

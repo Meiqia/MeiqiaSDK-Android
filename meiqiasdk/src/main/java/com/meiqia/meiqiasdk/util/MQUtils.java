@@ -202,6 +202,24 @@ public class MQUtils {
                     TextMessage textMessage = (TextMessage) baseMessage;
                     textMessage.setContainsSensitiveWords(isContainsSensitiveWords);
                     textMessage.setReplaceContent(replacedContent);
+                    JSONArray operatorMsg = extraObj.optJSONArray("operator_msg");
+                    if (operatorMsg != null && operatorMsg.length() != 0) {
+                        // 渲染成富文本的的 hybrid 消息
+                        JSONArray contentArray = new JSONArray();
+                        JSONObject contentObj = new JSONObject();
+                        try {
+                            contentObj.put("type", "rich_text");
+                            contentObj.put("body", message.getContent());
+                            contentArray.put(contentObj);
+                        } catch (Exception ignore) {
+                            ignore.printStackTrace();
+                        }
+                        baseMessage = new HybridMessage();
+                        baseMessage.setContent(contentArray.toString());
+                        ((HybridMessage) baseMessage).setExtra(message.getExtra());
+
+                        message.setContent_type(MQMessage.TYPE_CONTENT_RICH_TEXT);
+                    }
                 }
             } catch (Exception e) {
                 Log.e("meiqia_log", e.toString());
@@ -271,6 +289,7 @@ public class MQUtils {
             }
             baseMessage = new HybridMessage();
             baseMessage.setContent(contentArray.toString());
+            ((HybridMessage) baseMessage).setExtra(message.getExtra());
         } else {
             // TYPE 设置 unknown,在 adapter 渲染内容
             baseMessage = new TextMessage(message.getContent());
