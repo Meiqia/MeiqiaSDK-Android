@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
@@ -35,6 +36,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.webkit.URLUtil;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -276,16 +278,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 } else {
                     String scheduleAgentId = getIntent().getStringExtra(SCHEDULED_AGENT);
                     String scheduleGroupId = getIntent().getStringExtra(SCHEDULED_GROUP);
-                    String scheduleRule = getIntent().getStringExtra(SCHEDULED_RULE);
-                    MQScheduleRule rule = null;
-                    if (!TextUtils.isEmpty(scheduleRule)) {
-                        try {
-                            rule = MQScheduleRule.valueOf(scheduleRule);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    MQManager.getInstance(MQConversationActivity.this).setScheduledAgentOrGroupWithId(scheduleAgentId, scheduleGroupId, rule);
+                    MQManager.getInstance(MQConversationActivity.this).setScheduledAgentOrGroupWithId(scheduleAgentId, scheduleGroupId, null);
                     // 都不是，就继续初始化聊天界面
                     applyAfterRefreshConfig();
                 }
@@ -340,6 +333,18 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
         // 处理标题、返回、返回箭头颜色
         MQUtils.applyCustomUITextAndImageColor(R.color.mq_activity_title_textColor, MQConfig.ui.titleTextColorResId, null, mBackTv, mTitleTv, mRedirectHumanTv);
+
+        // 通过 #FFFFFF 方式设置颜色：处理标题栏背景色、处理标题、返回、返回箭头颜色
+        if (!TextUtils.isEmpty(MQConfig.ui.titleBackgroundColor)) {
+            mTitleRl.setBackgroundColor(Color.parseColor(MQConfig.ui.titleBackgroundColor));
+        }
+        if (!TextUtils.isEmpty(MQConfig.ui.titleTextColor)) {
+            int color = Color.parseColor(MQConfig.ui.titleTextColor);
+            mBackIv.clearColorFilter();
+            mBackIv.setColorFilter(color);
+            mBackTv.setTextColor(color);
+            mTitleTv.setTextColor(color);
+        }
 
         // 处理标题文本的对其方式
         MQUtils.applyCustomUITitleGravity(mBackTv, mTitleTv);
@@ -1889,19 +1894,39 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 return;
             }
         }
-        if (Intent.ACTION_VIEW.equals(intent.getAction())) {
-            String s = intent.getData().getScheme();
-            if (!TextUtils.isEmpty(s) && s.startsWith("http")) {
-                if (MQConfig.getOnLinkClickCallback() != null) {
-                    MQConfig.getOnLinkClickCallback().onClick(this, intent, intent.getDataString());
-                    return;
+        String dataString = null;
+        try {
+            dataString = intent.getDataString();
+            if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+                String s = intent.getData().getScheme();
+                if (!TextUtils.isEmpty(s) && s.startsWith("http")) {
+                    if (MQConfig.getOnLinkClickCallback() != null) {
+                        MQConfig.getOnLinkClickCallback().onClick(this, intent, dataString);
+                        return;
+                    }
                 }
             }
-        }
-        try {
             super.startActivity(intent);
         } catch (Exception e) {
-            Toast.makeText(this, R.string.mq_title_unknown_error, Toast.LENGTH_SHORT).show();
+            boolean isNeedToastError;
+            try {
+                String url = URLUtil.guessUrl(dataString);
+                if (!TextUtils.isEmpty(url) && url.startsWith("http")) {
+                    if (MQConfig.getOnLinkClickCallback() != null) {
+                        MQConfig.getOnLinkClickCallback().onClick(this, intent, dataString);
+                        return;
+                    }
+                }
+                isNeedToastError = false;
+                intent.setData(Uri.parse(url));
+                super.startActivity(intent);
+            } catch (Exception e1) {
+                e.printStackTrace();
+                isNeedToastError = true;
+            }
+            if(isNeedToastError) {
+                Toast.makeText(this, R.string.mq_title_unknown_error, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

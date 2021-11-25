@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity;
@@ -38,6 +39,8 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
 
     private MQImageView mAvatarIv;
     private LinearLayout mContainerLl;
+    private LinearLayout mRootContainerLl;
+    private ViewGroup mOperationLl;
     private LinearLayout mRootLl;
 
     private MQRobotItem.Callback mCallback;
@@ -66,6 +69,8 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
     protected void initView() {
         mAvatarIv = getViewById(R.id.iv_robot_avatar);
         mContainerLl = getViewById(R.id.ll_robot_container);
+        mOperationLl = getViewById(R.id.ll_operation);
+        mContainerLl = getViewById(R.id.ll_robot_container);
         mRootLl = getViewById(R.id.root_ll);
     }
 
@@ -84,6 +89,7 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
 
     public void setMessage(HybridMessage hybridMessage, Activity activity) {
         mContainerLl.removeAllViews();
+        mOperationLl.setVisibility(GONE);
         mHybridMessage = hybridMessage;
         if (!TextUtils.isEmpty(mHybridMessage.getAvatar())) {
             MQImage.displayImage(activity, mAvatarIv, mHybridMessage.getAvatar(), R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, 100, 100, null);
@@ -179,6 +185,53 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
             mContainerLl.addView(textView);
             RichText richText = new RichText();
             richText.fromHtml(text).setOnImageClickListener(this).into(textView);
+
+            // 添加操作按钮
+            if (!TextUtils.isEmpty(mHybridMessage.getExtra())) {
+                try {
+                    JSONObject extraObj = new JSONObject(mHybridMessage.getExtra());
+                    JSONArray operationArray = extraObj.optJSONArray("operator_msg");
+                    if (operationArray != null && operationArray.length() != 0) {
+                        mOperationLl.setVisibility(VISIBLE);
+                        mOperationLl.removeAllViews();
+                        for (int i = 0; i < operationArray.length(); i++) {
+                            JSONObject item = operationArray.getJSONObject(i);
+                            String name = item.optString("name");
+                            final String type = item.optString("type");
+                            final String value = item.optString("value");
+                            View operationView = LayoutInflater.from(getContext()).inflate(R.layout.mq_item_action, null);
+                            TextView operationTv = operationView.findViewById(R.id.content_tv);
+                            operationTv.setText(name);
+                            mOperationLl.addView(operationView);
+                            operationView.setOnClickListener(new OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    try {
+                                        if (TextUtils.equals(type, "copy")) {
+                                            MQUtils.clip(getContext(), value);
+                                            Toast.makeText(getContext(), R.string.mq_copy_success, Toast.LENGTH_SHORT).show();
+                                        } else if (TextUtils.equals(type, "call")) {
+                                            Intent intent = new Intent(Intent.ACTION_DIAL);
+                                            intent.setData(Uri.parse("tel:" + value));
+                                            getContext().startActivity(intent);
+                                        } else if (TextUtils.equals(type, "link")) {
+                                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(value));
+                                            getContext().startActivity(intent);
+                                        }
+                                    } catch (Exception e) {
+                                        Toast.makeText(getContext(), R.string.mq_title_unknown_error, Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                        // 重新设置 LayoutParams，不然不生效
+                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        mOperationLl.setLayoutParams(params);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

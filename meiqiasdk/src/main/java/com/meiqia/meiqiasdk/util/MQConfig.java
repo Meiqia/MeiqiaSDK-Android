@@ -40,6 +40,9 @@ public final class MQConfig {
         @ColorRes
         public static int robotEvaluateTextColorResId = DEFAULT; // 机器人消息评价按钮的文字颜色
 
+        public static String titleBackgroundColor = "";
+        public static String titleTextColor = "";
+
         public enum MQTitleGravity {
             LEFT, CENTER
         }
