@@ -91,4 +91,10 @@ public class MainActivity extends Activity {
     public void leaveMessageForm(View view) {
         startActivity(new Intent(this, MQMessageFormActivity.class));
     }
+
+    public void linkWebView(View view) {
+        Intent intent = new Intent(MainActivity.this, ActivityWebView.class);
+        intent.putExtra("link", "https://chatlink-new.meiqia.cn/widget/standalone.html?eid=ab6e3a7cda04cc8bff00237214c3bcc6");
+        startActivity(intent);
+    }
 }

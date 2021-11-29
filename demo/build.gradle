@@ -46,4 +46,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 //    implementation 'com.github.bumptech.glide:glide:3.7.0'
 
+    // 如果是通过聊天链接的方式集成，请使用这个 WebView 来加载聊天链接，可以兼容图片发送问题
+    implementation 'com.github.delight-im:Android-AdvancedWebView:v3.2.1'
+
 }
