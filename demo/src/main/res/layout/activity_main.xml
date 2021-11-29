@@ -46,6 +46,12 @@
             android:onClick="leaveMessageForm"
             android:text="留言表单" />
 
+        <Button
+            style="@style/DemoTv"
+            android:layout_marginBottom="8dp"
+            android:onClick="linkWebView"
+            android:text="聊天链接" />
+
     </LinearLayout>
 
 </LinearLayout>

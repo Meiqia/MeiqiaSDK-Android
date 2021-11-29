@@ -108,3 +108,6 @@
     @org.xutils.view.annotation.Event <methods>;
 }
 -dontwarn org.xutils.**
+
+-keep class * extends android.webkit.WebChromeClient { *; }
+-dontwarn im.delight.android.webview.**
