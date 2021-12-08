@@ -20,6 +20,7 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -65,6 +66,21 @@ public class ActivityWebView extends Activity implements AdvancedWebView.Listene
                 return super.shouldOverrideUrlLoading(view, url);
             }
         });
+        // 处理下载文件的情况
+        webView.setDownloadListener(new DownloadListener() {
+            @Override
+            public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                    intent.setData(Uri.parse(url));
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.getStackTrace();
+                }
+            }
+        });
+
         // 处理无法复制部分聊天内容和保存图片的问题
         webView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

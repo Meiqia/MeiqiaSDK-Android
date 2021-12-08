@@ -1762,7 +1762,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // nothing
                 } else {
-                    MQUtils.show(this, R.string.mq_sdcard_no_permission);
+                    MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_sdcard_no_permission);
                 }
                 break;
             }
@@ -1786,7 +1786,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                         }
                         // 有存储权限
                     } else {
-                        MQUtils.show(this, R.string.mq_camera_or_storage_no_permission);
+                        MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_camera_or_storage_no_permission);
                     }
                 } else {
                     MQUtils.show(this, R.string.mq_camera_or_storage_no_permission);
@@ -1924,7 +1924,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 e.printStackTrace();
                 isNeedToastError = true;
             }
-            if(isNeedToastError) {
+            if (isNeedToastError) {
                 Toast.makeText(this, R.string.mq_title_unknown_error, Toast.LENGTH_SHORT).show();
             }
         }
@@ -1946,18 +1946,31 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         }
         File imageFile = new File(mCameraPicPath);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && mCameraPicUri != null) {
-            // 从 uri 获取 path，SDK 内部会通过 path 拿到 uri
-            String realFilePath = MQUtils.getRealFilePath(this, mCameraPicUri);
-            // 如果 targetapi 不是 Android 10，realFilePath 将会是空
-            if (!TextUtils.isEmpty(realFilePath)) {
-                // 这里的 file 无法直接读取
-                return new File(realFilePath);
+            File file = null;
+            try {
+                ParcelFileDescriptor pfd = this.getContentResolver().openFileDescriptor(mCameraPicUri, "r");
+                FileInputStream fileInputStream = new FileInputStream(pfd.getFileDescriptor());
+                String path = MQUtils.getPicStorePath(this) + "/" + System.currentTimeMillis();
+                file = new File(path);
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                int len;
+                byte[] buffer = new byte[8192];
+                while ((len = fileInputStream.read(buffer)) != -1) {
+                    fileOutputStream.write(buffer, 0, len);
+                }
+                pfd.close();
+                fileInputStream.close();
+                fileOutputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }
-        if (imageFile.exists()) {
-            return imageFile;
+            return file;
         } else {
-            return null;
+            if (imageFile.exists()) {
+                return imageFile;
+            } else {
+                return null;
+            }
         }
     }
 

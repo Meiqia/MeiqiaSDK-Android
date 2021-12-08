@@ -12,7 +12,7 @@
 
 ```
 // -------------------- 以下三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
-implementation 'com.meiqia:meiqiasdk:3.7.6'
+implementation 'com.meiqia:meiqiasdk:3.7.7'
 implementation 'com.android.support:support-v4:23.1.1'
 implementation 'com.squareup.okhttp3:okhttp:3.5.0'
 // -------------------- 以上三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
@@ -238,26 +238,6 @@ MQManager.getInstance().setClientEvent(clientEvent);
 -keep class com.squareup.picasso.Picasso { *; }
 -dontwarn com.squareup.okhttp.**
 -dontwarn com.squareup.picasso.**
-
-## ----------------------------------
-##      xUtils3相关
-## ----------------------------------
--keepattributes Signature,*Annotation*
--keep public class org.xutils.** {
-    public protected *;
-}
--keep public interface org.xutils.** {
-    public protected *;
-}
--keepclassmembers class * extends org.xutils.** {
-    public protected *;
-}
--keepclassmembers @org.xutils.db.annotation.* class * {*;}
--keepclassmembers @org.xutils.http.annotation.* class * {*;}
--keepclassmembers class * {
-    @org.xutils.view.annotation.Event <methods>;
-}
--dontwarn org.xutils.**
 ```
 
  [1]: http://meiqia.com/docs/meiqia-android-sdk/
