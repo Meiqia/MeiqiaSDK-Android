@@ -41,6 +41,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -49,7 +50,6 @@ import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.MQMessageManager;
-import com.meiqia.core.MQScheduleRule;
 import com.meiqia.core.bean.MQAgent;
 import com.meiqia.core.bean.MQMessage;
 import com.meiqia.core.callback.OnClientPositionInQueueCallback;
@@ -70,6 +70,8 @@ import com.meiqia.meiqiasdk.controller.MQController;
 import com.meiqia.meiqiasdk.dialog.MQConfirmDialog;
 import com.meiqia.meiqiasdk.dialog.MQEvaluateDialog;
 import com.meiqia.meiqiasdk.dialog.MQListDialog;
+import com.meiqia.meiqiasdk.imageloader.MQImage;
+import com.meiqia.meiqiasdk.imageloader.MQImageLoader;
 import com.meiqia.meiqiasdk.model.Agent;
 import com.meiqia.meiqiasdk.model.AgentChangeMessage;
 import com.meiqia.meiqiasdk.model.BaseMessage;
@@ -324,6 +326,56 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 如果配置了界面相关的 config，在这里应用
      */
     private void applyCustomUIConfig() {
+        if (MQConfig.ui.backNavIcon != null) {
+            mBackIv.setImageBitmap(MQConfig.ui.backNavIcon);
+        }
+        if (MQConfig.ui.backNavWidth != 0) {
+            RelativeLayout.LayoutParams backIvParams = (RelativeLayout.LayoutParams) mBackIv.getLayoutParams();
+            backIvParams.width = MQUtils.dip2px(this, MQConfig.ui.backNavWidth);
+            mBackIv.setLayoutParams(backIvParams);
+        }
+        if (MQConfig.ui.backNavHeight != 0) {
+            RelativeLayout.LayoutParams backIvParams = (RelativeLayout.LayoutParams) mBackIv.getLayoutParams();
+            backIvParams.height = MQUtils.dip2px(this, MQConfig.ui.backNavHeight);
+            mBackIv.setLayoutParams(backIvParams);
+        }
+        if (MQConfig.ui.backNavMarginLeft != 0) {
+            RelativeLayout.LayoutParams backIvParams = (RelativeLayout.LayoutParams) mBackIv.getLayoutParams();
+            backIvParams.leftMargin = MQUtils.dip2px(this, MQConfig.ui.backNavMarginLeft);
+            mBackIv.setLayoutParams(backIvParams);
+        }
+        if (!TextUtils.isEmpty(MQConfig.ui.navRightButtonTxt)) {
+            TextView rightTv = findViewById(R.id.right_tv);
+            rightTv.setVisibility(View.VISIBLE);
+            rightTv.setText(MQConfig.ui.navRightButtonTxt);
+            if (MQConfig.ui.navRightButtonOnClickListener != null) {
+                rightTv.setOnClickListener(MQConfig.ui.navRightButtonOnClickListener);
+            }
+        }
+        if (!TextUtils.isEmpty(MQConfig.ui.navRightButtonImageUrl)) {
+            ImageView rightIv = findViewById(R.id.right_iv);
+            rightIv.setVisibility(View.VISIBLE);
+            int defaultWidthHeight = MQUtils.dip2px(this, 32);
+            MQImage.displayImage(this, rightIv, MQConfig.ui.navRightButtonImageUrl, R.drawable.mq_ic_holder_light, R.drawable.mq_ic_holder_light, defaultWidthHeight, defaultWidthHeight, new MQImageLoader.MQDisplayImageListener() {
+                @Override
+                public void onSuccess(View view, String path) {
+
+                }
+            });
+            if (MQConfig.ui.navRightButtonImageWidth != 0) {
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) rightIv.getLayoutParams();
+                params.width = MQUtils.dip2px(this, MQConfig.ui.navRightButtonImageWidth);
+                rightIv.setLayoutParams(params);
+            }
+            if (MQConfig.ui.navRightButtonImageHeight != 0) {
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) rightIv.getLayoutParams();
+                params.height = MQUtils.dip2px(this, MQConfig.ui.navRightButtonImageHeight);
+                rightIv.setLayoutParams(params);
+            }
+            if (MQConfig.ui.navRightButtonOnClickListener != null) {
+                rightIv.setOnClickListener(MQConfig.ui.navRightButtonOnClickListener);
+            }
+        }
         if (MQConfig.DEFAULT != MQConfig.ui.backArrowIconResId) {
             mBackIv.setImageResource(MQConfig.ui.backArrowIconResId);
         }
@@ -423,6 +475,15 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         }
 
         MQConfig.getActivityLifecycleCallback().onActivityDestroyed(this);
+        // 移除自定义
+        if (MQConfig.ui.backNavIcon != null) {
+            mBackIv.setImageBitmap(null);
+        }
+
+        if (!TextUtils.isEmpty(MQConfig.ui.navRightButtonTxt)) {
+            TextView rightTv = findViewById(R.id.right_tv);
+            rightTv.setOnClickListener(null);
+        }
         super.onDestroy();
     }
 
@@ -434,6 +495,14 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             return true;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (MQConfig.ui.navBackButtonOnClickListener != null) {
+            MQConfig.ui.navBackButtonOnClickListener.onClick(null);
+        }
     }
 
     private void init() {
@@ -464,11 +533,15 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mConversationListView.setAdapter(mChatMsgAdapter);
 
         mVoiceBtn.setVisibility(MQConfig.isVoiceSwitchOpen ? View.VISIBLE : View.GONE);
+        mPhotoSelectBtn.setVisibility(MQConfig.isPhotoSendOpen ? View.VISIBLE : View.GONE);
+        mCameraSelectBtn.setVisibility(MQConfig.isCameraImageSendOpen ? View.VISIBLE : View.GONE);
+        mEmojiSelectBtn.setVisibility(MQConfig.isEmojiSendOpen ? View.VISIBLE : View.GONE);
         mEvaluateBtn.setVisibility(View.GONE); // 无论是否配置是否显示，这里都隐藏，然后在分配对话成功后，再根据配置是否显示
         mVideoSelectBtn.setVisibility(mController.getEnterpriseConfig().isVideoMsgOpen ? View.VISIBLE : View.GONE);
 
         mCustomKeyboardLayout.init(this, mInputEt, this);
         isDestroy = false;
+        mTitleTv.setVisibility(MQConfig.ui.isShowTitle ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void findViews() {
@@ -1762,7 +1835,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // nothing
                 } else {
-                    MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_sdcard_no_permission);
+                    MQUtils.show(this, R.string.mq_sdcard_no_permission);
                 }
                 break;
             }
@@ -1786,7 +1859,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                         }
                         // 有存储权限
                     } else {
-                        MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_camera_or_storage_no_permission);
+                        MQUtils.show(this, R.string.mq_camera_or_storage_no_permission);
                     }
                 } else {
                     MQUtils.show(this, R.string.mq_camera_or_storage_no_permission);
@@ -1963,6 +2036,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 fileOutputStream.close();
             } catch (Exception e) {
                 e.printStackTrace();
+                if (imageFile.exists()) {
+                    return imageFile;
+                }
             }
             return file;
         } else {

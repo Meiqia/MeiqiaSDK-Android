@@ -48,19 +48,50 @@
             android:textSize="@dimen/mq_titlebar_textSize"
             tools:text="AgentNameAgentNameAgentNameAgentNameAgentNameAgentName" />
 
-        <TextView
-            android:id="@+id/redirect_human_tv"
-            style="@style/MQWrapMatch"
+        <LinearLayout
+            android:id="@+id/right_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:clickable="true"
+            android:layout_centerVertical="true"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/mq_size_level3"
-            android:paddingRight="@dimen/mq_size_level3"
-            android:text="@string/mq_redirect_human"
-            android:textColor="@color/mq_activity_title_textColor"
-            android:textSize="@dimen/mq_title_left_right_textSize"
-            android:visibility="gone"
-            tools:visibility="visible" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/redirect_human_tv"
+                style="@style/MQWrapMatch"
+                android:layout_alignParentRight="true"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/mq_size_level3"
+                android:paddingRight="@dimen/mq_size_level3"
+                android:text="@string/mq_redirect_human"
+                android:textColor="@color/mq_activity_title_textColor"
+                android:textSize="@dimen/mq_title_left_right_textSize"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/right_iv"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="@dimen/mq_size_level1"
+                android:layout_marginRight="@dimen/mq_size_level2"
+                android:src="@drawable/mq_ic_back"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/right_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/mq_size_level2"
+                android:text="@string/mq_redirect_human"
+                android:textColor="@color/mq_activity_title_textColor"
+                android:textSize="@dimen/mq_title_left_right_textSize"
+                android:visibility="gone"
+                tools:visibility="visible" />
+        </LinearLayout>
 
     </RelativeLayout>
 
@@ -100,8 +131,8 @@
             style="@style/MQMatchWrap"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/mq_size_level4"
-            android:layout_marginRight="@dimen/mq_size_level4"
             android:layout_marginTop="@dimen/mq_size_level2"
+            android:layout_marginRight="@dimen/mq_size_level4"
             android:background="@android:color/transparent"
             android:clickable="true"
             android:focusable="true"
