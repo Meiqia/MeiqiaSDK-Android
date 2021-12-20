@@ -1,8 +1,10 @@
 package com.meiqia.meiqiasdk.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.view.View;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.callback.OnInitCallback;
@@ -42,6 +44,19 @@ public final class MQConfig {
 
         public static String titleBackgroundColor = "";
         public static String titleTextColor = "";
+        public static boolean isShowTitle = true; // 是否显示 Title
+
+        public static Bitmap backNavIcon = null; // 返回按钮图标
+        public static int backNavWidth = 0; // 返回按钮图标宽度
+        public static int backNavHeight = 0; // 返回按钮图标高度
+        public static int backNavMarginLeft = 0; // 返回按钮图左侧 margin
+        public static String navRightButtonTxt = ""; // 导航栏右侧按钮文字
+        public static String navRightButtonImageUrl = null; // 导航栏右侧按钮图标 url
+        public static int navRightButtonImageWidth = 0; // 导航栏右侧按钮宽度
+        public static int navRightButtonImageHeight = 0; // 导航栏右侧按钮高度
+        public static View.OnClickListener navRightButtonOnClickListener; // 导航栏右侧按钮的点击回调
+
+        public static View.OnClickListener navBackButtonOnClickListener; // 返回按钮点击回调
 
         public enum MQTitleGravity {
             LEFT, CENTER
@@ -53,6 +68,9 @@ public final class MQConfig {
     public static boolean isLoadMessagesFromNativeOpen = false; // 加载本地数据开关
     public static boolean isEvaluateSwitchOpen = true; // 是否开启评价
     public static boolean isShowClientAvatar = false; // 是否显示客户头像
+    public static boolean isPhotoSendOpen = true; // 是否显示发送图片消息按钮
+    public static boolean isCameraImageSendOpen  = true; // 是否显示发送相机图片消息按钮
+    public static boolean isEmojiSendOpen  = true; // 是否显示发送 Emoji 表情消息按钮
 
     private static MQActivityLifecycleCallback sActivityLifecycleCallback;
     private static OnLinkClickCallback sOnLinkClickCallback;
