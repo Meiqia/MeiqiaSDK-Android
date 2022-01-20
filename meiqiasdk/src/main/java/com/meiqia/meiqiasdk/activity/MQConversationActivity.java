@@ -2487,6 +2487,22 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         sendMessage(new TextMessage(text));
     }
 
+    @Override
+    public boolean isLastMessage(BaseMessage message) {
+        long convId = -1;
+        if (!TextUtils.isEmpty(mConversationId)) {
+            try {
+                convId = Long.parseLong(mConversationId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (mChatMessageList.size() != 0 && mChatMessageList.get(mChatMessageList.size() - 1).getId() == message.getId() && message.getConvId() == convId) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * 刷新强转人工按钮
      */

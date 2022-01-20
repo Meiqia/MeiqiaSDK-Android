@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/content_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/mq_rectangle_primary_16dp"
+        android:ellipsize="end"
+        android:layout_marginTop="8dp"
+        android:lines="1"
+        android:maxWidth="180dp"
+        android:paddingLeft="8dp"
+        android:textColor="@color/mq_white"
+        android:paddingTop="4dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="4dp"
+        tools:text="是富士达富士达水电费水电费" />
+
+</FrameLayout>

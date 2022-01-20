@@ -178,6 +178,7 @@ public class MQUtils {
             if (TextUtils.equals(message.getContent_type(), BaseMessage.TYPE_CONTENT_HYBRID)) {
                 baseMessage = new HybridMessage();
                 baseMessage.setContent(message.getContent());
+                ((HybridMessage) baseMessage).setExtra(message.getExtra());
             } else {
                 RobotMessage robotMessage = new RobotMessage();
                 robotMessage.setContentRobot(message.getContent_robot());
@@ -309,6 +310,7 @@ public class MQUtils {
         baseMessage.setAvatar(message.getAvatar());
         baseMessage.setIsRead(message.is_read());
         baseMessage.setFromType(message.getFrom_type());
+        baseMessage.setConvId(message.getConversation_id());
         return baseMessage;
     }
 
