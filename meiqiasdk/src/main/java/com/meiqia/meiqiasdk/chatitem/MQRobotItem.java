@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
+import com.meiqia.meiqiasdk.model.BaseMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.util.MQConfig;
 import com.meiqia.meiqiasdk.util.MQUtils;
@@ -286,5 +287,7 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
         void onEvaluateRobotAnswer(RobotMessage robotMessage, int useful);
 
         void onClickRobotMenuItem(String text);
+
+        boolean isLastMessage(BaseMessage message);
     }
 }

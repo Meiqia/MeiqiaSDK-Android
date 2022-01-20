@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.meiqia.core.MQManager;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
@@ -88,13 +89,15 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
     }
 
     public void setMessage(HybridMessage hybridMessage, Activity activity) {
+        mRootLl.setVisibility(VISIBLE);
         mContainerLl.removeAllViews();
         mOperationLl.setVisibility(GONE);
+        mContainerLl.setVisibility(VISIBLE);
+        mAvatarIv.setVisibility(VISIBLE);
         mHybridMessage = hybridMessage;
         if (!TextUtils.isEmpty(mHybridMessage.getAvatar())) {
             MQImage.displayImage(activity, mAvatarIv, mHybridMessage.getAvatar(), R.drawable.mq_ic_holder_avatar, R.drawable.mq_ic_holder_avatar, 100, 100, null);
         }
-        fillContentLl(mHybridMessage.getContent());
         // 根据来源，调整展示
         View firstView = mRootLl.getChildAt(0);
         View secondVIew = mRootLl.getChildAt(1);
@@ -131,6 +134,7 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
                 mRootLl.addView(secondVIew);
             }
         }
+        fillContentLl(mHybridMessage.getContent());
     }
 
     private void fillContentLl(String content) {
@@ -142,7 +146,15 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
                 switch (type) {
                     case "rich_text":
                     case "text":
-                        addNormalOrRichTextView(item.getString("body"));
+                        String subType = item.optString("sub_type");
+                        if (TextUtils.equals(subType, "button")) {
+                            addOptionView(item.optJSONArray("tags"));
+                        } else if (TextUtils.equals(subType, "operator_msg")) {
+                            JSONArray operable_buttons = new JSONObject(mHybridMessage.getExtra()).optJSONArray("operator_msg");
+                            addOptionButtonView(item.optString("body"), operable_buttons);
+                        } else {
+                            addNormalOrRichTextView(item.getString("body"));
+                        }
                         break;
                     case "choices":
                         addChoices(item.optJSONObject("body").optString("choices"));
@@ -163,9 +175,9 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
                         break;
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
+            addNormalOrRichTextView(getContext().getString(R.string.mq_unknown_msg_tip));
         }
     }
 
@@ -388,6 +400,102 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
         if (sales_count != 0) {
             TextView countTv = productCardContent.findViewById(R.id.count_tv);
             countTv.setText(getResources().getString(R.string.mq_sale_count) + "：" + sales_count);
+        }
+    }
+
+    private void addOptionView(JSONArray operationArray) {
+        // 添加操作按钮
+        try {
+            boolean is_trans_view = !mCallback.isLastMessage(mHybridMessage);
+            if (is_trans_view) {
+                mRootLl.setVisibility(GONE);
+                return;
+            }
+            if (operationArray != null && operationArray.length() != 0) {
+                mContainerLl.setVisibility(GONE);
+                mAvatarIv.setVisibility(INVISIBLE);
+                mOperationLl.setVisibility(VISIBLE);
+                mOperationLl.removeAllViews();
+                for (int i = 0; i < operationArray.length(); i++) {
+                    JSONObject item = operationArray.getJSONObject(i);
+                    final String name = item.optString("content");
+                    View operationView = LayoutInflater.from(getContext()).inflate(R.layout.mq_item_fill_color_action, null);
+                    TextView operationTv = operationView.findViewById(R.id.content_tv);
+                    operationTv.setText(name);
+                    mOperationLl.addView(operationView);
+                    operationView.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            try {
+                                mCallback.onClickRobotMenuItem(name);
+                            } catch (Exception e) {
+                                Toast.makeText(getContext(), R.string.mq_title_unknown_error, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+                // 重新设置 LayoutParams，不然不生效
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                mOperationLl.setLayoutParams(params);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addOptionButtonView(String text, JSONArray operableButtonsJson) {
+        TextView textView = new TextView(getContext());
+        textView.setText(text);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
+        textView.setTextColor(getResources().getColor(R.color.mq_chat_left_textColor));
+        textView.setPadding(mPadding, mPadding, mPadding, mPadding);
+        MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_left_textColor, MQConfig.ui.leftChatTextColorResId, null, textView);
+        mContainerLl.addView(textView);
+        RichText richText = new RichText();
+        richText.fromHtml(text).setOnImageClickListener(this).into(textView);
+
+        // 添加操作按钮
+        try {
+            if (operableButtonsJson != null && operableButtonsJson.length() != 0) {
+                mOperationLl.setVisibility(VISIBLE);
+                mOperationLl.removeAllViews();
+                for (int i = 0; i < operableButtonsJson.length(); i++) {
+                    final JSONObject item = operableButtonsJson.getJSONObject(i);
+                    String name = item.optString("name");
+                    final String type = item.optString("type");
+                    final String value = item.optString("value");
+                    View operationView = LayoutInflater.from(getContext()).inflate(R.layout.mq_item_action, null);
+                    TextView operationTv = operationView.findViewById(R.id.content_tv);
+                    operationTv.setText(name);
+                    mOperationLl.addView(operationView);
+                    operationView.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            try {
+                                if (TextUtils.equals(type, "copy")) {
+                                    MQUtils.clip(getContext(), value);
+                                    Toast.makeText(getContext(), R.string.mq_copy_success, Toast.LENGTH_SHORT).show();
+                                    MQManager.getInstance(getContext()).confirmCopy(item,mHybridMessage.getId());
+                                } else if (TextUtils.equals(type, "call")) {
+                                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                                    intent.setData(Uri.parse("tel:" + value));
+                                    getContext().startActivity(intent);
+                                } else if (TextUtils.equals(type, "link")) {
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(value));
+                                    getContext().startActivity(intent);
+                                }
+                            } catch (Exception e) {
+                                Toast.makeText(getContext(), R.string.mq_title_unknown_error, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+                // 重新设置 LayoutParams，不然不生效
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                mOperationLl.setLayoutParams(params);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

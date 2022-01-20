@@ -44,6 +44,7 @@ public class BaseMessage {
     private String agentNickname;
     private String status;
     private long id;
+    private long convId;
     private String contentType;
     private String type;
     private String content;
@@ -152,6 +153,14 @@ public class BaseMessage {
 
     public void setFromType(String fromType) {
         this.fromType = fromType;
+    }
+
+    public long getConvId() {
+        return convId;
+    }
+
+    public void setConvId(long convId) {
+        this.convId = convId;
     }
 
     @Override
