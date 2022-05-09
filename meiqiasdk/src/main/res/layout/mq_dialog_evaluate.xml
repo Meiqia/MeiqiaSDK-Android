@@ -1,66 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/MQMatchWrap.Vertical"
     android:layout_marginLeft="@dimen/mq_size_level10"
     android:layout_marginRight="@dimen/mq_size_level10"
     android:background="@drawable/mq_shape_dialog_bg"
     android:focusableInTouchMode="true"
-    android:paddingBottom="@dimen/mq_size_level3"
     android:paddingLeft="@dimen/mq_size_level5"
+    android:paddingTop="@dimen/mq_size_level3"
     android:paddingRight="@dimen/mq_size_level5"
-    android:paddingTop="@dimen/mq_size_level3">
+    android:paddingBottom="@dimen/mq_size_level3">
 
     <TextView
         android:id="@+id/tv_evaluate_tip"
         style="@style/MQMatchWrap"
+        android:layout_marginBottom="16dp"
         android:text="@string/mq_evaluate_title"
         android:textColor="@color/mq_chat_event_gray"
         android:textSize="@dimen/mq_textSize_level2" />
 
-    <RadioGroup
-        android:id="@+id/rg_evaluate_content"
-        style="@style/MQMatchWrap.Vertical"
-        android:layout_marginTop="@dimen/mq_size_level3">
+    <LinearLayout
+        android:id="@+id/mq_good_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <RadioButton
-            android:id="@+id/rb_evaluate_good"
-            style="@style/MQMatchWrap"
-            android:background="@android:color/transparent"
-            android:button="@null"
-            android:checked="true"
-            android:drawableLeft="@drawable/mq_evaluate_good"
-            android:drawablePadding="@dimen/mq_textSize_level1"
-            android:drawableRight="@drawable/mq_selector_evaluate_rb"
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/mq_evaluate_good" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_weight="1"
             android:text="@string/mq_evaluate_good"
             android:textColor="@color/mq_chat_event_gray"
-            android:textSize="@dimen/mq_textSize_level2" />
+            android:textSize="16sp" />
 
-        <RadioButton
-            android:id="@+id/rb_evaluate_medium"
-            style="@style/MQMatchWrap"
-            android:layout_marginTop="@dimen/mq_size_level2"
-            android:background="@android:color/transparent"
-            android:button="@null"
-            android:drawableLeft="@drawable/mq_evaluate_medium"
-            android:drawablePadding="@dimen/mq_textSize_level1"
-            android:drawableRight="@drawable/mq_selector_evaluate_rb"
+        <ImageView
+            android:id="@+id/mq_good_check_iv"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            tools:src="@drawable/mq_radio_btn_checked"
+            tools:tint="@color/mq_chat_robot_evaluate_textColor" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mq_mid_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/mq_evaluate_medium" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_weight="1"
             android:text="@string/mq_evaluate_medium"
             android:textColor="@color/mq_chat_event_gray"
-            android:textSize="@dimen/mq_textSize_level2" />
+            android:textSize="16sp" />
 
-        <RadioButton
-            android:id="@+id/rb_evaluate_bad"
-            style="@style/MQMatchWrap"
-            android:layout_marginTop="@dimen/mq_size_level2"
-            android:background="@android:color/transparent"
-            android:button="@null"
-            android:drawableLeft="@drawable/mq_evaluate_bad"
-            android:drawablePadding="@dimen/mq_textSize_level1"
-            android:drawableRight="@drawable/mq_selector_evaluate_rb"
+        <ImageView
+            android:id="@+id/mq_mid_check_iv"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            tools:src="@drawable/mq_radio_btn_uncheck"
+            tools:tint="@color/mq_chat_event_gray" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/mq_bad_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/mq_evaluate_bad" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_weight="1"
             android:text="@string/mq_evaluate_bad"
             android:textColor="@color/mq_chat_event_gray"
-            android:textSize="@dimen/mq_textSize_level2" />
-    </RadioGroup>
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/mq_bad_check_iv"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            tools:src="@drawable/mq_radio_btn_uncheck"
+            tools:tint="@color/mq_chat_event_gray" />
+
+    </LinearLayout>
 
     <EditText
         android:id="@+id/et_evaluate_content"

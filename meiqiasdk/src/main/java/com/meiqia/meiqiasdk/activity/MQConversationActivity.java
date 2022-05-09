@@ -655,6 +655,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         intentFilter.addAction(MQMessageManager.ACTION_SOCKET_OPEN);
         intentFilter.addAction(MQController.ACTION_SOCKET_RECONNECT);
         intentFilter.addAction(MQMessageManager.ACTION_RECALL_MESSAGE);
+        intentFilter.addAction(MQMessageManager.ACTION_NO_AGENT);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, intentFilter);
 
         // 网络监听
@@ -2732,6 +2733,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         @Override
         public void socketReconnect() {
             addNetStatusTopTip(MQController.ACTION_SOCKET_RECONNECT);
+        }
+
+        @Override
+        protected void noAgentStatus() {
+            setCurrentAgent(null);
+            addNoAgentLeaveMsg(getResources().getString(R.string.mq_no_agent_leave_msg_tip));
         }
     }
 

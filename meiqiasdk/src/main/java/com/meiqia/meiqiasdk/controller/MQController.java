@@ -28,6 +28,7 @@ public interface MQController {
     String ACTION_QUEUEING_INIT_CONV = "action_queueing_init_conv";
     String ACTION_AGENT_SEND_CLUE_CARD = "agent_send_card";
     String ACTION_SOCKET_RECONNECT = "socket_reconnect";
+    String ACTION_NO_AGENT = "no_agent_action";
 
     void sendMessage(BaseMessage baseMessage, OnMessageSendCallback onMessageSendCallback);
 
