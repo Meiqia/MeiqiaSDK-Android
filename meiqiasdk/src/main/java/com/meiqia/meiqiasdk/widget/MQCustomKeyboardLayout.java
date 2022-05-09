@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.IdRes;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
@@ -83,6 +84,9 @@ public class MQCustomKeyboardLayout extends MQBaseCustomCompositeView {
 
             @Override
             public void onInsert(String text) {
+                if (TextUtils.isEmpty(text)) {
+                    return;
+                }
                 // 在当前光标位置插入文本
                 int cursorPosition = mContentEt.getSelectionStart();
                 StringBuilder sb = new StringBuilder(mContentEt.getText());

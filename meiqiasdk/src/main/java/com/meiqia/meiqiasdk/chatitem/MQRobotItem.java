@@ -5,9 +5,12 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.meiqia.core.MQManager;
+import com.meiqia.core.bean.MQEnterpriseConfig;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
@@ -117,15 +120,33 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
 
     private void handleEvaluateStatus() {
         if (TextUtils.equals(RobotMessage.SUB_TYPE_EVALUATE, mRobotMessage.getSubType())) {
-            mEvaluateLl.setVisibility(View.VISIBLE);
-            if (mRobotMessage.isAlreadyFeedback()) {
-                mUselessTv.setVisibility(View.GONE);
-                mUsefulTv.setVisibility(View.GONE);
-                mAlreadyFeedbackTv.setVisibility(View.VISIBLE);
+            ViewGroup.LayoutParams containerLlParams = mContainerLl.getLayoutParams();
+            ViewGroup.LayoutParams menuTipTvParams = mMenuTipTv.getLayoutParams();
+            if (TextUtils.equals(MQManager.getInstance(getContext()).getEnterpriseConfig().robotSettings.getResponse_eval_switch(), MQEnterpriseConfig.OPEN)) {
+                menuTipTvParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                menuTipTvParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                mMenuTipTv.setLayoutParams(menuTipTvParams);
+                containerLlParams.width = MQUtils.dip2px(getContext(),240);
+                containerLlParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                mContainerLl.setLayoutParams(containerLlParams);
+
+                mEvaluateLl.setVisibility(View.VISIBLE);
+                if (mRobotMessage.isAlreadyFeedback()) {
+                    mUselessTv.setVisibility(View.GONE);
+                    mUsefulTv.setVisibility(View.GONE);
+                    mAlreadyFeedbackTv.setVisibility(View.VISIBLE);
+                } else {
+                    mUselessTv.setVisibility(View.VISIBLE);
+                    mUsefulTv.setVisibility(View.VISIBLE);
+                    mAlreadyFeedbackTv.setVisibility(View.GONE);
+                }
             } else {
-                mUselessTv.setVisibility(View.VISIBLE);
-                mUsefulTv.setVisibility(View.VISIBLE);
-                mAlreadyFeedbackTv.setVisibility(View.GONE);
+                menuTipTvParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                menuTipTvParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                mMenuTipTv.setLayoutParams(menuTipTvParams);
+                containerLlParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                containerLlParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                mContainerLl.setLayoutParams(containerLlParams);
             }
         }
     }

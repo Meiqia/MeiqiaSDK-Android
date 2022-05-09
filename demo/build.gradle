@@ -32,10 +32,10 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
 
-    api project(':meiqiasdk')
+//    api project(':meiqiasdk')
 
     // -------------------- 以下三个库是必须依赖的 ----------------------------
-//    implementation 'com.meiqia:meiqiasdk:3.7.9'
+    implementation 'com.meiqia:meiqiasdk:3.8.1'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.squareup.okhttp3:okhttp:3.5.0'
     // -------------------- 以上三个库是必须依赖的 ----------------------------
