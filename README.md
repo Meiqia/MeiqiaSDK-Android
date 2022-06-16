@@ -12,7 +12,7 @@
 
 ```
 // -------------------- 以下三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
-implementation 'com.meiqia:meiqiasdk:3.8.1'
+implementation 'com.meiqia:meiqiasdk:3.8.4'
 implementation 'com.android.support:support-v4:23.1.1'
 implementation 'com.squareup.okhttp3:okhttp:3.5.0'
 // -------------------- 以上三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
@@ -185,60 +185,6 @@ MQManager.getInstance().setClientEvent(clientEvent);
 
 ## 全部文档
 [查看详情][1]
-
-## Proguard
-
-```
-## ----------------------------------
-##      OkHttp相关
-## ----------------------------------
--keepattributes Signature
--keepattributes *Annotation*
--keep class com.squareup.okhttp3.** { *; }
--keep interface com.squareup.okhttp3.** { *; }
--dontwarn com.squareup.okhttp3.**
-
-## ----------------------------------
-##      Okio相关
-## ----------------------------------
--keep class sun.misc.Unsafe { *; }
--dontwarn java.nio.file.*
--dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
--dontwarn okio.**
-
-## ----------------------------------
-##      UIL相关
-## ----------------------------------
--keep class com.nostra13.universalimageloader.** { *; }
--keepclassmembers class com.nostra13.universalimageloader.** {*;}
--dontwarn com.nostra13.universalimageloader.**
-
-## ----------------------------------
-##      Glide相关
-## ----------------------------------
--keep class com.bumptech.glide.Glide { *; }
--keep public class * implements com.bumptech.glide.module.GlideModule
--keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
-  **[] $VALUES;
-  public *;
-}
--dontwarn com.bumptech.glide.**
-
--keep public class * implements com.bumptech.glide.module.GlideModule
--keep public class * extends com.bumptech.glide.module.AppGlideModule
--keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
-  **[] $VALUES;
-  public *;
-}
--dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
-
-## ----------------------------------
-##      Picasso相关
-## ----------------------------------
--keep class com.squareup.picasso.Picasso { *; }
--dontwarn com.squareup.okhttp.**
--dontwarn com.squareup.picasso.**
-```
 
  [1]: http://meiqia.com/docs/meiqia-android-sdk/
  [2]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-3

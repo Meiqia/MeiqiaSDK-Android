@@ -46,9 +46,9 @@
     <string name="mq_error_video_size">Video file are not allowed to exceed 50MB</string>
 
     <string name="mq_evaluate_title">Are you satisfied with our services？</string>
-    <string name="mq_evaluate_good">POSITIVE</string>
-    <string name="mq_evaluate_medium">NEUTRAL</string>
-    <string name="mq_evaluate_bad">NEGATIVE</string>
+    <string name="mq_evaluate_good">Good</string>
+    <string name="mq_evaluate_medium">Medium</string>
+    <string name="mq_evaluate_bad">Bad</string>
     <string name="mq_evaluate_hint">Please leave a comment (Optional)</string>
     <string name="mq_evaluate_failure">Evaluation failed</string>
 

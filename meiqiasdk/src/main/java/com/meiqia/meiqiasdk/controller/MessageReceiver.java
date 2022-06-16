@@ -100,6 +100,8 @@ public abstract class MessageReceiver extends BroadcastReceiver {
             socketReconnect();
         } else if (TextUtils.equals(MQController.ACTION_NO_AGENT, action)) {
             noAgentStatus();
+        } else if (TextUtils.equals(MQController.ACTION_QUEUEING_STATE, action)) {
+            queueingState();
         }
     }
 
@@ -132,6 +134,10 @@ public abstract class MessageReceiver extends BroadcastReceiver {
     public abstract void socketReconnect();
 
     protected void noAgentStatus(){
+
+    }
+
+    protected void queueingState(){
 
     }
 }
