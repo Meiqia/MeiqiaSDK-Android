@@ -656,6 +656,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         intentFilter.addAction(MQController.ACTION_SOCKET_RECONNECT);
         intentFilter.addAction(MQMessageManager.ACTION_RECALL_MESSAGE);
         intentFilter.addAction(MQMessageManager.ACTION_NO_AGENT);
+        intentFilter.addAction(MQMessageManager.ACTION_QUEUEING_STATE);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, intentFilter);
 
         // 网络监听
@@ -2085,7 +2086,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         if (mChatMsgAdapter == null) {
             return false;
         }
-        if (mRedirectQueueMessage != null && mCurrentAgent == null) {
+        if (mRedirectQueueMessage != null) {
             popTopTip(R.string.mq_allocate_queue_tip);
             return false;
         }
@@ -2115,7 +2116,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             MQUtils.show(this, R.string.mq_data_is_loading);
             return false;
         }
-        if (mRedirectQueueMessage != null && mCurrentAgent == null) {
+        if (mRedirectQueueMessage != null) {
             popTopTip(R.string.mq_allocate_queue_tip);
             return false;
         }
@@ -2192,19 +2193,22 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 if (code == ErrorCode.BLACKLIST) {
                     addBlacklistTip(R.string.mq_blacklist_tips);
                 } else if (code == ErrorCode.QUEUEING) {
-                    if (mCurrentAgent != null && !mCurrentAgent.isRobot()) {
-                        mCurrentAgent = null;
-                    }
-                    popTopTip(R.string.mq_allocate_queue_tip);
-                    getClientPositionInQueue();
-
-                    removeNoAgentLeaveMsg();
-                    changeTitleToQueue();
+                    changeToQueueingState();
                 }
                 mChatMsgAdapter.notifyDataSetChanged();
             }
         });
         MQUtils.scrollListViewToBottom(mConversationListView);
+    }
+
+    private void changeToQueueingState() {
+        if (mCurrentAgent != null && !mCurrentAgent.isRobot()) {
+            mCurrentAgent = null;
+        }
+        popTopTip(R.string.mq_allocate_queue_tip);
+        getClientPositionInQueue();
+        removeNoAgentLeaveMsg();
+        changeTitleToQueue();
     }
 
     /**
@@ -2213,7 +2217,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * @param message 待重发的消息
      */
     public void resendMessage(final BaseMessage message) {
-        if (mRedirectQueueMessage != null && mCurrentAgent == null) {
+        if (mRedirectQueueMessage != null) {
             popTopTip(R.string.mq_allocate_queue_tip);
             return;
         }
@@ -2739,6 +2743,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         protected void noAgentStatus() {
             setCurrentAgent(null);
             addNoAgentLeaveMsg(getResources().getString(R.string.mq_no_agent_leave_msg_tip));
+        }
+
+        @Override
+        protected void queueingState() {
+            changeToQueueingState();
         }
     }
 

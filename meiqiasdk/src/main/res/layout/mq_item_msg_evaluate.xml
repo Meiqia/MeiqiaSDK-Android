@@ -7,13 +7,12 @@
     android:padding="@dimen/mq_size_level2">
 
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/view_msg_evaluate_level"
-        android:layout_width="60dp"
+        android:layout_width="wrap_content"
         android:layout_height="24dp"
-        android:layout_below="@+id/timeTv"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="12dp"
+        android:gravity="center_vertical"
         android:background="@drawable/mq_shape_evaluate_neutral">
 
         <ImageView
@@ -34,7 +33,7 @@
             android:textColor="@color/mq_white"
             android:textSize="12sp" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 
     <TextView
