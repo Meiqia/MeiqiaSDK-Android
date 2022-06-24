@@ -12,7 +12,7 @@
 
 ```
 // -------------------- 以下三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
-implementation 'com.meiqia:meiqiasdk:3.8.4'
+implementation 'com.meiqia:meiqiasdk:3.8.5'
 implementation 'com.android.support:support-v4:23.1.1'
 implementation 'com.squareup.okhttp3:okhttp:3.5.0'
 // -------------------- 以上三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
@@ -158,6 +158,34 @@ MQClientEvent clientEvent = new MQClientEvent();
 // 用户添加新产品
 clientEvent.setEvent("add_product", "id_xxx"); // 事件字段需要先在后台创建
 MQManager.getInstance().setClientEvent(clientEvent);
+```
+
+> 监听群发消息
+
+在应用首页，开启监听（注意：这里是监听群发消息，而非对话消息，具体设置可以在工作台 - 智能引导 - SDK 中配置）
+``` java
+// 开启群发消息监听
+MQManager.getInstance().listenMQNotificationMessage();
+
+--- 可选设置 ---
+
+// 设置群发消息接收回调
+MQNotificationMessageConfig.getInstance().setOnNotificationMessageReceivedListener(new OnNotificationMessageReceivedListener() {
+    @Override
+    public void onNotificationMessageReceived(MQNotificationMessage notificationMessage) {
+
+    }
+});
+
+// 设置群发消息点击行为
+MQNotificationMessageConfig.getInstance().setOnNotificationMessageOnClickListener(new OnNotificationMessageOnClickListener() {
+    @Override
+    public void onClick(View view, MQNotificationMessage notificationMessage) {
+        // 默认点击后跳转到对话界面，开发者可以覆盖或者修改点击逻辑
+        Intent intent = new MQIntentBuilder(context).build();
+        context.startActivity(intent);
+    }
+});
 ```
 
 
