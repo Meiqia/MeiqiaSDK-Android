@@ -123,6 +123,7 @@
     <string name="mq_content_request_record_permission">发送语音功能需要申请录音权限</string>
 
     <string name="mq_net_status_reconnect">网络连接中，接收消息可能会有遗漏</string>
+    <string name="mq_net_status_not_available">您的网络连接已断开，发送消息失败</string>
     <string name="mq_net_status_reconnect_title">收取中</string>
     <string name="mq_net_status_not_work_title">未连接</string>
     <string name="mq_sale_count">销量</string>

@@ -82,7 +82,7 @@ startActivity(new Intent(this, MQMessageFormActivity.class));
 > 开发者的 App 有自己的账号系统，希望每个账号对应不同的顾客，有不同的聊天记录。那就需要开发者在启动对话的时候，绑定账号：
 ``` java
 Intent intent = new MQIntentBuilder(this)
-        .setCustomizedId("开发者的 id") // 相同的 id 会被识别为同一个顾客
+        .setCustomizedId("开发者的 id") // 相同的 id 会被识别为同一个顾客：顾客唯一标识为长度6到32的字符串
         .build();
 startActivity(intent);
 ```

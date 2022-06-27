@@ -1,19 +1,27 @@
 package com.meiqia.meiqiasdk.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.view.View;
 
 import com.meiqia.core.MQManager;
+import com.meiqia.core.MQNotificationMessageConfig;
+import com.meiqia.core.bean.MQNotificationMessage;
 import com.meiqia.core.callback.OnInitCallback;
+import com.meiqia.core.callback.OnNotificationMessageOnClickListener;
+import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.MQActivityLifecycleCallback;
 import com.meiqia.meiqiasdk.callback.MQSimpleActivityLifecyleCallback;
 import com.meiqia.meiqiasdk.callback.OnLinkClickCallback;
 import com.meiqia.meiqiasdk.controller.ControllerImpl;
 import com.meiqia.meiqiasdk.controller.MQController;
 import com.meiqia.meiqiasdk.imageloader.MQImageLoader;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public final class MQConfig {
@@ -69,8 +77,8 @@ public final class MQConfig {
     public static boolean isEvaluateSwitchOpen = true; // 是否开启评价
     public static boolean isShowClientAvatar = false; // 是否显示客户头像
     public static boolean isPhotoSendOpen = true; // 是否显示发送图片消息按钮
-    public static boolean isCameraImageSendOpen  = true; // 是否显示发送相机图片消息按钮
-    public static boolean isEmojiSendOpen  = true; // 是否显示发送 Emoji 表情消息按钮
+    public static boolean isCameraImageSendOpen = true; // 是否显示发送相机图片消息按钮
+    public static boolean isEmojiSendOpen = true; // 是否显示发送 Emoji 表情消息按钮
 
     private static MQActivityLifecycleCallback sActivityLifecycleCallback;
     private static OnLinkClickCallback sOnLinkClickCallback;
@@ -107,6 +115,7 @@ public final class MQConfig {
     /**
      * 设置链接点击的回调
      * 注意:设置监听回调后,将不再跳转网页.如果需要跳转,开发者需要自行处理,例如: ac
+     *
      * @param onLinkClickCallback 回调
      */
     public static void setOnLinkClickCallback(OnLinkClickCallback onLinkClickCallback) {
@@ -120,10 +129,28 @@ public final class MQConfig {
     @Deprecated
     public static void init(Context context, String appKey, MQImageLoader imageLoader, final OnInitCallback onInitCallBack) {
         MQManager.init(context, appKey, onInitCallBack);
+        initDefaultNotificationCardResource(context);
     }
 
     public static void init(Context context, String appKey, OnInitCallback onInitCallBack) {
         MQManager.init(context, appKey, onInitCallBack);
+        initDefaultNotificationCardResource(context);
+    }
+
+    private static void initDefaultNotificationCardResource(final Context context) {
+        Map<String, Object> resource = new HashMap<>();
+        resource.put("notificationCardLayoutId", R.layout.mq_notification_card);
+        resource.put("titleTvId", R.id.mq_title_tv);
+        resource.put("firstContentTvId", R.id.mq_first_content_tv);
+        resource.put("avatarIvId", R.id.mq_title_iv);
+        MQNotificationMessageConfig.getInstance().setNotificationCardResource(resource);
+        MQNotificationMessageConfig.getInstance().setOnNotificationMessageOnClickListener(new OnNotificationMessageOnClickListener() {
+            @Override
+            public void onClick(View view, MQNotificationMessage notificationMessage) {
+                Intent intent = new MQIntentBuilder(context).build();
+                context.startActivity(intent);
+            }
+        });
     }
 }
 
