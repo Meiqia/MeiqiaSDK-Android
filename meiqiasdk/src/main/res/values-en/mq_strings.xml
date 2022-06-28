@@ -124,6 +124,7 @@
     <string name="mq_content_request_record_permission">We need record permission to send voice message</string>
 
     <string name="mq_net_status_reconnect">The network is connecting</string>
+    <string name="mq_net_status_not_available">Your network connection has been disconnected and sending messages has failed</string>
     <string name="mq_net_status_reconnect_title">Receiving</string>
     <string name="mq_net_status_not_work_title">Not connected</string>
     <string name="mq_sale_count">Sales</string>

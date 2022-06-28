@@ -872,6 +872,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 e.printStackTrace();
             }
         }
+        this.currentNetStatus = "normal";
     }
 
     /**
@@ -2118,6 +2119,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         }
         if (mRedirectQueueMessage != null) {
             popTopTip(R.string.mq_allocate_queue_tip);
+            return false;
+        }
+        if (!MQManager.getInstance(this).isSocketConnect() && mCurrentAgent != null) {
+            MQUtils.show(this, R.string.mq_net_status_not_available);
+            addNetStatusTopTip(MQController.ACTION_SOCKET_RECONNECT);
             return false;
         }
 

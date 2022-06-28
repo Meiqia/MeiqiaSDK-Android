@@ -94,6 +94,11 @@
                 android:resource="@xml/mq_file_paths" />
         </provider>
 
+        <provider
+            android:name="com.meiqia.core.MQInitializeContentProvider"
+            android:authorities="${applicationId}.MQInitializeContentProvider"
+            android:exported="false" />
+
     </application>
 
 </manifest>
