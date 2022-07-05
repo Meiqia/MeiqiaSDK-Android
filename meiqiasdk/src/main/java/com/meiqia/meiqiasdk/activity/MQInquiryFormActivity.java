@@ -142,6 +142,7 @@ public class MQInquiryFormActivity extends MQBaseActivity {
                 }
                 MQUtils.copyIntentExtra(getIntent(), collectionIntent);
                 collectionIntent.putExtra(MQConversationActivity.PRE_SEND_TEXT, getContent());
+                collectionIntent.putExtra(MQConversationActivity.SURVEY_MSG, getContent());
                 collectionIntent.putExtra(MQConversationActivity.BOOL_IGNORE_CHECK_OTHER_ACTIVITY, true);
                 startActivity(collectionIntent);
             }
@@ -153,6 +154,7 @@ public class MQInquiryFormActivity extends MQBaseActivity {
                 }
                 MQUtils.copyIntentExtra(getIntent(), chatIntent);
                 chatIntent.putExtra(MQConversationActivity.PRE_SEND_TEXT, getContent());
+                chatIntent.putExtra(MQConversationActivity.SURVEY_MSG, getContent());
                 chatIntent.putExtra(MQConversationActivity.BOOL_IGNORE_CHECK_OTHER_ACTIVITY, true);
                 // 不为空才设置,不设置表示用开发者之前定义的
                 if (!TextUtils.isEmpty(agentId) || !TextUtils.isEmpty(groupId)) {

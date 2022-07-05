@@ -57,8 +57,17 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
     }
 
     @Override
-    public void onImageClicked(String url) {
-        getContext().startActivity(MQPhotoPreviewActivity.newIntent(getContext(), MQUtils.getImageDir(getContext()), url));
+    public void onImageClicked(String url, String imgLink) {
+        try {
+            if (TextUtils.isEmpty(imgLink)) {
+                getContext().startActivity(MQPhotoPreviewActivity.newIntent(getContext(), MQUtils.getImageDir(getContext()), url));
+            } else {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(imgLink));
+                getContext().startActivity(intent);
+            }
+        } catch (Exception e) {
+            Toast.makeText(getContext(), R.string.mq_title_unknown_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

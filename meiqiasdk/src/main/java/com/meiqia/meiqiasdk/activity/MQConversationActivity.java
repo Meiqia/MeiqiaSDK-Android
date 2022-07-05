@@ -132,6 +132,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     public static final String PRE_SEND_TEXT = "preSendText";
     public static final String PRE_SEND_IMAGE_PATH = "preSendImagePath";
     public static final String PRE_SEND_PRODUCT_CARD = "preSendProductCard";
+    public static final String SURVEY_MSG = "SURVEY_MSG";
     public static final String BOOL_IGNORE_CHECK_OTHER_ACTIVITY = "boolIgnoreCheckOtherActivity";
     public static final String SCHEDULED_GROUP = "SCHEDULED_GROUP";
     public static final String SCHEDULED_AGENT = "SCHEDULED_AGENT";
@@ -1063,6 +1064,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 customizedId = getIntent().getStringExtra(CUSTOMIZED_ID);
             }
 
+            String surveyMsg = "";
+            if (getIntent() != null) {
+                surveyMsg = getIntent().getStringExtra(SURVEY_MSG);
+            }
+            MQManager.getInstance(this).setSurveyMsg(surveyMsg);
             // 上线
             mController.setCurrentClientOnline(clientId, customizedId, new OnClientOnlineCallback() {
 
