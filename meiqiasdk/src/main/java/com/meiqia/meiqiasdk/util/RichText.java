@@ -125,7 +125,7 @@ public class RichText {
         CharSequence charSequence = spanned;
         try {
             if (spanned.length() >= 2
-                    && spanned.charAt(spanned.length()-1) == '\n'
+                    && spanned.charAt(spanned.length() - 1) == '\n'
                     && spanned.charAt(spanned.length() - 2) == '\n') {
                 charSequence = spanned.subSequence(0, spanned.length() - 2);
             }
@@ -152,7 +152,7 @@ public class RichText {
     }
 
     public interface OnImageClickListener {
-        void onImageClicked(String url);
+        void onImageClicked(String url, String imgLink);
     }
 
     public class MyTagHandler implements Html.TagHandler {
@@ -185,9 +185,52 @@ public class RichText {
             public void onClick(View widget) {
                 // 进行图片点击之后的处理
                 if (onImageClickListener != null) {
-                    onImageClickListener.onImageClicked(url);
+                    String imgLink = getImgLink(richTextStr, url);
+                    onImageClickListener.onImageClicked(url, imgLink);
                 }
             }
         }
+    }
+
+    private String getImgLink(String content, String url) {
+        if (TextUtils.isEmpty(content) || !content.contains("href")) {
+            return null;
+        }
+        int imgLinkStartIndex = content.indexOf(url);
+        String imgLinkLeftPartContent = content.substring(0, imgLinkStartIndex);
+        int startATagBeforeLinkIndex = imgLinkLeftPartContent.lastIndexOf("<a");
+        if (startATagBeforeLinkIndex == -1) {
+            return null;
+        }
+        int endATagBeforeLinkIndex = imgLinkLeftPartContent.lastIndexOf("a>");
+        // img url 前面包含了完整的 a 标签
+        if (endATagBeforeLinkIndex > startATagBeforeLinkIndex && endATagBeforeLinkIndex != -1) {
+            return null;
+        }
+
+        int linkRightPartStartIndex = imgLinkStartIndex + url.length();
+        String imgLinkRightPartContent = content.subSequence(linkRightPartStartIndex, content.length()).toString();
+        int endATagAfterLinkIndex = imgLinkRightPartContent.indexOf("a>");
+        if (endATagAfterLinkIndex == -1) {
+            return null;
+        }
+        int startATagAfterLinkIndex = imgLinkRightPartContent.indexOf("<a");
+        // img url 后面包含了完整的 a 标签
+        if (endATagAfterLinkIndex > startATagAfterLinkIndex && startATagAfterLinkIndex != -1) {
+            return null;
+        }
+
+        String aContentWithImgUrl = content.substring(startATagBeforeLinkIndex, linkRightPartStartIndex + endATagAfterLinkIndex);
+        if (aContentWithImgUrl.contains("href")) {
+            int start = aContentWithImgUrl.indexOf("href=");
+            String startContent = aContentWithImgUrl.substring(start + "href=".length());
+            int first = startContent.indexOf("\"");
+            String sub = startContent.substring(first+1);
+            int end = sub.indexOf("\"");
+            String result = sub.substring(0, end);
+            return result;
+        }
+
+        return null;
     }
 }

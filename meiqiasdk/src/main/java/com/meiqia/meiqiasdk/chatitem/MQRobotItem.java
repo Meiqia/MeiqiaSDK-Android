@@ -2,12 +2,15 @@ package com.meiqia.meiqiasdk.chatitem;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.bean.MQEnterpriseConfig;
@@ -300,8 +303,17 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
     }
 
     @Override
-    public void onImageClicked(String url) {
-        getContext().startActivity(MQPhotoPreviewActivity.newIntent(getContext(), MQUtils.getImageDir(getContext()), url));
+    public void onImageClicked(String url, String imgLink) {
+        try {
+            if (TextUtils.isEmpty(imgLink)) {
+                getContext().startActivity(MQPhotoPreviewActivity.newIntent(getContext(), MQUtils.getImageDir(getContext()), url));
+            } else {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(imgLink));
+                getContext().startActivity(intent);
+            }
+        } catch (Exception e) {
+            Toast.makeText(getContext(), R.string.mq_title_unknown_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public interface Callback {
