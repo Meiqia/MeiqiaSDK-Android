@@ -27,7 +27,7 @@ public class App extends Application {
         MQManager.setDebugMode(true);
 
         // 替换成自己的key
-        String meiqiaKey = "a71c257c80dfe883d92a64dca323ec20";
+        String meiqiaKey = "替换成自己的key";
         MQConfig.init(this, meiqiaKey, new OnInitCallback() {
             @Override
             public void onSuccess(String clientId) {

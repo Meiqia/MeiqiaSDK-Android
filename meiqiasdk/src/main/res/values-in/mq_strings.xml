@@ -33,6 +33,7 @@
     <string name="mq_no_sdcard">Tidak ada kartu SD</string>
     <string name="mq_sdcard_no_permission">Sekarang belum ada otorisasi media</string>
     <string name="mq_camera_or_storage_no_permission">Sekarang belum ada otorisasi kamera atau media </string>
+    <string name="mq_camera_no_permission">Tidak ada izin kamera saat ini</string>
     <string name="mq_timeline_today">Hari ini</string>
     <string name="mq_timeline_yesterday">Kemarin</string>
     <string name="mq_data_is_loading">Data sedang dimuat...</string>
@@ -120,6 +121,7 @@
     <string name="mq_request_permission">Permintaan otorisasi</string>
     <string name="mq_content_request_storage_permission"> Fitur penyimpanan foto dan video perlu otorisasi untuk memori</string>
     <string name="mq_content_request_camera_and_storage_permission">Fitur pengiriman foto dan video perlu otorisasi untuk memori dan kamera</string>
+    <string name="mq_content_request_camera_permission">Izin kamera diperlukan untuk mengirim gambar dan video dari kamera</string>
     <string name="mq_content_request_record_permission">Fitur pengiriman pesan suara perlu otorisasi untuk merekam suara </string>
 
     <string name="mq_net_status_reconnect">Jaringan sedang dihubungkan, penerimaan pesan mungkin akan terganggu</string>

@@ -33,6 +33,7 @@
     <string name="mq_no_sdcard">SD card does not exist</string>
     <string name="mq_sdcard_no_permission">Does not have permission to access files.</string>
     <string name="mq_camera_or_storage_no_permission">Does not have permission to access photos and media.</string>
+    <string name="mq_camera_no_permission">Does not have permission to access media.</string>
     <string name="mq_timeline_today">Today</string>
     <string name="mq_timeline_yesterday">Yesterday</string>
     <string name="mq_data_is_loading">Loading data...</string>
@@ -121,6 +122,7 @@
     <string name="mq_request_permission">Request permission</string>
     <string name="mq_content_request_storage_permission">We need storage permission to save image</string>
     <string name="mq_content_request_camera_and_storage_permission">We need storage and camera permissions to send image/video message</string>
+    <string name="mq_content_request_camera_permission">We need camera permission to send image/video message</string>
     <string name="mq_content_request_record_permission">We need record permission to send voice message</string>
 
     <string name="mq_net_status_reconnect">The network is connecting</string>

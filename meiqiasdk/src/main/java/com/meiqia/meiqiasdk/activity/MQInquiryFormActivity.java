@@ -129,7 +129,7 @@ public class MQInquiryFormActivity extends MQBaseActivity {
             JSONArray fields = getInquireForm().getInputs().optJSONArray(MQInquireForm.KEY_INPUTS_FIELDS);
             boolean isCustomOpen = getInquireForm().isInputsOpen();
             // 跳转自定义表单: 开关开启,并且至少有一个不是回头客,至少有一个输入项
-            if (isCustomOpen && !isSubmitAndAllReturnedCustomer() && fields.length() > 0) {
+            if (isCustomOpen && !isSubmitAndAllReturnedCustomer() && fields != null && fields.length() > 0) {
                 Intent collectionIntent = new Intent(MQInquiryFormActivity.this, MQCollectInfoActivity.class);
                 if (getIntent() != null) {
                     collectionIntent.putExtras(getIntent());

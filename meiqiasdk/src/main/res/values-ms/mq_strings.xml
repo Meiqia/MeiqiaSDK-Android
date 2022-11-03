@@ -32,7 +32,8 @@
     <string name="mq_photo_not_support">Peranti tidak menyokong fungsi penghantaran gambar</string>
     <string name="mq_no_sdcard">Kad SD tidak wujud</string>
     <string name="mq_sdcard_no_permission">Tidak dapat mengakses media buat masa ini</string>
-    <string name="mq_camera_or_storage_no_permission"> Tidak dapat mengakses kamera atau media buat masa ini</string>
+    <string name="mq_camera_or_storage_no_permission">Tidak dapat mengakses kamera atau media buat masa ini</string>
+    <string name="mq_camera_no_permission">Tiada kebenaran kamera pada masa ini</string>
     <string name="mq_timeline_today">Hari ini</string>
     <string name="mq_timeline_yesterday">Semalam</string>
     <string name="mq_data_is_loading">Sedang memuatkan data...</string>
@@ -120,6 +121,7 @@
     <string name="mq_request_permission">Permintaan akses</string>
     <string name="mq_content_request_storage_permission">Kebenaran akses penyimpanan diperlukan untuk menyimpan gambar</string>
     <string name="mq_content_request_camera_and_storage_permission">Kebenaran akses kamera dan penyimpanan diperlukan untuk menghantar gambar dan video</string>
+    <string name="mq_content_request_camera_permission">Kami memerlukan kebenaran kamera untuk menghantar mesej imej/video</string>
     <string name="mq_content_request_record_permission">Kebenaran akses diperlukan untuk menghantar rakaman</string>
 
     <string name="mq_net_status_reconnect">Sedang menyambung Internet, maklumat yang diterima mungkin tidak lengkap</string>

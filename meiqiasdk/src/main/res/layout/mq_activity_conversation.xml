@@ -42,7 +42,7 @@
             android:layout_centerHorizontal="true"
             android:drawablePadding="@dimen/mq_size_level1"
             android:gravity="center"
-            android:maxWidth="175dp"
+            android:maxWidth="220dp"
             android:singleLine="true"
             android:textColor="@color/mq_activity_title_textColor"
             android:textSize="@dimen/mq_titlebar_textSize"

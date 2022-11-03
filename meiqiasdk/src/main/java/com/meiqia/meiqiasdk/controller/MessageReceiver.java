@@ -57,7 +57,8 @@ public abstract class MessageReceiver extends BroadcastReceiver {
 
         // 客服正在输入
         else if (MQMessageManager.ACTION_AGENT_INPUTTING.equals(action)) {
-            changeTitleToInputting();
+            int duration = intent.getIntExtra("duration", 2);
+            changeTitleToInputting(duration);
         }
 
         // 客服转接
@@ -109,7 +110,7 @@ public abstract class MessageReceiver extends BroadcastReceiver {
 
     public abstract void recallMessage(long id, String nickname);
 
-    public abstract void changeTitleToInputting();
+    public abstract void changeTitleToInputting(int duration);
 
     public abstract void addDirectAgentMessageTip(String agentNickname);
 
