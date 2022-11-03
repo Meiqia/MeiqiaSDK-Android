@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.activity.MQConversationActivity;
 import com.meiqia.meiqiasdk.activity.MQPhotoPreviewActivity;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
 import com.meiqia.meiqiasdk.imageloader.MQImageLoader;
@@ -388,9 +389,15 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
                 try {
                     Uri uri = Uri.parse(product_url);
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    getContext().startActivity(intent);
+                    if (MQConfig.getOnLinkClickCallback() != null && getContext() instanceof MQConversationActivity) {
+                        MQConfig.getOnLinkClickCallback().onClick((MQConversationActivity) getContext(), intent, product_url);
+                    } else {
+                        getContext().startActivity(intent);
+                    }
                 } catch (Exception e) {
-                    MQUtils.show(getContext(), R.string.mq_title_unknown_error);
+                    if (!TextUtils.isEmpty(product_url)) {
+                        MQUtils.show(getContext(), R.string.mq_title_unknown_error);
+                    }
                 }
             }
         });
@@ -484,14 +491,18 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
                                 if (TextUtils.equals(type, "copy")) {
                                     MQUtils.clip(getContext(), value);
                                     Toast.makeText(getContext(), R.string.mq_copy_success, Toast.LENGTH_SHORT).show();
-                                    MQManager.getInstance(getContext()).confirmCopy(item,mHybridMessage.getId());
+                                    MQManager.getInstance(getContext()).confirmCopy(item, mHybridMessage.getId());
                                 } else if (TextUtils.equals(type, "call")) {
                                     Intent intent = new Intent(Intent.ACTION_DIAL);
                                     intent.setData(Uri.parse("tel:" + value));
                                     getContext().startActivity(intent);
                                 } else if (TextUtils.equals(type, "link")) {
                                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(value));
-                                    getContext().startActivity(intent);
+                                    if (MQConfig.getOnLinkClickCallback() != null && getContext() instanceof MQConversationActivity) {
+                                        MQConfig.getOnLinkClickCallback().onClick((MQConversationActivity) getContext(), intent, value);
+                                    } else {
+                                        getContext().startActivity(intent);
+                                    }
                                 }
                             } catch (Exception e) {
                                 Toast.makeText(getContext(), R.string.mq_title_unknown_error, Toast.LENGTH_SHORT).show();

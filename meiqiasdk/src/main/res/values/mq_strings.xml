@@ -33,6 +33,7 @@
     <string name="mq_no_sdcard">SD卡不存在</string>
     <string name="mq_sdcard_no_permission">当前没有媒体访问权限</string>
     <string name="mq_camera_or_storage_no_permission">当前没有相机权限 或者 媒体访问权限</string>
+    <string name="mq_camera_no_permission">当前没有相机权限</string>
     <string name="mq_timeline_today">今天</string>
     <string name="mq_timeline_yesterday">昨天</string>
     <string name="mq_data_is_loading">数据加载中...</string>
@@ -120,6 +121,7 @@
     <string name="mq_request_permission">权限申请</string>
     <string name="mq_content_request_storage_permission">保存图片需要申请存储空间权限</string>
     <string name="mq_content_request_camera_and_storage_permission">发送图片和发送视频功能需要申请存储空间权限和相机权限</string>
+    <string name="mq_content_request_camera_permission">从相机发送图片和视频功能需要申请相机权限</string>
     <string name="mq_content_request_record_permission">发送语音功能需要申请录音权限</string>
 
     <string name="mq_net_status_reconnect">网络连接中，接收消息可能会有遗漏</string>

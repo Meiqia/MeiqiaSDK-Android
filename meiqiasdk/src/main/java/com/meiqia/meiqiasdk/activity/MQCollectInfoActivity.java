@@ -128,6 +128,11 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
 
         try {
             JSONArray fields = getInquireForm().getInputs().optJSONArray(MQInquireForm.KEY_INPUTS_FIELDS);
+            // 异常情况，直接进入对话页面
+            if (fields == null) {
+                goToChatActivity();
+                return;
+            }
             for (int i = 0; i < fields.length(); i++) {
                 JSONObject field = fields.getJSONObject(i);
                 String display_name = field.optString(MQInquireForm.KEY_INPUTS_FIELDS_DISPLAY_NAME);
