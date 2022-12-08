@@ -124,6 +124,8 @@
     <string name="mq_content_request_camera_and_storage_permission">We need storage and camera permissions to send image/video message</string>
     <string name="mq_content_request_camera_permission">We need camera permission to send image/video message</string>
     <string name="mq_content_request_record_permission">We need record permission to send voice message</string>
+    <string name="mq_title_send_photo">Send images</string>
+    <string name="mq_content_send_photo">We need access to albums to send images</string>
 
     <string name="mq_net_status_reconnect">The network is connecting</string>
     <string name="mq_net_status_not_available">Your network connection has been disconnected and sending messages has failed</string>

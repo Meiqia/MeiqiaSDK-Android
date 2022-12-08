@@ -94,6 +94,7 @@ import com.meiqia.meiqiasdk.util.MQAudioPlayerManager;
 import com.meiqia.meiqiasdk.util.MQAudioRecorderManager;
 import com.meiqia.meiqiasdk.util.MQChatAdapter;
 import com.meiqia.meiqiasdk.util.MQConfig;
+import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.meiqia.meiqiasdk.util.MQSimpleTextWatcher;
 import com.meiqia.meiqiasdk.util.MQSoundPoolManager;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
@@ -214,10 +215,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private boolean mIsShowRedirectHumanButton;
     private boolean isAddLeaveTip;
 
-    private boolean isNeedDelayOnline;
     private boolean isRequestOnlineLoading = false;
     private List<BaseMessage> delaySendList = new ArrayList<>();
-    private BaseMessage entWelcomeMsg; // 分配成功后要删除
 
     private boolean isPopStoragePermissionTipDialog = false;
     private boolean isPopCameraPermissionTipDialog = false;
@@ -300,23 +299,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private void applyAfterRefreshConfig() {
         applyCustomUIConfig();
         refreshRedirectHumanBtn();
-        isNeedDelayOnline = mController.getEnterpriseConfig().scheduler_after_client_send_msg;
 
-        // 根据开关，是否发送消息才分配客服 已分配过客服就不再受开关影响
-        if (isNeedDelayOnline && mController.getCurrentAgent() == null) {
-            if (!mHasLoadData) {
-                String displayTitle = mController.getEnterpriseConfig().public_nickname;
-                if (TextUtils.equals("null", displayTitle)) {
-                    displayTitle = getResources().getString(R.string.mq_title_default);
-                }
-                mTitleTv.setText(displayTitle);
-                mLoadProgressBar.setVisibility(View.VISIBLE);
-                getMessageFromServiceAndLoad();
-            }
-        } else {
-            // 设置顾客上线，请求分配客服
-            setClientOnline(false);
-        }
+        // 设置顾客上线，请求分配客服
+        setClientOnline(false);
     }
 
     @Override
@@ -901,7 +886,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         if (mCurrentAgent == null) {
             changeTitleToNoAgentState();
         } else {
-            mTitleTv.setText(newAgent.getNickname());
+            String agentName = newAgent.getNickname();
+            // 兼容数据
+            if (TextUtils.isEmpty(agentName) || TextUtils.equals(agentName, "null")) {
+                agentName = getResources().getString(R.string.mq_title_default);
+            }
+            mTitleTv.setText(agentName);
             // 调小字号，尽量显示全部内容
             if (!TextUtils.isEmpty(newAgent.getNickname())) {
                 if (newAgent.getNickname().length() >= 16) {
@@ -1061,7 +1051,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         isRequestOnlineLoading = true;
         if (isForceRedirectHuman || (!isForceRedirectHuman && mCurrentAgent == null)) {
             mIsAllocatingAgent = true;
-            isNeedDelayOnline = false;
 
             // Title 显示正在分配客服
             changeTitleToAllocatingAgent();
@@ -1134,6 +1123,13 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                             if (ErrorCode.NET_NOT_WORK == code) {
                                 changeTitleToNetErrorState();
                             } else if (ErrorCode.NO_AGENT_ONLINE == code) {
+                                // 关闭留言功能的情况下，直接跳转到留言界面
+                                if (!mController.getEnterpriseConfig().ticketConfig.isSdkEnabled()) {
+                                    Intent intent = new Intent(MQConversationActivity.this, MQMessageFormActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                    return;
+                                }
                                 if (isForceRedirectHuman) {
                                     setCurrentAgent(mCurrentAgent);
                                     addNoAgentLeaveMsg(getResources().getString(R.string.mq_no_agent_leave_msg_tip));
@@ -1272,37 +1268,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
                 mChatMessageList.addAll(messageList);
                 loadData();
-                if (entWelcomeMsg != null) {
-                    mChatMessageList.remove(entWelcomeMsg);
-                }
-                // 添加企业欢迎消息
-                if (mController.getEnterpriseConfig().scheduler_after_client_send_msg
-                        && entWelcomeMsg == null
-                        && !TextUtils.isEmpty(mController.getEnterpriseConfig().ent_welcome_message)) {
-                    // 当成富文本消息处理
-                    entWelcomeMsg = new HybridMessage();
-                    entWelcomeMsg.setAvatar(mController.getEnterpriseConfig().avatar);
-                    String displayTitle = mController.getEnterpriseConfig().public_nickname;
-                    if (TextUtils.equals("null", displayTitle)) {
-                        displayTitle = getResources().getString(R.string.mq_title_default);
-                    }
-                    entWelcomeMsg.setAgentNickname(displayTitle);
-                    JSONArray contentArray = new JSONArray();
-                    JSONObject item = new JSONObject();
-                    try {
-                        item.put("type", "rich_text");
-                        item.put("body", mController.getEnterpriseConfig().ent_welcome_message);
-                        contentArray.put(item);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    entWelcomeMsg.setContent(contentArray.toString());
-                    entWelcomeMsg.setItemViewType(BaseMessage.TYPE_HYBRID);
-                    entWelcomeMsg.setStatus(BaseMessage.STATE_ARRIVE);
-                    entWelcomeMsg.setContentType(BaseMessage.TYPE_CONTENT_HYBRID);
-                    entWelcomeMsg.setId(System.currentTimeMillis());
-                    receiveNewMsg(entWelcomeMsg);
-                }
             }
 
             @Override
@@ -1353,6 +1318,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             // 处理设置客户头像后，第一次进来时没有头像
             if (MQConfig.isShowClientAvatar && !TextUtils.isEmpty(clientAvatarUrl) && message.getItemViewType() == BaseMessage.TYPE_CLIENT) {
                 message.setAvatar(clientAvatarUrl);
+            }
+            // 补充没有头像的欢迎消息、企业消息
+            if (!TextUtils.equals(message.getFromType(), BaseMessage.TYPE_FROM_CLIENT)
+                    || TextUtils.isEmpty(message.getAvatar())) {
+                message.setAvatar(mController.getEnterpriseConfig().avatar);
             }
         }
         if (isBlackState) {
@@ -1737,18 +1707,32 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 从本地选择图片
      */
     private void chooseFromPhotoPicker() {
-        // Android 10 直接跳转系统组件
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            Intent intent = new Intent();
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(intent, REQUEST_CODE_PHOTO);
+        // 弹窗访问提示
+        boolean isNeedShowPermissionDialog = getSharedPreferences("mq_permission", Context.MODE_PRIVATE).getBoolean("isNeedShowPermissionDialog", true);
+        if (isNeedShowPermissionDialog) {
+            String title = getResources().getString(R.string.mq_title_send_photo);
+            String content = getResources().getString(R.string.mq_content_send_photo);
+            new MQConfirmDialog(this, title, content, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getSharedPreferences("mq_permission", Context.MODE_PRIVATE).edit().putBoolean("isNeedShowPermissionDialog", false).apply();
+                    chooseFromPhotoPicker();
+                }
+            }, null).show();
         } else {
-            try {
-                startActivityForResult(MQPhotoPickerActivity.newIntent(this, null, 3, null, getString(R.string.mq_send)), REQUEST_CODE_PHOTO);
-            } catch (Exception e) {
-                MQUtils.show(this, R.string.mq_photo_not_support);
+            // Android 10 直接跳转系统组件
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                Intent intent = new Intent();
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, REQUEST_CODE_PHOTO);
+            } else {
+                try {
+                    startActivityForResult(MQPhotoPickerActivity.newIntent(this, null, 3, null, getString(R.string.mq_send)), REQUEST_CODE_PHOTO);
+                } catch (Exception e) {
+                    MQUtils.show(this, R.string.mq_photo_not_support);
+                }
             }
         }
     }
@@ -2247,27 +2231,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * @param message 消息
      */
     public void sendMessage(final BaseMessage message) {
-        if (mController.getEnterpriseConfig().scheduler_after_client_send_msg
-                && isNeedDelayOnline) {
-            // 没有分配客服的时候，点了发送，但是延迟上线是打开的，就尝试分配
-            isNeedDelayOnline = false;
-            mHasLoadData = false;
-            mChatMessageList.clear();
-            if (mChatMsgAdapter != null) {
-                mChatMsgAdapter.notifyDataSetChanged();
-            }
-            MQUtils.closeKeyboard(this);
-            mLoadProgressBar.setVisibility(View.VISIBLE);
-            // 保存消息，待上线成功之后发送
-            message.setStatus(BaseMessage.STATE_SENDING);
-            delaySendList.add(message);
-            if (message instanceof TextMessage) {
-                mInputEt.setText("");
-            }
-            setClientOnline(false);
-            return;
-        }
-
         boolean isPreSendSuc = checkAndPreSend(message);
         if (!isPreSendSuc) {
             return;
@@ -2302,6 +2265,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     addBlacklistTip(R.string.mq_blacklist_tips);
                 } else if (code == ErrorCode.QUEUEING) {
                     changeToQueueingState();
+                }
+                if (code == ErrorCode.NO_AGENT_ONLINE) {
+                    addLeaveMessageTip();
                 }
                 mChatMsgAdapter.notifyDataSetChanged();
             }
@@ -2875,7 +2841,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             if (BaseMessage.TYPE_ENDING.equals(baseMessage.getType()) && isBlackState) {
                 return;
             }
-
+            // 补充企业头像
+            if (!TextUtils.equals(baseMessage.getFromType(), BaseMessage.TYPE_FROM_CLIENT)
+                    && TextUtils.isEmpty(baseMessage.getAvatar())) {
+                baseMessage.setAvatar(mController.getEnterpriseConfig().avatar);
+            }
             mChatMessageList.add(baseMessage);
             MQTimeUtils.refreshMQTimeItem(mChatMessageList);
 
