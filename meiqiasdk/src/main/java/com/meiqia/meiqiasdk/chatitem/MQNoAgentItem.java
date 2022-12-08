@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
+import com.meiqia.core.MQManager;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.LeaveMessageCallback;
 import com.meiqia.meiqiasdk.widget.MQBaseCustomCompositeView;
@@ -17,6 +18,7 @@ public class MQNoAgentItem extends MQBaseCustomCompositeView {
 
     private LeaveMessageCallback mCallback;
     private TextView contentTv;
+    private TextView leaveMessageTv;
 
     public MQNoAgentItem(Context context) {
         super(context);
@@ -30,6 +32,10 @@ public class MQNoAgentItem extends MQBaseCustomCompositeView {
     @Override
     protected void initView() {
         contentTv = findViewById(R.id.content_tv);
+        leaveMessageTv = findViewById(R.id.tv_no_agent_leave_msg);
+        if (!MQManager.getInstance(getContext()).getEnterpriseConfig().ticketConfig.isSdkEnabled()) {
+            leaveMessageTv.setVisibility(GONE);
+        }
     }
 
     @Override

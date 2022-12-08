@@ -123,6 +123,8 @@
     <string name="mq_content_request_camera_and_storage_permission">发送图片和发送视频功能需要申请存储空间权限和相机权限</string>
     <string name="mq_content_request_camera_permission">从相机发送图片和视频功能需要申请相机权限</string>
     <string name="mq_content_request_record_permission">发送语音功能需要申请录音权限</string>
+    <string name="mq_title_send_photo">发送图片</string>
+    <string name="mq_content_send_photo">我们需要访问相册来发送图片</string>
 
     <string name="mq_net_status_reconnect">网络连接中，接收消息可能会有遗漏</string>
     <string name="mq_net_status_not_available">您的网络连接已断开，发送消息失败</string>

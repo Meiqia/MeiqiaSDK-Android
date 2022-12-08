@@ -101,6 +101,7 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
         refreshEnterpriseConfigAndContent();
 
         popTicketCategoriesChooseDialog();
+        refreshLeaveMessageSwitchStatus();
     }
 
     /**
@@ -108,6 +109,14 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
      */
     private void handleLeaveMessageIntro() {
         refreshLeaveMessageIntro();
+    }
+
+    private void refreshLeaveMessageSwitchStatus() {
+        boolean isTicketOpen = MQConfig.getController(this).getEnterpriseConfig().ticketConfig.isSdkEnabled();
+        if (!isTicketOpen) {
+            mSubmitTv.setVisibility(View.GONE);
+            mInputContainerLl.setVisibility(View.GONE);
+        }
     }
 
     private void refreshEnterpriseConfigAndContent() {
@@ -129,6 +138,9 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
      */
     private void popTicketCategoriesChooseDialog() {
         if (!getEnterpriseConfig().ticketConfig.isCategory()) {
+            return;
+        }
+        if (!getEnterpriseConfig().ticketConfig.isSdkEnabled()) {
             return;
         }
         MQManager.getInstance(this).getTicketCategories(new OnTicketCategoriesCallback() {

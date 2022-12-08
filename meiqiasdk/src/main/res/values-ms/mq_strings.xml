@@ -123,6 +123,8 @@
     <string name="mq_content_request_camera_and_storage_permission">Kebenaran akses kamera dan penyimpanan diperlukan untuk menghantar gambar dan video</string>
     <string name="mq_content_request_camera_permission">Kami memerlukan kebenaran kamera untuk menghantar mesej imej/video</string>
     <string name="mq_content_request_record_permission">Kebenaran akses diperlukan untuk menghantar rakaman</string>
+    <string name="mq_title_send_photo">hantar gambar-gambar</string>
+    <string name="mq_content_send_photo">Kami memerlukan akses kepada album untuk menghantar imej</string>
 
     <string name="mq_net_status_reconnect">Sedang menyambung Internet, maklumat yang diterima mungkin tidak lengkap</string>
     <string name="mq_net_status_not_available">Sambungan rangkaian anda telah diputuskan dan penghantaran mesej telah gagal</string>

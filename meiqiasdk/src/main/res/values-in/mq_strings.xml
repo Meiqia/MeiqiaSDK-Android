@@ -123,6 +123,8 @@
     <string name="mq_content_request_camera_and_storage_permission">Fitur pengiriman foto dan video perlu otorisasi untuk memori dan kamera</string>
     <string name="mq_content_request_camera_permission">Izin kamera diperlukan untuk mengirim gambar dan video dari kamera</string>
     <string name="mq_content_request_record_permission">Fitur pengiriman pesan suara perlu otorisasi untuk merekam suara </string>
+    <string name="mq_title_send_photo">mengirim gambar</string>
+    <string name="mq_content_send_photo">Kami memerlukan akses ke album foto untuk mengirim gambar</string>
 
     <string name="mq_net_status_reconnect">Jaringan sedang dihubungkan, penerimaan pesan mungkin akan terganggu</string>
     <string name="mq_net_status_not_available">Sambungan jaringan Anda telah terputus dan pengiriman pesan gagal</string>

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.meiqia.core.MQManager;
 import com.meiqia.core.bean.MQEnterpriseConfig;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.LeaveMessageCallback;
@@ -21,6 +22,7 @@ public class MQRedirectQueueItem extends MQBaseCustomCompositeView {
     private TextView mWaitNumTv;
     private TextView mInfoTv;
     private TextView mTicketIntroTv;
+    private TextView mLeaveMessageTv;
 
     private LeaveMessageCallback mCallback;
 
@@ -39,6 +41,11 @@ public class MQRedirectQueueItem extends MQBaseCustomCompositeView {
         mWaitNumTv = getViewById(R.id.tv_wait_number);
         mInfoTv = getViewById(R.id.tv_queue_info_tv);
         mTicketIntroTv = getViewById(R.id.tv_ticket_intro);
+        mLeaveMessageTv = getViewById(R.id.tv_redirect_queue_leave_msg);
+        if (!MQManager.getInstance(getContext()).getEnterpriseConfig().ticketConfig.isSdkEnabled()) {
+            mLeaveMessageTv.setVisibility(GONE);
+            mTicketIntroTv.setVisibility(GONE);
+        }
     }
 
     @Override
