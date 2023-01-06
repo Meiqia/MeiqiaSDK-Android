@@ -102,7 +102,6 @@
     <string name="mq_useless">Belum terselesaikan</string>
     <string name="mq_useful">Terselesaikan</string>
     <string name="mq_already_feedback">Sudah diumpan balik</string>
-    <string name="mq_robot_menu_tip">Klik pertanyaan atau balas angka yang sesuai untuk cek jawaban</string>
     <string name="mq_redirect_human">Pindah ke bantuan langsung</string>
     <string name="mq_no_agent_leave_msg_tip">Maaf, saat ini tidak ada CS yang online, Anda bisa</string>
     <string name="mq_useless_redirect_tip">Mohon maaf atas ketidakpuasannya dengan jawaban robot, bisa coba</string>

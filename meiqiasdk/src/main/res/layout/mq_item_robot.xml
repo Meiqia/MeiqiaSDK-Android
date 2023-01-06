@@ -2,76 +2,134 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/MQWrapWrap.Horizontal"
+    style="@style/MQMatchWrap.Vertical"
     android:padding="8dp">
 
-    <com.meiqia.meiqiasdk.widget.MQImageView
-        android:id="@+id/iv_robot_avatar"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginRight="6dp"
-        android:src="@drawable/mq_ic_holder_avatar"
-        app:mq_iv_isCircle="true"
-        tools:background="#f00" />
-
     <LinearLayout
-        android:id="@+id/ll_robot_container"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/mq_bg_msg_left"
-        android:orientation="vertical">
+        android:id="@+id/root_ll"
+        style="@style/MQMatchWrap.Horizontal">
 
-        <TextView
-            android:id="@+id/mq_robot_rich_text_container"
-            android:autoLink="all"
-            android:textColorLink="@color/mq_chat_left_textColor"
-            style="@style/MQWrapWrap.Horizontal">
-
-        </TextView>
+        <com.meiqia.meiqiasdk.widget.MQImageView
+            android:id="@+id/iv_robot_avatar"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginRight="6dp"
+            android:src="@drawable/mq_ic_holder_avatar"
+            app:mq_iv_isCircle="true"
+            tools:background="#f00" />
 
         <LinearLayout
-            android:id="@+id/ll_robot_content"
-            style="@style/MQMatchWrap.Vertical" />
-
-        <TextView
-            android:id="@+id/tv_robot_menu_tip"
-            style="@style/MQMatchWrap"
-            android:padding="@dimen/mq_size_level2"
-            android:text="@string/mq_robot_menu_tip"
-            android:textColor="@color/mq_chat_robot_menu_tip_textColor"
-            android:textSize="@dimen/mq_textSize_level1" />
-
-        <LinearLayout
-            android:id="@+id/ll_robot_evaluate"
-            style="@style/MQMatchWrap.Horizontal"
-            android:gravity="right">
+            android:id="@+id/ll_robot_container"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/mq_bg_msg_left"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_robot_useless"
-                style="@style/MQWrapWrap"
-                android:layout_marginRight="@dimen/mq_size_level2"
-                android:clickable="true"
-                android:padding="@dimen/mq_size_level2"
-                android:text="@string/mq_useless"
-                android:textColor="@color/mq_chat_robot_evaluate_textColor"
-                android:textSize="@dimen/mq_textSize_level1" />
+                android:id="@+id/mq_robot_rich_text_container"
+                style="@style/MQWrapWrap.Horizontal"
+                android:autoLink="all"
+                android:textColorLink="@color/mq_chat_left_textColor">
 
-            <TextView
-                android:id="@+id/tv_robot_useful"
-                style="@style/MQWrapWrap"
-                android:clickable="true"
-                android:padding="@dimen/mq_size_level2"
-                android:text="@string/mq_useful"
-                android:textColor="@color/mq_chat_robot_evaluate_textColor"
-                android:textSize="@dimen/mq_textSize_level1" />
+            </TextView>
 
-            <TextView
-                android:id="@+id/tv_robot_already_feedback"
-                style="@style/MQWrapWrap"
-                android:padding="@dimen/mq_size_level2"
-                android:text="@string/mq_already_feedback"
-                android:textColor="@color/mq_chat_robot_menu_tip_textColor"
-                android:textSize="@dimen/mq_textSize_level1" />
+            <LinearLayout
+                android:id="@+id/ll_robot_content"
+                style="@style/MQMatchWrap.Vertical" />
+
+            <LinearLayout
+                android:id="@+id/ll_robot_evaluate"
+                style="@style/MQMatchWrap.Horizontal"
+                android:layout_marginTop="8dp">
+
+                <LinearLayout
+                    android:id="@+id/tv_robot_useful"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/mq_bg_card"
+                    android:clickable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="4dp">
+
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginLeft="4dp"
+                        android:src="@drawable/mq_ic_evaluate_outline" />
+
+                    <TextView
+                        android:id="@+id/mq_useful_tv"
+                        style="@style/MQWrapWrap"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="@dimen/mq_size_level1"
+                        android:text="@string/mq_useful"
+                        android:textColor="@color/mq_chat_left_textColor"
+                        android:textSize="@dimen/mq_textSize_level1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tv_robot_useless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/mq_bg_card"
+                    android:clickable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="4dp">
+
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginLeft="4dp"
+                        android:rotation="180"
+                        android:src="@drawable/mq_ic_evaluate_outline" />
+
+                    <TextView
+                        android:id="@+id/mq_useless_tv"
+                        style="@style/MQWrapWrap"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="@dimen/mq_size_level1"
+                        android:text="@string/mq_useless"
+                        android:textColor="@color/mq_chat_left_textColor"
+                        android:textSize="@dimen/mq_textSize_level1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_robot_already_feedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/mq_bg_card"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="4dp">
+
+                    <ImageView
+                        android:id="@+id/iv_robot_already_feedback"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginLeft="4dp"
+                        android:src="@drawable/mq_ic_evaluate_normal" />
+
+                    <TextView
+                        android:id="@+id/tv_robot_already_feedback"
+                        style="@style/MQWrapWrap"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="4dp"
+                        android:text="@string/mq_already_feedback"
+                        android:textColor="@color/mq_chat_left_textColor"
+                        android:textSize="@dimen/mq_textSize_level1" />
+                </LinearLayout>
+
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_robot_relative_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical" />
 </LinearLayout>

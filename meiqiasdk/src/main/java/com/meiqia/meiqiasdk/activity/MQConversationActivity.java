@@ -2542,7 +2542,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
             @Override
             public void onSuccess(String message) {
-                robotMessage.setAlreadyFeedback(true);
+                robotMessage.setFeedbackUseful(useful);
                 mChatMsgAdapter.notifyDataSetChanged();
 
                 if (RobotMessage.EVALUATE_USELESS == useful) {

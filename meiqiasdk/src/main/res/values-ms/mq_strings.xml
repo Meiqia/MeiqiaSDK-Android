@@ -102,7 +102,6 @@
     <string name="mq_useless">Belum selesai</string>
     <string name="mq_useful">Selesai</string>
     <string name="mq_already_feedback">Telah maklum balas</string>
-    <string name="mq_robot_menu_tip">Klik pada soalan atau hantarkan nombor untuk semak jawapan</string>
     <string name="mq_redirect_human">Beralih kepada bantuan ejen</string>
     <string name="mq_no_agent_leave_msg_tip">Maaf, tiada pegawai khidmat pelanggan dalam talian. Anda boleh tinggalkan mesej kepada kami</string>
     <string name="mq_useless_redirect_tip">Kami amat kesal atas ketidakpuasan anda terhadap jawapan robot, anda boleh cuba beralih kepada</string>

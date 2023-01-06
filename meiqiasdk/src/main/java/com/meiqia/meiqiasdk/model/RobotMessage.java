@@ -6,6 +6,7 @@ package com.meiqia.meiqiasdk.model;
  * 描述:
  */
 public class RobotMessage extends BaseMessage {
+    public static final int EVALUATE_UNSELECTED = -1;
     public static final int EVALUATE_USEFUL = 1;
     public static final int EVALUATE_USELESS = 0;
 
@@ -22,7 +23,7 @@ public class RobotMessage extends BaseMessage {
     private String contentRobot;
     private String extra;
     private long questionId;
-    private boolean isAlreadyFeedback;
+    private int feedbackUseful = EVALUATE_UNSELECTED;
 
     public RobotMessage() {
         setItemViewType(TYPE_ROBOT);
@@ -53,11 +54,15 @@ public class RobotMessage extends BaseMessage {
     }
 
     public boolean isAlreadyFeedback() {
-        return isAlreadyFeedback;
+        return feedbackUseful != EVALUATE_UNSELECTED;
     }
 
-    public void setAlreadyFeedback(boolean alreadyFeedback) {
-        isAlreadyFeedback = alreadyFeedback;
+    public void setFeedbackUseful(int feedbackUseful) {
+        this.feedbackUseful = feedbackUseful;
+    }
+
+    public int getFeedbackUseful() {
+        return feedbackUseful;
     }
 
     public String getExtra() {
