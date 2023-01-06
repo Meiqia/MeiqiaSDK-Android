@@ -11,6 +11,7 @@
     <color name="mq_white">@android:color/white</color>
     <color name="mq_gray">#808080</color>
     <color name="mq_error">#ff5c5e</color>
+    <color name="mq_line">#EEF0F6</color>
 
     <color name="mq_item_pressed">#EFEFEF</color>
     <color name="mq_item_normal">@android:color/white</color>

@@ -100,9 +100,8 @@
     <string name="mq_invalid_content">请输入正确的格式</string>
 
     <string name="mq_useless">未解决</string>
-    <string name="mq_useful">解决</string>
+    <string name="mq_useful">已解决</string>
     <string name="mq_already_feedback">已反馈</string>
-    <string name="mq_robot_menu_tip">点击问题或回复对应数字查看答案</string>
     <string name="mq_redirect_human">转人工</string>
     <string name="mq_no_agent_leave_msg_tip">抱歉，当前没有客服在线，你可以给我们</string>
     <string name="mq_useless_redirect_tip">很抱歉您不满意机器人的回答，您可以尝试</string>
@@ -132,5 +131,8 @@
     <string name="mq_net_status_not_work_title">未连接</string>
     <string name="mq_sale_count">销量</string>
     <string name="mq_view_details">查看详情</string>
+    <string name="mq_faq">常见问题</string>
+    <string name="mq_pre_page">上一页</string>
+    <string name="mq_next_page">下一页</string>
 
 </resources>

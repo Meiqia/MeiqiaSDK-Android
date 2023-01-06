@@ -185,7 +185,7 @@ public class MQUtils {
                 robotMessage.setContent(message.getContent());
                 robotMessage.setSubType(message.getSub_type());
                 robotMessage.setQuestionId(message.getQuestion_id());
-                robotMessage.setAlreadyFeedback(message.isAlreadyFeedback());
+                robotMessage.setFeedbackUseful(message.getFeedbackUseful());
                 robotMessage.setExtra(message.getExtra());
                 baseMessage = robotMessage;
             }

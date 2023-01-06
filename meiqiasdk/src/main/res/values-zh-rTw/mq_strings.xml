@@ -100,9 +100,8 @@
     <string name="mq_invalid_content">請輸入正確的格式</string>
 
     <string name="mq_useless">未解決</string>
-    <string name="mq_useful">解決</string>
+    <string name="mq_useful">已解決</string>
     <string name="mq_already_feedback">已反饋</string>
-    <string name="mq_robot_menu_tip">點擊問題或回復對應數字查看答案</string>
     <string name="mq_redirect_human">轉人工</string>
     <string name="mq_no_agent_leave_msg_tip">抱歉，當前沒有客服在線，你可以給我們</string>
     <string name="mq_useless_redirect_tip">很抱歉您不滿意機器人的回答，您可以嘗試</string>

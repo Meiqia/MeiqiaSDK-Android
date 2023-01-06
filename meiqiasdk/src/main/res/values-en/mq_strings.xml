@@ -102,7 +102,6 @@
     <string name="mq_useless">Unresolved</string>
     <string name="mq_useful">Resolved</string>
     <string name="mq_already_feedback">Responded</string>
-    <string name="mq_robot_menu_tip">Click the question or reply the number to view answer</string>
     <string name="mq_redirect_human">Human service</string>
     <string name="mq_no_agent_leave_msg_tip">Sorry，no service online，you can contact us by </string>
     <string name="mq_useless_redirect_tip">Sorry, you are not satisfied with the robot answer, you can try </string>

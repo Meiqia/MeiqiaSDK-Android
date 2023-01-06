@@ -141,7 +141,7 @@ public class MQWebViewActivity extends Activity implements View.OnClickListener 
         }
     }
 
-    private void evaluate(int useful) {
+    private void evaluate(final int useful) {
         String clientMsg = "";
         try {
             JSONObject extraObj = new JSONObject(sRobotMessage.getExtra());
@@ -157,7 +157,7 @@ public class MQWebViewActivity extends Activity implements View.OnClickListener 
 
             @Override
             public void onSuccess(String message) {
-                sRobotMessage.setAlreadyFeedback(true);
+                sRobotMessage.setFeedbackUseful(useful);
                 handleRobotRichTextMessage();
             }
         });
