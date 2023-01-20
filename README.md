@@ -12,7 +12,7 @@
 
 ```
 // -------------------- 以下三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
-implementation 'com.meiqia:meiqiasdk:3.9.6'
+implementation 'com.meiqia:meiqiasdk:3.9.7'
 implementation 'com.android.support:support-v4:23.1.1'
 implementation 'com.squareup.okhttp3:okhttp:3.5.0'
 // -------------------- 以上三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------

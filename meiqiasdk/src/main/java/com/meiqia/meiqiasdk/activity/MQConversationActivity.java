@@ -83,10 +83,10 @@ import com.meiqia.meiqiasdk.model.InitiativeRedirectMessage;
 import com.meiqia.meiqiasdk.model.LeaveTipMessage;
 import com.meiqia.meiqiasdk.model.NoAgentLeaveMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
-import com.meiqia.meiqiasdk.model.TipMessage;
 import com.meiqia.meiqiasdk.model.RedirectQueueMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
+import com.meiqia.meiqiasdk.model.TipMessage;
 import com.meiqia.meiqiasdk.model.VideoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.util.ErrorCode;
@@ -94,7 +94,6 @@ import com.meiqia.meiqiasdk.util.MQAudioPlayerManager;
 import com.meiqia.meiqiasdk.util.MQAudioRecorderManager;
 import com.meiqia.meiqiasdk.util.MQChatAdapter;
 import com.meiqia.meiqiasdk.util.MQConfig;
-import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.meiqia.meiqiasdk.util.MQSimpleTextWatcher;
 import com.meiqia.meiqiasdk.util.MQSoundPoolManager;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
@@ -102,7 +101,6 @@ import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQCustomKeyboardLayout;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -1321,7 +1319,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             }
             // 补充没有头像的欢迎消息、企业消息
             if (!TextUtils.equals(message.getFromType(), BaseMessage.TYPE_FROM_CLIENT)
-                    || TextUtils.isEmpty(message.getAvatar())) {
+                    && TextUtils.isEmpty(message.getAvatar())) {
                 message.setAvatar(mController.getEnterpriseConfig().avatar);
             }
         }
