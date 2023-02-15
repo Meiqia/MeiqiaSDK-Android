@@ -79,6 +79,7 @@ public class MQIntentBuilder {
 
     public MQIntentBuilder setScheduleRule(MQScheduleRule scheduleRule) {
         MQManager.getInstance(mContext).setScheduleRule(scheduleRule); // 和以前逻辑保持一致，SDK 设置的分配规则，同样影响询前表单的分配
+        mIntent.putExtra(MQConversationActivity.SCHEDULED_RULE, scheduleRule.getValue());
         return this;
     }
 

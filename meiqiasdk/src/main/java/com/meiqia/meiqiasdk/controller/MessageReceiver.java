@@ -94,7 +94,8 @@ public abstract class MessageReceiver extends BroadcastReceiver {
         } else if (TextUtils.equals(MQMessageManager.ACTION_QUEUEING_REMOVE, action)) {
             removeQueue();
         } else if (TextUtils.equals(MQMessageManager.ACTION_QUEUEING_INIT_CONV, action)) {
-            queueingInitConv();
+            long convId = intent.getLongExtra("convId", -1);
+            queueingInitConv(convId);
         } else if (TextUtils.equals(MQMessageManager.ACTION_SOCKET_OPEN, action)) {
             socketOpen();
         } else if (TextUtils.equals(MQController.ACTION_SOCKET_RECONNECT, action)) {
@@ -128,7 +129,7 @@ public abstract class MessageReceiver extends BroadcastReceiver {
 
     public abstract void removeQueue();
 
-    public abstract void queueingInitConv();
+    public abstract void queueingInitConv(long convId);
 
     public abstract void socketOpen();
 
