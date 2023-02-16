@@ -51,6 +51,7 @@ import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.MQMessageManager;
+import com.meiqia.core.MQScheduleRule;
 import com.meiqia.core.bean.MQAgent;
 import com.meiqia.core.bean.MQMessage;
 import com.meiqia.core.callback.OnClientPositionInQueueCallback;
@@ -83,10 +84,10 @@ import com.meiqia.meiqiasdk.model.InitiativeRedirectMessage;
 import com.meiqia.meiqiasdk.model.LeaveTipMessage;
 import com.meiqia.meiqiasdk.model.NoAgentLeaveMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
+import com.meiqia.meiqiasdk.model.TipMessage;
 import com.meiqia.meiqiasdk.model.RedirectQueueMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
-import com.meiqia.meiqiasdk.model.TipMessage;
 import com.meiqia.meiqiasdk.model.VideoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.util.ErrorCode;
@@ -94,6 +95,7 @@ import com.meiqia.meiqiasdk.util.MQAudioPlayerManager;
 import com.meiqia.meiqiasdk.util.MQAudioRecorderManager;
 import com.meiqia.meiqiasdk.util.MQChatAdapter;
 import com.meiqia.meiqiasdk.util.MQConfig;
+import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.meiqia.meiqiasdk.util.MQSimpleTextWatcher;
 import com.meiqia.meiqiasdk.util.MQSoundPoolManager;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
@@ -101,6 +103,7 @@ import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQCustomKeyboardLayout;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -281,7 +284,15 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 } else {
                     String scheduleAgentId = getIntent().getStringExtra(SCHEDULED_AGENT);
                     String scheduleGroupId = getIntent().getStringExtra(SCHEDULED_GROUP);
-                    MQManager.getInstance(MQConversationActivity.this).setScheduledAgentOrGroupWithId(scheduleAgentId, scheduleGroupId, null);
+                    int scheduledRule = getIntent().getIntExtra(SCHEDULED_RULE, MQScheduleRule.REDIRECT_ENTERPRISE.getValue());
+                    MQScheduleRule rule = MQScheduleRule.REDIRECT_ENTERPRISE;
+                    for (MQScheduleRule r : MQScheduleRule.values()) {
+                        if (r.getValue() == scheduledRule) {
+                            rule = r;
+                            break;
+                        }
+                    }
+                    MQManager.getInstance(MQConversationActivity.this).setScheduledAgentOrGroupWithId(scheduleAgentId, scheduleGroupId, rule);
                     // 都不是，就继续初始化聊天界面
                     applyAfterRefreshConfig();
                 }
@@ -2795,7 +2806,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         }
 
         @Override
-        public void queueingInitConv() {
+        public void queueingInitConv(long convId) {
+            mConversationId = String.valueOf(convId);
             removeQueue();
             setCurrentAgent(mController.getCurrentAgent());
             sendDelayMessages();
