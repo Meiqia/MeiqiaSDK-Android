@@ -95,7 +95,6 @@ import com.meiqia.meiqiasdk.util.MQAudioPlayerManager;
 import com.meiqia.meiqiasdk.util.MQAudioRecorderManager;
 import com.meiqia.meiqiasdk.util.MQChatAdapter;
 import com.meiqia.meiqiasdk.util.MQConfig;
-import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.meiqia.meiqiasdk.util.MQSimpleTextWatcher;
 import com.meiqia.meiqiasdk.util.MQSoundPoolManager;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
@@ -103,7 +102,6 @@ import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQCustomKeyboardLayout;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -1867,18 +1865,18 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         String path = MQUtils.getPicStorePath(this) + "/" + System.currentTimeMillis() + ".mp4";
         File videoFile = new File(path);
         mVideoPath = path;
-        Uri uri;
+        Uri uri = null;
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                ContentValues contentValues = new ContentValues(1);
-                contentValues.put(MediaStore.Images.Media.DATA, videoFile.getAbsolutePath());
-                uri = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues);
+                // result 中处理
             } else {
                 uri = Uri.fromFile(videoFile);
             }
             mCameraPicUri = uri;
             camera.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);    // MediaStore.EXTRA_VIDEO_QUALITY 表示录制视频的质量，从 0-1，越大表示质量越好，同时视频也越大
-            camera.putExtra(MediaStore.EXTRA_OUTPUT, uri);    // 表示录制完后保存的录制，如果不写，则会保存到默认的路径，在onActivityResult()的回调，通过intent.getData中返回保存的路径
+            if (uri != null) {
+                camera.putExtra(MediaStore.EXTRA_OUTPUT, uri);    // 表示录制完后保存的录制，如果不写，则会保存到默认的路径，在onActivityResult()的回调，通过intent.getData中返回保存的路径
+            }
             camera.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 60);   // 设置视频录制的最长时间
             startActivityForResult(camera, MQConversationActivity.REQUEST_CODE_VIDEO);
         } catch (Exception e) {
@@ -2740,9 +2738,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             BaseMessage recallMessage = new BaseMessage();
             recallMessage.setId(id);
             mChatMessageList.remove(recallMessage);
-            TipMessage recallTipMessage = new TipMessage();
-            recallTipMessage.setContent(getResources().getString(R.string.mq_recall_msg));
-            mChatMessageList.add(recallTipMessage);
+            // 根据开关判断是否显示「已撤回」的提示
+            if (!MQConfig.getController(MQConversationActivity.this).getEnterpriseConfig().isNotDisplayWithdrawTip) {
+                TipMessage recallTipMessage = new TipMessage();
+                recallTipMessage.setContent(getResources().getString(R.string.mq_recall_msg));
+                mChatMessageList.add(recallTipMessage);
+            }
             mChatMsgAdapter.notifyDataSetChanged();
         }
 

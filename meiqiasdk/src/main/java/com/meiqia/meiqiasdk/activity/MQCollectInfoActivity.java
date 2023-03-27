@@ -3,6 +3,7 @@ package com.meiqia.meiqiasdk.activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewCompat;
@@ -39,6 +40,7 @@ import com.meiqia.meiqiasdk.util.ErrorCode;
 import com.meiqia.meiqiasdk.util.HttpUtils;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.util.MQUtils;
+import com.meiqia.meiqiasdk.util.RichText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,7 +56,7 @@ import java.util.Map;
  * OnePiece
  * Created by xukq on 6/27/16.
  */
-public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClickListener {
+public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClickListener, RichText.OnImageClickListener {
 
     public static final String GROUP_ID = "group_id";
     public static final String AGENT_ID = "agent_id";
@@ -73,7 +75,7 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
     private TextView mSubmitTv;
     private LinearLayout mContainerLl;
     private TextView mTopTipViewTv;
-    private RelativeLayout mBodyRl;
+    private TextView mContentTv;
     private Handler mHandler;
     private Runnable mAutoDismissTopTipRunnable;
 
@@ -107,7 +109,7 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
         mSubmitTv = (TextView) findViewById(R.id.submit_tv);
         mContainerLl = (LinearLayout) findViewById(R.id.container_ll);
         mRootView = (RelativeLayout) findViewById(R.id.root);
-        mBodyRl = (RelativeLayout) findViewById(R.id.body_rl);
+        mContentTv = (TextView) findViewById(R.id.content_tv);
         mScrollView = findViewById(R.id.content_sv);
     }
 
@@ -127,6 +129,13 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
         }
 
         try {
+            if (!TextUtils.isEmpty(getInquireForm().getContent())) {
+                RichText richText = new RichText();
+                richText.fromHtml(getInquireForm().getContent()).setOnImageClickListener(this).into(mContentTv);
+                mContentTv.setVisibility(View.VISIBLE);
+            } else {
+                mContentTv.setVisibility(View.GONE);
+            }
             JSONArray fields = getInquireForm().getInputs().optJSONArray(MQInquireForm.KEY_INPUTS_FIELDS);
             // 异常情况，直接进入对话页面
             if (fields == null) {
@@ -375,6 +384,20 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
 
         }
         return isAllReturnedCustomer;
+    }
+
+    @Override
+    public void onImageClicked(String url, String imgLink) {
+        try {
+            if (TextUtils.isEmpty(imgLink)) {
+                this.startActivity(MQPhotoPreviewActivity.newIntent(this, MQUtils.getImageDir(this), url));
+            } else {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(imgLink));
+                this.startActivity(intent);
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, R.string.mq_title_unknown_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private abstract class BaseItem {

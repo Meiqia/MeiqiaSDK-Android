@@ -13,10 +13,19 @@
         android:layout_marginTop="@dimen/mq_title_height"
         android:background="@color/mq_activity_bg">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/body_rl"
             android:layout_width="match_parent"
+            android:orientation="vertical"
             android:layout_height="match_parent">
+
+            <TextView
+                android:padding="16dp"
+                android:id="@+id/content_tv"
+                android:autoLink="all"
+                android:textSize="16sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:id="@+id/container_ll"
@@ -27,7 +36,7 @@
 
             </LinearLayout>
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </ScrollView>
 
