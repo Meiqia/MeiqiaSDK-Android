@@ -2,7 +2,7 @@ package com.meiqia.meiqiasdk.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MQListDialog extends Dialog {
-    private TextView mTitleTv;
-    private ListView mListview;
+    private final TextView mTitleTv;
+    private final ListView mListview;
 
     public MQListDialog(Activity activity, @StringRes int titleResId, List<Map<String, String>> dataList, AdapterView.OnItemClickListener onItemClickListener) {
         this(activity, activity.getString(titleResId), dataList, onItemClickListener, true);
@@ -27,8 +27,8 @@ public class MQListDialog extends Dialog {
         super(activity, R.style.MQDialog);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         setContentView(R.layout.mq_dialog_ticket_categry);
-        mTitleTv = (TextView) findViewById(R.id.tv_comfirm_title);
-        mListview = (ListView) findViewById(R.id.list_lv);
+        mTitleTv = findViewById(R.id.tv_comfirm_title);
+        mListview = findViewById(R.id.list_lv);
 
         setCanceledOnTouchOutside(isCancelable);
         setCancelable(isCancelable);

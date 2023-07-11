@@ -2,7 +2,7 @@ package com.meiqia.meiqiasdk.util;
 
 import android.content.Context;
 import android.media.MediaRecorder;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.util.UUID;
@@ -15,10 +15,10 @@ import java.util.UUID;
 public class MQAudioRecorderManager {
     private MediaRecorder mMediaRecorder;
     private File mCurrentFile;
-    private Callback mCallback;
+    private final Callback mCallback;
 
     private boolean mIsPrepared;
-    private Context mContext;
+    private final Context mContext;
 
     public MQAudioRecorderManager(Context context, Callback callback) {
         mContext = context.getApplicationContext();

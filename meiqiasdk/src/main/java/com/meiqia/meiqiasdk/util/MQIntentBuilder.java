@@ -22,7 +22,7 @@ import java.util.HashMap;
  */
 public class MQIntentBuilder {
 
-    private Context mContext;
+    private final Context mContext;
     private Intent mIntent;
 
     public MQIntentBuilder(Context context) {

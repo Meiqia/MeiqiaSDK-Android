@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
+import androidx.core.view.ViewCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -128,11 +128,11 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
 
     private void initView() {
         setContentView(R.layout.mq_activity_photo_picker);
-        mTitleRl = (RelativeLayout) findViewById(R.id.title_rl);
-        mTitleTv = (TextView) findViewById(R.id.title_tv);
-        mArrowIv = (ImageView) findViewById(R.id.arrow_iv);
-        mSubmitTv = (TextView) findViewById(R.id.submit_tv);
-        mContentGv = (GridView) findViewById(R.id.content_gv);
+        mTitleRl = findViewById(R.id.title_rl);
+        mTitleTv = findViewById(R.id.title_tv);
+        mArrowIv = findViewById(R.id.arrow_iv);
+        mSubmitTv = findViewById(R.id.submit_tv);
+        mContentGv = findViewById(R.id.content_gv);
     }
 
     private void initListener() {
@@ -411,8 +411,8 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
         private ArrayList<String> mSelectedImages = new ArrayList<>();
         private ArrayList<String> mData;
         private ArrayList<Uri> mDataUri;
-        private int mImageWidth;
-        private int mImageHeight;
+        private final int mImageWidth;
+        private final int mImageHeight;
 
         public PicAdapter() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -449,9 +449,9 @@ public class MQPhotoPickerActivity extends Activity implements View.OnClickListe
             if (convertView == null) {
                 convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.mq_item_square_image, parent, false);
                 picViewHolder = new PicViewHolder();
-                picViewHolder.photoIv = (MQImageView) convertView.findViewById(R.id.photo_iv);
-                picViewHolder.tipTv = (TextView) convertView.findViewById(R.id.tip_tv);
-                picViewHolder.flagIv = (ImageView) convertView.findViewById(R.id.flag_iv);
+                picViewHolder.photoIv = convertView.findViewById(R.id.photo_iv);
+                picViewHolder.tipTv = convertView.findViewById(R.id.tip_tv);
+                picViewHolder.flagIv = convertView.findViewById(R.id.flag_iv);
                 convertView.setTag(picViewHolder);
             } else {
                 picViewHolder = (PicViewHolder) convertView.getTag();

@@ -23,8 +23,8 @@ import java.util.Map;
  * 描述:
  */
 public class MQLoadPhotoTask extends MQAsyncTask<Void, ArrayList<ImageFolderModel>> {
-    private Context mContext;
-    private boolean mTakePhotoEnabled;
+    private final Context mContext;
+    private final boolean mTakePhotoEnabled;
 
     public MQLoadPhotoTask(Callback<ArrayList<ImageFolderModel>> callback, Context context, boolean takePhotoEnabled) {
         super(callback);

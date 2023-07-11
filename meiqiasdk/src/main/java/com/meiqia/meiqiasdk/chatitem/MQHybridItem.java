@@ -45,7 +45,7 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
     private ViewGroup mOperationLl;
     private LinearLayout mRootLl;
 
-    private MQRobotItem.Callback mCallback;
+    private final MQRobotItem.Callback mCallback;
 
     private int mPadding;
     private int mTextSize;

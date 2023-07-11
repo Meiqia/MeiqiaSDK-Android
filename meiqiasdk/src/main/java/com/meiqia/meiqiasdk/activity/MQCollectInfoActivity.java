@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.ViewPropertyAnimatorListenerAdapter;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Spannable;
@@ -105,11 +105,11 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        mLoadingProgressBar = (ProgressBar) findViewById(R.id.progressbar);
-        mSubmitTv = (TextView) findViewById(R.id.submit_tv);
-        mContainerLl = (LinearLayout) findViewById(R.id.container_ll);
-        mRootView = (RelativeLayout) findViewById(R.id.root);
-        mContentTv = (TextView) findViewById(R.id.content_tv);
+        mLoadingProgressBar = findViewById(R.id.progressbar);
+        mSubmitTv = findViewById(R.id.submit_tv);
+        mContainerLl = findViewById(R.id.container_ll);
+        mRootView = findViewById(R.id.root);
+        mContentTv = findViewById(R.id.content_tv);
         mScrollView = findViewById(R.id.content_sv);
     }
 
@@ -497,8 +497,8 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
         @Override
         void findViews() {
             rootView = getLayoutInflater().inflate(R.layout.mq_item_form_type_text, null);
-            titleTv = (TextView) rootView.findViewById(R.id.title_tv);
-            contentEt = (EditText) rootView.findViewById(R.id.content_et);
+            titleTv = rootView.findViewById(R.id.title_tv);
+            contentEt = rootView.findViewById(R.id.content_et);
         }
 
         private void setListeners() {
@@ -550,7 +550,7 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
     private class SingleChoiceItem extends BaseItem implements CompoundButton.OnCheckedChangeListener {
 
         RadioGroup radioGroup;
-        private String choices;
+        private final String choices;
 
         SingleChoiceItem(String displayName, String fieldName, String type, String choices, boolean optional, boolean ignoreReturnCustomer) {
             super(displayName, fieldName, type, optional, ignoreReturnCustomer);
@@ -579,8 +579,8 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
         @Override
         void findViews() {
             rootView = getLayoutInflater().inflate(R.layout.mq_item_form_type_single_choice, null);
-            titleTv = (TextView) rootView.findViewById(R.id.title_tv);
-            radioGroup = (RadioGroup) rootView.findViewById(R.id.radio_group);
+            titleTv = rootView.findViewById(R.id.title_tv);
+            radioGroup = rootView.findViewById(R.id.radio_group);
         }
 
         @Override
@@ -614,8 +614,8 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
     private class MultipleChoiceItem extends BaseItem implements CompoundButton.OnCheckedChangeListener {
 
         private LinearLayout checkboxContainer;
-        private String choices;
-        private List<CheckBox> checkBoxList;
+        private final String choices;
+        private final List<CheckBox> checkBoxList;
 
         MultipleChoiceItem(String displayName, String fieldName, String type, String choices, boolean optional, boolean ignoreReturnCustomer) {
             super(displayName, fieldName, type, optional, ignoreReturnCustomer);
@@ -645,8 +645,8 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
         @Override
         void findViews() {
             rootView = getLayoutInflater().inflate(R.layout.mq_item_form_type_multiple_choice, null);
-            titleTv = (TextView) rootView.findViewById(R.id.title_tv);
-            checkboxContainer = (LinearLayout) rootView.findViewById(R.id.checkbox_container);
+            titleTv = rootView.findViewById(R.id.title_tv);
+            checkboxContainer = rootView.findViewById(R.id.checkbox_container);
         }
 
         @Override
@@ -689,8 +689,8 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
         @Override
         void findViews() {
             rootView = getLayoutInflater().inflate(R.layout.mq_item_form_type_text, null);
-            titleTv = (TextView) rootView.findViewById(R.id.title_tv);
-            contentEt = (EditText) rootView.findViewById(R.id.content_et);
+            titleTv = rootView.findViewById(R.id.title_tv);
+            contentEt = rootView.findViewById(R.id.content_et);
             contentEt.setInputType(InputType.TYPE_CLASS_NUMBER);
 
             contentEt.addTextChangedListener(new TextWatcher() {
@@ -734,8 +734,8 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
         @Override
         void findViews() {
             rootView = getLayoutInflater().inflate(R.layout.mq_item_form_type_date, null);
-            titleTv = (TextView) rootView.findViewById(R.id.title_tv);
-            contentTv = (TextView) rootView.findViewById(R.id.content_tv);
+            titleTv = rootView.findViewById(R.id.title_tv);
+            contentTv = rootView.findViewById(R.id.content_tv);
             contentTv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -802,9 +802,9 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
         @Override
         void findViews() {
             rootView = getLayoutInflater().inflate(R.layout.mq_item_form_type_auth_code, null);
-            titleTv = (TextView) rootView.findViewById(R.id.title_tv);
-            authCodeEt = (EditText) rootView.findViewById(R.id.auth_code_et);
-            authCodeIv = (ImageView) rootView.findViewById(R.id.auth_code_iv);
+            titleTv = rootView.findViewById(R.id.title_tv);
+            authCodeEt = rootView.findViewById(R.id.auth_code_et);
+            authCodeIv = rootView.findViewById(R.id.auth_code_iv);
         }
 
         @Override

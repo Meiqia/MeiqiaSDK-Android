@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.core.view.ViewCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.core.view.ViewPropertyAnimatorListenerAdapter;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -115,12 +115,12 @@ public class MQPhotoPickerPreviewActivity extends Activity implements View.OnCli
 
     private void initView() {
         setContentView(R.layout.mq_activity_photo_picker_preview);
-        mTitleRl = (RelativeLayout) findViewById(R.id.title_rl);
-        mTitleTv = (TextView) findViewById(R.id.title_tv);
-        mSubmitTv = (TextView) findViewById(R.id.submit_tv);
-        mContentHvp = (MQHackyViewPager) findViewById(R.id.content_hvp);
-        mChooseRl = (RelativeLayout) findViewById(R.id.choose_rl);
-        mChooseTv = (TextView) findViewById(R.id.choose_tv);
+        mTitleRl = findViewById(R.id.title_rl);
+        mTitleTv = findViewById(R.id.title_tv);
+        mSubmitTv = findViewById(R.id.submit_tv);
+        mContentHvp = findViewById(R.id.content_hvp);
+        mChooseRl = findViewById(R.id.choose_rl);
+        mChooseTv = findViewById(R.id.choose_tv);
     }
 
     private void initListener() {

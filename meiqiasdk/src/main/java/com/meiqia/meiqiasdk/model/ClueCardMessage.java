@@ -8,7 +8,7 @@ import java.util.Map;
 public class ClueCardMessage extends BaseMessage {
 
     private JSONObject attrs;
-    private Map<String,Boolean> enableStateMap;
+    private final Map<String,Boolean> enableStateMap;
 
     public ClueCardMessage() {
         attrs = new JSONObject();
@@ -30,10 +30,7 @@ public class ClueCardMessage extends BaseMessage {
 
     public boolean isEnable(String name) {
         Boolean aBoolean = enableStateMap.get(name);
-        if (aBoolean == null || !aBoolean) {
-            return false;
-        }
-        return true;
+        return aBoolean != null && aBoolean;
     }
 
     public boolean isAllEnable() {

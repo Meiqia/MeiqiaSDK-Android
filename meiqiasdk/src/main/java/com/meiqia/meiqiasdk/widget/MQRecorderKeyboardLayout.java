@@ -54,7 +54,7 @@ public class MQRecorderKeyboardLayout extends MQBaseCustomCompositeView implemen
      */
     private long mLastTipTooShortTime;
 
-    private Runnable mGetVoiceLevelRunnable = new Runnable() {
+    private final Runnable mGetVoiceLevelRunnable = new Runnable() {
         @Override
         public void run() {
             while (mIsRecording) {
@@ -172,10 +172,7 @@ public class MQRecorderKeyboardLayout extends MQBaseCustomCompositeView implemen
     }
 
     private boolean isWantCancel(int x, int y) {
-        if (y < -mDistanceCancel) {
-            return true;
-        }
-        return false;
+        return y < -mDistanceCancel;
     }
 
     @Override

@@ -26,9 +26,9 @@ import java.lang.ref.SoftReference;
  * 描述:
  */
 public class MQSavePhotoTask extends MQAsyncTask<Void, Void> {
-    private Context mContext;
+    private final Context mContext;
     private SoftReference<Bitmap> mBitmap;
-    private File mNewFile;
+    private final File mNewFile;
 
     public MQSavePhotoTask(Callback<Void> callback, Context context, File newFile) {
         super(callback);

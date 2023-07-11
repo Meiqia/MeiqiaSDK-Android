@@ -24,7 +24,7 @@ public class MQRedirectQueueItem extends MQBaseCustomCompositeView {
     private TextView mTicketIntroTv;
     private TextView mLeaveMessageTv;
 
-    private LeaveMessageCallback mCallback;
+    private final LeaveMessageCallback mCallback;
 
     public MQRedirectQueueItem(Context context, LeaveMessageCallback leaveMessageCallback) {
         super(context);

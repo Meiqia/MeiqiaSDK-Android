@@ -20,8 +20,8 @@ import okio.Okio;
  */
 public class MQDownloadManager {
     private static MQDownloadManager sInstance;
-    private OkHttpClient mOkHttpClient;
-    private Context mContext;
+    private final OkHttpClient mOkHttpClient;
+    private final Context mContext;
 
     private MQDownloadManager(Context context) {
         mOkHttpClient = new OkHttpClient();

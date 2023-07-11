@@ -2,8 +2,8 @@ package com.meiqia.meiqiasdk.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -182,7 +182,7 @@ public class MQEmotionKeyboardLayout extends MQBaseCustomCompositeView {
     }
 
     class EmotionAdapter extends BaseAdapter {
-        private List<String> mDatas;
+        private final List<String> mDatas;
 
         public EmotionAdapter(List<String> datas) {
             mDatas = datas;
@@ -209,8 +209,8 @@ public class MQEmotionKeyboardLayout extends MQBaseCustomCompositeView {
                 convertView = View.inflate(getContext(), R.layout.mq_item_emotion_keyboard, null);
             }
 
-            ImageView iconIv = (ImageView) convertView.findViewById(R.id.iv_item_emotion_keyboard_icon);
-            TextView iconTv = (TextView) convertView.findViewById(R.id.iv_item_emotion_keyboard_tv);
+            ImageView iconIv = convertView.findViewById(R.id.iv_item_emotion_keyboard_icon);
+            TextView iconTv = convertView.findViewById(R.id.iv_item_emotion_keyboard_tv);
             if (position == getCount() - 1) {
                 iconIv.setVisibility(VISIBLE);
                 iconTv.setVisibility(GONE);
