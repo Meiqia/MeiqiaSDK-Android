@@ -8,7 +8,7 @@
 ### Environment Required
 - JDK7+
 
-### AndroidStudio  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.meiqia/meiqiasdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.meiqia/meiqiasdk)
+### AndroidStudio  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.meiqia/androidx/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.meiqia/androidx)
 
 ```
 implementation 'com.meiqia:androidx:4.0.1'
@@ -191,11 +191,4 @@ MQNotificationMessageConfig.getInstance().setOnNotificationMessageOnClickListene
 [查看详情][1]
 
  [1]: http://meiqia.com/docs/meiqia-android-sdk/
- [2]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-3
- [3]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-2
- [4]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-4
- [5]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-10
- [6]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-19
- [7]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-32
  [8]: https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/demo%2Fsrc%2Fmain%2Fjava%2Fcom%2Fmeiqia%2Fmeiqiasdk%2Fdemo%2FMainActivity.java
- [10]: https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/imageloader/MQGlideImageLoader.java
