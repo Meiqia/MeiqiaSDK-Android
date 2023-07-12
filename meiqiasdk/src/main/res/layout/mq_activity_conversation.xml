@@ -102,7 +102,7 @@
         android:layout_below="@id/title_rl"
         android:background="@color/mq_activity_bg">
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        <com.meiqia.meiqiasdk.third.swiperefresh.SwipeRefreshLayout
             android:id="@+id/swipe_refresh_layout"
             style="@style/MQMatchMatch">
 
@@ -116,7 +116,7 @@
                 android:listSelector="@android:color/transparent"
                 android:transcriptMode="normal" />
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </com.meiqia.meiqiasdk.third.swiperefresh.SwipeRefreshLayout>
     </RelativeLayout>
 
     <LinearLayout
