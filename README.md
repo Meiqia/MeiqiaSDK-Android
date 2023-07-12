@@ -1,7 +1,7 @@
 # 美洽移动应用 SDK 3.0 for Android 开发文档
 
 ## ScreenShot
-![美恰SDKDemo](https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/155c91da06ea9bfd)
+![美恰SDKDemo](https://meiqia.com/help/wp-content/uploads/2021/11/%E7%A7%BB%E5%8A%A8SDK-for-Android-%E6%88%AA%E5%9B%BE1-1.jpeg)
 
 ## 集成美洽 SDK
 
