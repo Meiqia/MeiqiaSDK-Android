@@ -14,8 +14,8 @@ import java.util.ArrayList;
 public class ImageFolderModel {
     public String name;
     public String coverPath;
-    private ArrayList<String> mImages = new ArrayList<>();
-    private ArrayList<Uri> mImageUri = new ArrayList<>();
+    private final ArrayList<String> mImages = new ArrayList<>();
+    private final ArrayList<Uri> mImageUri = new ArrayList<>();
     private boolean mTakePhotoEnabled;
 
     public ImageFolderModel(boolean takePhotoEnabled) {

@@ -1,18 +1,16 @@
 package com.meiqia.meiqiasdk.activity;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
+
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.core.view.ViewCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.core.view.ViewPropertyAnimatorListenerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -33,8 +31,6 @@ import com.meiqia.meiqiasdk.widget.MQImageView;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import okhttp3.internal.Util;
 
 
 public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttacher.OnViewTapListener, View.OnClickListener, MQAsyncTask.Callback<Void> {
@@ -108,10 +104,10 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
 
     private void initView() {
         setContentView(R.layout.mq_activity_photo_preview);
-        mTitleRl = (RelativeLayout) findViewById(R.id.title_rl);
-        mTitleTv = (TextView) findViewById(R.id.title_tv);
-        mDownloadIv = (ImageView) findViewById(R.id.download_iv);
-        mContentHvp = (MQHackyViewPager) findViewById(R.id.content_hvp);
+        mTitleRl = findViewById(R.id.title_rl);
+        mTitleTv = findViewById(R.id.title_tv);
+        mDownloadIv = findViewById(R.id.download_iv);
+        mContentHvp = findViewById(R.id.content_hvp);
     }
 
     private void initListener() {

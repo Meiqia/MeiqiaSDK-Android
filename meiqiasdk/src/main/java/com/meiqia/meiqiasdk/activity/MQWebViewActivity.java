@@ -53,17 +53,17 @@ public class MQWebViewActivity extends Activity implements View.OnClickListener 
     }
 
     private void findViews() {
-        mTitleRl = (RelativeLayout) findViewById(R.id.title_rl);
-        mBackRl = (RelativeLayout) findViewById(R.id.back_rl);
-        mBackTv = (TextView) findViewById(R.id.back_tv);
-        mBackIv = (ImageView) findViewById(R.id.back_iv);
-        mTitleTv = (TextView) findViewById(R.id.title_tv);
-        mWebView = (WebView) findViewById(R.id.webview);
+        mTitleRl = findViewById(R.id.title_rl);
+        mBackRl = findViewById(R.id.back_rl);
+        mBackTv = findViewById(R.id.back_tv);
+        mBackIv = findViewById(R.id.back_iv);
+        mTitleTv = findViewById(R.id.title_tv);
+        mWebView = findViewById(R.id.webview);
 
-        mEvaluateRl = (RelativeLayout) findViewById(R.id.ll_robot_evaluate);
-        mUsefulTv = (TextView) findViewById(R.id.tv_robot_useful);
-        mUselessTv = (TextView) findViewById(R.id.tv_robot_useless);
-        mAlreadyFeedbackTv = (TextView) findViewById(R.id.tv_robot_already_feedback);
+        mEvaluateRl = findViewById(R.id.ll_robot_evaluate);
+        mUsefulTv = findViewById(R.id.tv_robot_useful);
+        mUselessTv = findViewById(R.id.tv_robot_useless);
+        mAlreadyFeedbackTv = findViewById(R.id.tv_robot_already_feedback);
     }
 
     private void setListeners() {

@@ -10,7 +10,7 @@ public class EvaluateMessage extends BaseMessage {
     public static final int EVALUATE_MEDIUM = 1;
     public static final int EVALUATE_BAD = 0;
 
-    private int level;
+    private final int level;
 
     public EvaluateMessage(int level, String content) {
         this.level = level;

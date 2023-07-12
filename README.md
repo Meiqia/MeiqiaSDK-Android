@@ -1,32 +1,20 @@
 # 美洽移动应用 SDK 3.0 for Android 开发文档
 
 ## ScreenShot
-![美恰SDKDemo](https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/155c91da06ea9bfd)
+![美恰SDKDemo](https://meiqia.com/help/wp-content/uploads/2021/11/%E7%A7%BB%E5%8A%A8SDK-for-Android-%E6%88%AA%E5%9B%BE1-1.jpeg)
 
 ## 集成美洽 SDK
 
 ### Environment Required
 - JDK7+
 
-### AndroidStudio  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.meiqia/meiqiasdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.meiqia/meiqiasdk)
+### AndroidStudio  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.meiqia/androidx/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.meiqia/androidx)
 
 ```
-// -------------------- 以下三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
-implementation 'com.meiqia:meiqiasdk:3.9.9'
-implementation 'com.android.support:support-v4:23.1.1'
-implementation 'com.squareup.okhttp3:okhttp:3.5.0'
-// -------------------- 以上三个库是必须依赖的 okhttp 必须 3.5.0 或者更高版本 ----------------------------
-
-// 目前支持常见的 2 种图片加载库，必须在下面四个图片加载库中选择一个添加依赖
-implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-//    implementation 'com.squareup.picasso:picasso:2.5.2'
-//    implementation 'com.github.bumptech.glide:glide:4.9.0'
-//    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+implementation 'com.meiqia:androidx:4.0.1'
+implementation 'com.github.bumptech.glide:glide:4.9.0'
+annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 ```
-> 如果使用的是 glide 3.x ，可以参考 [自定义 ImageLoader][10]
-
-### Eclipse
- [查看详情][9]
 
 ## 使用美洽
 
@@ -191,21 +179,9 @@ MQNotificationMessageConfig.getInstance().setOnNotificationMessageOnClickListene
 
 ## 常见问题列表
 
-- **java.lang.NoClassDefFoundError: com.meiqia.core.xx**
-
-   没有依赖 okhttp3.5.0 或者 以上版本，检查依赖设置
-
 - **code == 400 track_id 错误**
 
    如果需要绑定用户 id，请使用 setCustomizedId 接口；如果还是有问题，就换一个 id 绑定再试试
-
-- **客服名字显示 null**
-
-   更新最新版 SDK
-
-- **java.lang.NoSuchMethodError: No Virtual method displayImage xxxx**
-
-   如果使用的是 glide 4.x ，可以参考 https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/imageloader/MQGlideImageLoader4.java
 
 - **后台改了配置，SDK 不生效**
 
@@ -215,12 +191,4 @@ MQNotificationMessageConfig.getInstance().setOnNotificationMessageOnClickListene
 [查看详情][1]
 
  [1]: http://meiqia.com/docs/meiqia-android-sdk/
- [2]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-3
- [3]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-2
- [4]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-4
- [5]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-10
- [6]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-11-19
- [7]: http://meiqia.com/docs/meiqia-android-sdk/#tocAnchor-1-32
  [8]: https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/demo%2Fsrc%2Fmain%2Fjava%2Fcom%2Fmeiqia%2Fmeiqiasdk%2Fdemo%2FMainActivity.java
- [9]: https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/Eclipse_README.md
- [10]: https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/imageloader/MQGlideImageLoader.java

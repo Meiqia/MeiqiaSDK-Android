@@ -10,10 +10,10 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -31,7 +31,7 @@ public class MQImageView extends ImageView {
     private boolean mIsSquare = false;
     private int mBorderWidth = 0;
     private int mBorderColor = Color.WHITE;
-    private RectF mRect;
+    private final RectF mRect;
 
     private Paint mBorderPaint;
     private OnDrawableChangedCallback mOnDrawableChangedCallback;

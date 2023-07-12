@@ -3,8 +3,8 @@ package com.meiqia.meiqiasdk.util;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.annotation.ColorRes;
-import android.support.annotation.DrawableRes;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
 import android.view.View;
 
 import com.meiqia.core.MQManager;

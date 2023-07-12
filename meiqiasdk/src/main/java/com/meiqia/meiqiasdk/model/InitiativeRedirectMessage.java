@@ -1,6 +1,6 @@
 package com.meiqia.meiqiasdk.model;
 
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -9,10 +9,11 @@ import android.support.annotation.StringRes;
  */
 public class InitiativeRedirectMessage extends BaseMessage {
     @StringRes
-    private int mTipResId;
+    private final int mTipResId;
 
     public InitiativeRedirectMessage(@StringRes int tipResId) {
         setItemViewType(TYPE_INITIATIVE_REDIRECT_TIP);
+
         mTipResId = tipResId;
     }
 

@@ -6,7 +6,7 @@ import android.content.res.TypedArray;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.IdRes;
+import androidx.annotation.IdRes;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.meiqia.meiqiasdk.R;
-import com.meiqia.meiqiasdk.util.MQEmotionUtil;
 import com.meiqia.meiqiasdk.util.MQUtils;
 
 /**
@@ -34,7 +33,7 @@ public class MQCustomKeyboardLayout extends MQBaseCustomCompositeView {
     private EditText mContentEt;
     private Callback mCallback;
 
-    private Handler mHandler = new Handler(Looper.getMainLooper()) {
+    private final Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -360,6 +359,6 @@ public class MQCustomKeyboardLayout extends MQBaseCustomCompositeView {
      * @return
      */
     protected <VT extends View> VT getViewById(@IdRes int id) {
-        return (VT) findViewById(id);
+        return findViewById(id);
     }
 }

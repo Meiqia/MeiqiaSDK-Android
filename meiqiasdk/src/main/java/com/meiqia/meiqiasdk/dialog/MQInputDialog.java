@@ -2,7 +2,7 @@ package com.meiqia.meiqiasdk.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -13,10 +13,10 @@ import com.meiqia.meiqiasdk.util.MQUtils;
 
 public class MQInputDialog extends Dialog {
 
-    private TextView titleTv;
-    private EditText inputEt;
-    private View confirmBtn;
-    private View cancelBtn;
+    private final TextView titleTv;
+    private final EditText inputEt;
+    private final View confirmBtn;
+    private final View cancelBtn;
 
     public MQInputDialog(@NonNull Context context, String title, String input, String hint, int inputType, final OnContentChangeListener onContentChangeListener) {
         super(context, R.style.MQDialog);

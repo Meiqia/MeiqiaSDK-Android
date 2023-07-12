@@ -1,7 +1,7 @@
 package com.meiqia.meiqiasdk.model;
 
 public class RedirectQueueMessage extends BaseMessage {
-    private int queueSize;
+    private final int queueSize;
 
     public RedirectQueueMessage(int queueSize) {
         setItemViewType(TYPE_QUEUE_TIP);

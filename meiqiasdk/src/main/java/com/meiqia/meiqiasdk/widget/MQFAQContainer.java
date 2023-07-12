@@ -1,14 +1,14 @@
 package com.meiqia.meiqiasdk.widget;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
@@ -33,7 +33,7 @@ public class MQFAQContainer extends LinearLayout {
     private View prePageBtn;
     private MQRobotItem.Callback mCallback;
 
-    private List<ItemContentLinearLayout> itemContentLinearLayoutList = new ArrayList<>();
+    private final List<ItemContentLinearLayout> itemContentLinearLayoutList = new ArrayList<>();
 
     public MQFAQContainer(Context context) {
         super(context);
@@ -173,8 +173,8 @@ public class MQFAQContainer extends LinearLayout {
 
     private class MQTabView extends LinearLayout {
 
-        private TextView tabTv;
-        private View tabLine;
+        private final TextView tabTv;
+        private final View tabLine;
 
         public MQTabView(Context context) {
             super(context);

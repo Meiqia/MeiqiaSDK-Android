@@ -30,11 +30,11 @@ public abstract class MQBaseActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutRes());
 
-        mTitleRl = (RelativeLayout) findViewById(R.id.title_rl);
-        mBackRl = (RelativeLayout) findViewById(R.id.back_rl);
-        mBackTv = (TextView) findViewById(R.id.back_tv);
-        mBackIv = (ImageView) findViewById(R.id.back_iv);
-        mTitleTv = (TextView) findViewById(R.id.title_tv);
+        mTitleRl = findViewById(R.id.title_rl);
+        mBackRl = findViewById(R.id.back_rl);
+        mBackTv = findViewById(R.id.back_tv);
+        mBackIv = findViewById(R.id.back_iv);
+        mTitleTv = findViewById(R.id.title_tv);
         applyCustomUIConfig();
         mBackRl.setOnClickListener(new View.OnClickListener() {
             @Override
