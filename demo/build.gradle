@@ -35,16 +35,11 @@ android {
 
 dependencies {
     implementation 'com.github.delight-im:Android-AdvancedWebView:v3.2.1'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation project(path: ':meiqiasdk')
+//    implementation project(path: ':meiqiasdk')
 
-//    implementation 'com.meiqia:androidx:4.0.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'
-    implementation 'androidx.viewpager:viewpager:1.1.0-alpha01'
-    implementation 'com.squareup.okhttp3:okhttp:3.5.0'
+    implementation 'com.meiqia:androidx:4.0.1'
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 }
