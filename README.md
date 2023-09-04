@@ -34,9 +34,7 @@ MQConfig.init(this, "Your Appkey", new OnInitCallback() {
     }
 });
 ```
-如果您不知道 Appkey ，请使用美洽管理员帐号登录 美洽，在「设置」 -> 「SDK」 菜单中查看。如下图：
-
-![获取 Appkey](https://s3.cn-north-1.amazonaws.com.cn/pics.meiqia.bucket/5a999b67233e77dc)
+> 如果您不知道 Appkey ，请使用美洽管理员帐号登录 美洽，在「设置」 -> 「SDK」 菜单中查看
 
 ### 2.启动对话界面
 
