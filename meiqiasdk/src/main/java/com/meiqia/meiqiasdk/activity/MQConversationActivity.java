@@ -20,14 +20,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
-import android.support.v4.widget.SwipeRefreshLayout;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.ViewPropertyAnimatorListenerAdapter;
+
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.TypedValue;
@@ -90,12 +91,12 @@ import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
 import com.meiqia.meiqiasdk.model.VideoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
+import com.meiqia.meiqiasdk.third.swiperefresh.SwipeRefreshLayout;
 import com.meiqia.meiqiasdk.util.ErrorCode;
 import com.meiqia.meiqiasdk.util.MQAudioPlayerManager;
 import com.meiqia.meiqiasdk.util.MQAudioRecorderManager;
 import com.meiqia.meiqiasdk.util.MQChatAdapter;
 import com.meiqia.meiqiasdk.util.MQConfig;
-import com.meiqia.meiqiasdk.util.MQIntentBuilder;
 import com.meiqia.meiqiasdk.util.MQSimpleTextWatcher;
 import com.meiqia.meiqiasdk.util.MQSoundPoolManager;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
@@ -103,7 +104,6 @@ import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQCustomKeyboardLayout;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -147,7 +147,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     public static final int REQUEST_CODE_PHOTO = 1;
     public static final int REQUEST_CODE_VIDEO = 2;
     public static final int REQUEST_CODE_CHOOSE_VIDEO = 3;
-    private static int MESSAGE_PAGE_COUNT = 30; //消息每页加载数量
+    private static final int MESSAGE_PAGE_COUNT = 30; //消息每页加载数量
     private static final long AUTO_DISMISS_TOP_TIP_TIME = 2000; // TopTip 自动隐藏时间
 
     private MQController mController;
@@ -176,7 +176,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private View mVoiceSelectIndicator;
     private ImageView mVoiceSelectImg;
 
-    private List<BaseMessage> mChatMessageList = new ArrayList<>();
+    private final List<BaseMessage> mChatMessageList = new ArrayList<>();
     private MQChatAdapter mChatMsgAdapter;
     private MessageReceiver mMessageReceiver;
     private NetworkChangeReceiver mNetworkChangeReceiver;
@@ -217,11 +217,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private boolean isAddLeaveTip;
 
     private boolean isRequestOnlineLoading = false;
-    private List<BaseMessage> delaySendList = new ArrayList<>();
+    private final List<BaseMessage> delaySendList = new ArrayList<>();
 
     private boolean isPopStoragePermissionTipDialog = false;
     private boolean isPopCameraPermissionTipDialog = false;
-    private boolean isPopVideoPermissionTipDialog = false;
+    private final boolean isPopVideoPermissionTipDialog = false;
     private boolean isPopRecordPermissionTipDialog = false;
 
     @Override
@@ -400,9 +400,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         MQUtils.applyCustomUITitleGravity(mBackTv, mTitleTv);
 
         // 处理底部功能按钮图片
-        MQUtils.tintPressedIndicator((ImageView) findViewById(R.id.photo_select_iv), R.drawable.mq_ic_image_normal, R.drawable.mq_ic_image_active);
-        MQUtils.tintPressedIndicator((ImageView) findViewById(R.id.camera_select_iv), R.drawable.mq_ic_camera_normal, R.drawable.mq_ic_camera_active);
-        MQUtils.tintPressedIndicator((ImageView) findViewById(R.id.evaluate_select_iv), R.drawable.mq_ic_evaluate_normal, R.drawable.mq_ic_evaluate_active);
+        MQUtils.tintPressedIndicator(findViewById(R.id.photo_select_iv), R.drawable.mq_ic_image_normal, R.drawable.mq_ic_image_active);
+        MQUtils.tintPressedIndicator(findViewById(R.id.camera_select_iv), R.drawable.mq_ic_camera_normal, R.drawable.mq_ic_camera_active);
+        MQUtils.tintPressedIndicator(findViewById(R.id.evaluate_select_iv), R.drawable.mq_ic_evaluate_normal, R.drawable.mq_ic_evaluate_active);
     }
 
     @Override
@@ -543,29 +543,29 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     private void findViews() {
-        mTitleRl = (RelativeLayout) findViewById(R.id.title_rl);
-        mBackRl = (RelativeLayout) findViewById(R.id.back_rl);
-        mBackTv = (TextView) findViewById(R.id.back_tv);
-        mBackIv = (ImageView) findViewById(R.id.back_iv);
-        mRedirectHumanTv = (TextView) findViewById(R.id.redirect_human_tv);
-        mChatBodyRl = (RelativeLayout) findViewById(R.id.chat_body_rl);
-        mConversationListView = (ListView) findViewById(R.id.messages_lv);
-        mInputEt = (EditText) findViewById(R.id.input_et);
+        mTitleRl = findViewById(R.id.title_rl);
+        mBackRl = findViewById(R.id.back_rl);
+        mBackTv = findViewById(R.id.back_tv);
+        mBackIv = findViewById(R.id.back_iv);
+        mRedirectHumanTv = findViewById(R.id.redirect_human_tv);
+        mChatBodyRl = findViewById(R.id.chat_body_rl);
+        mConversationListView = findViewById(R.id.messages_lv);
+        mInputEt = findViewById(R.id.input_et);
         mEmojiSelectBtn = findViewById(R.id.emoji_select_btn);
-        mCustomKeyboardLayout = (MQCustomKeyboardLayout) findViewById(R.id.customKeyboardLayout);
-        mSendTextBtn = (ImageButton) findViewById(R.id.send_text_btn);
+        mCustomKeyboardLayout = findViewById(R.id.customKeyboardLayout);
+        mSendTextBtn = findViewById(R.id.send_text_btn);
         mPhotoSelectBtn = findViewById(R.id.photo_select_btn);
         mCameraSelectBtn = findViewById(R.id.camera_select_btn);
         mVideoSelectBtn = findViewById(R.id.video_select_btn);
         mVoiceBtn = findViewById(R.id.mic_select_btn);
         mEvaluateBtn = findViewById(R.id.evaluate_select_btn);
-        mLoadProgressBar = (ProgressBar) findViewById(R.id.progressbar);
-        mTitleTv = (TextView) findViewById(R.id.title_tv);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        mLoadProgressBar = findViewById(R.id.progressbar);
+        mTitleTv = findViewById(R.id.title_tv);
+        mSwipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         mEmojiSelectIndicator = findViewById(R.id.emoji_select_indicator);
-        mEmojiSelectImg = (ImageView) findViewById(R.id.emoji_select_img);
+        mEmojiSelectImg = findViewById(R.id.emoji_select_img);
         mVoiceSelectIndicator = findViewById(R.id.conversation_voice_indicator);
-        mVoiceSelectImg = (ImageView) findViewById(R.id.conversation_voice_img);
+        mVoiceSelectImg = findViewById(R.id.conversation_voice_img);
     }
 
     private void setListeners() {
@@ -1867,18 +1867,18 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         String path = MQUtils.getPicStorePath(this) + "/" + System.currentTimeMillis() + ".mp4";
         File videoFile = new File(path);
         mVideoPath = path;
-        Uri uri;
+        Uri uri = null;
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                ContentValues contentValues = new ContentValues(1);
-                contentValues.put(MediaStore.Images.Media.DATA, videoFile.getAbsolutePath());
-                uri = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues);
+                // result 中处理
             } else {
                 uri = Uri.fromFile(videoFile);
             }
             mCameraPicUri = uri;
             camera.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);    // MediaStore.EXTRA_VIDEO_QUALITY 表示录制视频的质量，从 0-1，越大表示质量越好，同时视频也越大
-            camera.putExtra(MediaStore.EXTRA_OUTPUT, uri);    // 表示录制完后保存的录制，如果不写，则会保存到默认的路径，在onActivityResult()的回调，通过intent.getData中返回保存的路径
+            if (uri != null) {
+                camera.putExtra(MediaStore.EXTRA_OUTPUT, uri);    // 表示录制完后保存的录制，如果不写，则会保存到默认的路径，在onActivityResult()的回调，通过intent.getData中返回保存的路径
+            }
             camera.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 60);   // 设置视频录制的最长时间
             startActivityForResult(camera, MQConversationActivity.REQUEST_CODE_VIDEO);
         } catch (Exception e) {
@@ -2356,7 +2356,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     // 监听EditText输入框数据到变化
-    private TextWatcher inputTextWatcher = new MQSimpleTextWatcher() {
+    private final TextWatcher inputTextWatcher = new MQSimpleTextWatcher() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             // 向服务器发送一个正在输入的函数
@@ -2585,10 +2585,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 e.printStackTrace();
             }
         }
-        if (mChatMessageList.size() != 0 && mChatMessageList.get(mChatMessageList.size() - 1).getId() == message.getId() && message.getConvId() == convId) {
-            return true;
-        }
-        return false;
+        return mChatMessageList.size() != 0 && mChatMessageList.get(mChatMessageList.size() - 1).getId() == message.getId() && message.getConvId() == convId;
     }
 
     /**
@@ -2740,9 +2737,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             BaseMessage recallMessage = new BaseMessage();
             recallMessage.setId(id);
             mChatMessageList.remove(recallMessage);
-            TipMessage recallTipMessage = new TipMessage();
-            recallTipMessage.setContent(getResources().getString(R.string.mq_recall_msg));
-            mChatMessageList.add(recallTipMessage);
+            // 根据开关判断是否显示「已撤回」的提示
+            if (!MQConfig.getController(MQConversationActivity.this).getEnterpriseConfig().isNotDisplayWithdrawTip) {
+                TipMessage recallTipMessage = new TipMessage();
+                recallTipMessage.setContent(getResources().getString(R.string.mq_recall_msg));
+                mChatMessageList.add(recallTipMessage);
+            }
             mChatMsgAdapter.notifyDataSetChanged();
         }
 

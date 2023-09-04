@@ -2,8 +2,8 @@ package com.meiqia.meiqiasdk.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -12,10 +12,10 @@ import com.meiqia.meiqiasdk.R;
 
 public class MQConfirmDialog extends Dialog {
 
-    private TextView titleTv;
-    private TextView contentTv;
-    private View confirmBtn;
-    private View cancelBtn;
+    private final TextView titleTv;
+    private final TextView contentTv;
+    private final View confirmBtn;
+    private final View cancelBtn;
 
     public MQConfirmDialog(@NonNull Context context, String title, String content, @Nullable final View.OnClickListener onPositiveClickListener, @Nullable final View.OnClickListener onNegativeClickListener) {
         super(context, R.style.MQDialog);

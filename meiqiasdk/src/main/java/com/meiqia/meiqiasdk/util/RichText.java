@@ -32,10 +32,10 @@ public class RichText {
 
     private String richTextStr;
     private TextView textView;
-    private Html.ImageGetter imageGetter;
-    private Html.TagHandler tagHandler;
+    private final Html.ImageGetter imageGetter;
+    private final Html.TagHandler tagHandler;
     private OnImageClickListener onImageClickListener;
-    private static Map<String, SoftReference<Drawable>> sHtmlDrawableCache = new HashMap<>();
+    private static final Map<String, SoftReference<Drawable>> sHtmlDrawableCache = new HashMap<>();
 
     public RichText() {
         imageGetter = new Html.ImageGetter() {
@@ -175,7 +175,7 @@ public class RichText {
 
         private class ClickableImage extends ClickableSpan {
 
-            private String url;
+            private final String url;
 
             public ClickableImage(String url) {
                 this.url = url;

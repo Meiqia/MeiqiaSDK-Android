@@ -2,9 +2,10 @@ package com.meiqia.meiqiasdk.imageloader;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.DrawableRes;
 import android.util.Log;
 import android.widget.ImageView;
+
+import androidx.annotation.DrawableRes;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -25,10 +26,6 @@ public class MQImage {
                         sImageLoader = new MQGlideImageLoader4();
                     } else if (isClassExists("com.squareup.picasso.Picasso")) {
                         sImageLoader = new MQPicassoImageLoader();
-                    } else if (isClassExists("com.nostra13.universalimageloader.core.ImageLoader")) {
-                        sImageLoader = new MQUILImageLoader();
-                    } else if (isClassExists("org.xutils.x")) {
-                        sImageLoader = new MQXUtilsImageLoader();
                     } else {
                         throw new RuntimeException("必须在你的 build.gradle 文件中配置「Glide、Picasso、universal-image-loader、XUtils3」中的某一个图片加载库的依赖,或者检查是否添加了图库的混淆配置");
                     }
@@ -60,9 +57,9 @@ public class MQImage {
         try {
             getImageLoader().displayImage(activity, imageView, path, loadingResId, failResId, width, height, delegate);
         } catch (Exception e) {
-            Log.d("meiqia", "displayImage exception " + e.toString());
+            Log.d("meiqia", "displayImage exception " + e);
         } catch (Error error) {
-            Log.d("meiqia", "displayImage error " + error.toString());
+            Log.d("meiqia", "displayImage error " + error);
         }
     }
 
@@ -72,7 +69,7 @@ public class MQImage {
         } catch (Exception e) {
             Log.d("meiqia", "downloadImage exception");
         } catch (Error error) {
-            Log.d("meiqia", "displayImage error " + error.toString());
+            Log.d("meiqia", "displayImage error " + error);
         }
     }
 }

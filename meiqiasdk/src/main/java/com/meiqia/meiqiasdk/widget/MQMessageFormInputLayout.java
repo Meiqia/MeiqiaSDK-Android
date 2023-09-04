@@ -47,7 +47,7 @@ public class MQMessageFormInputLayout extends FrameLayout {
     private String value;
     private final String type;
     private String name;
-    private Set<String> valueSet = new HashSet<>();
+    private final Set<String> valueSet = new HashSet<>();
 
     public MQMessageFormInputLayout(Context context, MessageFormInputModel messageFormInputModel) {
         super(context);

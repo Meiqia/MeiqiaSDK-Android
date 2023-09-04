@@ -55,12 +55,12 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
     private TextView mMessageTipTv;
     private LinearLayout mInputContainerLl;
 
-    private ArrayList<MessageFormInputModel> mMessageFormInputModels = new ArrayList<>();
-    private ArrayList<MQMessageFormInputLayout> mMessageFormInputLayouts = new ArrayList<>();
+    private final ArrayList<MessageFormInputModel> mMessageFormInputModels = new ArrayList<>();
+    private final ArrayList<MQMessageFormInputLayout> mMessageFormInputLayouts = new ArrayList<>();
 
     private MQLoadingDialog mLoadingDialog;
 
-    private List<Map<String, String>> mDataList = new ArrayList<Map<String, String>>();
+    private final List<Map<String, String>> mDataList = new ArrayList<Map<String, String>>();
     private MQListDialog mCategoryDialog;
     private String mCurrentCategoryId;
     private boolean isPause = false;
@@ -75,15 +75,15 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
 
     private void initView() {
         setContentView(R.layout.mq_activity_message_form);
-        mTitleRl = (RelativeLayout) findViewById(R.id.title_rl);
-        mBackRl = (RelativeLayout) findViewById(R.id.back_rl);
-        mBackTv = (TextView) findViewById(R.id.back_tv);
-        mBackIv = (ImageView) findViewById(R.id.back_iv);
-        mTitleTv = (TextView) findViewById(R.id.title_tv);
-        mSubmitTv = (TextView) findViewById(R.id.submit_tv);
+        mTitleRl = findViewById(R.id.title_rl);
+        mBackRl = findViewById(R.id.back_rl);
+        mBackTv = findViewById(R.id.back_tv);
+        mBackIv = findViewById(R.id.back_iv);
+        mTitleTv = findViewById(R.id.title_tv);
+        mSubmitTv = findViewById(R.id.submit_tv);
 
-        mMessageTipTv = (TextView) findViewById(R.id.message_tip_tv);
-        mInputContainerLl = (LinearLayout) findViewById(R.id.input_container_ll);
+        mMessageTipTv = findViewById(R.id.message_tip_tv);
+        mInputContainerLl = findViewById(R.id.input_container_ll);
     }
 
     private void initListener() {

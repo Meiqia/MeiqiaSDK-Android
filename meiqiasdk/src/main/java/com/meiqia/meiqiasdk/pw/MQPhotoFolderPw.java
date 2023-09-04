@@ -2,7 +2,7 @@ package com.meiqia.meiqiasdk.pw;
 
 import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v4.view.ViewCompat;
+import androidx.core.view.ViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +32,7 @@ public class MQPhotoFolderPw extends MQBasePopupWindow implements AdapterView.On
     private LinearLayout mRootLl;
     private ListView mContentLv;
     private FolderAdapter mFolderAdapter;
-    private Callback mCallback;
+    private final Callback mCallback;
     private int mCurrentPosition;
 
     public MQPhotoFolderPw(Activity activity, View anchorView, Callback callback) {
@@ -119,8 +119,8 @@ public class MQPhotoFolderPw extends MQBasePopupWindow implements AdapterView.On
 
     private class FolderAdapter extends BaseAdapter {
         private List<ImageFolderModel> mDatas;
-        private int mImageWidth;
-        private int mImageHeight;
+        private final int mImageWidth;
+        private final int mImageHeight;
 
         public FolderAdapter() {
             mDatas = new ArrayList<>();
@@ -149,9 +149,9 @@ public class MQPhotoFolderPw extends MQBasePopupWindow implements AdapterView.On
             if (convertView == null) {
                 convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.mq_item_photo_folder, parent, false);
                 folderViewHolder = new FolderViewHolder();
-                folderViewHolder.photoIv = (MQImageView) convertView.findViewById(R.id.photo_iv);
-                folderViewHolder.nameTv = (TextView) convertView.findViewById(R.id.name_tv);
-                folderViewHolder.countTv = (TextView) convertView.findViewById(R.id.count_tv);
+                folderViewHolder.photoIv = convertView.findViewById(R.id.photo_iv);
+                folderViewHolder.nameTv = convertView.findViewById(R.id.name_tv);
+                folderViewHolder.countTv = convertView.findViewById(R.id.count_tv);
                 convertView.setTag(folderViewHolder);
             } else {
                 folderViewHolder = (FolderViewHolder) convertView.getTag();

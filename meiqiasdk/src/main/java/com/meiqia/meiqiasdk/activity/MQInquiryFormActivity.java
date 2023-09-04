@@ -42,8 +42,8 @@ public class MQInquiryFormActivity extends MQBaseActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        mQuestionTitleTv = (TextView) findViewById(R.id.question_title);
-        mContainer = (LinearLayout) findViewById(R.id.container_ll);
+        mQuestionTitleTv = findViewById(R.id.question_title);
+        mContainer = findViewById(R.id.container_ll);
     }
 
     @Override
@@ -84,16 +84,16 @@ public class MQInquiryFormActivity extends MQBaseActivity {
 
     private class FormItem implements View.OnClickListener {
 
-        private View rootView;
-        private TextView contentTb;
-        private String target_kind;
-        private String target;
+        private final View rootView;
+        private final TextView contentTb;
+        private final String target_kind;
+        private final String target;
 
         public FormItem(Context context, String target_kind, String target) {
             this.target_kind = target_kind;
             this.target = target;
             rootView = LayoutInflater.from(context).inflate(R.layout.mq_item_form_inquiry, null);
-            contentTb = (TextView) rootView.findViewById(R.id.content_tv);
+            contentTb = rootView.findViewById(R.id.content_tv);
             rootView.setOnClickListener(this);
         }
 

@@ -3,8 +3,8 @@ package com.meiqia.meiqiasdk.pw;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.annotation.IdRes;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.PopupWindow;
@@ -67,6 +67,6 @@ public abstract class MQBasePopupWindow extends PopupWindow implements View.OnCl
      * @return
      */
     protected <VT extends View> VT getViewById(@IdRes int id) {
-        return (VT) getContentView().findViewById(id);
+        return getContentView().findViewById(id);
     }
 }

@@ -98,7 +98,7 @@ public class MQClientItem extends MQBaseBubbleItem {
 
     private class FailedMessageOnClickListener implements OnClickListener {
 
-        private BaseMessage mFailedMessage;
+        private final BaseMessage mFailedMessage;
 
         public FailedMessageOnClickListener(BaseMessage failedMessage) {
             mFailedMessage = failedMessage;

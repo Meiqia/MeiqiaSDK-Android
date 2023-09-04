@@ -5,9 +5,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
-import android.support.annotation.DrawableRes;
+
 import android.widget.ImageView;
+
+import androidx.annotation.DrawableRes;
 
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.squareup.picasso.Callback;

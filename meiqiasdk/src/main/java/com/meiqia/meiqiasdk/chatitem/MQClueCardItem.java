@@ -256,11 +256,7 @@ public class MQClueCardItem extends MQBaseBubbleItem {
                     RadioButton radioButton = (RadioButton) LayoutInflater.from(getContext()).inflate(R.layout.mq_item_form_radio_btn_left, null);
                     radioButton.setText(choiceArray.optJSONObject(i).optString("name"));
                     String value = choiceArray.optJSONObject(i).optString("value");
-                    if (TextUtils.equals(value, mClueCardMessage.getAttrs().optString(name, ""))) {
-                        radioButton.setChecked(true);
-                    } else {
-                        radioButton.setChecked(false);
-                    }
+                    radioButton.setChecked(TextUtils.equals(value, mClueCardMessage.getAttrs().optString(name, "")));
                     radioButton.setTag(value);
                     radioButton.setId(View.NO_ID);
                     MQUtils.tintCompoundButton(radioButton, R.drawable.mq_radio_btn_uncheck, R.drawable.mq_radio_btn_checked);

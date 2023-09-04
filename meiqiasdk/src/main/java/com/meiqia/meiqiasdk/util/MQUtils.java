@@ -25,11 +25,11 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
-import android.support.annotation.ColorRes;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.RequiresApi;
-import android.support.annotation.StringRes;
-import android.support.v4.graphics.drawable.DrawableCompat;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.RequiresApi;
+import androidx.annotation.StringRes;
+import androidx.core.graphics.drawable.DrawableCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -72,6 +72,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ public class MQUtils {
     // Android Q 的文件下载路径
     public static String DOWNLOAD_DIR;
 
-    private static Handler sHandler = new Handler(Looper.getMainLooper());
+    private static final Handler sHandler = new Handler(Looper.getMainLooper());
 
     public static void runInThread(Runnable task) {
         new Thread(task).start();
@@ -650,7 +651,7 @@ public class MQUtils {
             String destFileName = extraJsonObj.optString("filename");
             int lastIndexOf = destFileName.lastIndexOf(".");
             String prefix = destFileName.substring(0, lastIndexOf);
-            String suffix = destFileName.substring(lastIndexOf, destFileName.length());
+            String suffix = destFileName.substring(lastIndexOf);
             destFileName = prefix + fileMessage.getId() + suffix;
             String destFileDir;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -897,11 +898,8 @@ public class MQUtils {
         byte[] hash;
 
         try {
-            hash = MessageDigest.getInstance("MD5").digest(string.getBytes("UTF-8"));
+            hash = MessageDigest.getInstance("MD5").digest(string.getBytes(StandardCharsets.UTF_8));
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return null;
         }

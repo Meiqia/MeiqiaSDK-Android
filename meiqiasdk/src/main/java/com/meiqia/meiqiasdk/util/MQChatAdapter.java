@@ -39,15 +39,15 @@ import java.util.List;
 public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callback {
     private static final String TAG = MQChatAdapter.class.getSimpleName();
 
-    private MQConversationActivity mConversationActivity;
-    private List<BaseMessage> mMessageList;
-    private ListView mListView;
+    private final MQConversationActivity mConversationActivity;
+    private final List<BaseMessage> mMessageList;
+    private final ListView mListView;
 
     private static final int NO_POSITION = -1;
     private int mCurrentPlayingItemPosition = NO_POSITION;
-    private int mCurrentDownloadingItemPosition = NO_POSITION;
+    private final int mCurrentDownloadingItemPosition = NO_POSITION;
 
-    private Runnable mNotifyDataSetChangedRunnable = new Runnable() {
+    private final Runnable mNotifyDataSetChangedRunnable = new Runnable() {
         @Override
         public void run() {
             notifyDataSetChanged();

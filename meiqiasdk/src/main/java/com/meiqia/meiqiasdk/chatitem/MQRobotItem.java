@@ -52,7 +52,7 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
     private TextView mAlreadyFeedbackTv;
     private ImageView mAlreadyFeedbackIv;
 
-    private Callback mCallback;
+    private final Callback mCallback;
 
     private int mPadding;
     private int mTextSize;

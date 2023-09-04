@@ -9,9 +9,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;

@@ -37,7 +37,7 @@
         android:background="@color/mq_line"
         android:layout_height="1dp" />
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/mq_robot_faq_detail_content_vp"
         android:layout_width="match_parent"
         android:layout_height="96dp"

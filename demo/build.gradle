@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.meiqia.meiqiasdk.demo"
-        minSdkVersion 16
-        targetSdkVersion 29
-        versionCode
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
         versionName "1.0"
     }
     buildTypes {
@@ -26,27 +26,20 @@ android {
         // but continue the build even when errors are found:
         abortOnError false
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.github.delight-im:Android-AdvancedWebView:v3.2.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+//    implementation project(path: ':meiqiasdk')
 
-//    api project(':meiqiasdk')
-
-    // -------------------- 以下三个库是必须依赖的 ----------------------------
-    implementation 'com.meiqia:meiqiasdk:3.9.9'
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.5.0'
-    // -------------------- 以上三个库是必须依赖的 ----------------------------
-
-    // 目前支持常见的 2 种图片加载库，必须在下面四个图片加载库中选择一个添加依赖
-//    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.meiqia:androidx:4.0.3'
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
-//    implementation 'com.github.bumptech.glide:glide:3.7.0'
-
-    // 如果是通过聊天链接的方式集成，请使用这个 WebView 来加载聊天链接，可以兼容图片发送问题
-    implementation 'com.github.delight-im:Android-AdvancedWebView:v3.2.1'
-
 }

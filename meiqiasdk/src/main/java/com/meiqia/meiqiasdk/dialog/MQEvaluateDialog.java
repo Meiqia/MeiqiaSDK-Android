@@ -16,9 +16,9 @@ import com.meiqia.meiqiasdk.util.MQUtils;
 
 public class MQEvaluateDialog extends Dialog implements View.OnClickListener {
 
-    private TextView mTipTv;
-    private EditText mContentEt;
-    private TextView mConfirmTv;
+    private final TextView mTipTv;
+    private final EditText mContentEt;
+    private final TextView mConfirmTv;
     private Callback mCallback;
 
     private int checkedState = EvaluateMessage.EVALUATE_GOOD;
@@ -30,15 +30,15 @@ public class MQEvaluateDialog extends Dialog implements View.OnClickListener {
 
         setCancelable(true);
 
-        mTipTv = (TextView) findViewById(R.id.tv_evaluate_tip);
-        mContentEt = (EditText) findViewById(R.id.et_evaluate_content);
+        mTipTv = findViewById(R.id.tv_evaluate_tip);
+        mContentEt = findViewById(R.id.et_evaluate_content);
         findViewById(R.id.mq_good_ll).setOnClickListener(this);
         findViewById(R.id.mq_mid_ll).setOnClickListener(this);
         findViewById(R.id.mq_bad_ll).setOnClickListener(this);
         checkState(EvaluateMessage.EVALUATE_GOOD);
 
         findViewById(R.id.tv_evaluate_cancel).setOnClickListener(this);
-        mConfirmTv = (TextView) findViewById(R.id.tv_evaluate_confirm);
+        mConfirmTv = findViewById(R.id.tv_evaluate_confirm);
         mConfirmTv.setOnClickListener(this);
 
         if (!TextUtils.isEmpty(tip)) {

@@ -2,10 +2,11 @@ package com.meiqia.meiqiasdk.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.IdRes;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
+
+import androidx.annotation.IdRes;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -67,6 +68,6 @@ public abstract class MQBaseCustomCompositeView extends RelativeLayout implement
      * @return
      */
     protected <VT extends View> VT getViewById(@IdRes int id) {
-        return (VT) findViewById(id);
+        return findViewById(id);
     }
 }

@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.StrictMode;
-import android.support.v4.content.FileProvider;
+import androidx.core.content.FileProvider;
 import android.text.format.Formatter;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -63,9 +63,9 @@ public class MQChatFileItem extends MQBaseCustomCompositeView implements View.On
     @Override
     protected void initView() {
         root = findViewById(R.id.root);
-        mProgressBar = (CircularProgressBar) findViewById(R.id.progressbar);
-        mTitleTv = (TextView) findViewById(R.id.mq_file_title_tv);
-        mSubTitleTv = (TextView) findViewById(R.id.mq_file_sub_title_tv);
+        mProgressBar = findViewById(R.id.progressbar);
+        mTitleTv = findViewById(R.id.mq_file_title_tv);
+        mSubTitleTv = findViewById(R.id.mq_file_sub_title_tv);
         mRightIv = findViewById(R.id.mq_right_iv);
     }
 

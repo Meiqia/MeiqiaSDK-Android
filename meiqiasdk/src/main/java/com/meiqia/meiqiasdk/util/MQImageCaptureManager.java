@@ -20,8 +20,8 @@ import java.util.Date;
 public class MQImageCaptureManager {
     private final static String CAPTURED_PHOTO_PATH_KEY = "CAPTURED_PHOTO_PATH_KEY";
     private String mCurrentPhotoPath;
-    private Context mContext;
-    private File mImageDir;
+    private final Context mContext;
+    private final File mImageDir;
 
     /**
      * @param context
