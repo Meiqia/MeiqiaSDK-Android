@@ -52,6 +52,15 @@
     </RelativeLayout>
 
     <TextView
+        android:padding="16dp"
+        android:id="@+id/content_tv"
+        android:autoLink="all"
+        android:textSize="16sp"
+        android:maxHeight="400dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
         android:id="@+id/question_title"
         android:layout_width="match_parent"
         android:layout_height="56dp"

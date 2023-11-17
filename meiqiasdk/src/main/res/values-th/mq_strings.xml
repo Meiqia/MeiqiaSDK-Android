@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mq_expire_after">%1$s ชั่วโมงหลังหมดอายุ</string>
+    <string name="mq_expired">หมดอายุแล้ว</string>
+    <string name="mq_expired_top_tip">ไฟล์หมดอายุแล้ว ไม่สามารถดาวน์โหลด</string>
+    <string name="mq_downloading">กำลังดาวน์โหลด …</string>
+    <string name="mq_download_complete">ดาวน์โหลดเสร็จสิ้น</string>
+    <string name="mq_download_error">การดาวน์โหลดไฟล์ล้มเหลว</string>
+    <string name="mq_send">ส่ง</string>
+    <string name="mq_title_net_not_work">การโหลดผ่านเครือข่ายล้มเหลว</string>
+    <string name="mq_title_webview_rich_text">ข้อความและรูปภาพ</string>
+    <string name="mq_title_default">บริการออนไลน์</string>
+    <string name="mq_title_service_support">สนับสนุนลูกค้า</string>
+    <string name="mq_title_submit_btn">ส่ง</string>
+    <string name="mq_tip_required_before_submit">ส่วนที่มีข้อความสีแดงเป็นส่วนที่ต้องกรอกให้ครบถ้วน</string>
+    <string name="mq_copy_success">คัดลอกสำเร็จ</string>
+    <string name="mq_dialog_select_gallery">คลังรูปภาพ</string>
+    <string name="mq_dialog_select_camera_video">บันทึกวิดีโอ</string>
+    <string name="mq_dialog_select_video_title">เลือกแหล่งวิดีโอ:</string>
+    <string name="mq_title_leave_msg">ข้อความที่เหลือ</string>
+    <string name="mq_title_unknown_error">ข้อผิดพลาดที่ไม่รู้จัก</string>
+    <string name="mq_error_submit_form">การส่งแบบฟอร์มล้มเหลว โปรดลองอีกครั้ง</string>
+    <string name="mq_error_auth_code_wrong">รหัสยืนยันไม่ถูกหรือหมดอายุ</string>
+    <string name="mq_title_inputting">กำลังพิมพ์...</string>
+    <string name="mq_allocate_agent">กำลังจัดสรรบริการลูกค้า...</string>
+    <string name="mq_allocate_queue_title">รอคิว...</string>
+    <string name="mq_allocate_queue_tip">กำลังรอคิว โปรดรอสักครู่ก่อนส่งข้อความหลังบริการลูกค้าเข้ามา</string>
+    <string name="mq_allocate_agent_tip">กำลังจัดสรรบริการลูกค้าให้คุณ โปรดส่งใหม่ในภายหลัง</string>
+    <string name="mq_send_robot_msg_time_limit_tip">คุณส่งข้อความได้เร็วเกินไป โปรดรอสักครู่</string>
+    <string name="mq_leave_msg_tips">ขอโทษ ไม่มีพนักงานบริการออนไลน์ในขณะนี้ คุณสามารถตั้งคำถามของคุณและเราจะตอบเร็วที่สุด</string>
+    <string name="mq_blacklist_tips">ขอโทษ ระบบบริการลูกค้าใช้งานไม่ได้ในขณะนี้</string>
+    <string name="mq_photo_not_support">อุปกรณ์ปัจจุบันไม่รองรับการส่งรูปภาพ</string>
+    <string name="mq_no_sdcard">ไม่มีบัตร SD</string>
+    <string name="mq_sdcard_no_permission">ไม่มีสิทธิ์เข้าถึงสื่อที่</string>
+    <string name="mq_camera_or_storage_no_permission">ไม่มีสิทธิ์การเข้าถึงกล้องหรือสื่อที่</string>
+    <string name="mq_camera_no_permission">ไม่มีสิทธิ์การเข้าถึงกล้อง</string>
+    <string name="mq_timeline_today">วันนี้</string>
+    <string name="mq_timeline_yesterday">เมื่อวาน</string>
+    <string name="mq_data_is_loading">กำลังโหลดข้อมูล...</string>
+    <string name="mq_direct_content">ข้อความถัดไปจาก %1$s ให้บริการคุณ</string>
+    <string name="mq_confirm">ยืนยัน</string>
+    <string name="mq_cancel">ยกเลิก</string>
+    <string name="mq_no_app_open_file">ไม่มีแอปพลิเคชันให้เปิดไฟล์นี้</string>
+    <string name="mq_choose_ticket_category">เลือกหมวดหมู่</string>
+    <string name="mq_back"></string>
+    <string name="mq_contains_sensitive_words">ข้อความมีคำหยาบคาย</string>
+    <string name="mq_error_video_size">ไฟล์วิดีโอไม่สามารถมีขนาดเกิน 50MB</string>
+
+    <string name="mq_evaluate_title">คุณพึงพอใจกับบริการในครั้งนี้หรือไม่?</string>
+    <string name="mq_evaluate_good">คุ้มค่า</string>
+    <string name="mq_evaluate_medium">พอใช้</string>
+    <string name="mq_evaluate_bad">ไม่พึงพอใจ</string>
+    <string name="mq_evaluate_hint">กรอกเนื้อหาการประเมิน (ไม่บังคับ)</string>
+    <string name="mq_evaluate_failure">การประเมินล้มเหลว</string>
+
+    <string name="mq_audio_status_normal">กดค้างเพื่อพูด</string>
+    <string name="mq_audio_status_recording">ลากนิ้วขึ้นเพื่อยกเลิกการส่ง</string>
+    <string name="mq_audio_status_want_cancel">ปล่อยนิ้วเพื่อยกเลิกการส่ง</string>
+    <string name="mq_record_record_time_is_short">เวลาการบันทึกสั้นเกินไป</string>
+
+    <string name="mq_download_audio_failure">การดาวน์โหลดบันทึกเสียงล้มเหลว!</string>
+    <string name="mq_recorder_no_permission">ไม่มีสิทธิ์การบันทึกเสียง!</string>
+    <string name="mq_recorder_remaining_time">คุณสามารถพูดอีก %1$s วินาที</string>
+
+    <string name="mq_view_photo">ดูรูปภาพ</string>
+    <string name="mq_save_img_failure">บันทึกรูปภาพล้มเหลว ลองอีกครั้งหรือไม่?</string>
+    <string name="mq_save_img_success_folder">รูปภาพถูกบันทึกในโฟลเดอร์ %s แล้ว</string>
+
+    <string name="mq_send_msg">ส่งข้อความ</string>
+
+    <string name="mq_leave_msg_hint">กรุณาพิมพ์ข้อความของคุณ</string>
+    <string name="mq_all_image">รูปภาพทั้งหมด</string>
+
+    <string name="mq_param_not_allow_empty">%1$s ไม่สามารถเว้นว่าง</string>
+    <string name="mq_take_picture">ถ่ายรูป</string>
+    <string name="mq_submit">ส่ง</string>
+    <string name="mq_toast_photo_picker_max">สามารถเลือกได้สูงสุด %1$s รูป</string>
+    <string name="mq_choose">เลือก</string>
+    <string name="mq_hint_input">ป้อน</string>
+    <string name="mq_auth_code">รหัสยืนยัน</string>
+
+    <string name="mq_leave_msg">ข้อความที่เหลือ</string>
+    <string name="mq_submit_leave_msg_success">การส่งข้อความเสร็จสิ้น</string>
+
+    <string name="mq_email">อีเมล</string>
+
+    <string name="mq_wechat">ไอดี WeChat</string>
+
+    <string name="mq_qq">QQ</string>
+
+    <string name="mq_phone">หมายเลขโทรศัพท์</string>
+
+    <string name="mq_name">ชื่อ</string>
+    <string name="mq_contact">ข้อมูลติดต่อ</string>
+    <string name="mq_gender">เพศ</string>
+    <string name="mq_age">อายุ</string>
+    <string name="mq_address">ที่อยู่</string>
+    <string name="mq_weibo">Weibo</string>
+    <string name="mq_comment">ความคิดเห็น</string>
+    <string name="mq_invalid_content">กรุณาป้อนให้ถูกต้อง</string>
+
+    <string name="mq_useless">ไม่แก้ไข</string>
+    <string name="mq_useful">แก้ไขแล้ว</string>
+    <string name="mq_already_feedback">รีวิวแล้ว</string>
+    <string name="mq_redirect_human">เปลี่ยนเป็นพนักงานจริง</string>
+    <string name="mq_no_agent_leave_msg_tip">ขอโทษ ไม่มีพนักงานบริการในขณะนี้ คุณสามารถส่งข้อความให้เรา</string>
+    <string name="mq_useless_redirect_tip">ขอโทษคุณไม่พึงพอใจกับคำตอบของหุ่นยนต์ คุณสามารถลอง</string>
+    <string name="mq_manual_redirect_tip">ถ้าคุณต้องการความช่วยเหลือจากพนักงาน คุณสามารถ</string>
+
+    <string name="mq_leave_us_msg">ข้อความถึงเรา</string>
+    <string name="mq_number_waiting">จำนวนคนที่รออยู่ในขณะนี้</string>
+    <string name="mq_not_wait_and_choose">ถ้าไม่อยากรอ คุณสามารถเลือก</string>
+    <string name="mq_unknown_msg_tip">แอปปรับปรุงเป็นรุ่นล่าสุดเพื่อรองรับประเภทข้อความนี้</string>
+    <string name="mq_inquire_gender_choice">["ชาย","หญิง"]</string>
+    <string name="mq_item_clue_card_input">โปรดใส่ %s</string>
+    <string name="mq_item_clue_card_select">โปรดเลือก %s</string>
+    <string name="mq_recall_msg">บริการลูกค้าถอดรายงานข้อความหนึ่งรายการ</string>
+    <string name="mq_submit_success">ส่งข้อมูลสำเร็จ</string>
+    <string name="mq_request_permission">ขอสิทธิ์</string>
+    <string name="mq_content_request_storage_permission">การบันทึกรูปภาพต้องขอสิทธิ์ในการเข้าถึงพื้นที่จัดเก็บข้อมูล</string>
+    <string name="mq_content_request_camera_and_storage_permission">การส่งรูปภาพและวิดีโอต้องขอสิทธิ์ในการเข้าถึงพื้นที่จัดเก็บข้อมูลและกล้อง</string>
+    <string name="mq_content_request_camera_permission">การส่งรูปภาพและวิดีโอจากกล้องต้องขอสิทธิ์ในการเข้าถึงกล้อง</string>
+    <string name="mq_content_request_record_permission">การส่งเสียงต้องขอสิทธิ์ในการบันทึกเสียง</string>
+    <string name="mq_title_send_photo">ส่งรูปภาพ</string>
+    <string name="mq_content_send_photo">เราต้องเข้าถึงอัลบั้มเพื่อส่งรูปภาพ</string>
+    <string name="mq_net_status_reconnect">กำลังเชื่อมต่อเครือข่าย การรับข้อความอาจหายไปบางส่วน</string>
+    <string name="mq_net_status_not_available">การเชื่อมต่อเครือข่ายของคุณหลุด การส่งข้อความล้มเหลว</string>
+    <string name="mq_net_status_reconnect_title">กำลังรับข้อมูล</string>
+    <string name="mq_net_status_not_work_title">ไม่ได้เชื่อมต่อ</string>
+    <string name="mq_sale_count">ยอดขาย</string>
+    <string name="mq_view_details">ดูรายละเอียด</string>
+    <string name="mq_faq">คำถามที่พบบ่อย</string>
+    <string name="mq_pre_page">หน้าก่อนหน้า</string>
+    <string name="mq_next_page">หน้าถัดไป</string>
+</resources>

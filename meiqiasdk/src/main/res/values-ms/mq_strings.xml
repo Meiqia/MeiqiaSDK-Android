@@ -131,4 +131,8 @@
     <string name="mq_net_status_not_work_title">Belum disambung</string>
     <string name="mq_sale_count">Jualan</string>
     <string name="mq_view_details">Lihat butiran</string>
+    <string name="mq_faq">Soalan Lazim</string>
+    <string name="mq_pre_page">Halaman Sebelum</string>
+    <string name="mq_next_page">Halaman Seterusnya</string>
+
 </resources>

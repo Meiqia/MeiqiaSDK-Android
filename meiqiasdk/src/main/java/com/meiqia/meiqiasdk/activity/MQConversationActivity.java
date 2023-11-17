@@ -482,6 +482,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             TextView rightTv = findViewById(R.id.right_tv);
             rightTv.setOnClickListener(null);
         }
+
+        if (MQConfig.isCloseSocketAfterDestroy) {
+            MQManager.getInstance(this).closeMeiqiaService();
+        }
         super.onDestroy();
     }
 
@@ -1115,7 +1119,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     } else {
                         removeRedirectQueueLeaveMsg();
                         // 分配成功后，根据配置，判断是否显示评价按钮
-                        mEvaluateBtn.setVisibility(MQConfig.isEvaluateSwitchOpen ? View.VISIBLE : View.GONE);
+                        mEvaluateBtn.setVisibility(mController.getEnterpriseConfig().serviceEvaluationConfig.isEnableEvaluation(MQManager.getAppKey()) ? View.VISIBLE : View.GONE);
                     }
                     // 发送待发送的消息
                     sendDelayMessages();
@@ -1132,8 +1136,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                             if (ErrorCode.NET_NOT_WORK == code) {
                                 changeTitleToNetErrorState();
                             } else if (ErrorCode.NO_AGENT_ONLINE == code) {
-                                // 关闭留言功能的情况下，直接跳转到留言界面
-                                if (!mController.getEnterpriseConfig().ticketConfig.isSdkEnabled()) {
+                                // 关闭留言功能的情况下，直接跳转到留言界面：如果当前客服是机器人就例外
+                                if (isEnableGoToMessageFormActivity()) {
                                     Intent intent = new Intent(MQConversationActivity.this, MQMessageFormActivity.class);
                                     startActivity(intent);
                                     finish();
@@ -1815,14 +1819,28 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     }
 
     private void chooseVideoFromPicker() {
-        try {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("video/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_CODE_CHOOSE_VIDEO);
-        } catch (Exception e) {
-            Toast.makeText(this, getResources().getString(R.string.mq_title_unknown_error), Toast.LENGTH_SHORT).show();
+        // 弹窗访问提示
+        boolean isNeedShowPermissionDialog = getSharedPreferences("mq_permission", Context.MODE_PRIVATE).getBoolean("isNeedShowVideoPermissionDialog", true);
+        if (isNeedShowPermissionDialog) {
+            String title = getResources().getString(R.string.mq_request_permission);
+            String content = getResources().getString(R.string.mq_content_request_camera_permission);
+            new MQConfirmDialog(this, title, content, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getSharedPreferences("mq_permission", Context.MODE_PRIVATE).edit().putBoolean("isNeedShowVideoPermissionDialog", false).apply();
+                    chooseVideoFromPicker();
+                }
+            }, null).show();
+        } else {
+            try {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("video/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_CODE_CHOOSE_VIDEO);
+            } catch (Exception e) {
+                Toast.makeText(this, getResources().getString(R.string.mq_title_unknown_error), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -2276,12 +2294,24 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     changeToQueueingState();
                 }
                 if (code == ErrorCode.NO_AGENT_ONLINE) {
-                    addLeaveMessageTip();
+                    // 关闭留言功能的情况下，直接跳转到留言界面：如果当前客服是机器人就例外
+                    if (isEnableGoToMessageFormActivity()) {
+                        Intent intent = new Intent(MQConversationActivity.this, MQMessageFormActivity.class);
+                        startActivity(intent);
+                        finish();
+                        return;
+                    } else {
+                        addLeaveMessageTip();
+                    }
                 }
                 mChatMsgAdapter.notifyDataSetChanged();
             }
         });
         MQUtils.scrollListViewToBottom(mConversationListView);
+    }
+
+    private boolean isEnableGoToMessageFormActivity() {
+        return !mController.getEnterpriseConfig().ticketConfig.isSdkEnabled() && (mCurrentAgent != null && !mCurrentAgent.isRobot());
     }
 
     private void changeToQueueingState() {
@@ -2312,15 +2342,22 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             public void onSuccess(BaseMessage message, int state) {
                 renameVoiceFilename(message);
                 updateResendMessage(message, 0);
-                // 客服不在线的时候，会自动发送留言消息，这个时候要添加一个 tip 到列表
-                if (ErrorCode.NO_AGENT_ONLINE == state) {
-                    addLeaveMessageTip();
-                }
             }
 
             @Override
             public void onFailure(BaseMessage failureMessage, int code, String failureInfo) {
                 updateResendMessage(failureMessage, code);
+                // 客服不在线的时候，会自动发送留言消息，这个时候要添加一个 tip 到列表
+                if (ErrorCode.NO_AGENT_ONLINE == code) {
+                    // 关闭留言功能的情况下，直接跳转到留言界面：如果当前客服是机器人就例外
+                    if (isEnableGoToMessageFormActivity()) {
+                        Intent intent = new Intent(MQConversationActivity.this, MQMessageFormActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        addLeaveMessageTip();
+                    }
+                }
             }
         });
     }
@@ -2488,7 +2525,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 mEvaluateBtn.setVisibility(View.GONE);
             } else {
                 mRedirectHumanTv.setVisibility(View.GONE);
-                mEvaluateBtn.setVisibility(MQConfig.isEvaluateSwitchOpen ? View.VISIBLE : View.GONE);
+                mEvaluateBtn.setVisibility(mController.getEnterpriseConfig().serviceEvaluationConfig.isEnableEvaluation(MQManager.getAppKey()) ? View.VISIBLE : View.GONE);
             }
         } else {
             hiddenAgentStatusAndRedirectHuman();
@@ -2872,6 +2909,15 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     forceRedirectHuman();
                 } else if (RobotMessage.SUB_TYPE_MANUAL_REDIRECT.equals(robotMessage.getSubType())) {
                     mChatMessageList.remove(baseMessage);
+                    // 将内容提取出显示一个文本消息
+                    TextMessage fakeTextMessage = new TextMessage();
+                    fakeTextMessage.setContent(robotMessage.getContent());
+                    fakeTextMessage.setAvatar(robotMessage.getAvatar());
+                    fakeTextMessage.setFromType(BaseMessage.TYPE_FROM_AGENT);
+                    fakeTextMessage.setItemViewType(BaseMessage.TYPE_AGENT);
+                    fakeTextMessage.setCreatedOn(robotMessage.getCreatedOn());
+                    fakeTextMessage.setStatus(robotMessage.getStatus());
+                    mChatMsgAdapter.addMQMessage(fakeTextMessage);
                     addInitiativeRedirectMessage(R.string.mq_manual_redirect_tip);
                 } else {
                     mChatMsgAdapter.notifyDataSetChanged();

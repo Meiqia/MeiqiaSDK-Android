@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mq_expire_after">%1$s 후 만료됨</string>
+    <string name="mq_expired">만료됨</string>
+    <string name="mq_expired_top_tip">파일이 만료되어 다운로드할 수 없습니다</string>
+    <string name="mq_downloading">다운로드 중 …</string>
+    <string name="mq_download_complete">다운로드 완료</string>
+    <string name="mq_download_error">파일 다운로드 실패</string>
+    <string name="mq_send">보내기</string>
+    <string name="mq_title_net_not_work">네트워크로드 실패</string>
+    <string name="mq_title_webview_rich_text">이미지 및 텍스트 메시지</string>
+    <string name="mq_title_default">온라인 서비스</string>
+    <string name="mq_title_service_support">고객 서비스 지원</string>
+    <string name="mq_title_submit_btn">제출</string>
+    <string name="mq_tip_required_before_submit">빨간색 텍스트가 필수 입력 사항입니다. 모두 입력하십시오</string>
+    <string name="mq_copy_success">복사 완료</string>
+    <string name="mq_dialog_select_gallery">갤러리</string>
+    <string name="mq_dialog_select_camera_video">비디오 녹화</string>
+    <string name="mq_dialog_select_video_title">비디오 소스 선택:</string>
+    <string name="mq_title_leave_msg">메시지 남기기</string>
+    <string name="mq_title_unknown_error">알 수 없는 오류</string>
+    <string name="mq_error_submit_form">양식 제출 실패, 나중에 다시 시도하십시오</string>
+    <string name="mq_error_auth_code_wrong">인증 코드가 잘못되었거나 만료되었습니다</string>
+    <string name="mq_title_inputting">입력 중...</string>
+    <string name="mq_allocate_agent">고객 서비스 할당 중...</string>
+    <string name="mq_allocate_queue_title">대기 중...</string>
+    <string name="mq_allocate_queue_tip">대기 중입니다. 고객 서비스가 연결되면 메시지를 보내십시오</string>
+    <string name="mq_allocate_agent_tip">고객 서비스를 위해 고객 서비스를 할당 중입니다. 나중에 다시 보내십시오</string>
+    <string name="mq_send_robot_msg_time_limit_tip">메시지를 너무 빨리 보냈습니다. 잠시 쉬세요</string>
+    <string name="mq_leave_msg_tips">죄송합니다. 현재 고객 서비스 직원이 온라인 상태가 아닙니다. 문제를 계속 작성하십시오. 빠른 답변을 드리겠습니다</string>
+    <string name="mq_blacklist_tips">죄송합니다. 현재 고객 서비스 시스템을 사용할 수 없습니다</string>
+    <string name="mq_photo_not_support">현재 기기는 이미지 전송을 지원하지 않습니다</string>
+    <string name="mq_no_sdcard">SD 카드 없음</string>
+    <string name="mq_sdcard_no_permission">미디어 액세스 권한이 없습니다</string>
+    <string name="mq_camera_or_storage_no_permission">카메라 또는 미디어 액세스 권한이 없습니다</string>
+    <string name="mq_camera_no_permission">카메라 권한이 없습니다</string>
+    <string name="mq_timeline_today">오늘</string>
+    <string name="mq_timeline_yesterday">어제</string>
+    <string name="mq_data_is_loading">데이터 로딩 중...</string>
+    <string name="mq_direct_content">%1$s가 다음에 당신을 서비스합니다</string>
+    <string name="mq_confirm">확인</string>
+    <string name="mq_cancel">취소</string>
+    <string name="mq_no_app_open_file">현재 이 파일을 열어 줄 앱이 없습니다</string>
+    <string name="mq_choose_ticket_category">분류 선택</string>
+    <string name="mq_back"></string>
+    <string name="mq_contains_sensitive_words">메시지에 부적절한 언어가 포함되어 있습니다</string>
+    <string name="mq_error_video_size">비디오 파일은 50MB를 초과할 수 없습니다</string>
+
+    <string name="mq_evaluate_title">이번 서비스에 만족하십니까?</string>
+    <string name="mq_evaluate_good">긍정적 평가</string>
+    <string name="mq_evaluate_medium">중립적 평가</string>
+    <string name="mq_evaluate_bad">부정적 평가</string>
+    <string name="mq_evaluate_hint">평가 내용 작성 (선택 사항)</string>
+    <string name="mq_evaluate_failure">평가 실패</string>
+
+    <string name="mq_audio_status_normal">녹음 버튼을 누르고 말하세요</string>
+    <string name="mq_audio_status_recording">손가락을 위로 슬라이드하여 전송 취소</string>
+    <string name="mq_audio_status_want_cancel">손을 놓아 전송 취소</string>
+    <string name="mq_record_record_time_is_short">녹음 시간이 너무 짧습니다</string>
+
+    <string name="mq_download_audio_failure">음성 다운로드 실패!</string>
+    <string name="mq_recorder_no_permission">녹음 권한이 없습니다!</string>
+    <string name="mq_recorder_remaining_time">%1$s 초 더 말할 수 있습니다</string>
+
+    <string name="mq_view_photo">사진 보기</string>
+    <string name="mq_save_img_failure">이미지 저장 실패. 다시 시도하시겠습니까?</string>
+    <string name="mq_save_img_success_folder">%s 폴더에 이미지가 저장되었습니다</string>
+
+    <string name="mq_send_msg">메시지 보내기</string>
+
+    <string name="mq_leave_msg_hint">메시지를 입력하십시오</string>
+    <string name="mq_all_image">모든 이미지</string>
+
+    <string name="mq_param_not_allow_empty">%1$s은(는) 필수 항목입니다</string>
+    <string name="mq_take_picture">사진 찍기</string>
+    <string name="mq_submit">제출</string>
+    <string name="mq_toast_photo_picker_max">최대 %1$s개의 이미지만 선택할 수 있습니다</string>
+    <string name="mq_choose">선택</string>
+    <string name="mq_hint_input">입력</string>
+    <string name="mq_auth_code">인증 코드</string>
+
+    <string name="mq_leave_msg">메시지 남기기</string>
+    <string name="mq_submit_leave_msg_success">메시지가 성공적으로 제출되었습니다</string>
+
+    <string name="mq_email">이메일</string>
+
+    <string name="mq_wechat">위챗</string>
+
+    <string name="mq_qq">QQ</string>
+
+    <string name="mq_phone">휴대전화</string>
+
+    <string name="mq_name">이름</string>
+    <string name="mq_contact">연락처</string>
+    <string name="mq_gender">성별</string>
+    <string name="mq_age">나이</string>
+    <string name="mq_address">주소</string>
+    <string name="mq_weibo">웨이보</string>
+    <string name="mq_comment">비고</string>
+    <string name="mq_invalid_content">올바른 형식을 입력하십시오</string>
+
+    <string name="mq_useless">미해결</string>
+    <string name="mq_useful">해결됨</string>
+    <string name="mq_already_feedback">이미 피드백 완료</string>
+    <string name="mq_redirect_human">인간으로 전환</string>
+    <string name="mq_no_agent_leave_msg_tip">죄송합니다. 현재 고객 서비스 직원이 온라인 상태가 아닙니다. 우리에게 메시지를 남기십시오</string>
+    <string name="mq_useless_redirect_tip">로봇 응답에 만족하지 않으십니다. 시도해 볼 수 있습니다</string>
+    <string name="mq_manual_redirect_tip">인간 지원이 필요한 경우</string>
+
+    <string name="mq_leave_us_msg">우리에게 메시지 남기기</string>
+    <string name="mq_number_waiting">현재 대기 중인 인원</string>
+    <string name="mq_not_wait_and_choose">대기할 수 없는 경우</string>
+    <string name="mq_unknown_msg_tip">현재 앱은이 유형의 메시지를 지원하지 않으며 최신 버전으로 업그레이드하십시오</string>
+    <string name="mq_inquire_gender_choice">["남성","여성"]</string>
+
+    <string name="mq_item_clue_card_input">%s를 입력하십시오</string>
+    <string name="mq_item_clue_card_select">%s를 선택하십시오</string>
+    <string name="mq_recall_msg">고객 서비스가 메시지를 취소했습니다</string>
+    <string name="mq_submit_success">제출 완료</string>
+    <string name="mq_request_permission">권한 요청</string>
+    <string name="mq_content_request_storage_permission">이미지를 저장하려면 저장 공간 권한을 요청하십시오</string>
+    <string name="mq_content_request_camera_and_storage_permission">이미지 및 비디오를 전송하려면 저장 공간 및 카메라 권한을 요청하십시오</string>
+    <string name="mq_content_request_camera_permission">카메라에서 이미지 및 비디오를 보내려면 카메라 권한을 요청하십시오</string>
+    <string name="mq_content_request_record_permission">음성 메시지를 보내려면 녹음 권한을 요청하십시오</string>
+    <string name="mq_title_send_photo">사진 보내기</string>
+    <string name="mq_content_send_photo">우리는 이미지를 보내려면 앨범에 액세스해야 합니다</string>
+
+    <string name="mq_net_status_reconnect">네트워크 연결 중, 메시지 수신이 누락될 수 있습니다</string>
+    <string name="mq_net_status_not_available">인터넷 연결이 끊어졌습니다, 메시지 보내기 실패</string>
+    <string name="mq_net_status_reconnect_title">수신 중</string>
+    <string name="mq_net_status_not_work_title">연결되지 않음</string>
+    <string name="mq_sale_count">판매 수</string>
+    <string name="mq_view_details">세부 정보 보기</string>
+    <string name="mq_faq">자주 묻는 질문</string>
+    <string name="mq_pre_page">이전 페이지</string>
+    <string name="mq_next_page">다음 페이지</string>
+</resources>

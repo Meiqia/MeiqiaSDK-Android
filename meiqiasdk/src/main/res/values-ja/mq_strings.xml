@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mq_expire_after"> %1$s 時間後に期限切れ</string>
+    <string name="mq_expired">期限切れ</string>
+    <string name="mq_expired_top_tip">ファイルは期限切れで、ダウンロードできません</string>
+    <string name="mq_downloading">ダウンロード中...</string>
+    <string name="mq_download_complete">ダウンロード完了</string>
+    <string name="mq_download_error">ファイルのダウンロードに失敗しました</string>
+    <string name="mq_send">送信</string>
+    <string name="mq_title_net_not_work">ネットワークの読み込みに失敗しました</string>
+    <string name="mq_title_webview_rich_text">画文メッセージ</string>
+    <string name="mq_title_default">オンラインサポート</string>
+    <string name="mq_title_service_support">サポート</string>
+    <string name="mq_title_submit_btn">送信</string>
+    <string name="mq_tip_required_before_submit">赤文字の箇所は必須項目です。完了してください</string>
+    <string name="mq_copy_success">コピーが成功しました</string>
+    <string name="mq_dialog_select_gallery">ギャラリー</string>
+    <string name="mq_dialog_select_camera_video">ビデオの録画</string>
+    <string name="mq_dialog_select_video_title">ビデオのソースを選択してください：</string>
+    <string name="mq_title_leave_msg">メッセージを残す</string>
+    <string name="mq_title_unknown_error">未知のエラー</string>
+    <string name="mq_error_submit_form">フォームの送信に失敗しました。後でもう一度お試しください</string>
+    <string name="mq_error_auth_code_wrong">認証コードが間違っているか期限切れです</string>
+    <string name="mq_title_inputting">入力中...</string>
+    <string name="mq_allocate_agent">オペレーターを割り当て中...</string>
+    <string name="mq_allocate_queue_title">待ち行列中...</string>
+    <string name="mq_allocate_queue_tip">待機中です。オペレーターが接続されたらメッセージを送信してください</string>
+    <string name="mq_allocate_agent_tip">オペレーターを割り当て中です。後で再試行してください</string>
+    <string name="mq_send_robot_msg_time_limit_tip">送信が速すぎます。休憩してください</string>
+    <string name="mq_leave_msg_tips">申し訳ありませんが、現在オペレーターはオフラインです。\n続けて問題を書いてください。できるだけ早くお返事いたします</string>
+    <string name="mq_blacklist_tips">すみません、現在カスタマーサポートが一時的に使用できません</string>
+    <string name="mq_photo_not_support">現在のデバイスは画像の送信をサポートしていません</string>
+    <string name="mq_no_sdcard">SDカードが存在しません</string>
+    <string name="mq_sdcard_no_permission">現在、メディアへのアクセス許可がありません</string>
+    <string name="mq_camera_or_storage_no_permission">現在、カメラの許可またはメディアへのアクセス許可がありません</string>
+    <string name="mq_camera_no_permission">現在、カメラの許可がありません</string>
+    <string name="mq_timeline_today">今日</string>
+    <string name="mq_timeline_yesterday">昨日</string>
+    <string name="mq_data_is_loading">データを読み込んでいます...</string>
+    <string name="mq_direct_content">%1$sがサポートします</string>
+    <string name="mq_confirm">確認</string>
+    <string name="mq_cancel">キャンセル</string>
+    <string name="mq_no_app_open_file">現在、このファイルを開くアプリがありません</string>
+    <string name="mq_choose_ticket_category">カテゴリを選択</string>
+    <string name="mq_back">戻る</string>
+    <string name="mq_contains_sensitive_words">！メッセージに不適切な言葉が含まれています</string>
+    <string name="mq_error_video_size">ビデオファイルのサイズは50MBを超えてはいけません</string>
+
+    <string name="mq_evaluate_title">今回のサービスに満足しましたか？</string>
+    <string name="mq_evaluate_good">良い評価</string>
+    <string name="mq_evaluate_medium">普通の評価</string>
+    <string name="mq_evaluate_bad">悪い評価</string>
+    <string name="mq_evaluate_hint">評価内容を記入してください（オプション）</string>
+    <string name="mq_evaluate_failure">評価に失敗しました</string>
+
+    <string name="mq_audio_status_normal">録音ボタンを押して話す</string>
+    <string name="mq_audio_status_recording">指を上にスワイプして送信をキャンセル</string>
+    <string name="mq_audio_status_want_cancel">指を離して送信をキャンセル</string>
+    <string name="mq_record_record_time_is_short">録音時間が短すぎます</string>
+
+    <string name="mq_download_audio_failure">音声のダウンロードに失敗しました！</string>
+    <string name="mq_recorder_no_permission">録音の許可がありません！</string>
+    <string name="mq_recorder_remaining_time">あと %1$s 秒話すことができます</string>
+
+    <string name="mq_view_photo">写真を見る</string>
+    <string name="mq_save_img_failure">画像の保存に失敗しました。再試行しますか？</string>
+    <string name="mq_save_img_success_folder">%s フォルダに画像が保存されました</string>
+
+    <string name="mq_send_msg">メッセージを送信</string>
+
+    <string name="mq_leave_msg_hint">メッセージを入力してください</string>
+    <string name="mq_all_image">すべての画像</string>
+
+    <string name="mq_param_not_allow_empty">%1$s は必須項目です</string>
+    <string name="mq_take_picture">写真を撮る</string>
+    <string name="mq_submit">提出</string>
+    <string name="mq_toast_photo_picker_max">最大 %1$s 枚の画像しか選択できません</string>
+    <string name="mq_choose">選択</string>
+    <string name="mq_hint_input">入力</string>
+    <string name="mq_auth_code">認証コード</string>
+
+    <string name="mq_leave_msg">メッセージを残す</string>
+    <string name="mq_submit_leave_msg_success">メッセージが正常に提出されました</string>
+
+    <string name="mq_email">メール</string>
+
+    <string name="mq_wechat">WeChat</string>
+
+    <string name="mq_qq">QQ</string>
+
+    <string name="mq_phone">電話</string>
+
+    <string name="mq_name">名前</string>
+    <string name="mq_contact">連絡先</string>
+    <string name="mq_gender">性別</string>
+    <string name="mq_age">年齢</string>
+    <string name="mq_address">住所</string>
+    <string name="mq_weibo">Weibo</string>
+    <string name="mq_comment">備考</string>
+    <string name="mq_invalid_content">正しい形式で入力してください</string>
+
+    <string name="mq_useless">未解決</string>
+    <string name="mq_useful">解決済み</string>
+    <string name="mq_already_feedback">すでにフィードバック済み</string>
+    <string name="mq_redirect_human">人間に転送</string>
+    <string name="mq_no_agent_leave_msg_tip">申し訳ありませんが、現在オンラインのカスタマーサポートがいません。以下の方法でご連絡いただけます</string>
+    <string name="mq_useless_redirect_tip">ご不満な場合、以下を試してみてください</string>
+    <string name="mq_manual_redirect_tip">人間のサポートが必要な場合、以下を試してみてください</string>
+
+    <string name="mq_leave_us_msg">メッセージを残してください</string>
+    <string name="mq_number_waiting">現在の待機人数</string>
+    <string name="mq_not_wait_and_choose">待てない場合、以下を選択できます</string>
+    <string name="mq_unknown_msg_tip">現在のアプリはこの種類のメッセージをサポートしていません。アプリを最新バージョンに更新してください</string>
+    <string name="mq_inquire_gender_choice">["男性","女性"]</string>
+
+    <string name="mq_item_clue_card_input">%s を入力してください</string>
+    <string name="mq_item_clue_card_select">%s を選択してください</string>
+    <string name="mq_recall_msg">カスタマーサポートがメッセージを取り消しました</string>
+    <string name="mq_submit_success">提出が成功しました</string>
+    <string name="mq_request_permission">権限の要求</string>
+    <string name="mq_content_request_storage_permission">画像を保存するにはストレージアクセス権をリクエストする必要があります</string>
+    <string name="mq_content_request_camera_and_storage_permission">写真と動画を送信するにはカメラアクセス権とストレージアクセス権をリクエストする必要があります</string>
+    <string name="mq_content_request_camera_permission">カメラから写真と動画を送信するにはカメラアクセス権をリクエストする必要があります</string>
+    <string name="mq_content_request_record_permission">音声メッセージを送信するには録音権をリクエストする必要があります</string>
+    <string name="mq_title_send_photo">写真を送信</string>
+    <string name="mq_content_send_photo">写真を送信するためにアルバムへのアクセスが必要です</string>
+
+    <string name="mq_net_status_reconnect">ネットワーク接続中、メッセージの受信に遅れが生じる可能性があります</string>
+    <string name="mq_net_status_not_available">ネットワーク接続が切断されました、メッセージの送信に失敗しました</string>
+    <string name="mq_net_status_reconnect_title">接続中</string>
+    <string name="mq_net_status_not_work_title">接続されていません</string>
+    <string name="mq_sale_count">販売数</string>
+    <string name="mq_view_details">詳細を表示</string>
+    <string name="mq_faq">よくある質問</string>
+    <string name="mq_pre_page">前のページ</string>
+    <string name="mq_next_page">次のページ</string>
+
+</resources>

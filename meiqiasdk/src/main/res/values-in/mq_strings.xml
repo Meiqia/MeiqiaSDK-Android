@@ -131,5 +131,8 @@
     <string name="mq_net_status_not_work_title">Belum terhubung</string>
     <string name="mq_sale_count">Jumlah penjualan</string>
     <string name="mq_view_details">Cek rincian</string>
+    <string name="mq_faq">Pertanyaan Umum</string>
+    <string name="mq_pre_page">Halaman Sebelumnya</string>
+    <string name="mq_next_page">Halaman Berikutnya</string>
 
 </resources>

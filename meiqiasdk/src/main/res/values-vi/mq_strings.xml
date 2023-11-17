@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mq_expire_after">%1$s giờ sau hết hạn</string>
+    <string name="mq_expired">Đã hết hạn</string>
+    <string name="mq_expired_top_tip">Tệp đã hết hạn, không thể tải xuống</string>
+    <string name="mq_downloading">Đang tải xuống ...</string>
+    <string name="mq_download_complete">Tải xuống hoàn thành</string>
+    <string name="mq_download_error">Lỗi khi tải tệp</string>
+    <string name="mq_send">Gửi</string>
+    <string name="mq_title_net_not_work">Lỗi tải trang</string>
+    <string name="mq_title_webview_rich_text">Tin nhắn hình ảnh</string>
+    <string name="mq_title_default">Hỗ trợ trực tuyến</string>
+    <string name="mq_title_service_support">Hỗ trợ khách hàng</string>
+    <string name="mq_title_submit_btn">Gửi</string>
+    <string name="mq_tip_required_before_submit">Các trường màu đỏ là bắt buộc, hãy điền đầy đủ thông tin</string>
+    <string name="mq_copy_success">Sao chép thành công</string>
+    <string name="mq_dialog_select_gallery">Thư viện hình ảnh</string>
+    <string name="mq_dialog_select_camera_video">Quay video</string>
+    <string name="mq_dialog_select_video_title">Chọn nguồn video:</string>
+    <string name="mq_title_leave_msg">Lời nhắn</string>
+    <string name="mq_title_unknown_error">Lỗi không xác định</string>
+    <string name="mq_error_submit_form">Lỗi khi gửi biểu mẫu, hãy thử lại sau</string>
+    <string name="mq_error_auth_code_wrong">Mã xác thực sai hoặc đã hết hạn</string>
+    <string name="mq_title_inputting">Đang nhập...</string>
+    <string name="mq_allocate_agent">Đang phân chia nhân viên hỗ trợ...</string>
+    <string name="mq_allocate_queue_title">Đang xếp hàng...</string>
+    <string name="mq_allocate_queue_tip">Đang xếp hàng, vui lòng đợi để gửi tin nhắn sau khi nhân viên hỗ trợ kết nối</string>
+    <string name="mq_allocate_agent_tip">Đang phân chia nhân viên hỗ trợ cho bạn, hãy thử lại sau</string>
+    <string name="mq_send_robot_msg_time_limit_tip">Bạn gửi quá nhanh, hãy nghỉ ngơi một chút</string>
+    <string name="mq_leave_msg_tips">Rất tiếc, hiện tại không có nhân viên hỗ trợ trực tuyến. Bạn có thể tiếp tục viết câu hỏi và chúng tôi sẽ trả lời bạn sớm nhất có thể</string>
+    <string name="mq_blacklist_tips">Xin lỗi, hệ thống hỗ trợ khách hàng hiện không hoạt động</string>
+    <string name="mq_photo_not_support">Thiết bị hiện tại không hỗ trợ gửi hình ảnh</string>
+    <string name="mq_no_sdcard">Thẻ SD không tồn tại</string>
+    <string name="mq_sdcard_no_permission">Hiện tại không có quyền truy cập vào phương tiện</string>
+    <string name="mq_camera_or_storage_no_permission">Hiện tại không có quyền truy cập vào máy ảnh hoặc phương tiện</string>
+    <string name="mq_camera_no_permission">Hiện tại không có quyền truy cập vào máy ảnh</string>
+    <string name="mq_timeline_today">Hôm nay</string>
+    <string name="mq_timeline_yesterday">Hôm qua</string>
+    <string name="mq_data_is_loading">Đang tải dữ liệu...</string>
+    <string name="mq_direct_content">Tiếp theo, %1$s sẽ phục vụ bạn</string>
+    <string name="mq_confirm">Xác nhận</string>
+    <string name="mq_cancel">Hủy</string>
+    <string name="mq_no_app_open_file">Không có ứng dụng nào có thể mở tệp này</string>
+    <string name="mq_choose_ticket_category">Chọn danh mục</string>
+    <string name="mq_back"></string>
+    <string name="mq_contains_sensitive_words">Thông điệp chứa ngôn ngữ không đúng quy tắc</string>
+    <string name="mq_error_video_size">Kích thước video không được vượt quá 50MB</string>
+
+    <string name="mq_evaluate_title">Bạn có hài lòng với dịch vụ này không?</string>
+    <string name="mq_evaluate_good">Tốt</string>
+    <string name="mq_evaluate_medium">Trung bình</string>
+    <string name="mq_evaluate_bad">Kém</string>
+    <string name="mq_evaluate_hint">Nhập nội dung đánh giá (tùy chọn)</string>
+    <string name="mq_evaluate_failure">Đánh giá thất bại</string>
+
+    <string name="mq_audio_status_normal">Giữ để nói</string>
+    <string name="mq_audio_status_recording">Vuốt lên để hủy gửi</string>
+    <string name="mq_audio_status_want_cancel">Buông ra để hủy gửi</string>
+    <string name="mq_record_record_time_is_short">Thời gian ghi âm quá ngắn</string>
+
+    <string name="mq_download_audio_failure">Tải âm thanh thất bại!</string>
+    <string name="mq_recorder_no_permission">Không có quyền ghi âm!</string>
+    <string name="mq_recorder_remaining_time">Còn %1$s giây để nói</string>
+
+    <string name="mq_view_photo">Xem hình ảnh</string>
+    <string name="mq_save_img_failure">Lưu hình ảnh thất bại, thử lại?</string>
+    <string name="mq_save_img_success_folder">Hình ảnh đã được lưu trong thư mục %s</string>
+
+    <string name="mq_send_msg">Gửi tin nhắn</string>
+
+    <string name="mq_leave_msg_hint">Nhập lời nhắn của bạn</string>
+    <string name="mq_all_image">Tất cả hình ảnh</string>
+
+    <string name="mq_param_not_allow_empty">%1$s không được để trống</string>
+    <string name="mq_take_picture">Chụp ảnh</string>
+    <string name="mq_submit">Gửi</string>
+    <string name="mq_toast_photo_picker_max">Chỉ có thể chọn tối đa %1$s hình ảnh</string>
+    <string name="mq_choose">Chọn</string>
+    <string name="mq_hint_input">Nhập</string>
+    <string name="mq_auth_code">Mã xác thực</string>
+
+    <string name="mq_leave_msg">Lời nhắn</string>
+    <string name="mq_submit_leave_msg_success">Gửi lời nhắn thành công</string>
+
+    <string name="mq_email">Email</string>
+
+    <string name="mq_wechat">WeChat</string>
+
+    <string name="mq_qq">QQ</string>
+
+    <string name="mq_phone">Số điện thoại</string>
+
+    <string name="mq_name">Tên</string>
+    <string name="mq_contact">Liên hệ</string>
+    <string name="mq_gender">Giới tính</string>
+    <string name="mq_age">Tuổi</string>
+    <string name="mq_address">Địa chỉ</string>
+    <string name="mq_weibo">Weibo</string>
+    <string name="mq_comment">Ghi chú</string>
+    <string name="mq_invalid_content">Vui lòng nhập đúng định dạng</string>
+
+    <string name="mq_useless">Chưa giải quyết</string>
+    <string name="mq_useful">Đã giải quyết</string>
+    <string name="mq_already_feedback">Đã phản hồi</string>
+    <string name="mq_redirect_human">Chuyển sang hỗ trợ nhân viên</string>
+    <string name="mq_no_agent_leave_msg_tip">Rất tiếc, hiện không có nhân viên hỗ trợ trực tuyến. Bạn có thể</string>
+    <string name="mq_useless_redirect_tip">Rất tiếc bạn không hài lòng với phản hồi của trợ lý ảo, bạn có thể thử</string>
+    <string name="mq_manual_redirect_tip">Nếu bạn cần hỗ trợ từ nhân viên, bạn có thể</string>
+
+    <string name="mq_leave_us_msg">Để lại lời nhắn cho chúng tôi</string>
+    <string name="mq_number_waiting">Số người đang xếp hàng hiện tại</string>
+    <string name="mq_not_wait_and_choose">Nếu không muốn đợi, bạn có thể chọn</string>
+    <string name="mq_unknown_msg_tip">Ứng dụng hiện không hỗ trợ loại tin nhắn này, vui lòng cập nhật ứng dụng của bạn lên phiên bản mới nhất</string>
+    <string name="mq_inquire_gender_choice">["Nam", "Nữ"]</string>
+
+    <string name="mq_item_clue_card_input">Vui lòng nhập %s</string>
+    <string name="mq_item_clue_card_select">Vui lòng chọn %s</string>
+    <string name="mq_recall_msg">Nhân viên hỗ trợ đã rút lại một tin nhắn</string>
+    <string name="mq_submit_success">Gửi thành công</string>
+    <string name="mq_request_permission">Yêu cầu quyền truy cập</string>
+    <string name="mq_content_request_storage_permission">Để lưu hình ảnh, cần quyền truy cập vào lưu trữ</string>
+    <string name="mq_content_request_camera_and_storage_permission">Để gửi hình ảnh và video, cần quyền truy cập vào lưu trữ và máy ảnh</string>
+    <string name="mq_content_request_camera_permission">Để gửi hình ảnh và video từ máy ảnh, cần quyền truy cập vào máy ảnh</string>
+    <string name="mq_content_request_record_permission">Để gửi tin nhắn bằng giọng nói, cần quyền ghi âm</string>
+    <string name="mq_title_send_photo">Gửi hình ảnh</string>
+    <string name="mq_content_send_photo">Chúng tôi cần truy cập thư viện hình ảnh để gửi hình ảnh</string>
+
+    <string name="mq_net_status_reconnect">Đang kết nối mạng, có thể có mất sót khi nhận tin nhắn</string>
+    <string name="mq_net_status_not_available">Kết nối mạng của bạn đã ngắt kết nối, gửi tin nhắn thất bại</string>
+    <string name="mq_net_status_reconnect_title">Đang kết nối</string>
+    <string name="mq_net_status_not_work_title">Không có kết nối</string>
+    <string name="mq_sale_count">Số lượng bán</string>
+    <string name="mq_view_details">Xem chi tiết</string>
+    <string name="mq_faq">Câu hỏi thường gặp</string>
+    <string name="mq_pre_page">Trang trước</string>
+    <string name="mq_next_page">Trang tiếp theo</string>
+</resources>

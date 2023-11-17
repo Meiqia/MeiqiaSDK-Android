@@ -76,6 +76,7 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
     private LinearLayout mContainerLl;
     private TextView mTopTipViewTv;
     private TextView mContentTv;
+    private TextView mInputTitleTv;
     private Handler mHandler;
     private Runnable mAutoDismissTopTipRunnable;
 
@@ -109,6 +110,7 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
         mSubmitTv = findViewById(R.id.submit_tv);
         mContainerLl = findViewById(R.id.container_ll);
         mRootView = findViewById(R.id.root);
+        mInputTitleTv = findViewById(R.id.input_title);
         mContentTv = findViewById(R.id.content_tv);
         mScrollView = findViewById(R.id.content_sv);
     }
@@ -120,8 +122,6 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
 
     @Override
     protected void processLogic(Bundle savedInstanceState) {
-        setTitle(getInquireForm().getInputs().optString(MQInquireForm.KEY_INPUTS_TITLE));
-
         // 如果全是回头客，直接跳转到对话界面
         if (isSubmitAndAllReturnedCustomer()) {
             goToChatActivity();
@@ -129,19 +129,22 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
         }
 
         try {
-            if (!TextUtils.isEmpty(getInquireForm().getContent())) {
+            setTitle(getInquireForm().getTitle());
+            if (!TextUtils.isEmpty(getInquireForm().getContent()) && !TextUtils.equals("<p></p>", getInquireForm().getContent())) {
                 RichText richText = new RichText();
                 richText.fromHtml(getInquireForm().getContent()).setOnImageClickListener(this).into(mContentTv);
                 mContentTv.setVisibility(View.VISIBLE);
             } else {
                 mContentTv.setVisibility(View.GONE);
             }
+            mInputTitleTv.setText(getInquireForm().getInputs().optString(MQInquireForm.KEY_INPUTS_TITLE));
             JSONArray fields = getInquireForm().getInputs().optJSONArray(MQInquireForm.KEY_INPUTS_FIELDS);
             // 异常情况，直接进入对话页面
             if (fields == null) {
                 goToChatActivity();
                 return;
             }
+
             for (int i = 0; i < fields.length(); i++) {
                 JSONObject field = fields.getJSONObject(i);
                 String display_name = field.optString(MQInquireForm.KEY_INPUTS_FIELDS_DISPLAY_NAME);

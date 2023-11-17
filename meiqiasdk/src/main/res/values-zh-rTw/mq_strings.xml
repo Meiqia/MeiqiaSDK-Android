@@ -131,5 +131,8 @@
     <string name="mq_net_status_not_work_title">未連接</string>
     <string name="mq_sale_count">銷量</string>
     <string name="mq_view_details">查看詳情</string>
+    <string name="mq_faq">常見問題</string>
+    <string name="mq_pre_page">上一頁</string>
+    <string name="mq_next_page">下一頁</string>
 
 </resources>

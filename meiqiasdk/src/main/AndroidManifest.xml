@@ -16,6 +16,7 @@
         <activity
             android:name="com.meiqia.meiqiasdk.activity.MQConversationActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/MQTheme"
@@ -25,6 +26,7 @@
         <activity
             android:name=".activity.MQPhotoPreviewActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/MQTheme"
@@ -34,6 +36,7 @@
         <activity
             android:name="com.meiqia.meiqiasdk.activity.MQPhotoPickerActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/MQTheme"
@@ -42,6 +45,7 @@
         <activity
             android:name="com.meiqia.meiqiasdk.activity.MQPhotoPickerPreviewActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/MQTheme"
@@ -51,6 +55,7 @@
         <activity
             android:name=".activity.MQMessageFormActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/MQTheme"
@@ -60,6 +65,7 @@
         <activity
             android:name=".activity.MQWebViewActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/MQTheme"
@@ -69,6 +75,7 @@
         <activity
             android:name=".activity.MQInquiryFormActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/MQTheme"
@@ -77,18 +84,21 @@
         <activity
             android:name=".activity.MQCollectInfoActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/MQTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <service android:name="com.meiqia.core.MeiQiaService" />
+        <service
+            android:name="com.meiqia.core.MeiQiaService"
+            android:exported="false" />
 
         <provider
             android:name=".util.MQFileProvider"
             android:authorities="${applicationId}.fileProvider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/mq_file_paths" />

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mq_expire_after">Expira em %1$s horas</string>
+    <string name="mq_expired">Expirado</string>
+    <string name="mq_expired_top_tip">O arquivo expirou e não pode ser baixado</string>
+    <string name="mq_downloading">A transferir...</string>
+    <string name="mq_download_complete">Transferência concluída</string>
+    <string name="mq_download_error">Falha ao transferir o ficheiro</string>
+    <string name="mq_send">Enviar</string>
+    <string name="mq_title_net_not_work">Falha na conexão de rede</string>
+    <string name="mq_title_webview_rich_text">Mensagem com multimédia</string>
+    <string name="mq_title_default">Suporte Online</string>
+    <string name="mq_title_service_support">Suporte ao Cliente</string>
+    <string name="mq_title_submit_btn">Submeter</string>
+    <string name="mq_tip_required_before_submit">Os campos em vermelho são obrigatórios, preencha todos</string>
+    <string name="mq_copy_success">Cópia bem-sucedida</string>
+    <string name="mq_dialog_select_gallery">Galeria de Imagens</string>
+    <string name="mq_dialog_select_camera_video">Gravar Vídeo</string>
+    <string name="mq_dialog_select_video_title">Escolha a origem do vídeo:</string>
+    <string name="mq_title_leave_msg">Deixar uma Mensagem</string>
+    <string name="mq_title_unknown_error">Erro Desconhecido</string>
+    <string name="mq_error_submit_form">Falha ao submeter o formulário, tente novamente mais tarde</string>
+    <string name="mq_error_auth_code_wrong">Código de autenticação incorreto ou expirado</string>
+    <string name="mq_title_inputting">A escrever...</string>
+    <string name="mq_allocate_agent">Alocando um agente...</string>
+    <string name="mq_allocate_queue_title">Em fila de espera...</string>
+    <string name="mq_allocate_queue_tip">Em fila de espera, aguarde que um agente atenda antes de enviar uma mensagem</string>
+    <string name="mq_allocate_agent_tip">Alocando um agente para você, por favor, tente novamente mais tarde</string>
+    <string name="mq_send_robot_msg_time_limit_tip">Você está a enviar mensagens muito rápido. Por favor, descanse um pouco.</string>
+    <string name="mq_leave_msg_tips">Desculpe, não há agentes de suporte online no momento. Você pode continuar a escrever sua pergunta e responderemos o mais rápido possível</string>
+    <string name="mq_blacklist_tips">Desculpe, o sistema de suporte ao cliente não está disponível no momento</string>
+    <string name="mq_photo_not_support">O dispositivo atual não suporta o envio de imagens</string>
+    <string name="mq_no_sdcard">Cartão SD não encontrado</string>
+    <string name="mq_sdcard_no_permission">Sem permissão de acesso a mídia no momento</string>
+    <string name="mq_camera_or_storage_no_permission">Sem permissão para a câmera ou acesso à mídia no momento</string>
+    <string name="mq_camera_no_permission">Sem permissão para a câmera no momento</string>
+    <string name="mq_timeline_today">Hoje</string>
+    <string name="mq_timeline_yesterday">Ontem</string>
+    <string name="mq_data_is_loading">A carregar dados...</string>
+    <string name="mq_direct_content">A seguir, %1$s estará a atendê-lo</string>
+    <string name="mq_confirm">Confirmar</string>
+    <string name="mq_cancel">Cancelar</string>
+    <string name="mq_no_app_open_file">Nenhum aplicativo disponível para abrir este arquivo</string>
+    <string name="mq_choose_ticket_category">Escolher a Categoria</string>
+    <string name="mq_back">Voltar</string>
+    <string name="mq_contains_sensitive_words">A mensagem contém linguagem imprópria</string>
+    <string name="mq_error_video_size">O arquivo de vídeo não pode exceder 50MB</string>
+
+    <string name="mq_evaluate_title">Você está satisfeito com o serviço?</string>
+    <string name="mq_evaluate_good">Avaliação Positiva</string>
+    <string name="mq_evaluate_medium">Avaliação Média</string>
+    <string name="mq_evaluate_bad">Avaliação Negativa</string>
+    <string name="mq_evaluate_hint">Escreva seus comentários (opcional)</string>
+    <string name="mq_evaluate_failure">Falha na avaliação</string>
+
+    <string name="mq_audio_status_normal">Pressione para falar</string>
+    <string name="mq_audio_status_recording">Deslize o dedo para cima para cancelar o envio</string>
+    <string name="mq_audio_status_want_cancel">Solte o dedo para cancelar o envio</string>
+    <string name="mq_record_record_time_is_short">Tempo de gravação muito curto</string>
+
+    <string name="mq_download_audio_failure">Falha ao baixar a gravação!</string>
+    <string name="mq_recorder_no_permission">Sem permissão para gravar!</string>
+    <string name="mq_recorder_remaining_time">Você pode falar por mais %1$s segundos</string>
+
+    <string name="mq_view_photo">Visualizar Imagem</string>
+    <string name="mq_save_img_failure">Falha ao salvar a imagem, tentar novamente?</string>
+    <string name="mq_save_img_success_folder">Imagem salva na pasta %s</string>
+
+    <string name="mq_send_msg">Enviar Mensagem</string>
+
+    <string name="mq_leave_msg_hint">Por favor, digite a sua mensagem</string>
+    <string name="mq_all_image">Todas as Imagens</string>
+
+    <string name="mq_param_not_allow_empty">%1$s não pode estar vazio</string>
+    <string name="mq_take_picture">Tirar Foto</string>
+    <string name="mq_submit">Submeter</string>
+    <string name="mq_toast_photo_picker_max">Pode selecionar no máximo %1$s imagens</string>
+    <string name="mq_choose">Escolher</string>
+    <string name="mq_hint_input">Entrada</string>
+    <string name="mq_auth_code">Código de Autenticação</string>
+
+    <string name="mq_leave_msg">Deixar uma Mensagem</string>
+    <string name="mq_submit_leave_msg_success">Mensagem enviada com sucesso</string>
+
+    <string name="mq_email">Email</string>
+
+    <string name="mq_wechat">WeChat</string>
+
+    <string name="mq_qq">QQ</string>
+
+    <string name="mq_phone">Telefone</string>
+
+    <string name="mq_name">Nome</string>
+    <string name="mq_contact">Contato</string>
+    <string name="mq_gender">Gênero</string>
+    <string name="mq_age">Idade</string>
+    <string name="mq_address">Endereço</string>
+    <string name="mq_weibo">Weibo</string>
+    <string name="mq_comment">Comentário</string>
+    <string name="mq_invalid_content">Por favor, insira o formato correto</string>
+
+    <string name="mq_useless">Não resolvido</string>
+    <string name="mq_useful">Resolvido</string>
+    <string name="mq_already_feedback">Já enviado</string>
+    <string name="mq_redirect_human">Redirecionar para um Agente</string>
+    <string name="mq_no_agent_leave_msg_tip">Desculpe, não há agentes de suporte online no momento. Você pode nos deixar uma mensagem</string>
+    <string name="mq_useless_redirect_tip">Lamentamos que você não esteja satisfeito com a resposta do robô. Você pode tentar</string>
+    <string name="mq_manual_redirect_tip">Se você precisar de suporte humano para a sua pergunta, pode</string>
+
+    <string name="mq_leave_us_msg">Deixar uma Mensagem</string>
+    <string name="mq_number_waiting">Número de Pessoas em Espera</string>
+    <string name="mq_not_wait_and_choose">Se não quiser esperar, você pode escolher</string>
+    <string name="mq_unknown_msg_tip">O aplicativo atualmente não suporta esse tipo de mensagem. Atualize o seu aplicativo para a versão mais recente</string>
+    <string name="mq_inquire_gender_choice">["Homem","Mulher"]</string>
+
+    <string name="mq_item_clue_card_input">Por favor, insira %s</string>
+    <string name="mq_item_clue_card_select">Por favor, selecione %s</string>
+    <string name="mq_recall_msg">O agente retirou uma mensagem</string>
+    <string name="mq_submit_success">Submissão bem-sucedida</string>
+    <string name="mq_request_permission">Pedido de Permissão</string>
+    <string name="mq_content_request_storage_permission">Para salvar imagens, é necessário conceder permissão para armazenamento</string>
+    <string name="mq_content_request_camera_and_storage_permission">Para enviar imagens e vídeos, é necessário conceder permissão para armazenamento e câmera</string>
+    <string name="mq_content_request_camera_permission">Para enviar imagens e vídeos da câmera, é necessário conceder permissão para a câmera</string>
+    <string name="mq_content_request_record_permission">Para enviar áudio, é necessário conceder permissão para gravar</string>
+    <string name="mq_title_send_photo">Enviar Imagem</string>
+    <string name="mq_content_send_photo">Precisamos acessar a galeria de imagens para enviar fotos</string>
+
+    <string name="mq_net_status_reconnect">Reconectando à rede, pode haver perda de mensagens</string>
+    <string name="mq_net_status_not_available">Sua conexão de rede foi interrompida, falha ao enviar mensagens</string>
+    <string name="mq_net_status_reconnect_title">Reconectando</string>
+    <string name="mq_net_status_not_work_title">Sem Conexão</string>
+    <string name="mq_sale_count">Vendas</string>
+    <string name="mq_view_details">Ver Detalhes</string>
+    <string name="mq_faq">Perguntas Frequentes</string>
+    <string name="mq_pre_page">Página Anterior</string>
+    <string name="mq_next_page">Próxima Página</string>
+</resources>
