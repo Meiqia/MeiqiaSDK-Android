@@ -3,8 +3,10 @@ package com.meiqia.meiqiasdk.util;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
+
 import android.view.View;
 
 import com.meiqia.core.MQManager;
@@ -74,11 +76,14 @@ public final class MQConfig {
     public static boolean isVoiceSwitchOpen = true; // 语音开关
     public static boolean isSoundSwitchOpen = true; // 声音开关
     public static boolean isLoadMessagesFromNativeOpen = false; // 加载本地数据开关
+    @Deprecated
     public static boolean isEvaluateSwitchOpen = true; // 是否开启评价
     public static boolean isShowClientAvatar = false; // 是否显示客户头像
     public static boolean isPhotoSendOpen = true; // 是否显示发送图片消息按钮
     public static boolean isCameraImageSendOpen = true; // 是否显示发送相机图片消息按钮
     public static boolean isEmojiSendOpen = true; // 是否显示发送 Emoji 表情消息按钮
+
+    public static boolean isCloseSocketAfterDestroy = false; // 是否在退出客服界面时关闭 socket 长连接
 
     private static MQActivityLifecycleCallback sActivityLifecycleCallback;
     private static OnLinkClickCallback sOnLinkClickCallback;

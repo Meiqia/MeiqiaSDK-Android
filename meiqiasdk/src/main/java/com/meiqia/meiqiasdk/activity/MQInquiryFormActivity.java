@@ -2,17 +2,20 @@ package com.meiqia.meiqiasdk.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.bean.MQInquireForm;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.util.MQUtils;
+import com.meiqia.meiqiasdk.util.RichText;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,11 +24,12 @@ import org.json.JSONObject;
  * OnePiece
  * Created by xukq on 6/27/16.
  */
-public class MQInquiryFormActivity extends MQBaseActivity {
-
+public class MQInquiryFormActivity extends MQBaseActivity implements RichText.OnImageClickListener {
     public static final String CURRENT_CLIENT = "CURRENT_CLIENT";
 
     private TextView mQuestionTitleTv;
+    private TextView mTitleTv;
+    private TextView mContentTv;
     private LinearLayout mContainer;
 
     private MQInquireForm mInquireForm;
@@ -42,7 +46,9 @@ public class MQInquiryFormActivity extends MQBaseActivity {
 
     @Override
     protected void initView(Bundle savedInstanceState) {
+        mTitleTv = findViewById(R.id.title_tv);
         mQuestionTitleTv = findViewById(R.id.question_title);
+        mContentTv = findViewById(R.id.content_tv);
         mContainer = findViewById(R.id.container_ll);
     }
 
@@ -54,6 +60,15 @@ public class MQInquiryFormActivity extends MQBaseActivity {
     @Override
     protected void processLogic(Bundle savedInstanceState) {
         try {
+            mTitleTv.setText(getInquireForm().getTitle());
+            if (!TextUtils.isEmpty(getInquireForm().getContent()) && !TextUtils.equals(getInquireForm().getContent(), "<p></p>")) {
+                RichText richText = new RichText();
+                richText.fromHtml(getInquireForm().getContent()).setOnImageClickListener(this).into(mContentTv);
+                mContentTv.setVisibility(View.VISIBLE);
+            } else {
+                mContentTv.setVisibility(View.GONE);
+            }
+
             JSONObject menusObj = getInquireForm().getMenus();
             String title = menusObj.optString(MQInquireForm.KEY_MENUS_TITLE);
             mQuestionTitleTv.setText(title);
@@ -190,6 +205,20 @@ public class MQInquiryFormActivity extends MQBaseActivity {
 
         }
         return isAllReturnedCustomer;
+    }
+
+    @Override
+    public void onImageClicked(String url, String imgLink) {
+        try {
+            if (TextUtils.isEmpty(imgLink)) {
+                this.startActivity(MQPhotoPreviewActivity.newIntent(this, MQUtils.getImageDir(this), url));
+            } else {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(imgLink));
+                this.startActivity(intent);
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, R.string.mq_title_unknown_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

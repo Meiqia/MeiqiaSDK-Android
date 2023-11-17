@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mq_expire_after">%1$s часов до истечения</string>
+    <string name="mq_expired">Истек срок</string>
+    <string name="mq_expired_top_tip">Файл истек, невозможно загрузить</string>
+    <string name="mq_downloading">Загрузка ...</string>
+    <string name="mq_download_complete">Загрузка завершена</string>
+    <string name="mq_download_error">Ошибка загрузки файла</string>
+    <string name="mq_send">Отправить</string>
+    <string name="mq_title_net_not_work">Ошибка загрузки сети</string>
+    <string name="mq_title_webview_rich_text">Текст и изображение</string>
+    <string name="mq_title_default">Онлайн-поддержка</string>
+    <string name="mq_title_service_support">Поддержка клиентов</string>
+    <string name="mq_title_submit_btn">Отправить</string>
+    <string name="mq_tip_required_before_submit">Красные поля обязательны для заполнения. Пожалуйста, заполните их.</string>
+    <string name="mq_copy_success">Успешно скопировано</string>
+    <string name="mq_dialog_select_gallery">Галерея</string>
+    <string name="mq_dialog_select_camera_video">Записать видео</string>
+    <string name="mq_dialog_select_video_title">Выберите источник видео:</string>
+    <string name="mq_title_leave_msg">Оставить сообщение</string>
+    <string name="mq_title_unknown_error">Неизвестная ошибка</string>
+    <string name="mq_error_submit_form">Ошибка отправки формы, пожалуйста, попробуйте позже</string>
+    <string name="mq_error_auth_code_wrong">Неверный код подтверждения или он истек</string>
+    <string name="mq_title_inputting">Печатает...</string>
+    <string name="mq_allocate_agent">Выделяется оператор...</string>
+    <string name="mq_allocate_queue_title">В ожидании в очереди...</string>
+    <string name="mq_allocate_queue_tip">Вас поставили в очередь. Пожалуйста, подождите, пока оператор ответит на ваше сообщение.</string>
+    <string name="mq_allocate_agent_tip">Оператор выделяется для вас. Пожалуйста, попробуйте позже.</string>
+    <string name="mq_send_robot_msg_time_limit_tip">Вы отправляете сообщения слишком быстро. Пожалуйста, сделайте небольшой перерыв.</string>
+    <string name="mq_leave_msg_tips">Извините, в данный момент нет операторов онлайн. Вы можете продолжить писать свой вопрос, и мы постараемся ответить как можно скорее.</string>
+    <string name="mq_blacklist_tips">Извините, в данный момент система поддержки не доступна.</string>
+    <string name="mq_photo_not_support">Ваше устройство не поддерживает отправку изображений</string>
+    <string name="mq_no_sdcard">Отсутствует SD-карта</string>
+    <string name="mq_sdcard_no_permission">Отсутствуют разрешения на доступ к медиафайлам</string>
+    <string name="mq_camera_or_storage_no_permission">Отсутствуют разрешения на доступ к камере или медиафайлам</string>
+    <string name="mq_camera_no_permission">Отсутствуют разрешения на доступ к камере</string>
+    <string name="mq_timeline_today">Сегодня</string>
+    <string name="mq_timeline_yesterday">Вчера</string>
+    <string name="mq_data_is_loading">Идет загрузка данных...</string>
+    <string name="mq_direct_content">Следующим для вас обслуживает %1$s</string>
+    <string name="mq_confirm">Подтвердить</string>
+    <string name="mq_cancel">Отмена</string>
+    <string name="mq_no_app_open_file">В данный момент нет приложения для открытия этого файла</string>
+    <string name="mq_choose_ticket_category">Выберите категорию</string>
+    <string name="mq_back"></string>
+    <string name="mq_contains_sensitive_words">! Сообщение содержит ненормативную лексику</string>
+    <string name="mq_error_video_size">Размер видеофайла не должен превышать 50 МБ</string>
+
+    <string name="mq_evaluate_title">Вы довольны обслуживанием?</string>
+    <string name="mq_evaluate_good">Положительный отзыв</string>
+    <string name="mq_evaluate_medium">Нейтральный отзыв</string>
+    <string name="mq_evaluate_bad">Отрицательный отзыв</string>
+    <string name="mq_evaluate_hint">Оставьте комментарий (по желанию)</string>
+    <string name="mq_evaluate_failure">Не удалось оставить отзыв</string>
+
+    <string name="mq_audio_status_normal">Удерживайте для записи голоса</string>
+    <string name="mq_audio_status_recording">Сдвиньте вверх, чтобы отменить отправку</string>
+    <string name="mq_audio_status_want_cancel">Отпустите для отмены отправки</string>
+    <string name="mq_record_record_time_is_short">Слишком короткая запись</string>
+
+    <string name="mq_download_audio_failure">Ошибка загрузки голосового сообщения!</string>
+    <string name="mq_recorder_no_permission">Отсутствуют разрешения на запись голоса!</string>
+    <string name="mq_recorder_remaining_time">Вы можете говорить еще %1$s секунд</string>
+
+    <string name="mq_view_photo">Просмотр изображения</string>
+    <string name="mq_save_img_failure">Не удалось сохранить изображение. Попробовать еще раз?</string>
+    <string name="mq_save_img_success_folder">Изображение успешно сохранено в папке %s</string>
+
+    <string name="mq_send_msg">Отправить сообщение</string>
+
+    <string name="mq_leave_msg_hint">Введите ваше сообщение</string>
+    <string name="mq_all_image">Все изображения</string>
+
+    <string name="mq_param_not_allow_empty">%1$s не может быть пустым</string>
+    <string name="mq_take_picture">Сделать фото</string>
+    <string name="mq_submit">Отправить</string>
+    <string name="mq_toast_photo_picker_max">Максимальное количество изображений: %1$s</string>
+    <string name="mq_choose">Выбрать</string>
+    <string name="mq_hint_input">Ввод</string>
+    <string name="mq_auth_code">Код подтверждения</string>
+
+    <string name="mq_leave_msg">Оставить сообщение</string>
+    <string name="mq_submit_leave_msg_success">Сообщение успешно отправлено</string>
+
+    <string name="mq_email">Email</string>
+
+    <string name="mq_wechat">WeChat</string>
+
+    <string name="mq_qq">QQ</string>
+
+    <string name="mq_phone">Телефон</string>
+
+    <string name="mq_name">Имя</string>
+    <string name="mq_contact">Контакт</string>
+    <string name="mq_gender">Пол</string>
+    <string name="mq_age">Возраст</string>
+    <string name="mq_address">Адрес</string>
+    <string name="mq_weibo">Weibo</string>
+    <string name="mq_comment">Комментарий</string>
+    <string name="mq_invalid_content">Введите правильный формат</string>
+
+    <string name="mq_useless">Не решено</string>
+    <string name="mq_useful">Решено</string>
+    <string name="mq_already_feedback">Уже оставлено</string>
+    <string name="mq_redirect_human">Переключиться на оператора</string>
+    <string name="mq_no_agent_leave_msg_tip">Извините, в данный момент нет операторов онлайн. Вы можете оставить сообщение.</string>
+    <string name="mq_useless_redirect_tip">Извините, вы не довольны ответом робота. Вы можете попробовать переключиться на оператора.</string>
+    <string name="mq_manual_redirect_tip">Если вам нужна помощь оператора, вы можете переключиться на оператора.</string>
+
+    <string name="mq_leave_us_msg">Оставьте нам сообщение</string>
+    <string name="mq_number_waiting">Текущее количество ожидающих</string>
+    <string name="mq_not_wait_and_choose">Если не хотите ждать, вы можете выбрать</string>
+    <string name="mq_unknown_msg_tip">В настоящее время данное приложение не поддерживает этот тип сообщений. Пожалуйста, обновите ваше приложение до последней версии.</string>
+    <string name="mq_inquire_gender_choice">["Мужской","Женский"]</string>
+
+    <string name="mq_item_clue_card_input">Пожалуйста, введите %s</string>
+    <string name="mq_item_clue_card_select">Пожалуйста, выберите %s</string>
+    <string name="mq_recall_msg">Оператор отозвал сообщение</string>
+    <string name="mq_submit_success">Успешно отправлено</string>
+    <string name="mq_request_permission">Запрос разрешения</string>
+    <string name="mq_content_request_storage_permission">Для сохранения изображений необходимо разрешение на доступ к хранилищу</string>
+    <string name="mq_content_request_camera_and_storage_permission">Для отправки изображений и видео необходимо разрешение на доступ к хранилищу и камере</string>
+    <string name="mq_content_request_camera_permission">Для отправки изображений и видео с камеры необходимо разрешение на доступ к камере</string>
+    <string name="mq_content_request_record_permission">Для отправки голосовых сообщений необходимо разрешение на запись аудио</string>
+    <string name="mq_title_send_photo">Отправить изображение</string>
+    <string name="mq_content_send_photo">Для отправки изображений нам нужен доступ к вашей галерее</string>
+
+    <string name="mq_net_status_reconnect">Подключение к сети... Входящие сообщения могут быть утрачены</string>
+    <string name="mq_net_status_not_available">Подключение к сети отсутствует. Отправка сообщений невозможна</string>
+    <string name="mq_net_status_reconnect_title">Подключение</string>
+    <string name="mq_net_status_not_work_title">Нет соединения</string>
+    <string name="mq_sale_count">Продажи</string>
+    <string name="mq_view_details">Посмотреть детали</string>
+    <string name="mq_faq">Часто задаваемые вопросы</string>
+    <string name="mq_pre_page">Предыдущая страница</string>
+    <string name="mq_next_page">Следующая страница</string>
+</resources>

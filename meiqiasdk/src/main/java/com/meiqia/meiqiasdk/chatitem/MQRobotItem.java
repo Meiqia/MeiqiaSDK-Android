@@ -172,6 +172,7 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
 
     private void fillContentLl() {
         try {
+            rootLl.setVisibility(View.VISIBLE);
             if (RobotMessage.SUB_TYPE_UNKNOWN.equals(mRobotMessage.getSubType())) {
                 addNormalTextView(getResources().getString(R.string.mq_unknown_msg_tip));
                 return;
@@ -221,6 +222,7 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
     }
 
     private void fillRelatedContent(JSONArray contentJsonArray) {
+        boolean isShowContentLl = false;
         for (int i = 0; i < contentJsonArray.length(); i++) {
             JSONObject itemJsonObject = contentJsonArray.optJSONObject(i);
             String rich_text = itemJsonObject.optString("rich_text");
@@ -237,6 +239,7 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
                 mContentLl.addView(textView);
                 RichText richText = new RichText();
                 richText.fromHtml(text).setOnImageClickListener(this).into(textView);
+                isShowContentLl = true;
             } else {
                 // 添加具体相关问题
                 if (TextUtils.equals("related", itemJsonObject.optString("type"))) {
@@ -259,6 +262,7 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
         mContentLl.setVisibility(VISIBLE);
         mContainerLl.setVisibility(VISIBLE);
         mRelativeOrFAQContentLl.setVisibility(VISIBLE);
+        rootLl.setVisibility(isShowContentLl ? VISIBLE : GONE);
     }
 
 

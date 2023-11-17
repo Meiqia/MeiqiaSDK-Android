@@ -132,4 +132,7 @@
     <string name="mq_net_status_not_work_title">Not connected</string>
     <string name="mq_sale_count">Sales</string>
     <string name="mq_view_details">View details</string>
+    <string name="mq_faq">FAQ</string>
+    <string name="mq_pre_page">Previous</string>
+    <string name="mq_next_page">Next</string>
 </resources>

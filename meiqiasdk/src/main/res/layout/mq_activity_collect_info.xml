@@ -27,6 +27,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
+            <TextView
+                android:id="@+id/input_title"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@color/mq_item_normal"
+                android:gravity="center"
+                android:minHeight="56dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textColor="@color/mq_form_tip_textColor"
+                android:textSize="12sp"
+                tools:text="Can i help you?" />
+
             <LinearLayout
                 android:id="@+id/container_ll"
                 android:layout_width="match_parent"
