@@ -222,7 +222,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
     private boolean isPopStoragePermissionTipDialog = false;
     private boolean isPopCameraPermissionTipDialog = false;
-    private final boolean isPopVideoPermissionTipDialog = false;
     private boolean isPopRecordPermissionTipDialog = false;
 
     @Override
@@ -1530,6 +1529,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     return;
                 }
                 if (!checkCameraPermission()) {
+                    MQUtils.show(this, R.string.mq_camera_no_permission);
                     return;
                 }
             }
@@ -1695,7 +1695,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private boolean checkAudioPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
-            //申请WRITE_EXTERNAL_STORAGE权限
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
                     RECORD_AUDIO_REQUEST_CODE);
             return false;
@@ -2019,6 +2018,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 break;
             }
         }
+        isPopRecordPermissionTipDialog = false;
+        isPopCameraPermissionTipDialog = false;
+        isPopStoragePermissionTipDialog = false;
     }
 
     @Override
