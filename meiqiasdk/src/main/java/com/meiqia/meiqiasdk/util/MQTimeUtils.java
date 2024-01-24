@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -46,11 +47,13 @@ public class MQTimeUtils {
         for (int i = mcMessageList.size() - 1; i >= 0; i--) {
             // 不是第一条消息
             if (i != 0) {
-                long currentMsgTime = mcMessageList.get(i).getCreatedOn();
-                long previousMsgTime = mcMessageList.get(i - 1).getCreatedOn();
+                BaseMessage baseMessage = mcMessageList.get(i);
+                long currentMsgTime = baseMessage.getCreatedOn();
+                BaseMessage preMessage = mcMessageList.get(i - 1);
+                long previousMsgTime = preMessage.getCreatedOn();
                 long difTime = currentMsgTime - previousMsgTime;
                 // 如果时间前面是 BaseMessage.TYPE_TIME，不添加时间
-                if (difTime > TIME_INTERNAL_LIMIT && mcMessageList.get(i).getItemViewType() != BaseMessage.TYPE_TIME && mcMessageList.get(i).getItemViewType() != BaseMessage.TYPE_CONV_DIVIDER) {
+                if (difTime > TIME_INTERNAL_LIMIT && baseMessage.getItemViewType() != BaseMessage.TYPE_TIME && baseMessage.getItemViewType() != BaseMessage.TYPE_CONV_DIVIDER) {
                     // 添加TimeItem
                     BaseMessage timeItem = new BaseMessage();
                     timeItem.setItemViewType(BaseMessage.TYPE_TIME);
@@ -59,6 +62,25 @@ public class MQTimeUtils {
                     mcMessageList.add(i, timeItem);
                 }
             }
+        }
+        try {
+            // 清理重复的
+            ListIterator<BaseMessage> iterator = mcMessageList.listIterator(mcMessageList.size());
+            while (iterator.hasPrevious()) {
+                int currentIndex = iterator.previousIndex();
+                BaseMessage baseMessage = iterator.previous();
+
+                if (currentIndex != 0) {
+                    BaseMessage preMessage = mcMessageList.get(currentIndex - 1);
+                    if (baseMessage.getItemViewType() == BaseMessage.TYPE_TIME
+                            && (preMessage.getItemViewType() == BaseMessage.TYPE_TIME
+                            || preMessage.getItemViewType() == BaseMessage.TYPE_CONV_DIVIDER)) {
+                        iterator.remove();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

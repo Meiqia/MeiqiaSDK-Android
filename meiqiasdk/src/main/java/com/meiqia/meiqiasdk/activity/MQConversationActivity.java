@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -969,6 +970,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             public void onSuccess(final List<BaseMessage> messageList) {
                 // 根据设置，过滤语音消息
                 cleanVoiceMessage(messageList);
+                if (mController.getEnterpriseConfig().isHideConversationHistory) {
+                    keepCurrentConvMessageList(messageList);
+                }
                 //添加时间戳
                 MQTimeUtils.refreshMQTimeItem(messageList);
                 // 添加 ConDivider
@@ -1096,6 +1100,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
                     // 根据设置，过滤语音消息
                     cleanVoiceMessage(conversationMessageList);
+                    if (mController.getEnterpriseConfig().isHideConversationHistory) {
+                        keepCurrentConvMessageList(conversationMessageList);
+                    }
 
                     mChatMessageList.clear();
                     mChatMessageList.addAll(conversationMessageList);
@@ -1278,7 +1285,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             public void onSuccess(List<BaseMessage> messageList) {
                 // 根据设置，过滤语音消息
                 cleanVoiceMessage(messageList);
-
+                if (mController.getEnterpriseConfig().isHideConversationHistory) {
+                    keepCurrentConvMessageList(messageList);
+                }
                 mChatMessageList.addAll(messageList);
                 loadData();
             }
@@ -1287,6 +1296,24 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             public void onFailure(int code, String responseString) {
             }
         });
+    }
+
+    private void keepCurrentConvMessageList(List<BaseMessage> messageList) {
+        if (messageList.size() > 0 && !TextUtils.isEmpty(mConversationId)) {
+            try {
+                long convId = Long.parseLong(mConversationId);
+                // 只保留与当前对话 id 相同的消息
+                Iterator<BaseMessage> iterator = messageList.iterator();
+                while (iterator.hasNext()) {
+                    BaseMessage message = iterator.next();
+                    if (message.getConversationId() != convId) {
+                        iterator.remove();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private String getClientAvatarUrl() {
@@ -1853,12 +1880,21 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         Intent camera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File file = new File(MQUtils.getPicStorePath(this));
         file.mkdirs();
-        String path = MQUtils.getPicStorePath(this) + "/" + System.currentTimeMillis() + ".jpg";
+        String fileName = System.currentTimeMillis() + ".jpg";
+        String path = MQUtils.getPicStorePath(this) + "/" + fileName;
         File imageFile = new File(path);
         mCameraPicPath = path;
         Uri uri;
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures");
+                contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
+                contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+                ContentResolver resolver = getContentResolver();
+                Uri collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+                uri = resolver.insert(collection, contentValues);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 ContentValues contentValues = new ContentValues(1);
                 contentValues.put(MediaStore.Images.Media.DATA, imageFile.getAbsolutePath());
                 uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
