@@ -58,8 +58,8 @@
     <string name="mq_audio_status_want_cancel">松开手指，取消发送</string>
     <string name="mq_record_record_time_is_short">录音时间太短</string>
 
-    <string name="mq_download_audio_failure">下载录音失败!</string>
-    <string name="mq_recorder_no_permission">没有录音权限!</string>
+    <string name="mq_download_audio_failure">下载录音失败</string>
+    <string name="mq_recorder_no_permission">没有录音权限</string>
     <string name="mq_recorder_remaining_time">还可以说 %1$s 秒</string>
 
     <string name="mq_view_photo">查看图片</string>
