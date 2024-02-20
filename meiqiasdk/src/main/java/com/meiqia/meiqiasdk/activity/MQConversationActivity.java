@@ -309,6 +309,13 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         applyCustomUIConfig();
         refreshRedirectHumanBtn();
 
+        // 服务器配置优先
+        boolean isPhotoMsgOpen = mController.getEnterpriseConfig().isPhotoMsgOpen && MQConfig.isPhotoSendOpen;
+        boolean isCameraMsgOpen = mController.getEnterpriseConfig().isPhotoMsgOpen && MQConfig.isCameraImageSendOpen;
+        mPhotoSelectBtn.setVisibility(isPhotoMsgOpen ? View.VISIBLE : View.GONE);
+        mCameraSelectBtn.setVisibility(isCameraMsgOpen ? View.VISIBLE : View.GONE);
+        mVideoSelectBtn.setVisibility(mController.getEnterpriseConfig().isVideoMsgOpen ? View.VISIBLE : View.GONE);
+
         // 设置顾客上线，请求分配客服
         setClientOnline(false);
     }
@@ -535,11 +542,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mConversationListView.setAdapter(mChatMsgAdapter);
 
         mVoiceBtn.setVisibility(MQConfig.isVoiceSwitchOpen ? View.VISIBLE : View.GONE);
-        mPhotoSelectBtn.setVisibility(MQConfig.isPhotoSendOpen ? View.VISIBLE : View.GONE);
-        mCameraSelectBtn.setVisibility(MQConfig.isCameraImageSendOpen ? View.VISIBLE : View.GONE);
         mEmojiSelectBtn.setVisibility(MQConfig.isEmojiSendOpen ? View.VISIBLE : View.GONE);
         mEvaluateBtn.setVisibility(View.GONE); // 无论是否配置是否显示，这里都隐藏，然后在分配对话成功后，再根据配置是否显示
-        mVideoSelectBtn.setVisibility(mController.getEnterpriseConfig().isVideoMsgOpen ? View.VISIBLE : View.GONE);
 
         mCustomKeyboardLayout.init(this, mInputEt, this);
         isDestroy = false;
@@ -2283,8 +2287,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             if (System.currentTimeMillis() - mLastSendRobotMessageTime <= 1000) {
                 MQUtils.show(this, R.string.mq_send_robot_msg_time_limit_tip);
                 return false;
-            } else {
-                mLastSendRobotMessageTime = System.currentTimeMillis();
             }
         }
         return true;
@@ -2321,6 +2323,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 // 发送成功播放声音
                 if (MQConfig.isSoundSwitchOpen) {
                     mSoundPoolManager.playSound(R.raw.mq_send_message);
+                }
+                if (mCurrentAgent != null && mCurrentAgent.isRobot()) {
+                    mLastSendRobotMessageTime = System.currentTimeMillis();
                 }
             }
 
