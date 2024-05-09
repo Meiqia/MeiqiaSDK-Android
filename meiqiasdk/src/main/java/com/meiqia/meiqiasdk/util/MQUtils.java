@@ -314,6 +314,7 @@ public class MQUtils {
         baseMessage.setIsRead(message.is_read());
         baseMessage.setFromType(message.getFrom_type());
         baseMessage.setConvId(message.getConversation_id());
+        baseMessage.setWithdraw(message.isWithdraw());
         return baseMessage;
     }
 

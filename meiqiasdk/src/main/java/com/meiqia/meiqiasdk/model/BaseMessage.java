@@ -52,6 +52,7 @@ public class BaseMessage {
     private boolean isRead;
     private long conversationId;
     private String fromType = TYPE_FROM_AGENT;
+    private boolean isWithdraw;
 
     public BaseMessage() {
         this.createdOn = System.currentTimeMillis();
@@ -161,6 +162,18 @@ public class BaseMessage {
 
     public void setConvId(long convId) {
         this.convId = convId;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+    }
+
+    public boolean isWithdraw() {
+        return isWithdraw;
+    }
+
+    public void setWithdraw(boolean withdraw) {
+        isWithdraw = withdraw;
     }
 
     @Override
