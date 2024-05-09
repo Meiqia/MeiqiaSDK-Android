@@ -25,11 +25,13 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
+
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.core.graphics.drawable.DrawableCompat;
+
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -426,6 +428,17 @@ public class MQUtils {
         }
     }
 
+    public static void applyCustomUITextAndImageColor(int color, ImageView iconIv, TextView... textViews) {
+        if (iconIv != null) {
+            iconIv.setColorFilter(color);
+        }
+        if (textViews != null) {
+            for (TextView textView : textViews) {
+                textView.setTextColor(color);
+            }
+        }
+    }
+
     /**
      * 处理自定义标题文本对其方式
      *
@@ -462,6 +475,11 @@ public class MQUtils {
         }
     }
 
+    public static void applyCustomUITintDrawable(View view, int color) {
+        Drawable tintDrawable = tintDrawable(view.getBackground(), color);
+        setBackground(view, tintDrawable);
+    }
+
     public static Drawable tintDrawable(Context context, Drawable drawable, @ColorRes int color) {
         if (drawable == null) {
             return null;
@@ -469,6 +487,16 @@ public class MQUtils {
 
         final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
         DrawableCompat.setTint(wrappedDrawable, context.getResources().getColor(color));
+        return wrappedDrawable;
+    }
+
+    public static Drawable tintDrawable(Drawable drawable, int color) {
+        if (drawable == null) {
+            return null;
+        }
+
+        final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(wrappedDrawable, color);
         return wrappedDrawable;
     }
 

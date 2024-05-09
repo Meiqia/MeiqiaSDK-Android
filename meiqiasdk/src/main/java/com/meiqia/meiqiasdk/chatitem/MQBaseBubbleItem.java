@@ -2,6 +2,7 @@ package com.meiqia.meiqiasdk.chatitem;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.text.TextUtils;
 import android.view.View;
@@ -96,9 +97,17 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
      */
     private void configChatBubbleBg(View view, boolean isLeft) {
         if (isLeft) {
-            MQUtils.applyCustomUITintDrawable(view, R.color.mq_chat_left_bubble_final, R.color.mq_chat_left_bubble, MQConfig.ui.leftChatBubbleColorResId);
+            if (!TextUtils.isEmpty(MQConfig.ui.leftChatBubbleColor)) {
+                MQUtils.applyCustomUITintDrawable(view, Color.parseColor(MQConfig.ui.leftChatBubbleColor));
+            } else {
+                MQUtils.applyCustomUITintDrawable(view, R.color.mq_chat_left_bubble_final, R.color.mq_chat_left_bubble, MQConfig.ui.leftChatBubbleColorResId);
+            }
         } else {
-            MQUtils.applyCustomUITintDrawable(view, R.color.mq_chat_right_bubble_final, R.color.mq_chat_right_bubble, MQConfig.ui.rightChatBubbleColorResId);
+            if (!TextUtils.isEmpty(MQConfig.ui.rightChatBubbleColor)) {
+                MQUtils.applyCustomUITintDrawable(view, Color.parseColor(MQConfig.ui.rightChatBubbleColor));
+            } else {
+                MQUtils.applyCustomUITintDrawable(view, R.color.mq_chat_right_bubble_final, R.color.mq_chat_right_bubble, MQConfig.ui.rightChatBubbleColorResId);
+            }
         }
     }
 
@@ -107,9 +116,17 @@ public abstract class MQBaseBubbleItem extends MQBaseCustomCompositeView impleme
      */
     private void configChatBubbleTextColor(TextView textView, boolean isLeft) {
         if (isLeft) {
-            MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_left_textColor, MQConfig.ui.leftChatTextColorResId, null, textView);
+            if (!TextUtils.isEmpty(MQConfig.ui.leftChatTextColor)) {
+                MQUtils.applyCustomUITextAndImageColor(Color.parseColor(MQConfig.ui.leftChatTextColor), null, textView);
+            } else {
+                MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_left_textColor, MQConfig.ui.leftChatTextColorResId, null, textView);
+            }
         } else {
-            MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_right_textColor, MQConfig.ui.rightChatTextColorResId, null, textView);
+            if (!TextUtils.isEmpty(MQConfig.ui.rightChatTextColor)) {
+                MQUtils.applyCustomUITextAndImageColor(Color.parseColor(MQConfig.ui.rightChatTextColor), null, textView);
+            } else {
+                MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_right_textColor, MQConfig.ui.rightChatTextColorResId, null, textView);
+            }
         }
     }
 

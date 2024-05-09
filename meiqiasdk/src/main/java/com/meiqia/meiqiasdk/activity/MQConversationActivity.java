@@ -331,6 +331,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 如果配置了界面相关的 config，在这里应用
      */
     private void applyCustomUIConfig() {
+        if (!TextUtils.isEmpty(MQConfig.ui.backgroundColor)) {
+            findViewById(R.id.root_rl).setBackgroundColor(Color.parseColor(MQConfig.ui.backgroundColor));
+            mConversationListView.setBackgroundColor(Color.parseColor(MQConfig.ui.backgroundColor));
+        }
         if (MQConfig.ui.backNavIcon != null) {
             mBackIv.setImageBitmap(MQConfig.ui.backNavIcon);
         }
@@ -2882,6 +2886,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         public void removeQueue() {
             mHandler.removeMessages(WHAT_GET_CLIENT_POSITION_IN_QUEUE);
             removeRedirectQueueLeaveMsg();
+            setCurrentAgent(mController.getCurrentAgent());
             sendPreMessage();
         }
 
