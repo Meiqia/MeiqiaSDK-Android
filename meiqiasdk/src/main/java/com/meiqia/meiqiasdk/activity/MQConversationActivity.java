@@ -331,6 +331,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      * 如果配置了界面相关的 config，在这里应用
      */
     private void applyCustomUIConfig() {
+        if (!TextUtils.isEmpty(MQConfig.ui.backgroundColor)) {
+            findViewById(R.id.root_rl).setBackgroundColor(Color.parseColor(MQConfig.ui.backgroundColor));
+            mConversationListView.setBackgroundColor(Color.parseColor(MQConfig.ui.backgroundColor));
+        }
         if (MQConfig.ui.backNavIcon != null) {
             mBackIv.setImageBitmap(MQConfig.ui.backNavIcon);
         }
@@ -972,7 +976,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             @Override
             public void onSuccess(final List<BaseMessage> messageList) {
                 // 根据设置，过滤语音消息
-                cleanVoiceMessage(messageList);
+                cleanMessages(messageList);
                 if (mController.getEnterpriseConfig().isHideConversationHistory) {
                     keepCurrentConvMessageList(messageList);
                 }
@@ -1010,7 +1014,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             @Override
             public void onSuccess(final List<BaseMessage> messageList) {
                 // 根据设置，过滤语音消息
-                cleanVoiceMessage(messageList);
+                cleanMessages(messageList);
                 //添加时间戳
                 MQTimeUtils.refreshMQTimeItem(messageList);
                 mChatMsgAdapter.loadMoreMessage(cleanDupMessages(mChatMessageList, messageList));
@@ -1102,7 +1106,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     mMessageReceiver.setConversationId(conversationId);
 
                     // 根据设置，过滤语音消息
-                    cleanVoiceMessage(conversationMessageList);
+                    cleanMessages(conversationMessageList);
                     if (mController.getEnterpriseConfig().isHideConversationHistory) {
                         keepCurrentConvMessageList(conversationMessageList);
                     }
@@ -1287,7 +1291,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             @Override
             public void onSuccess(List<BaseMessage> messageList) {
                 // 根据设置，过滤语音消息
-                cleanVoiceMessage(messageList);
+                cleanMessages(messageList);
                 if (mController.getEnterpriseConfig().isHideConversationHistory) {
                     keepCurrentConvMessageList(messageList);
                 }
@@ -2473,12 +2477,14 @@ public class MQConversationActivity extends Activity implements View.OnClickList
      *
      * @param messageList 消息列表
      */
-    private void cleanVoiceMessage(List<BaseMessage> messageList) {
-        if (!MQConfig.isVoiceSwitchOpen && messageList.size() > 0) {
+    private void cleanMessages(List<BaseMessage> messageList) {
+        if (messageList.size() > 0) {
             Iterator<BaseMessage> baseMessageIterator = messageList.iterator();
             while (baseMessageIterator.hasNext()) {
                 BaseMessage baseMessage = baseMessageIterator.next();
-                if (BaseMessage.TYPE_CONTENT_VOICE.equals(baseMessage.getContentType())) {
+                if (!MQConfig.isVoiceSwitchOpen && BaseMessage.TYPE_CONTENT_VOICE.equals(baseMessage.getContentType())) {
+                    baseMessageIterator.remove();
+                } else if (baseMessage.isWithdraw()) {
                     baseMessageIterator.remove();
                 }
             }
@@ -2882,6 +2888,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         public void removeQueue() {
             mHandler.removeMessages(WHAT_GET_CLIENT_POSITION_IN_QUEUE);
             removeRedirectQueueLeaveMsg();
+            setCurrentAgent(mController.getCurrentAgent());
             sendPreMessage();
         }
 

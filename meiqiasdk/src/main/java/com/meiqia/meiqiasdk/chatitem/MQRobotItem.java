@@ -3,6 +3,7 @@ package com.meiqia.meiqiasdk.chatitem;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -94,8 +95,11 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
 
     @Override
     protected void processLogic() {
-        MQUtils.applyCustomUITintDrawable(mContainerLl, R.color.mq_chat_left_bubble_final, R.color.mq_chat_left_bubble, MQConfig.ui.leftChatBubbleColorResId);
-
+        if (!TextUtils.isEmpty(MQConfig.ui.leftChatBubbleColor)) {
+            MQUtils.applyCustomUITintDrawable(mContainerLl, Color.parseColor(MQConfig.ui.leftChatBubbleColor));
+        } else {
+            MQUtils.applyCustomUITintDrawable(mContainerLl, R.color.mq_chat_left_bubble_final, R.color.mq_chat_left_bubble, MQConfig.ui.leftChatBubbleColorResId);
+        }
         mPadding = getResources().getDimensionPixelSize(R.dimen.mq_size_level2);
         mTextSize = getResources().getDimensionPixelSize(R.dimen.mq_textSize_level2);
         mTextTipSize = getResources().getDimensionPixelSize(R.dimen.mq_textSize_level1);
@@ -235,7 +239,11 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
                 textView.setText(text);
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
                 textView.setTextColor(getResources().getColor(R.color.mq_chat_left_textColor));
-                MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_left_textColor, MQConfig.ui.leftChatTextColorResId, null, textView);
+                if (!TextUtils.isEmpty(MQConfig.ui.leftChatTextColor)) {
+                    MQUtils.applyCustomUITextAndImageColor(Color.parseColor(MQConfig.ui.leftChatTextColor), null, textView);
+                } else {
+                    MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_left_textColor, MQConfig.ui.leftChatTextColorResId, null, textView);
+                }
                 mContentLl.addView(textView);
                 RichText richText = new RichText();
                 richText.fromHtml(text).setOnImageClickListener(this).into(textView);
@@ -279,7 +287,11 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
                 textView.setText(text);
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
                 textView.setTextColor(getResources().getColor(R.color.mq_chat_left_textColor));
-                MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_left_textColor, MQConfig.ui.leftChatTextColorResId, null, textView);
+                if (!TextUtils.isEmpty(MQConfig.ui.leftChatTextColor)) {
+                    MQUtils.applyCustomUITextAndImageColor(Color.parseColor(MQConfig.ui.leftChatTextColor), null, textView);
+                } else {
+                    MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_left_textColor, MQConfig.ui.leftChatTextColorResId, null, textView);
+                }
                 mContentLl.addView(textView);
                 RichText richText = new RichText();
                 richText.fromHtml(text).setOnImageClickListener(this).into(textView);
@@ -386,7 +398,11 @@ public class MQRobotItem extends MQBaseCustomCompositeView implements RichText.O
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
             textView.setTextColor(getResources().getColor(R.color.mq_chat_left_textColor));
             textView.setPadding(mPadding, mPadding, mPadding, mPadding);
-            MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_left_textColor, MQConfig.ui.leftChatTextColorResId, null, textView);
+            if (!TextUtils.isEmpty(MQConfig.ui.leftChatTextColor)) {
+                MQUtils.applyCustomUITextAndImageColor(Color.parseColor(MQConfig.ui.leftChatTextColor), null, textView);
+            } else {
+                MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_left_textColor, MQConfig.ui.leftChatTextColorResId, null, textView);
+            }
             mContentLl.addView(textView);
             RichText richText = new RichText();
             richText.fromHtml(text).setOnImageClickListener(this).into(textView);

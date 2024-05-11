@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -416,7 +417,11 @@ public class MQClueCardItem extends MQBaseBubbleItem {
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTextSize);
             textView.setTextColor(getResources().getColor(R.color.mq_chat_left_textColor));
             textView.setPadding(mPadding, mPadding, mPadding, mPadding);
-            MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_left_textColor, MQConfig.ui.leftChatTextColorResId, null, textView);
+            if (!TextUtils.isEmpty(MQConfig.ui.leftChatTextColor)) {
+                MQUtils.applyCustomUITextAndImageColor(Color.parseColor(MQConfig.ui.leftChatTextColor), null, textView);
+            } else {
+                MQUtils.applyCustomUITextAndImageColor(R.color.mq_chat_left_textColor, MQConfig.ui.leftChatTextColorResId, null, textView);
+            }
             mContainerLl.addView(textView);
         }
     }
@@ -429,7 +434,11 @@ public class MQClueCardItem extends MQBaseBubbleItem {
 
     @Override
     protected void processLogic() {
-        MQUtils.applyCustomUITintDrawable(mContainerLl, R.color.mq_chat_left_bubble_final, R.color.mq_chat_left_bubble, MQConfig.ui.leftChatBubbleColorResId);
+        if (!TextUtils.isEmpty(MQConfig.ui.leftChatBubbleColor)) {
+            MQUtils.applyCustomUITintDrawable(mContainerLl, Color.parseColor(MQConfig.ui.leftChatBubbleColor));
+        } else {
+            MQUtils.applyCustomUITintDrawable(mContainerLl, R.color.mq_chat_left_bubble_final, R.color.mq_chat_left_bubble, MQConfig.ui.leftChatBubbleColorResId);
+        }
 
         mPadding = getResources().getDimensionPixelSize(R.dimen.mq_size_level2);
         mTextSize = getResources().getDimensionPixelSize(R.dimen.mq_textSize_level2);

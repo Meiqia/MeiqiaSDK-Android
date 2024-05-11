@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/MQMatchMatch"
+    android:id="@+id/root_rl"
     android:background="@color/mq_activity_bg"
     android:clickable="true">
 

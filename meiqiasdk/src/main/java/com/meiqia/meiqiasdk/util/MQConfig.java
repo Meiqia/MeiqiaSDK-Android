@@ -54,6 +54,11 @@ public final class MQConfig {
 
         public static String titleBackgroundColor = "";
         public static String titleTextColor = "";
+        public static String backgroundColor = "";
+        public static String leftChatBubbleColor = "";
+        public static String rightChatBubbleColor = "";
+        public static String leftChatTextColor = "";
+        public static String rightChatTextColor = "";
         public static boolean isShowTitle = true; // 是否显示 Title
 
         public static Bitmap backNavIcon = null; // 返回按钮图标
