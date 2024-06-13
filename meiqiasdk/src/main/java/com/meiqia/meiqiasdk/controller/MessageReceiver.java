@@ -82,7 +82,7 @@ public abstract class MessageReceiver extends BroadcastReceiver {
             }
         } else if (MQMessageManager.ACTION_INVITE_EVALUATION.equals(action)) {
             String conversationId = intent.getStringExtra("conversation_id");
-            if (conversationId.equals(mConversationId)) {
+            if (TextUtils.equals(conversationId, mConversationId)) {
                 inviteEvaluation();
             }
         } else if (MQMessageManager.ACTION_AGENT_STATUS_UPDATE_EVENT.equals(action)) {
@@ -135,11 +135,11 @@ public abstract class MessageReceiver extends BroadcastReceiver {
 
     public abstract void socketReconnect();
 
-    protected void noAgentStatus(){
+    protected void noAgentStatus() {
 
     }
 
-    protected void queueingState(){
+    protected void queueingState() {
 
     }
 }

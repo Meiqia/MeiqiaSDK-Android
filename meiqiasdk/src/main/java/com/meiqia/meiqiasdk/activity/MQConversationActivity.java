@@ -23,6 +23,7 @@ import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -57,6 +58,7 @@ import com.meiqia.core.MQScheduleRule;
 import com.meiqia.core.bean.MQAgent;
 import com.meiqia.core.bean.MQMessage;
 import com.meiqia.core.callback.OnClientPositionInQueueCallback;
+import com.meiqia.core.callback.OnGetActiveConvCallback;
 import com.meiqia.core.callback.OnGetMessageListCallback;
 import com.meiqia.core.callback.SuccessCallback;
 import com.meiqia.meiqiasdk.R;
@@ -251,6 +253,29 @@ public class MQConversationActivity extends Activity implements View.OnClickList
 
         MQConfig.getActivityLifecycleCallback().onActivityCreated(this, savedInstanceState);
 
+        MQManager.getInstance(getApplicationContext()).getActiveConv(new OnGetActiveConvCallback() {
+            @Override
+            public void onSuccess(boolean isConvActive, boolean queueing, int position) {
+                if (queueing) {
+                    getMessageDataFromDatabaseAndLoad(() -> changeToQueueingState());
+                } else {
+                    refreshConfig(isConvActive);
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+                refreshConfig(false);
+            }
+        });
+    }
+
+    private void refreshConfig(boolean isConvActive) {
+        // 已经分配了对话的情况下，不再显示询前表单
+        if (isConvActive) {
+            applyAfterRefreshConfig();
+            return;
+        }
         // 刷新配置，然后决定是否跳转到询前表单或者其它界面
         mController.refreshEnterpriseConfig(new SimpleCallback() {
             @Override
@@ -1176,7 +1201,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                             }
                             // 如果没有加载数据，则加载数据
                             if (!mHasLoadData) {
-                                getMessageDataFromDatabaseAndLoad();
+                                getMessageDataFromDatabaseAndLoad(null);
                             }
                             if (ErrorCode.NO_AGENT_ONLINE == code) {
                                 // 发送待发送的消息
@@ -1269,12 +1294,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 MQManager.getInstance(MQConversationActivity.this).getUnreadMessages(new OnGetMessageListCallback() {
                     @Override
                     public void onSuccess(List<MQMessage> messageList) {
-                        getMessageDataFromDatabaseAndLoad();
+                        getMessageDataFromDatabaseAndLoad(null);
                     }
 
                     @Override
                     public void onFailure(int code, String message) {
-                        getMessageDataFromDatabaseAndLoad();
+                        getMessageDataFromDatabaseAndLoad(null);
                     }
                 });
             }
@@ -1284,7 +1309,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     /**
      * 从数据库获取消息并加载
      */
-    private void getMessageDataFromDatabaseAndLoad() {
+    private void getMessageDataFromDatabaseAndLoad(@Nullable OnFinishCallback onFinishCallback) {
         // 从数据库获取数据
         mController.getMessagesFromDatabase(System.currentTimeMillis(), MESSAGE_PAGE_COUNT, new OnGetMessageListCallBack() {
 
@@ -1297,10 +1322,16 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 }
                 mChatMessageList.addAll(messageList);
                 loadData();
+                if (onFinishCallback != null) {
+                    onFinishCallback.onFinish();
+                }
             }
 
             @Override
             public void onFailure(int code, String responseString) {
+                if (onFinishCallback != null) {
+                    onFinishCallback.onFinish();
+                }
             }
         });
     }
@@ -2339,8 +2370,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     addBlacklistTip(R.string.mq_blacklist_tips);
                 } else if (code == ErrorCode.QUEUEING) {
                     changeToQueueingState();
-                }
-                if (code == ErrorCode.NO_AGENT_ONLINE) {
+                } else if (code == ErrorCode.NO_AGENT_ONLINE) {
                     // 关闭留言功能的情况下，直接跳转到留言界面：如果当前客服是机器人就例外
                     if (isEnableGoToMessageFormActivity()) {
                         Intent intent = new Intent(MQConversationActivity.this, MQMessageFormActivity.class);
@@ -2350,6 +2380,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                     } else {
                         addLeaveMessageTip();
                     }
+                } else {
+                    Toast.makeText(MQConversationActivity.this, "code = " + code + "\n" + "message = " + message, Toast.LENGTH_SHORT).show();
                 }
                 mChatMsgAdapter.notifyDataSetChanged();
             }
@@ -2895,6 +2927,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         @Override
         public void queueingInitConv(long convId) {
             mConversationId = String.valueOf(convId);
+            mMessageReceiver.setConversationId(mConversationId);
             removeQueue();
             setCurrentAgent(mController.getCurrentAgent());
             sendDelayMessages();
