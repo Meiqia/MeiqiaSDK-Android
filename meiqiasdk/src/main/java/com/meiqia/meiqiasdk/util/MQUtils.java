@@ -10,6 +10,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -80,6 +81,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1473,6 +1475,71 @@ public class MQUtils {
     public static void copyIntentExtra(Intent preIntent, Intent toIntent) {
         if (preIntent != null) {
             toIntent.putExtras(preIntent);
+        }
+    }
+
+    public static void updateLanguage(Context context) {
+        if (!TextUtils.isEmpty(MQConfig.language) && context != null) {
+            String language = MQConfig.language;
+            // fix
+            if (TextUtils.equals(language, "zh-Hans")) {
+                language = "zh";
+            } else if (TextUtils.equals(language, "zh-Hant")) {
+                language = "tw";
+            }
+            Resources resources = context.getResources();
+            Configuration configuration = resources.getConfiguration();
+            DisplayMetrics displayMetrics = resources.getDisplayMetrics();
+            Locale locale;
+            switch (language) {
+                case "en":
+                    locale = Locale.ENGLISH;
+                    break;
+                case "zh":
+                    locale = Locale.SIMPLIFIED_CHINESE;
+                    break;
+                case "tw":
+                    locale = Locale.TRADITIONAL_CHINESE;
+                    break;
+                case "es":
+                    locale = new Locale("es");
+                    break;
+                case "in":
+                    locale = new Locale("in"); // Indonesian
+                    break;
+                case "id":
+                    locale = new Locale("id"); // Indonesian
+                    break;
+                case "ja":
+                    locale = Locale.JAPANESE;
+                    break;
+                case "ko":
+                    locale = Locale.KOREAN;
+                    break;
+                case "ms":
+                    locale = new Locale("ms"); // Malay
+                    break;
+                case "pt":
+                    locale = new Locale("pt"); // Portuguese
+                    break;
+                case "ru":
+                    locale = new Locale("ru"); // Russian
+                    break;
+                case "th":
+                    locale = new Locale("th"); // Thai
+                    break;
+                case "hi":
+                    locale = new Locale("hi"); // Hindi
+                    break;
+                case "vi":
+                    locale = new Locale("vi"); // Vietnamese
+                    break;
+                default:
+                    locale = Locale.getDefault();
+                    break;
+            }
+            configuration.setLocale(locale);
+            resources.updateConfiguration(configuration, displayMetrics);
         }
     }
 

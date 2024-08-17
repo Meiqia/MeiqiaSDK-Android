@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.util.MQUtils;
 
 public class MQConfirmDialog extends Dialog {
 
@@ -19,6 +20,7 @@ public class MQConfirmDialog extends Dialog {
 
     public MQConfirmDialog(@NonNull Context context, String title, String content, @Nullable final View.OnClickListener onPositiveClickListener, @Nullable final View.OnClickListener onNegativeClickListener) {
         super(context, R.style.MQDialog);
+        MQUtils.updateLanguage(context);
         setCanceledOnTouchOutside(false);
         setContentView(R.layout.mq_dialog_confirm);
 

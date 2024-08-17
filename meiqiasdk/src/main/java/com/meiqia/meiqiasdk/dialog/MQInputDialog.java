@@ -20,6 +20,7 @@ public class MQInputDialog extends Dialog {
 
     public MQInputDialog(@NonNull Context context, String title, String input, String hint, int inputType, final OnContentChangeListener onContentChangeListener) {
         super(context, R.style.MQDialog);
+        MQUtils.updateLanguage(context);
         setCanceledOnTouchOutside(true);
         setContentView(R.layout.mq_dialog_input);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);

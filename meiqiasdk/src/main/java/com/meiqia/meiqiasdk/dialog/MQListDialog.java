@@ -11,6 +11,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.util.MQUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ public class MQListDialog extends Dialog {
 
     public MQListDialog(Activity activity, String title, List<Map<String, String>> dataList, final AdapterView.OnItemClickListener onItemClickListener, boolean isCancelable) {
         super(activity, R.style.MQDialog);
+        MQUtils.updateLanguage(activity);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         setContentView(R.layout.mq_dialog_ticket_categry);
         mTitleTv = findViewById(R.id.tv_comfirm_title);

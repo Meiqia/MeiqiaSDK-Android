@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 
 import com.meiqia.meiqiasdk.R;
+import com.meiqia.meiqiasdk.util.MQUtils;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com
@@ -14,6 +15,7 @@ public class MQLoadingDialog extends Dialog {
 
     public MQLoadingDialog(Activity activity) {
         super(activity, R.style.MQDialog);
+        MQUtils.updateLanguage(activity);
         setContentView(R.layout.mq_dialog_loading);
     }
 }
