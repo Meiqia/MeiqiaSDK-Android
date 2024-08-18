@@ -89,6 +89,7 @@ public final class MQConfig {
     public static boolean isEmojiSendOpen = true; // 是否显示发送 Emoji 表情消息按钮
 
     public static boolean isCloseSocketAfterDestroy = false; // 是否在退出客服界面时关闭 socket 长连接
+    public static String language;
 
     private static MQActivityLifecycleCallback sActivityLifecycleCallback;
     private static OnLinkClickCallback sOnLinkClickCallback;
@@ -134,6 +135,10 @@ public final class MQConfig {
 
     public static OnLinkClickCallback getOnLinkClickCallback() {
         return MQConfig.sOnLinkClickCallback;
+    }
+
+    public static void setLanguage(String language) {
+        MQConfig.language = language;
     }
 
     @Deprecated

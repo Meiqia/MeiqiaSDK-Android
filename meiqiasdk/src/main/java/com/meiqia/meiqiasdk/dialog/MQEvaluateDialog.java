@@ -25,6 +25,7 @@ public class MQEvaluateDialog extends Dialog implements View.OnClickListener {
 
     public MQEvaluateDialog(Activity activity, String tip) {
         super(activity, R.style.MQDialog);
+        MQUtils.updateLanguage(activity);
         setContentView(R.layout.mq_dialog_evaluate);
         getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 

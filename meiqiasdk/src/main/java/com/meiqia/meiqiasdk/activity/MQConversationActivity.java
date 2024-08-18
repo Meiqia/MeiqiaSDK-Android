@@ -229,6 +229,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MQUtils.updateLanguage(this);
         mController = MQConfig.getController(this);
         mController.onConversationOpen();
         if (savedInstanceState != null) {

@@ -97,6 +97,7 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MQUtils.updateLanguage(this);
         initView();
         initListener();
         processLogic(savedInstanceState);

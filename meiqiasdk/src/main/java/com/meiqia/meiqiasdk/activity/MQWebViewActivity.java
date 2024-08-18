@@ -44,6 +44,7 @@ public class MQWebViewActivity extends Activity implements View.OnClickListener 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MQUtils.updateLanguage(this);
         setContentView(R.layout.mq_activity_webview);
 
         findViews();

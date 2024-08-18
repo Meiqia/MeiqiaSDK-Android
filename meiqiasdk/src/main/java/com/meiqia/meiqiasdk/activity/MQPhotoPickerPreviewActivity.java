@@ -108,6 +108,7 @@ public class MQPhotoPickerPreviewActivity extends Activity implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MQUtils.updateLanguage(this);
         initView();
         initListener();
         processLogic(savedInstanceState);
