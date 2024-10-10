@@ -215,6 +215,7 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
             mContainerLl.addView(textView);
             RichText richText = new RichText();
             richText.fromHtml(text).setOnImageClickListener(this).into(textView);
+            textView.setTag("isRichText");
 
             // 添加操作按钮
             if (!TextUtils.isEmpty(mHybridMessage.getExtra())) {

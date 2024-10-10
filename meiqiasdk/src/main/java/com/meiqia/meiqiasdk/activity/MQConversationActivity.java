@@ -31,6 +31,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.ViewPropertyAnimatorListenerAdapter;
 
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.TypedValue;
@@ -647,8 +648,24 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mConversationListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                Object isRichText = arg1.getTag();
                 String content = mChatMessageList.get(arg2).getContent();
                 if (!TextUtils.isEmpty(content)) {
+                    // 如果是富文本，需要移除标签后再复制
+                    if (isRichText != null) {
+                        try {
+                            JSONArray contentArray = new JSONArray(content);
+                            JSONObject contentObj = contentArray.getJSONObject(0);
+                            content = contentObj.getString("body");
+                        } catch (Exception e) {
+                            // ignore
+                        }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            content = Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY).toString().trim();
+                        } else {
+                            content = Html.fromHtml(content).toString().trim();
+                        }
+                    }
                     MQUtils.clip(MQConversationActivity.this, content);
                     MQUtils.show(MQConversationActivity.this, R.string.mq_copy_success);
                     return true;
@@ -1117,6 +1134,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             String surveyMsg = "";
             if (getIntent() != null) {
                 surveyMsg = getIntent().getStringExtra(SURVEY_MSG);
+                getIntent().putExtra(SURVEY_MSG,"");
             }
             MQManager.getInstance(this).setSurveyMsg(surveyMsg);
             // 上线

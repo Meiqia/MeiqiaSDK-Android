@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+
 import androidx.core.view.ViewCompat;
 import androidx.core.view.ViewPropertyAnimatorListenerAdapter;
+
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Spannable;
@@ -32,6 +34,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
+import com.meiqia.core.MQScheduleRule;
 import com.meiqia.core.bean.MQInquireForm;
 import com.meiqia.core.callback.SimpleCallback;
 import com.meiqia.meiqiasdk.R;
@@ -60,6 +63,7 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
 
     public static final String GROUP_ID = "group_id";
     public static final String AGENT_ID = "agent_id";
+    public static final String FALLBACK = "fallback";
 
     private static final String TYPE_TEXT = "text";
     private static final String TYPE_SINGLE_CHOICE = "single_choice";
@@ -336,9 +340,11 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
         Intent intent = new Intent(this, MQConversationActivity.class);
         String agentId = null;
         String groupId = null;
+        int fallback = MQScheduleRule.REDIRECT_ENTERPRISE.getValue();
         if (getIntent() != null) {
             agentId = getIntent().getStringExtra(AGENT_ID);
             groupId = getIntent().getStringExtra(GROUP_ID);
+            fallback = getIntent().getIntExtra(FALLBACK, MQScheduleRule.REDIRECT_ENTERPRISE.getValue());
             intent.putExtras(getIntent());
         }
         MQUtils.copyIntentExtra(getIntent(), intent);
@@ -347,6 +353,7 @@ public class MQCollectInfoActivity extends MQBaseActivity implements View.OnClic
         if (!TextUtils.isEmpty(agentId) || !TextUtils.isEmpty(groupId)) {
             MQManager.getInstance(this).setScheduledAgentOrGroupWithId(agentId, groupId);
         }
+        MQManager.getInstance(this).setScheduleRule(MQScheduleRule.fromValue(fallback));
         startActivity(intent);
         onBackPressed();
     }
