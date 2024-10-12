@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.meiqia.core.MQManager;
+import com.meiqia.core.MQScheduleRule;
 import com.meiqia.core.bean.MQInquireForm;
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.util.MQUtils;
@@ -80,7 +81,8 @@ public class MQInquiryFormActivity extends MQBaseActivity implements RichText.On
                     String target_kind = assignment.optString(MQInquireForm.KEY_MENUS_ASSIGNMENTS_TARGET_KIND);
                     String target = assignment.optString(MQInquireForm.KEY_MENUS_ASSIGNMENTS_TARGET);
                     String description = assignment.optString(MQInquireForm.KEY_MENUS_ASSIGNMENTS_DESCRIPTION);
-                    FormItem item = new FormItem(this, target_kind, target);
+                    int fallback = assignment.optInt(MQInquireForm.KEY_MENUS_ASSIGNMENTS_FALLBACK, 3);
+                    FormItem item = new FormItem(this, target_kind, target, fallback);
                     item.setContent(description);
                     mContainer.addView(item.getItem());
                 }
@@ -103,10 +105,12 @@ public class MQInquiryFormActivity extends MQBaseActivity implements RichText.On
         private final TextView contentTb;
         private final String target_kind;
         private final String target;
+        private final int fallback;
 
-        public FormItem(Context context, String target_kind, String target) {
+        public FormItem(Context context, String target_kind, String target, int fallback) {
             this.target_kind = target_kind;
             this.target = target;
+            this.fallback = fallback;
             rootView = LayoutInflater.from(context).inflate(R.layout.mq_item_form_inquiry, null);
             contentTb = rootView.findViewById(R.id.content_tv);
             rootView.setOnClickListener(this);
@@ -155,8 +159,8 @@ public class MQInquiryFormActivity extends MQBaseActivity implements RichText.On
                 if (!TextUtils.isEmpty(agentId)) {
                     collectionIntent.putExtra(MQCollectInfoActivity.AGENT_ID, agentId);
                 }
+                collectionIntent.putExtra(MQCollectInfoActivity.FALLBACK, fallback);
                 MQUtils.copyIntentExtra(getIntent(), collectionIntent);
-                collectionIntent.putExtra(MQConversationActivity.PRE_SEND_TEXT, getContent());
                 collectionIntent.putExtra(MQConversationActivity.SURVEY_MSG, getContent());
                 collectionIntent.putExtra(MQConversationActivity.BOOL_IGNORE_CHECK_OTHER_ACTIVITY, true);
                 startActivity(collectionIntent);
@@ -168,13 +172,13 @@ public class MQInquiryFormActivity extends MQBaseActivity implements RichText.On
                     chatIntent.putExtras(getIntent());
                 }
                 MQUtils.copyIntentExtra(getIntent(), chatIntent);
-                chatIntent.putExtra(MQConversationActivity.PRE_SEND_TEXT, getContent());
                 chatIntent.putExtra(MQConversationActivity.SURVEY_MSG, getContent());
                 chatIntent.putExtra(MQConversationActivity.BOOL_IGNORE_CHECK_OTHER_ACTIVITY, true);
                 // 不为空才设置,不设置表示用开发者之前定义的
                 if (!TextUtils.isEmpty(agentId) || !TextUtils.isEmpty(groupId)) {
                     MQManager.getInstance(MQInquiryFormActivity.this).setScheduledAgentOrGroupWithId(agentId, groupId);
                 }
+                MQManager.getInstance(MQInquiryFormActivity.this).setScheduleRule(MQScheduleRule.fromValue(fallback));
                 startActivity(chatIntent);
             }
             onBackPressed();
