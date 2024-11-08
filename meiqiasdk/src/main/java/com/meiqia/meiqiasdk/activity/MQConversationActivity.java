@@ -1134,7 +1134,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             String surveyMsg = "";
             if (getIntent() != null) {
                 surveyMsg = getIntent().getStringExtra(SURVEY_MSG);
-                getIntent().putExtra(SURVEY_MSG,"");
+                getIntent().putExtra(SURVEY_MSG, "");
             }
             MQManager.getInstance(this).setSurveyMsg(surveyMsg);
             // 上线
@@ -1655,6 +1655,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                         addRedirectQueueLeaveMsg(position);
                         sendGetClientPositionInQueueMsg();
                     } else {
+                        MQManager.getInstance(MQConversationActivity.this).resetCurrentAgent();
                         setClientOnline(true);
                     }
                 }

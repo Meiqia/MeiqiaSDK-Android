@@ -11,7 +11,7 @@
 ### AndroidStudio  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.meiqia/androidx/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.meiqia/androidx)
 
 ```
-implementation 'com.meiqia:androidx:4.0.17'
+implementation 'com.meiqia:androidx:4.0.18'
 implementation 'com.github.bumptech.glide:glide:4.9.0'
 annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 ```

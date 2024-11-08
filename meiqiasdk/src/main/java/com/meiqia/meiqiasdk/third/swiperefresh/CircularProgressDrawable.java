@@ -120,7 +120,7 @@ public class CircularProgressDrawable extends Drawable implements Animatable {
      * @param context application context
      */
     public CircularProgressDrawable(@NonNull Context context) {
-        mResources = Preconditions.checkNotNull(context).getResources();
+        mResources = context.getResources();
 
         mRing = new Ring();
         mRing.setColors(COLORS);
