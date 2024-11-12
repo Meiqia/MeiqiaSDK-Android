@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 
 android {
+    namespace 'com.meiqia.meiqiasdk'
+
     compileSdk 34
 
     defaultConfig {
