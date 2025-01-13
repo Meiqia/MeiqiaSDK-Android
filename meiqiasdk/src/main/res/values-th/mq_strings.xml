@@ -132,4 +132,5 @@
     <string name="mq_faq">คำถามที่พบบ่อย</string>
     <string name="mq_pre_page">หน้าก่อนหน้า</string>
     <string name="mq_next_page">หน้าถัดไป</string>
+    <string name="mq_content_request_storage_permission_below_10">เราจำเป็นต้องขออนุญาตจัดเก็บเพื่อ [ส่ง] และ [บันทึก] รูปภาพและวิดีโอ</string>
 </resources>

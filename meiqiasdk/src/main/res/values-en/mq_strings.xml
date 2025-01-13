@@ -135,4 +135,5 @@
     <string name="mq_faq">FAQ</string>
     <string name="mq_pre_page">Previous</string>
     <string name="mq_next_page">Next</string>
+    <string name="mq_content_request_storage_permission_below_10">We need to request storage permissions to [send] and [save] pictures and videos.</string>
 </resources>

@@ -134,4 +134,5 @@
     <string name="mq_faq">Preguntas frecuentes</string>
     <string name="mq_pre_page">Página anterior</string>
     <string name="mq_next_page">Página siguiente</string>
+    <string name="mq_content_request_storage_permission_below_10">Precisamos solicitar permissões de armazenamento para [enviar] e [salvar] imagens e vídeos.</string>
 </resources>

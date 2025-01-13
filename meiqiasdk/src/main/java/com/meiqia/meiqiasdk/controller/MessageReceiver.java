@@ -19,6 +19,27 @@ public abstract class MessageReceiver extends BroadcastReceiver {
         mConversationId = conversationId;
     }
 
+     // 可以创建通知的消息
+//    private boolean isValidMessage(MQMessage mqMessage, boolean isContainsRobotMessage) {
+//        if (mqMessage == null) {
+//            return false;
+//        }
+//        boolean isValid = false;
+//        if (!TextUtils.isEmpty(mqMessage.getContent())
+//                && TextUtils.equals(mqMessage.getFrom_type(), MQMessage.TYPE_FROM_AGENT)
+//                && TextUtils.equals(mqMessage.getContent_type(), MQMessage.TYPE_CONTENT_TEXT)
+//        ) {
+//            return true;
+//        }
+//        if (isContainsRobotMessage
+//                && TextUtils.equals(mqMessage.getFrom_type(), MQMessage.TYPE_FROM_ROBOT)
+//                && TextUtils.equals(mqMessage.getSub_type(), MQMessage.SUB_TYPE_MESSAGE)
+//        ) {
+//            return true;
+//        }
+//        return isValid;
+//    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
@@ -33,6 +54,7 @@ public abstract class MessageReceiver extends BroadcastReceiver {
             // 从 MCMessageManager 获取消息对象
             MQMessage message = messageManager.getMQMessage(msgId);
             if (message != null) {
+//                boolean isValidMessage = isValidMessage(message, true);
                 //处理消息，并发送广播
                 baseMessage = MQUtils.parseMQMessageToBaseMessage(message);
                 if (baseMessage != null) {
