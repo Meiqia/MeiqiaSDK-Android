@@ -119,6 +119,7 @@
     <string name="mq_submit_success">提交成功</string>
     <string name="mq_request_permission">权限申请</string>
     <string name="mq_content_request_storage_permission">保存图片需要申请存储空间权限</string>
+    <string name="mq_content_request_storage_permission_below_10">我们需要申请存储空间权限来【发送】和【保存】图片和视频</string>
     <string name="mq_content_request_camera_and_storage_permission">发送图片和发送视频功能需要申请存储空间权限和相机权限</string>
     <string name="mq_content_request_camera_permission">从相机发送图片和视频功能需要申请相机权限</string>
     <string name="mq_content_request_record_permission">发送语音功能需要申请录音权限</string>

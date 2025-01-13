@@ -134,5 +134,5 @@
     <string name="mq_faq">Pertanyaan Umum</string>
     <string name="mq_pre_page">Halaman Sebelumnya</string>
     <string name="mq_next_page">Halaman Berikutnya</string>
-
+    <string name="mq_content_request_storage_permission_below_10">Kami perlu meminta izin penyimpanan untuk [mengirim] dan [menyimpan] gambar dan video.</string>
 </resources>

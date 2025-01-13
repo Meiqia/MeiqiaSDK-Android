@@ -80,7 +80,6 @@ public class MQHybridItem extends MQBaseCustomCompositeView implements RichText.
     @Override
     protected void initView() {
         mAvatarIv = getViewById(R.id.iv_robot_avatar);
-        mContainerLl = getViewById(R.id.ll_robot_container);
         mOperationLl = getViewById(R.id.ll_operation);
         mContainerLl = getViewById(R.id.ll_robot_container);
         mRootLl = getViewById(R.id.root_ll);

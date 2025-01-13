@@ -108,6 +108,25 @@ public class MQUtils {
         sHandler.postDelayed(task, delayMillis);
     }
 
+    public static boolean isProductCardMessage(BaseMessage baseMessage) {
+        boolean isProductCardMessage = false;
+        if (baseMessage instanceof HybridMessage) {
+            try {
+                JSONArray contentArray = new JSONArray(baseMessage.getContent());
+                for (int i = 0; i < contentArray.length(); i++) {
+                    JSONObject item = contentArray.getJSONObject(i);
+                    String type = item.getString("type");
+                    if (type.equals("product_card")) {
+                        isProductCardMessage = true;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return isProductCardMessage;
+    }
+
     public static BaseMessage parseMQMessageIntoBaseMessage(MQMessage message, BaseMessage baseMessage) {
         baseMessage.setStatus(message.getStatus());
         baseMessage.setItemViewType(getItemType(message));

@@ -134,5 +134,5 @@
     <string name="mq_faq">常見問題</string>
     <string name="mq_pre_page">上一頁</string>
     <string name="mq_next_page">下一頁</string>
-
+    <string name="mq_content_request_storage_permission_below_10">我們需要申請儲存空間權限來【發送】和【保存】圖片和影片。</string>
 </resources>

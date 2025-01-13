@@ -117,4 +117,5 @@
     <string name="mq_faq">सामान्य प्रश्न</string>
     <string name="mq_pre_page">पिछला पृष्ठ</string>
     <string name="mq_next_page">अगला पृष्ठ</string>
+    <string name="mq_content_request_storage_permission_below_10">हमें [भेजने] और [सहेजने] के लिए स्टोरेज अनुमति का अनुरोध करना होगा।</string>
 </resources>

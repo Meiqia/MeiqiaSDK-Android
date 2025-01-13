@@ -134,4 +134,5 @@
     <string name="mq_faq">자주 묻는 질문</string>
     <string name="mq_pre_page">이전 페이지</string>
     <string name="mq_next_page">다음 페이지</string>
+    <string name="mq_content_request_storage_permission_below_10">사진과 동영상을 [보내기] 및 [저장하기] 위해 저장소 권한을 요청해야 합니다.</string>
 </resources>

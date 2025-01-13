@@ -134,5 +134,5 @@
     <string name="mq_faq">Soalan Lazim</string>
     <string name="mq_pre_page">Halaman Sebelum</string>
     <string name="mq_next_page">Halaman Seterusnya</string>
-
+    <string name="mq_content_request_storage_permission_below_10">Kami perlu meminta kebenaran storan untuk [menghantar] dan [menyimpan] gambar dan video.</string>
 </resources>

@@ -134,4 +134,5 @@
     <string name="mq_faq">Часто задаваемые вопросы</string>
     <string name="mq_pre_page">Предыдущая страница</string>
     <string name="mq_next_page">Следующая страница</string>
+    <string name="mq_content_request_storage_permission_below_10">Нам нужно запросить разрешение на хранение, чтобы [отправлять] и [сохранять] изображения и видео.</string>
 </resources>

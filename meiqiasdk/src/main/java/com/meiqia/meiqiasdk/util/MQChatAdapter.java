@@ -159,6 +159,10 @@ public class MQChatAdapter extends BaseAdapter implements MQBaseBubbleItem.Callb
         } else if (getItemViewType(position) == BaseMessage.TYPE_ROBOT) {
             ((MQRobotItem) convertView).setMessage((RobotMessage) mcMessage, mConversationActivity);
         } else if (getItemViewType(position) == BaseMessage.TYPE_HYBRID) {
+            // 商品卡片不复用
+            if (MQUtils.isProductCardMessage(mcMessage)) {
+                convertView = new MQHybridItem(mConversationActivity, mConversationActivity);
+            }
             ((MQHybridItem) convertView).setMessage((HybridMessage) mcMessage, mConversationActivity);
         } else if (getItemViewType(position) == BaseMessage.TYPE_INITIATIVE_REDIRECT_TIP) {
             ((MQInitiativeRedirectItem) convertView).setMessage((InitiativeRedirectMessage) mcMessage, mConversationActivity);
