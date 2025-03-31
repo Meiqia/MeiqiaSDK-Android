@@ -32,11 +32,8 @@ public class MainActivity extends Activity {
      * @param v
      */
     public void conversation(View v) {
-        // 不兼容Android6.0动态权限
-//        conversation();
-
-        // 兼容Android6.0动态权限
-        conversationWrapper();
+        Intent intent = new MQIntentBuilder(this).build();
+        startActivity(intent);
     }
 
     /**
@@ -55,37 +52,6 @@ public class MainActivity extends Activity {
      */
     public void customizedConversation(View view) {
         Intent intent = new MQIntentBuilder(this, CustomizedMQConversationActivity.class).build();
-        startActivity(intent);
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case WRITE_EXTERNAL_STORAGE_REQUEST_CODE: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    conversationWrapper();
-                } else {
-                    MQUtils.show(this, com.meiqia.meiqiasdk.R.string.mq_sdcard_no_permission);
-                }
-                break;
-            }
-        }
-
-    }
-
-    private void conversationWrapper() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    WRITE_EXTERNAL_STORAGE_REQUEST_CODE);
-        } else {
-            conversation();
-        }
-    }
-
-    private void conversation() {
-        Intent intent = new MQIntentBuilder(this).build();
         startActivity(intent);
     }
 

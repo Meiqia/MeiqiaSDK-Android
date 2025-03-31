@@ -11,7 +11,7 @@
 ### AndroidStudio  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.meiqia/androidx/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.meiqia/androidx)
 
 ```
-implementation 'com.meiqia:androidx:4.0.20'
+implementation 'com.meiqia:androidx:4.1.1'
 implementation 'com.github.bumptech.glide:glide:4.9.0'
 annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 ```
@@ -59,11 +59,6 @@ startActivity(intent);
 ``` java
 startActivity(new Intent(this, MQMessageFormActivity.class));
 ```
-
-### 4.Android M 权限处理
-
-如果你的 App 需要兼容 Android M，需要处理权限问题。 [参考 Demo][8]
-
 
 ## 常见使用场景
 
@@ -191,4 +186,3 @@ MQNotificationMessageConfig.getInstance().setOnNotificationMessageOnClickListene
 [查看详情][1]
 
  [1]: http://meiqia.com/docs/meiqia-android-sdk/
- [8]: https://github.com/Meiqia/MeiqiaSDK-Android/blob/master/demo%2Fsrc%2Fmain%2Fjava%2Fcom%2Fmeiqia%2Fmeiqiasdk%2Fdemo%2FMainActivity.java
