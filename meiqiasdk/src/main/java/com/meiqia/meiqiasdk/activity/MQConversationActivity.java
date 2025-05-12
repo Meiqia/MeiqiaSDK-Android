@@ -213,7 +213,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private Runnable mAutoDismissTopTipRunnable;
     private View mNetStatusTopView;
     private String currentNetStatus = "connect";
-    private View mRequestStoragePermTopView;
+    private View mRequestPermTopView;
 
     // 上一次发送机器人消息的时间戳
     private long mLastSendRobotMessageTime;
@@ -224,8 +224,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private boolean isRequestOnlineLoading = false;
     private final List<BaseMessage> delaySendList = new ArrayList<>();
 
-    private boolean isPopStoragePermissionTipDialog = false;
-    private boolean isPopCameraPermissionTipDialog = false;
     private boolean isPopRecordPermissionTipDialog = false;
 
     @Override
@@ -1498,22 +1496,23 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         }
     }
 
-    private void addRequestStorageTopTip() {
+    private void addRequestPermissionTopTip(int contentRes) {
         try {
-            if (mRequestStoragePermTopView == null) {
-                mRequestStoragePermTopView = getLayoutInflater().inflate(R.layout.mq_request_storage_top_pop_tip, null);
-                mChatBodyRl.addView(mRequestStoragePermTopView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            if (mRequestPermTopView == null) {
+                mRequestPermTopView = getLayoutInflater().inflate(R.layout.mq_request_storage_top_pop_tip, null);
+                ((TextView) mRequestPermTopView.findViewById(R.id.content_tv)).setText(contentRes);
+                mChatBodyRl.addView(mRequestPermTopView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void removeRequestStorageTopTip() {
-        if (mRequestStoragePermTopView != null) {
+    private void removeRequestPermissionTopTip() {
+        if (mRequestPermTopView != null) {
             try {
-                mChatBodyRl.removeView(mRequestStoragePermTopView);
-                mNetStatusTopView = null;
+                mChatBodyRl.removeView(mRequestPermTopView);
+                mRequestPermTopView = null;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1556,7 +1555,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             // Android 10 以下需要申请存储权限
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
             ) {
-                addRequestStorageTopTip();
+                addRequestPermissionTopTip(R.string.mq_content_request_storage_permission_below_10);
                 checkStoragePermission();
                 return;
             }
@@ -1573,44 +1572,19 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             }
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                if ((ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) && !isPopCameraPermissionTipDialog) {
-                    String title = getResources().getString(R.string.mq_request_permission);
-                    String content = getResources().getString(R.string.mq_content_request_camera_permission);
-                    new MQConfirmDialog(this, title, content, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            isPopCameraPermissionTipDialog = true;
-                            mCameraSelectBtn.performClick();
-                        }
-                    }, null).show();
-                    return;
-                }
-                if (!checkCameraPermission(CAMERA_REQUEST_CODE)) {
-                    return;
-                }
                 if (!checkCameraPermission()) {
+                    addRequestPermissionTopTip(R.string.mq_content_request_camera_permission);
                     MQUtils.show(this, R.string.mq_camera_no_permission);
                     return;
                 }
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     checkStoragePermission();
-                    addRequestStorageTopTip();
+                    addRequestPermissionTopTip(R.string.mq_content_request_storage_permission_below_10);
                     return;
                 }
             } else {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && !isPopCameraPermissionTipDialog) {
-                    String title = getResources().getString(R.string.mq_request_permission);
-                    String content = getResources().getString(R.string.mq_content_request_camera_permission);
-                    new MQConfirmDialog(this, title, content, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            isPopCameraPermissionTipDialog = true;
-                            mCameraSelectBtn.performClick();
-                        }
-                    }, null).show();
-                    return;
-                }
                 if (!checkCameraPermission()) {
+                    addRequestPermissionTopTip(R.string.mq_content_request_camera_permission);
                     MQUtils.show(this, R.string.mq_camera_no_permission);
                     return;
                 }
@@ -1632,15 +1606,9 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 return;
             }
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED && !isPopRecordPermissionTipDialog) {
-                String title = getResources().getString(R.string.mq_request_permission);
-                String content = getResources().getString(R.string.mq_content_request_record_permission);
-                new MQConfirmDialog(this, title, content, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        isPopRecordPermissionTipDialog = true;
-                        mVoiceBtn.performClick();
-                    }
-                }, null).show();
+                addRequestPermissionTopTip(R.string.mq_content_request_record_permission);
+                isPopRecordPermissionTipDialog = true;
+                mVoiceBtn.performClick();
                 return;
             }
 
@@ -1831,7 +1799,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private void chooseFromPhotoPicker() {
         // 弹窗访问提示
         boolean isNeedShowPermissionDialog = getSharedPreferences("mq_permission", Context.MODE_PRIVATE).getBoolean("isNeedShowPermissionDialog", true);
-        if (isNeedShowPermissionDialog) {
+        if (isNeedShowPermissionDialog && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             String title = getResources().getString(R.string.mq_title_send_photo);
             String content = getResources().getString(R.string.mq_content_send_photo);
             new MQConfirmDialog(this, title, content, new View.OnClickListener() {
@@ -1875,19 +1843,8 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 switch (position) {
                     case 0:
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                            if (( ContextCompat.checkSelfPermission(MQConversationActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) && !isPopCameraPermissionTipDialog) {
-                                String title = getResources().getString(R.string.mq_request_permission);
-                                String content = getResources().getString(R.string.mq_content_request_camera_permission);
-                                new MQConfirmDialog(MQConversationActivity.this, title, content, new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        isPopCameraPermissionTipDialog = true;
-                                        onItemClick(parent, view, position, id);
-                                    }
-                                }, null).show();
-                                return;
-                            }
-                            if (!checkCameraPermission(CAMERA_REQUEST_CODE)) {
+                            if (!checkCameraPermission(VIDEO_REQUEST_CODE)) {
+                                addRequestPermissionTopTip(R.string.mq_content_request_camera_permission);
                                 return;
                             }
                             if (!checkCameraPermission()) {
@@ -1896,23 +1853,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                             }
                             if (ContextCompat.checkSelfPermission(MQConversationActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                                 checkStoragePermission();
-                                addRequestStorageTopTip();
+                                addRequestPermissionTopTip(R.string.mq_content_request_storage_permission_below_10);
                                 return;
                             }
                         } else {
-                            if (ContextCompat.checkSelfPermission(MQConversationActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && !isPopCameraPermissionTipDialog) {
-                                String title = getResources().getString(R.string.mq_request_permission);
-                                String content = getResources().getString(R.string.mq_content_request_camera_permission);
-                                new MQConfirmDialog(MQConversationActivity.this, title, content, new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        isPopCameraPermissionTipDialog = true;
-                                        onItemClick(parent, view, position, id);
-                                    }
-                                }, null).show();
-                                return;
-                            }
                             if (!checkCameraPermission(VIDEO_REQUEST_CODE)) {
+                                addRequestPermissionTopTip(R.string.mq_content_request_camera_permission);
                                 return;
                             }
                         }
@@ -2064,10 +2010,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        removeRequestPermissionTopTip();
         switch (requestCode) {
             case WRITE_EXTERNAL_STORAGE_REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    removeRequestStorageTopTip();
+
                     // nothing
                 } else {
                     MQUtils.show(this, R.string.mq_sdcard_no_permission);
@@ -2075,6 +2022,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 break;
             }
             case RECORD_AUDIO_REQUEST_CODE: {
+                isPopRecordPermissionTipDialog = false;
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mVoiceBtn.performClick();
                 } else {
@@ -2110,9 +2058,6 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 break;
             }
         }
-        isPopRecordPermissionTipDialog = false;
-        isPopCameraPermissionTipDialog = false;
-        isPopStoragePermissionTipDialog = false;
     }
 
     @Override
