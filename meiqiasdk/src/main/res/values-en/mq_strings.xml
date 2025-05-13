@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="mq_expire_after">Expires in %1$d hours</string>
+    <string name="mq_expire_after">Expires in %1$s hours</string>
     <string name="mq_expired">Expired</string>
     <string name="mq_expired_top_tip">File expired, could not download</string>
     <string name="mq_downloading">Downloading…</string>
@@ -60,7 +60,7 @@
 
     <string name="mq_download_audio_failure">Download of recording has failed</string>
     <string name="mq_recorder_no_permission">Failed to record voice, Please make sure you have voice permission.</string>
-    <string name="mq_recorder_remaining_time">End in %1$d seconds</string>
+    <string name="mq_recorder_remaining_time">End in %1$s seconds</string>
 
     <string name="mq_view_photo">View Image</string>
     <string name="mq_save_img_failure">Failed to save a photo.</string>
