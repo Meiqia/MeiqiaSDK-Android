@@ -27,6 +27,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.ViewPropertyAnimatorListenerAdapter;
@@ -230,6 +232,23 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MQUtils.updateLanguage(this);
+        // 设置根视图的窗口插图，确保内容不被系统栏覆盖
+        View rootView = findViewById(android.R.id.content);
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (view, windowInsets) -> {
+            // 获取系统栏的 insets
+            Insets systemBarsInsets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            // 获取输入法的 insets
+            Insets imeInsets = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
+
+            // 计算最终的 padding，取系统栏和输入法 insets 的最大值
+            int left = Math.max(systemBarsInsets.left, imeInsets.left);
+            int top = systemBarsInsets.top; // 顶部只考虑系统栏
+            int right = Math.max(systemBarsInsets.right, imeInsets.right);
+            int bottom = Math.max(systemBarsInsets.bottom, imeInsets.bottom);
+
+            view.setPadding(left, top, right, bottom);
+            return windowInsets;
+        });
         mController = MQConfig.getController(this);
         mController.onConversationOpen();
         if (savedInstanceState != null) {
