@@ -8,8 +8,6 @@ import android.text.TextUtils;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.MQScheduleRule;
-import com.meiqia.core.bean.MQAgent;
-import com.meiqia.meiqiasdk.activity.MQCollectInfoActivity;
 import com.meiqia.meiqiasdk.activity.MQConversationActivity;
 import com.meiqia.meiqiasdk.activity.MQInquiryFormActivity;
 

@@ -2,11 +2,12 @@ package com.meiqia.meiqiasdk.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.util.MQUtils;

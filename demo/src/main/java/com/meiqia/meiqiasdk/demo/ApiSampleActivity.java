@@ -50,6 +50,7 @@ public class ApiSampleActivity extends Activity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_developer);
+        MQUtils.applyWindowInsets(this);
 
         mqManager = MQManager.getInstance(this);
 

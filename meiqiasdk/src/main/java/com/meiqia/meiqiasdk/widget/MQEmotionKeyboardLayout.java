@@ -2,8 +2,6 @@ package com.meiqia.meiqiasdk.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -14,6 +12,9 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.util.MQEmotionUtil;

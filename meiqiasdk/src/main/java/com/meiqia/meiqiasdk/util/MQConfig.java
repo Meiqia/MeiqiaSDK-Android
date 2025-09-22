@@ -3,11 +3,10 @@ package com.meiqia.meiqiasdk.util;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.view.View;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
-
-import android.view.View;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.MQNotificationMessageConfig;

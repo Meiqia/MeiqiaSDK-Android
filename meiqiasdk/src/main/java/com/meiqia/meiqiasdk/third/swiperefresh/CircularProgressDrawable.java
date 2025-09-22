@@ -24,7 +24,6 @@ import android.view.animation.LinearInterpolator;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.RestrictTo;
-import androidx.core.util.Preconditions;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import java.lang.annotation.Retention;

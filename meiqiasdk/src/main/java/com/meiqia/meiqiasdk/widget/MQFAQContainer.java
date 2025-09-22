@@ -1,15 +1,16 @@
 package com.meiqia.meiqiasdk.widget;
 
 import android.content.Context;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import android.widget.TextView;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.chatitem.MQRobotItem;

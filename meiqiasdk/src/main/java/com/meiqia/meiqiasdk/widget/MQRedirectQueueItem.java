@@ -1,9 +1,7 @@
 package com.meiqia.meiqiasdk.widget;
 
 import android.content.Context;
-import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.meiqia.core.MQManager;

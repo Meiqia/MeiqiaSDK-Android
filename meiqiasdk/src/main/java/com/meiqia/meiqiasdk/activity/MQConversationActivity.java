@@ -21,18 +21,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.ViewPropertyAnimatorListenerAdapter;
-
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -54,6 +42,15 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.ViewPropertyAnimatorListenerAdapter;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.MQMessageManager;
@@ -91,10 +88,10 @@ import com.meiqia.meiqiasdk.model.InitiativeRedirectMessage;
 import com.meiqia.meiqiasdk.model.LeaveTipMessage;
 import com.meiqia.meiqiasdk.model.NoAgentLeaveMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
-import com.meiqia.meiqiasdk.model.TipMessage;
 import com.meiqia.meiqiasdk.model.RedirectQueueMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
+import com.meiqia.meiqiasdk.model.TipMessage;
 import com.meiqia.meiqiasdk.model.VideoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.third.swiperefresh.SwipeRefreshLayout;
@@ -232,23 +229,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MQUtils.updateLanguage(this);
-        // 设置根视图的窗口插图，确保内容不被系统栏覆盖
-        View rootView = findViewById(android.R.id.content);
-        ViewCompat.setOnApplyWindowInsetsListener(rootView, (view, windowInsets) -> {
-            // 获取系统栏的 insets
-            Insets systemBarsInsets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
-            // 获取输入法的 insets
-            Insets imeInsets = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
-
-            // 计算最终的 padding，取系统栏和输入法 insets 的最大值
-            int left = Math.max(systemBarsInsets.left, imeInsets.left);
-            int top = systemBarsInsets.top; // 顶部只考虑系统栏
-            int right = Math.max(systemBarsInsets.right, imeInsets.right);
-            int bottom = Math.max(systemBarsInsets.bottom, imeInsets.bottom);
-
-            view.setPadding(left, top, right, bottom);
-            return windowInsets;
-        });
+        MQUtils.applyWindowInsets(this);
         mController = MQConfig.getController(this);
         mController.onConversationOpen();
         if (savedInstanceState != null) {
