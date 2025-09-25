@@ -36,6 +36,8 @@
 
 -keepattributes Signature
 
+# Please add these rules to your existing keep rules in order to suppress warnings.
+# This is generated automatically by the Android Gradle plugin.
 -dontwarn org.bouncycastle.jsse.BCSSLParameters
 -dontwarn org.bouncycastle.jsse.BCSSLSocket
 -dontwarn org.bouncycastle.jsse.provider.BouncyCastleJsseProvider
@@ -45,3 +47,12 @@
 -dontwarn org.openjsse.javax.net.ssl.SSLParameters
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
+
+-dontwarn com.bumptech.glide.BitmapRequestBuilder
+-dontwarn com.bumptech.glide.BitmapTypeRequest
+-dontwarn com.bumptech.glide.DrawableTypeRequest
+-dontwarn com.squareup.picasso.Callback$EmptyCallback
+-dontwarn com.squareup.picasso.Callback
+-dontwarn com.squareup.picasso.Picasso
+-dontwarn com.squareup.picasso.RequestCreator
+-dontwarn com.squareup.picasso.Target

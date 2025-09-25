@@ -29,6 +29,7 @@ public abstract class MQBaseActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MQUtils.updateLanguage(this);
+        MQUtils.applyWindowInsets(this);
         setContentView(getLayoutRes());
 
         mTitleRl = findViewById(R.id.title_rl);

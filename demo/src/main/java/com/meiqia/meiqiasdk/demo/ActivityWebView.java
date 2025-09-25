@@ -27,6 +27,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.meiqia.meiqiasdk.util.MQUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -51,6 +53,7 @@ public class ActivityWebView extends Activity implements AdvancedWebView.Listene
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
+        MQUtils.applyWindowInsets(this);
         final WebView webView = findViewById(R.id.webview);
         mWebView = (AdvancedWebView) webView;
         webView.getSettings().setAllowUniversalAccessFromFileURLs(false);

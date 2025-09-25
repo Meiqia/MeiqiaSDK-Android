@@ -3,11 +3,12 @@ package com.meiqia.meiqiasdk.pw;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import androidx.annotation.IdRes;
-import androidx.annotation.LayoutRes;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.PopupWindow;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.LayoutRes;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com

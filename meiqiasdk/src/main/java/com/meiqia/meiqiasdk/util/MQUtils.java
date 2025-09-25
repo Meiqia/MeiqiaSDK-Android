@@ -26,13 +26,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
-
-import androidx.annotation.ColorRes;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.RequiresApi;
-import androidx.annotation.StringRes;
-import androidx.core.graphics.drawable.DrawableCompat;
-
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -47,6 +40,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.RequiresApi;
+import androidx.annotation.StringRes;
+import androidx.core.graphics.Insets;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.meiqia.core.bean.MQAgent;
 import com.meiqia.core.bean.MQMessage;
@@ -73,7 +75,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -1560,6 +1561,26 @@ public class MQUtils {
             configuration.setLocale(locale);
             resources.updateConfiguration(configuration, displayMetrics);
         }
+    }
+
+    public static void applyWindowInsets(Activity activity) {
+        // 设置根视图的窗口插图，确保内容不被系统栏覆盖
+        View rootView = activity.findViewById(android.R.id.content);
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (view, windowInsets) -> {
+            // 获取系统栏的 insets
+            Insets systemBarsInsets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            // 获取输入法的 insets
+            Insets imeInsets = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
+
+            // 计算最终的 padding，取系统栏和输入法 insets 的最大值
+            int left = Math.max(systemBarsInsets.left, imeInsets.left);
+            int top = systemBarsInsets.top; // 顶部只考虑系统栏
+            int right = Math.max(systemBarsInsets.right, imeInsets.right);
+            int bottom = Math.max(systemBarsInsets.bottom, imeInsets.bottom);
+
+            view.setPadding(left, top, right, bottom);
+            return windowInsets;
+        });
     }
 
 }

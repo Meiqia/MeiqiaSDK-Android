@@ -69,6 +69,7 @@ public class MQMessageFormActivity extends Activity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MQUtils.updateLanguage(this);
+        MQUtils.applyWindowInsets(this);
         initView();
         initListener();
         processLogic(savedInstanceState);

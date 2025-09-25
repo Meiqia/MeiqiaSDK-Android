@@ -2,13 +2,14 @@ package com.meiqia.meiqiasdk.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
-import androidx.annotation.StringRes;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import androidx.annotation.StringRes;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.util.MQUtils;

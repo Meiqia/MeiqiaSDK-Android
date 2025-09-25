@@ -1,9 +1,10 @@
 package com.meiqia.meiqiasdk.widget;
 
 import android.content.Context;
-import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * 作者:王浩 邮件:bingoogolapple@gmail.com

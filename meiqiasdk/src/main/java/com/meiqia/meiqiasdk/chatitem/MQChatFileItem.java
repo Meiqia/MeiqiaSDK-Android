@@ -5,13 +5,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.StrictMode;
-import androidx.core.content.FileProvider;
 import android.text.format.Formatter;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.content.FileProvider;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.callback.OnDownloadFileCallback;
