@@ -15,10 +15,6 @@
  *******************************************************************************/
 package com.meiqia.meiqiasdk.third.photoview;
 
-import static android.view.MotionEvent.ACTION_CANCEL;
-import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_UP;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -26,6 +22,7 @@ import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import androidx.core.view.MotionEventCompat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -38,14 +35,16 @@ import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
-import androidx.core.view.MotionEventCompat;
+import java.lang.ref.WeakReference;
 
 import com.meiqia.meiqiasdk.third.photoview.gestures.OnGestureListener;
 import com.meiqia.meiqiasdk.third.photoview.gestures.VersionedGestureDetector;
 import com.meiqia.meiqiasdk.third.photoview.log.LogManager;
 import com.meiqia.meiqiasdk.third.photoview.scrollerproxy.ScrollerProxy;
 
-import java.lang.ref.WeakReference;
+import static android.view.MotionEvent.ACTION_CANCEL;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_UP;
 
 public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
         OnGestureListener,

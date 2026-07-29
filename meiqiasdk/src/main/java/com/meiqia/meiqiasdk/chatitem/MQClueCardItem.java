@@ -14,7 +14,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -29,7 +28,6 @@ import com.meiqia.meiqiasdk.dialog.MQInputDialog;
 import com.meiqia.meiqiasdk.imageloader.MQImage;
 import com.meiqia.meiqiasdk.model.ClueCardMessage;
 import com.meiqia.meiqiasdk.util.MQConfig;
-import com.meiqia.meiqiasdk.util.MQSimpleTextWatcher;
 import com.meiqia.meiqiasdk.util.MQTimeUtils;
 import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQImageView;
@@ -173,47 +171,42 @@ public class MQClueCardItem extends MQBaseBubbleItem {
         if (item != null) {
             View customView = LayoutInflater.from(getContext()).inflate(R.layout.mq_item_clue_card_input_edit, null);
             final TextView titleTv = customView.findViewById(R.id.mq_title_tv);
-            final EditText editText = customView.findViewById(R.id.mq_input_et);
+            final TextView contentTv = customView.findViewById(R.id.mq_input_et);
 
             final String name = item.optString("name");
             final String displayName = getName(name);
             String title = String.format(getResources().getString(R.string.mq_item_clue_card_input), displayName);
             titleTv.setText(title);
-            editText.setOnClickListener(new OnClickListener() {
+            contentTv.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new MQInputDialog(getContext(), displayName, editText.getText().toString(), "", inputType, new MQInputDialog.OnContentChangeListener() {
+                    new MQInputDialog(getContext(), displayName, contentTv.getText().toString(), "", inputType, new MQInputDialog.OnContentChangeListener() {
                         @Override
                         public void onContentChange(String content) {
-                            editText.setText(content);
+                            contentTv.setText(content);
+                            updateInputFieldState(name, content, titleTv);
                             notifyDataSetChanged();
                         }
                     }).show();
                 }
             });
-            editText.setInputType(inputType);
-            editText.setText(mClueCardMessage.getAttrs().optString(name, ""));
-            editText.setSelection(editText.getText().length());
-            mClueCardMessage.setEnable(name, !TextUtils.isEmpty(mClueCardMessage.getAttrs().optString(name, "")));
-            setSendButtonEnableState(mClueCardMessage.isAllEnable());
+            String currentContent = mClueCardMessage.getAttrs().optString(name, "");
+            contentTv.setText(currentContent);
+            updateInputFieldState(name, currentContent, titleTv);
             mContainerLl.addView(customView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             titleTv.setTextColor(getResources().getColor(mClueCardMessage.isEnable(name) ? R.color.mq_chat_event_gray : R.color.mq_error));
+        }
+    }
 
-            editText.addTextChangedListener(new MQSimpleTextWatcher() {
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    try {
-                        mClueCardMessage.getAttrs().put(name, s);
-                        boolean isEnable = !TextUtils.isEmpty(s);
-                        mClueCardMessage.setEnable(name, isEnable);
-                        titleTv.setTextColor(getResources().getColor(mClueCardMessage.isEnable(name) ? R.color.mq_chat_event_gray : R.color.mq_error));
-                        setSendButtonEnableState(mClueCardMessage.isAllEnable());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            editText.setFocusable(false);
+    private void updateInputFieldState(String name, CharSequence content, TextView titleTv) {
+        try {
+            mClueCardMessage.getAttrs().put(name, content);
+            boolean isEnable = !TextUtils.isEmpty(content);
+            mClueCardMessage.setEnable(name, isEnable);
+            titleTv.setTextColor(getResources().getColor(isEnable ? R.color.mq_chat_event_gray : R.color.mq_error));
+            setSendButtonEnableState(mClueCardMessage.isAllEnable());
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 

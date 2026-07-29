@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.ViewPropertyAnimatorListenerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
@@ -29,6 +32,8 @@ import com.meiqia.meiqiasdk.util.MQUtils;
 import com.meiqia.meiqiasdk.widget.MQHackyViewPager;
 import com.meiqia.meiqiasdk.widget.MQImageView;
 
+import android.Manifest;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -41,10 +46,13 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
     private static final String EXTRA_PHOTO_PATH = "EXTRA_PHOTO_PATH";
 
 
+    private static final int REQUEST_CODE_SAVE_IMAGE_STORAGE_PERMISSION = 0x301;
+
     private RelativeLayout mTitleRl;
     private TextView mTitleTv;
     private ImageView mDownloadIv;
     private MQHackyViewPager mContentHvp;
+    private View mRequestPermTopView;
 
     private ArrayList<String> mPreviewImages;
     private boolean mIsSinglePreview;
@@ -216,6 +224,18 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
             return;
         }
 
+        // Android 10 以下，保存到公共相册需要存储权限
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                addRequestPermissionTopTip();
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_CODE_SAVE_IMAGE_STORAGE_PERMISSION);
+                return;
+            }
+        }
+
         final String url = mPreviewImages.get(mContentHvp.getCurrentItem());
         File file;
         if (url.startsWith("file")) {
@@ -268,6 +288,49 @@ public class MQPhotoPreviewActivity extends Activity implements PhotoViewAttache
             mSavePhotoTask = null;
         }
         super.onDestroy();
+    }
+
+    /**
+     * 顶部展示一条存储权限申请说明的卡片
+     */
+    private void addRequestPermissionTopTip() {
+        try {
+            if (mRequestPermTopView == null) {
+                mRequestPermTopView = getLayoutInflater().inflate(R.layout.mq_request_storage_top_pop_tip, null);
+                TextView contentTv = mRequestPermTopView.findViewById(R.id.content_tv);
+                contentTv.setText(R.string.mq_content_request_storage_permission);
+                ViewGroup root = findViewById(android.R.id.content);
+                root.addView(mRequestPermTopView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_SAVE_IMAGE_STORAGE_PERMISSION) {
+            // 无论同意或拒绝，先移除顶部权限提示卡片
+            if (mRequestPermTopView != null) {
+                try {
+                    ViewGroup root = findViewById(android.R.id.content);
+                    root.removeView(mRequestPermTopView);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                mRequestPermTopView = null;
+            }
+
+            if (grantResults != null && grantResults.length > 0
+                    && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                // 用户同意后，重新尝试保存
+                savePic();
+            } else {
+                // 拒绝后，不再继续保存，只给个失败提示即可
+                MQUtils.showSafe(this, R.string.mq_save_img_failure);
+            }
+        }
     }
 
     private class ImagePageAdapter extends PagerAdapter {

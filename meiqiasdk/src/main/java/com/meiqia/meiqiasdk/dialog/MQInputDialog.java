@@ -2,12 +2,13 @@ package com.meiqia.meiqiasdk.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+
+import androidx.annotation.NonNull;
+
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
 
 import com.meiqia.meiqiasdk.R;
 import com.meiqia.meiqiasdk.util.MQUtils;
@@ -24,10 +25,16 @@ public class MQInputDialog extends Dialog {
         MQUtils.updateLanguage(context);
         setCanceledOnTouchOutside(true);
         setContentView(R.layout.mq_dialog_input);
-        getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-
+        if (getWindow() != null) {
+            getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
+                    | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        }
         titleTv = findViewById(R.id.tv_comfirm_title);
         inputEt = findViewById(R.id.et_evaluate_content);
+        inputEt.setFocusable(true);
+        inputEt.setFocusableInTouchMode(true);
         confirmBtn = findViewById(R.id.tv_evaluate_confirm);
         cancelBtn = findViewById(R.id.tv_evaluate_cancel);
         cancelBtn.setOnClickListener(new View.OnClickListener() {
@@ -48,7 +55,13 @@ public class MQInputDialog extends Dialog {
         inputEt.setText(input);
         inputEt.setHint(hint);
         inputEt.setInputType(inputType);
-        MQUtils.openKeyboard(inputEt);
+        inputEt.post(new Runnable() {
+            @Override
+            public void run() {
+                inputEt.requestFocus();
+                MQUtils.openKeyboard(inputEt);
+            }
+        });
     }
 
     public interface OnContentChangeListener {

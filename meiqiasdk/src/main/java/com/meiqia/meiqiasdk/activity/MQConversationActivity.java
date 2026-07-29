@@ -21,6 +21,19 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.core.graphics.Insets;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.ViewPropertyAnimatorListenerAdapter;
+
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -42,15 +55,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.ViewPropertyAnimatorListenerAdapter;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.meiqia.core.MQManager;
 import com.meiqia.core.MQMessageManager;
@@ -88,10 +92,10 @@ import com.meiqia.meiqiasdk.model.InitiativeRedirectMessage;
 import com.meiqia.meiqiasdk.model.LeaveTipMessage;
 import com.meiqia.meiqiasdk.model.NoAgentLeaveMessage;
 import com.meiqia.meiqiasdk.model.PhotoMessage;
+import com.meiqia.meiqiasdk.model.TipMessage;
 import com.meiqia.meiqiasdk.model.RedirectQueueMessage;
 import com.meiqia.meiqiasdk.model.RobotMessage;
 import com.meiqia.meiqiasdk.model.TextMessage;
-import com.meiqia.meiqiasdk.model.TipMessage;
 import com.meiqia.meiqiasdk.model.VideoMessage;
 import com.meiqia.meiqiasdk.model.VoiceMessage;
 import com.meiqia.meiqiasdk.third.swiperefresh.SwipeRefreshLayout;
@@ -224,6 +228,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private final List<BaseMessage> delaySendList = new ArrayList<>();
 
     private boolean isPopRecordPermissionTipDialog = false;
+    /**
+     * 系统图片选择器不可用时，申请存储权限后打开自定义相册
+     */
+    private boolean mPendingOpenPhotoPickerFallback = false;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -274,6 +282,21 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private void refreshConfig(boolean isConvActive) {
         // 已经分配了对话的情况下，不再显示询前表单
         if (isConvActive) {
+            // 对话活跃的时候，指定分配别的客服或者分组
+            String scheduleAgentId = getIntent().getStringExtra(SCHEDULED_AGENT);
+            String scheduleGroupId = getIntent().getStringExtra(SCHEDULED_GROUP);
+            boolean hasRule = getIntent().hasExtra(SCHEDULED_RULE);
+            int scheduledRule = getIntent().getIntExtra(SCHEDULED_RULE, MQScheduleRule.REDIRECT_ENTERPRISE.getValue());
+            MQScheduleRule rule = MQScheduleRule.REDIRECT_ENTERPRISE;
+            for (MQScheduleRule r : MQScheduleRule.values()) {
+                if (r.getValue() == scheduledRule) {
+                    rule = r;
+                    break;
+                }
+            }
+            if (!TextUtils.isEmpty(scheduleAgentId) || !TextUtils.isEmpty(scheduleGroupId) || hasRule) {
+                MQManager.getInstance(MQConversationActivity.this).setScheduledAgentOrGroupWithId(scheduleAgentId, scheduleGroupId, rule);
+            }
             applyAfterRefreshConfig();
             return;
         }
@@ -1202,7 +1225,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                                 }
                                 if (isForceRedirectHuman) {
                                     setCurrentAgent(mCurrentAgent);
-                                    addNoAgentLeaveMsg(getResources().getString(R.string.mq_no_agent_leave_msg_tip));
+                                    String leaveContent = getResources().getString(R.string.mq_no_agent_leave_msg_tip);
+                                    if (!TextUtils.isEmpty(mController.getEnterpriseConfig().ticketConfig.getIntro())) {
+                                        leaveContent = mController.getEnterpriseConfig().ticketConfig.getIntro();
+                                    }
+                                    addNoAgentLeaveMsg(leaveContent);
                                 } else {
                                     setCurrentAgent(null);
                                     // 没有分配到客服，也根据设置是否上传顾客信息
@@ -1552,42 +1579,19 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 return;
             }
 
-            // Android 10 以下需要申请存储权限
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-            ) {
-                addRequestPermissionTopTip(R.string.mq_content_request_storage_permission_below_10);
-                checkStoragePermission();
-                return;
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q || checkStoragePermission()) {
-                // 选择图片
-                hideEmojiSelectIndicator();
-                hideVoiceSelectIndicator();
-                chooseFromPhotoPicker();
-            }
+            // 选择图片（统一走系统图片选择器，不再申请存储权限）
+            hideEmojiSelectIndicator();
+            hideVoiceSelectIndicator();
+            chooseFromPhotoPicker();
         } else if (id == R.id.camera_select_btn) {
             if (!checkSendable()) {
                 return;
             }
 
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                if (!checkCameraPermission()) {
-                    addRequestPermissionTopTip(R.string.mq_content_request_camera_permission);
-                    MQUtils.show(this, R.string.mq_camera_no_permission);
-                    return;
-                }
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    checkStoragePermission();
-                    addRequestPermissionTopTip(R.string.mq_content_request_storage_permission_below_10);
-                    return;
-                }
-            } else {
-                if (!checkCameraPermission()) {
-                    addRequestPermissionTopTip(R.string.mq_content_request_camera_permission);
-                    MQUtils.show(this, R.string.mq_camera_no_permission);
-                    return;
-                }
+            if (!checkCameraPermission()) {
+                addRequestPermissionTopTip(R.string.mq_content_request_camera_permission);
+                MQUtils.show(this, R.string.mq_camera_no_permission);
+                return;
             }
             hideEmojiSelectIndicator();
             hideVoiceSelectIndicator();
@@ -1799,7 +1803,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
     private void chooseFromPhotoPicker() {
         // 弹窗访问提示
         boolean isNeedShowPermissionDialog = getSharedPreferences("mq_permission", Context.MODE_PRIVATE).getBoolean("isNeedShowPermissionDialog", true);
-        if (isNeedShowPermissionDialog && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (isNeedShowPermissionDialog) {
             String title = getResources().getString(R.string.mq_title_send_photo);
             String content = getResources().getString(R.string.mq_content_send_photo);
             new MQConfirmDialog(this, title, content, new View.OnClickListener() {
@@ -1810,20 +1814,38 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 }
             }, null).show();
         } else {
-            // Android 10 直接跳转系统组件
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // 优先使用系统图片选择器；若不可用（如无可用应用）则退回到申请存储权限 + 自定义相册
+            try {
                 Intent intent = new Intent();
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent, REQUEST_CODE_PHOTO);
-            } else {
-                try {
-                    startActivityForResult(MQPhotoPickerActivity.newIntent(this, null, 3, null, getString(R.string.mq_send)), REQUEST_CODE_PHOTO);
-                } catch (Exception e) {
+            } catch (Exception e) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        mPendingOpenPhotoPickerFallback = true;
+                        addRequestPermissionTopTip(R.string.mq_content_request_storage_permission_below_10);
+                        checkStoragePermission();
+                    } else {
+                        openPhotoPickerFallback();
+                    }
+                } else {
                     MQUtils.show(this, R.string.mq_photo_not_support);
                 }
             }
+        }
+    }
+
+    /**
+     * 使用自定义相册选择图片（需存储权限，仅作系统选择器不可用时的回退）
+     */
+    private void openPhotoPickerFallback() {
+        try {
+            startActivityForResult(MQPhotoPickerActivity.newIntent(this, null, 3, null, getString(R.string.mq_send)), REQUEST_CODE_PHOTO);
+        } catch (Exception e) {
+            MQUtils.show(this, R.string.mq_photo_not_support);
         }
     }
 
@@ -1842,36 +1864,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
             public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
                 switch (position) {
                     case 0:
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                            if (!checkCameraPermission(VIDEO_REQUEST_CODE)) {
-                                addRequestPermissionTopTip(R.string.mq_content_request_camera_permission);
-                                return;
-                            }
-                            if (!checkCameraPermission()) {
-                                MQUtils.show(MQConversationActivity.this, R.string.mq_camera_no_permission);
-                                return;
-                            }
-                            if (ContextCompat.checkSelfPermission(MQConversationActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                checkStoragePermission();
-                                addRequestPermissionTopTip(R.string.mq_content_request_storage_permission_below_10);
-                                return;
-                            }
-                        } else {
-                            if (!checkCameraPermission(VIDEO_REQUEST_CODE)) {
-                                addRequestPermissionTopTip(R.string.mq_content_request_camera_permission);
-                                return;
-                            }
+                        if (!checkCameraPermission(VIDEO_REQUEST_CODE)) {
+                            addRequestPermissionTopTip(R.string.mq_content_request_camera_permission);
+                            return;
                         }
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            if (checkCameraPermission(VIDEO_REQUEST_CODE)) {
-                                recordVideoFromCamera();
-                            }
-                        } else {
-                            if (checkStorageAndCameraPermission(WRITE_EXTERNAL_STORAGE_AND_VIDEO_REQUEST_CODE)) {
-                                recordVideoFromCamera();
-                            }
-                        }
+                        recordVideoFromCamera();
                         break;
                     case 1:
                         chooseVideoFromPicker();
@@ -1922,18 +1919,10 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         mCameraPicPath = path;
         Uri uri;
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures");
-                contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
-                contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-                ContentResolver resolver = getContentResolver();
-                Uri collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
-                uri = resolver.insert(collection, contentValues);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                ContentValues contentValues = new ContentValues(1);
-                contentValues.put(MediaStore.Images.Media.DATA, imageFile.getAbsolutePath());
-                uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                // 使用 FileProvider，将图片直接保存到应用私有目录中，避免申请存储权限
+                uri = FileProvider.getUriForFile(this, getPackageName() + ".fileProvider", imageFile);
+                camera.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
             } else {
                 uri = Uri.fromFile(imageFile);
             }
@@ -2014,9 +2003,12 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         switch (requestCode) {
             case WRITE_EXTERNAL_STORAGE_REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // nothing
+                    if (mPendingOpenPhotoPickerFallback) {
+                        mPendingOpenPhotoPickerFallback = false;
+                        openPhotoPickerFallback();
+                    }
                 } else {
+                    mPendingOpenPhotoPickerFallback = false;
                     MQUtils.show(this, R.string.mq_sdcard_no_permission);
                 }
                 break;
@@ -2073,7 +2065,7 @@ public class MQConversationActivity extends Activity implements View.OnClickList
                 }
             } else if (requestCode == REQUEST_CODE_PHOTO) {
                 // 从 相册 获取的图片
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (data != null && data.getData() != null) {
                     try {
                         ParcelFileDescriptor pfd = this.getContentResolver().openFileDescriptor(data.getData(), "r");
                         FileInputStream fileInputStream = new FileInputStream(pfd.getFileDescriptor());
@@ -2944,7 +2936,11 @@ public class MQConversationActivity extends Activity implements View.OnClickList
         @Override
         protected void noAgentStatus() {
             setCurrentAgent(null);
-            addNoAgentLeaveMsg(getResources().getString(R.string.mq_no_agent_leave_msg_tip));
+            String leaveContent = getResources().getString(R.string.mq_no_agent_leave_msg_tip);
+            if (!TextUtils.isEmpty(mController.getEnterpriseConfig().ticketConfig.getIntro())) {
+                leaveContent = mController.getEnterpriseConfig().ticketConfig.getIntro();
+            }
+            addNoAgentLeaveMsg(leaveContent);
         }
 
         @Override
